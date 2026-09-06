@@ -33,6 +33,12 @@ The final test processes also had outer limits: `timeout --signal=TERM --kill-af
 
 The 48 browser cases are 24 journeys repeated at 1280×720 and 1440×900: 11 mission cases, six record/lifecycle cases, and seven intercepted voice-UI cases per viewport. Additional widths and zoom are exercised within those journeys.
 
+## Checked remote CI and Git state
+
+Implementation commit: `5984f7a817a25ccd3398f9d90e1e0ab60daf50e5`, based on `b1be76ef0e2b28a52b3d59fe6a824af96bdfbe26`, pushed to `origin/work/goal-002-companion-polish`. The [actual feature CI run 34049274253](https://github.com/catlover-bot/talk-me-home/actions/runs/34049274253) **succeeded** at that exact head. Its job ran from 2026-09-06 17:39:14 to 17:41:02 UTC (September 7 in Japan), using Node.js 24.20.0. Typecheck, all 115 tests, build, and all 48 Chromium browser cases passed. Unit duration was about 4.24 seconds; browser duration was reported as 1.1 minutes. No step was skipped or cancelled, and no provider credentials or calls were used.
+
+The feature worktree was clean after push. This documentation follow-up records the completed remote result. Main remains at upstream `11b4c9508bef682785e8bdf23d5170b30aafb7a6`; no merge, force-push, visibility change, or pull request was made. Validation servers were stopped, and game ports were no longer listening. Existing unrelated processes were left alone.
+
 ## What the tests establish
 
 - Classic has five reachable physical states. Each Maintenance profile has nine. Every reachable nonterminal physical state permits a cooperative recovery; either actor alone cannot complete a fresh round. Search keys exclude transcripts and event history.
@@ -82,7 +88,7 @@ Missions, notes, finalized records, and recap are held in server memory; current
 
 No dependency or lockfile upgrade, third-party asset download, new license grant, raw microphone recording, browser transcript/token storage, new secret, billing change, public deployment, main merge, or pull request was added. Original SVG and procedural tones are documented in [assets.md](assets.md). Secret checks compare existing credential values in memory without printing them. The original `.env`, budget ledger, and Goal 001 validation are preserved.
 
-The `.env` and ignored budget ledger were compared with preflight file hashes without printing either contents or hashes; both are unchanged. The upstream starter files, lockfile, `.env.example`, and historical Goal 001 validation were also checked against the starting commit. Remote CI evidence and exact implementation commits are recorded below after the branch push.
+The `.env` and ignored budget ledger were compared with preflight file hashes without printing either contents or hashes; both are unchanged and remain ignored/untracked. The upstream starter files, lockfile, `.env.example`, and historical Goal 001 validation were also checked against the starting commit.
 
 Manual launch remains:
 
