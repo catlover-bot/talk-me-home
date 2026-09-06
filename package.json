@@ -5,12 +5,32 @@
   "type": "module",
   "description": "Voice agents on the AssemblyAI Voice Agent API: one JSON file, a browser tab or a phone number",
   "engines": {
-    "node": ">=18"
+    "node": ">=24 <25"
   },
   "scripts": {
     "start": "node deployment/browser/server.mjs",
     "publish": "node publish.mjs",
     "import": "node import.mjs",
-    "phone": "node deployment/telephony/connect.mjs"
+    "phone": "node deployment/telephony/connect.mjs",
+    "dev": "node scripts/dev.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "test:e2e": "playwright test",
+    "build": "npm run typecheck && vite build",
+    "game": "tsx game/server/index.ts",
+    "test:live": "tsx scripts/live-check.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
   }
 }

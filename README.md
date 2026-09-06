@@ -1,3 +1,49 @@
+# Talk Me Home
+
+You have the map. Your partner has eyes and hands. Neither can escape alone.
+
+A browser game for one human at Mission Control and one maintenance robot. Read the static cargo-area map and wiring notes, operate remote Power, and talk the robot through one Door. The robot must observe and operate local equipment. Only the server can confirm arrival. This is a first-door prototype, with no accounts, database, or public deployment.
+
+## Run the game
+
+Use Node.js 24 (tested with 24.20.0 and npm 11.19.0). On Windows, open an Ubuntu WSL terminal:
+
+```sh
+cd ~/workspace/talk-me-home
+node --version
+npm ci
+npm run dev
+```
+
+Open **http://localhost:5173** in Windows Chrome or Edge. The game server listens on loopback port 3001; Vite forwards `/api` requests. Ctrl+C stops both processes. Nothing starts a paid voice session on page load.
+
+Keep the existing working Node.js 24 installation. `.nvmrc` records the tested version for environments that use nvm; a version manager is not required.
+
+1. Select **Mock / Simulation** and choose **Start Mission** for an API-free check. Type requests to the deterministic simulated robot. This mode does not use speech recognition or an AI model.
+2. For real conversation, select **Live AssemblyAI**, start the mission, then choose **Connect Voice**. Allow microphone access. **Connect Text** uses the same real provider without microphone capture; it still uses a billable connection.
+3. Read the map, exchange observations, and use **Power ON** or **Power OFF** to coordinate. Subtitles preserve actual transcripts. Restart begins a fresh round.
+
+Live mode reads `ASSEMBLYAI_API_KEY` from your existing root `.env`. If you do not have that file, copy `.env.example` once and add your key. Do not overwrite an existing `.env`. No key is needed for Mock, builds, or automated tests. The key stays on the server; the browser receives a temporary token. The game uses inline configuration and does not require publishing the Minimal agent. Missing credentials produce an explicit Live error; the app never silently switches to simulation.
+
+End the call before walking away. Each Live connection is capped at ten minutes. Ending a call explicitly requests provider termination. A broken network can prevent that acknowledgement. Stopping preserves the current puzzle; reconnecting starts a fresh conversation, so explain earlier discoveries again. Server restarts lose all in-memory missions.
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Game UI and local game server |
+| `npm run typecheck` | TypeScript checks |
+| `npm test` | API-free logic, HTTP, and voice-adapter tests |
+| `npm run test:e2e` | Mock browser tests; first run `npx playwright install chromium` |
+| `npm run build` | Typecheck and bundle the browser game into `dist/client` |
+| `npm run test:live` | Opt-in bounded provider text/tool probe; consumes provider time |
+| `npm start` | Original starter diagnostics at port 3000 |
+| `npm run publish` | Original stored-agent publishing workflow |
+
+See [architecture](docs/architecture.md), the [demo and manual voice checks](docs/demo-script.md), [recorded validation](docs/validation.md), [sources](docs/sources.md), and [next steps](docs/roadmap.md). Developer documents and tests contain puzzle details and must never be supplied to the robot as context.
+
+## Upstream starter
+
+The original starter and its history are preserved below. Its dependency-free description and telephone examples refer to the original diagnostic commands, not the React game. No telephone functionality was added to Talk Me Home.
+
 <img src="assemblyai.png" width="500"/>
 
 ---

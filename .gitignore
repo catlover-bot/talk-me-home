@@ -1,3 +1,9 @@
 node_modules/
 .env
 agents/*.env
+dist/
+test-results/
+playwright-report/
+.live-test-budget.json
+.live-test-lock/
+.validation/

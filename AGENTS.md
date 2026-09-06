@@ -1,4 +1,22 @@
-# Working on this repo
+# Talk Me Home game rules
+
+The first-door game extends the upstream starter without replacing its deployments. The game-specific rules below take precedence for `game/`, `tests/`, and `scripts/`; the original starter conventions remain below.
+
+- Use Node.js 24, React, Vite, and TypeScript for the game. Root game commands are `dev`, `typecheck`, `test`, `test:e2e`, and `build`. Preserve `start`, `publish`, `import`, and `phone` as starter commands.
+- `game/server/` owns per-session authoritative state, role-specific HTTP routes, action validation, temporary-token issuance, and lifecycle. No database. Restarting this process loses missions.
+- `game/shared/` contains safe contracts only. Hidden state and the puzzle solution do not belong in browser-shared data.
+- `game/client/` owns mission control, static map/wiring documents, deterministic Mock, subtitles, and Live transport. Keep raw player transcripts faithful.
+- `game/agent/` owns a compact English runtime prompt and documented inline function-tool configuration. Do not send developer documents, test fixtures, hidden state, wiring notes, or answer keys to the robot. Do not expose undiscovered object names in tool schema enums.
+- Only the human controls Power. Only robot tools inspect and interact locally. Completion requires a validated crossing. Validate against current state immediately before commit; reject stale rounds, forged arguments, and retries with conflicting IDs.
+- Human projections must not stream local observations. Strip human projections from tool results before forwarding them to AssemblyAI. This is solo gameplay separation, not protection against browser developer tools.
+- All new application-authored UI, errors, prompts, comments, tests, and documents are English. Use canonical Power, Door, Conveyor, and Latch. No localization framework for this goal.
+- Fetch the current AssemblyAI documentation index and relevant official pages before changing integration code. Inline configuration and browser function tools are authorized for this game. Do not combine `agent_id` with inline configuration.
+- Preserve `.env` and ignored credentials. Never print keys, tokens, resume tokens, or authorization headers. No secrets in `VITE_` variables, logs, screenshots, fixtures, or bundles.
+- Default to Mock. CI needs no provider secrets and must never run Live. Automated provider validation for Goal 001 has a shared 180-second maximum; use `scripts/live-check.ts` and its ignored persistent budget ledger. Never reset that ledger to manufacture additional budget.
+- Run typecheck, unit tests, Mock browser tests, build, and `git diff --check`. Inspect actual browser screenshots. Report text/tool, microphone, audible playback, and human play tests separately.
+- Work on `work/goal-001-first-door`. Preserve unrelated edits and upstream history. Do not commit to or merge main, force-push, change visibility, publish publicly, or change billing settings.
+
+# Working on the upstream starter
 
 A dependency-free Node starter for the AssemblyAI Voice Agent API. There is a [Python version](https://github.com/AssemblyAI/voice-agent-starter-python) that mirrors it, and `deployment/browser/app.js` there is copied from the client in this repo, so audio and transcript fixes land here first. An agent is one file in `agents/`; `publish.mjs` pushes it to the account; the two front doors in `deployment/` decide where it answers.
 
