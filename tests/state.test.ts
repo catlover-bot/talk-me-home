@@ -108,7 +108,7 @@ test('exhaustive exploration covers all five reachable physical states without s
 test('human projection never streams unreported local state', () => {
   for (const state of explore([...humanActions, ...robotActions])) {
     const projection = humanView(state)
-    assert.deepEqual(Object.keys(projection).sort(), ['sessionId', 'roundId', 'revision', 'actionEpoch', 'powerOn', 'status', 'completed'].sort())
+    assert.deepEqual(Object.keys(projection).sort(), ['sessionId', 'roundId', 'revision', 'actionEpoch', 'powerOn', 'status', 'completed', 'scenario'].sort())
     assert.doesNotMatch(JSON.stringify(projection), /latch|conveyor|doorOpen|robotLocation/i)
   }
 })
@@ -265,4 +265,133 @@ test('session memory is bounded and idle sessions expire', () => {
   now = 101
   assert.throws(() => store.get(view.sessionId), /unavailable/)
   assert.ok(store.create().sessionId)
+})
+
+const select = (state: GameState, position: 'neutral' | 'anchor' | 'bridge') => applyRobotTool(state, 'interact_object', { object: 'latch', action: `select_${position}` })
+const maintenanceRobotActions: Action[] = [...robotActions, ...(['neutral', 'anchor', 'bridge'] as const).map((position) => (state: GameState) => { select(state, position) })]
+
+function reachableFrom(start: GameState, actions: Action[]): GameState[] {
+  const pending = [{ ...start }]
+  const seen = new Map<string, GameState>()
+  while (pending.length) {
+    const current = pending.shift()!
+    const key = JSON.stringify([current.scenario, current.maintenanceProfile, current.powerOn, current.doorLatched, current.selector, current.robotLocation])
+    if (seen.has(key)) continue
+    seen.set(key, current)
+    for (const action of actions) {
+      const next = { ...current }
+      action(next)
+      pending.push(next)
+    }
+  }
+  return [...seen.values()]
+}
+
+for (const [profile, correct, wrong] of [['crescent', 'anchor', 'bridge'], ['kite', 'bridge', 'anchor']] as const) {
+  test(`Maintenance ${profile}: Neutral and wrong catches fail; correction and Power recovery work without restart`, () => {
+    const state = initialState(undefined, 'maintenance', profile)
+    assert.equal(state.selector, 'neutral')
+    assert.equal(state.doorLatched, false)
+    const initial = { ...state }
+    assert.equal(latch(state).ok, false)
+    assert.deepEqual(state, initial)
+    select(state, wrong)
+    const wrongState = { ...state }
+    const failure = latch(state)
+    assert.equal(failure.ok, false)
+    assert.match(failure.message, /catch did not seat/)
+    assert.ok(!failure.message.toLowerCase().includes(correct))
+    assert.deepEqual(state, wrongState)
+    applyHumanPower(state, false)
+    assert.equal(cross(state).ok, false)
+    assert.equal(select(state, correct).ok, true)
+    assert.equal(state.doorLatched, false)
+    assert.equal(latch(state).ok, false)
+    applyHumanPower(state, true)
+    assert.equal(latch(state).ok, true)
+    const engaged = { ...state }
+    assert.equal(select(state, wrong).ok, false)
+    assert.equal(select(state, correct).ok, false)
+    assert.deepEqual(state, engaged)
+    assert.equal(cross(state).ok, false)
+    applyHumanPower(state, false)
+    assert.equal(cross(state).ok, true)
+    assert.equal(humanView(state).completed, true)
+  })
+
+  test(`Maintenance ${profile}: all nine physical states preserve traversal and every nonterminal state is recoverable`, () => {
+    const state = initialState(undefined, 'maintenance', profile)
+    const actions = [...humanActions, ...maintenanceRobotActions]
+    const states = reachableFrom(state, actions)
+    assert.equal(states.length, 9)
+    for (const reachable of states) {
+      if (reachable.robotLocation === 'far_side') {
+        assert.equal(conveyorRunning(reachable), false)
+        assert.equal(doorOpen(reachable), true)
+        assert.equal(reachable.doorLatched, true)
+        assert.equal(reachable.selector, correct)
+      } else assert.ok(reachableFrom(reachable, actions).some((candidate) => humanView(candidate).completed))
+      const projection = humanView(reachable)
+      assert.equal(projection.scenario, 'maintenance')
+      assert.doesNotMatch(JSON.stringify(projection), /crescent|kite|anchor|bridge|neutral|selector|profile|doorLatched|conveyorRunning/i)
+    }
+    for (const solo of [humanActions, maintenanceRobotActions]) assert.ok(reachableFrom(state, solo).every((candidate) => !humanView(candidate).completed))
+  })
+}
+
+test('Classic every reachable nonterminal state has a cooperative recovery path', () => {
+  const actions = [...humanActions, ...robotActions]
+  for (const state of reachableFrom(initialState(), actions)) {
+    if (!humanView(state).completed) assert.ok(reachableFrom(state, actions).some((candidate) => humanView(candidate).completed))
+  }
+})
+
+test('Maintenance plate is learned only on inspection and never includes the manual mapping', () => {
+  for (const profile of ['crescent', 'kite'] as const) {
+    const state = initialState(undefined, 'maintenance', profile)
+    assert.doesNotMatch(robotView(state).message, /crescent|kite|anchor|bridge|selector/i)
+    const inspection = applyRobotTool(state, 'inspect_object', { object: 'latch' })
+    assert.match(inspection.message, new RegExp(profile, 'i'))
+    assert.ok(!inspection.message.toLowerCase().includes(profile === 'crescent' ? 'kite' : 'crescent'))
+    assert.match(inspection.message, /Neutral, Anchor, and Bridge/)
+    assert.doesNotMatch(inspection.message, /Crescent.{0,20}Anchor|Kite.{0,20}Bridge|holdingSetting|powerOn/)
+  }
+})
+
+test('scenario and hidden plate remain fixed across pause and resume; only reset selects a new scenario', async () => {
+  const store = new SessionStore()
+  let view = store.create('maintenance')
+  const before = await store.tool(view.sessionId, tool(view, { name: 'inspect_object', arguments: { object: 'latch' } }))
+  view = await store.lifecycle(view.sessionId, 'stop', command(view))
+  view = await store.lifecycle(view.sessionId, 'resume', command(view))
+  assert.equal(view.scenario, 'maintenance')
+  const after = await store.tool(view.sessionId, tool(view, { name: 'inspect_object', arguments: { object: 'latch' } }))
+  assert.equal(before.message, after.message)
+  assert.throws(() => store.lifecycle(view.sessionId, 'resume', command(view, { scenario: 'classic' })), /Only Restart/)
+  const reset = await store.lifecycle(view.sessionId, 'reset', command(view, { scenario: 'classic' }))
+  assert.equal(reset.scenario, 'classic')
+  assert.notEqual(reset.roundId, view.roundId)
+  const classic = await store.tool(view.sessionId, tool(reset, { name: 'inspect_object', arguments: { object: 'latch' } }))
+  assert.doesNotMatch(classic.message, /selector|crescent|kite/i)
+})
+
+test('Maintenance revalidates selector immediately before a delayed latch commits', async () => {
+  let release!: () => void
+  let calls = 0
+  const gate = new Promise<void>((resolve) => { release = resolve })
+  const store = new SessionStore({ beforeToolCommit: async () => { if (++calls === 3) await gate } })
+  let view = store.create('maintenance')
+  const inspection = await store.tool(view.sessionId, tool(view, { name: 'inspect_object', arguments: { object: 'latch' } }))
+  const correct = inspection.message.includes('Crescent') ? 'anchor' : 'bridge'
+  const wrong = correct === 'anchor' ? 'bridge' : 'anchor'
+  view = (await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${correct}` } }))).view
+  const pending = store.tool(view.sessionId, tool(view))
+  await tick()
+  const changed = await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${wrong}` } }))
+  release()
+  const result = await pending
+  assert.equal(result.ok, false)
+  assert.match(result.message, /catch did not seat/)
+  assert.equal(result.view.revision, changed.view.revision)
+  assert.equal(result.view.completed, false)
 })

@@ -19,7 +19,7 @@ export function simulationReply(raw: string): MockReply {
   });
   if (
     /\b(stop|wait|pause|hold on|cancel)\b/.test(text) ||
-    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep)\b/.test(
+    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select)\b/.test(
       text,
     )
   ) {
@@ -54,6 +54,12 @@ export function simulationReply(raw: string): MockReply {
         "Only Mission Control can change the Power. You have the remote control.",
     };
   }
+  if (/\b(set|select|choose|turn|put)\b/.test(text) && /\b(selector|neutral|anchor|bridge)\b/.test(text)) {
+    const positions = ['neutral', 'anchor', 'bridge'].filter(position => new RegExp(`\\b${position}\\b`).test(text));
+    if (positions.length !== 1 || /\b(and|or|then)\b/.test(text))
+      return { message: 'Which one selector position should I use?' };
+    return call('interact_object', { object: 'latch', action: `select_${positions[0]}` });
+  }
   if (
     /\b(inspect|examine|check|look at|tell me about|what does|how does|is (?:the )?(?:latch|lever|door|conveyor))\b/.test(
       text,
@@ -62,6 +68,7 @@ export function simulationReply(raw: string): MockReply {
     const objects = ["latch", "door", "conveyor"].filter((object) =>
       text.includes(object),
     );
+    if (/\b(plate|selector|module)\b/.test(text) && !objects.includes('latch')) objects.push('latch');
     if (text.includes("lever") && !objects.includes("latch"))
       objects.push("latch");
     if (objects.length > 1)
@@ -152,10 +159,12 @@ export function simulationSpeech(message: string): string {
     .replace(" You can inspect these objects.", "")
     .replace(" The far-side safe platform is the destination far_side.", "")
     .replace(" The local interaction is latch_open on latch.", "")
+    .replace(" Available interactions on latch are select_neutral, select_anchor, select_bridge, and latch_open.", "")
     .replace(/\bYou are\b/g, "I am")
     .replace(/\bYou have\b/g, "I have")
     .replace(/\bYou engaged\b/g, "I engaged")
     .replace(/\bYou crossed\b/g, "I crossed")
+    .replace(/\bYou set\b/g, "I set")
     .replace(/\byou remain\b/g, "I remain")
     .replace(/\bYou remain\b/g, "I remain")
     .replace(/\byour safe platform\b/g, "my safe platform")

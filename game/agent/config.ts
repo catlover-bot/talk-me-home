@@ -16,12 +16,12 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'inspect_object',
-    description: 'Inspect one observed, reachable local object. Use to learn its current state and available interactions. Do not guess an ambiguous object.',
+    description: 'Inspect one observed, reachable local object. Check relevant details without unnecessary permission questions. Learn its current state, labels, and available interactions. Do not guess an ambiguous object.',
     parameters: { type: 'object', properties: { object: objectParameter }, required: ['object'], additionalProperties: false },
   },
   {
     type: 'function', name: 'interact_object',
-    description: 'Attempt one local interaction learned by inspection. A successful server result is required before saying you acted. This cannot operate remote Mission Control equipment.',
+    description: 'Attempt one local interaction learned by inspection, following the player\'s intent or agreed plan. Never guess an ambiguous setting. A successful server result is required before saying you acted. This cannot operate remote Mission Control equipment.',
     parameters: { type: 'object', properties: {
       object: objectParameter,
       action: { type: 'string', description: 'One exact available action identifier returned by inspect_object.' },
@@ -29,7 +29,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'move_to',
-    description: 'Attempt a move to one destination returned by observation. Current traversal conditions are checked by the server. Never claim arrival before a successful result.',
+    description: 'Attempt one move to an observed destination, following the player\'s intent or agreed plan. Current traversal conditions are checked by the server. Never claim arrival before a successful result.',
     parameters: { type: 'object', properties: {
       target: { type: 'string', description: 'One exact destination identifier returned by observe_room or inspect_object.' },
     }, required: ['target'], additionalProperties: false },

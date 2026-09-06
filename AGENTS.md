@@ -12,9 +12,14 @@ The first-door game extends the upstream starter without replacing its deploymen
 - All new application-authored UI, errors, prompts, comments, tests, and documents are English. Use canonical Power, Door, Conveyor, and Latch. No localization framework for this goal.
 - Fetch the current AssemblyAI documentation index and relevant official pages before changing integration code. Inline configuration and browser function tools are authorized for this game. Do not combine `agent_id` with inline configuration.
 - Preserve `.env` and ignored credentials. Never print keys, tokens, resume tokens, or authorization headers. No secrets in `VITE_` variables, logs, screenshots, fixtures, or bundles.
-- Default to Mock. CI needs no provider secrets and must never run Live. Automated provider validation for Goal 001 has a shared 180-second maximum; use `scripts/live-check.ts` and its ignored persistent budget ledger. Never reset that ledger to manufacture additional budget.
+- Default to Practice (deterministic Mock). CI needs no provider secrets and must never run Live. Goal 002 authorizes zero automatic real-provider seconds: do not run `test:live` or contact the provider for screenshots. Goal 001's 111.0 seconds and ignored cumulative budget ledger are historical evidence, not a fresh allowance. Preserve the ledger unchanged.
 - Run typecheck, unit tests, Mock browser tests, build, and `git diff --check`. Inspect actual browser screenshots. Report text/tool, microphone, audible playback, and human play tests separately.
-- Work on `work/goal-001-first-door`. Preserve unrelated edits and upstream history. Do not commit to or merge main, force-push, change visibility, publish publicly, or change billing settings.
+- Work on `work/goal-002-companion-polish`, based on Goal 001 commit `b1be76ef0e2b28a52b3d59fe6a824af96bdfbe26`. Preserve unrelated edits and upstream history. Do not commit to or merge main, force-push, change visibility, publish publicly, or change billing settings.
+- Keep Classic and the Maintenance remix in one room. The installed Maintenance plate and selector state are server-only; both manual rows belong to the human. Never pass the mapping table into Pip's prompt or automatic recap.
+- `game/server/records.ts` owns bounded audience-scoped records. Exact pinned reports retain round, message, source, and time; private notes never enter robot context. Reconnection recap contains historical robot observations/actions and untrusted communicated player quotes only.
+- `game/client/useMission.ts` owns mission/connection lifecycle and round guards. Presentation lives in `components/`; source history must never be relabelled when the next connection mode changes. Speaking follows actual local PCM playback, not a transcript or received audio event.
+- Preserve the observed delayed tool/reply correlation regressions. CI's Live-disable flag must not suppress explicitly injected fake transports and leave an unresolved test gate. Use finite waits and cleanup, never forced process exits to hide open handles.
+- Preserve `docs/validation.md` as Goal 001 history. New results belong in `docs/goal-002-validation.md`; check the actual latest CI on `catlover-bot/talk-me-home` after pushing the work branch.
 
 # Working on the upstream starter
 

@@ -13,6 +13,8 @@ export interface ToolCall {
 }
 
 export type VoiceStatus = 'connecting' | 'listening' | 'responding' | 'speaking' | 'ended' | 'error';
+export type VoiceInputState = 'inactive' | 'ready' | 'receiving';
+export interface ReplyCompletion { id: string; status: string; hasTools: boolean }
 export type ProviderEvent = Record<string, unknown> & { type: string };
 
 // Deliberately excludes provider IDs, arguments, transcripts, and credentials.
@@ -32,6 +34,10 @@ export interface ProtocolHooks {
   onError(message: string): void;
   playAudio(data: string): void;
   stopAudio(): void;
+  onPlayback?(active: boolean): void;
+  onInputState?(state: VoiceInputState): void;
+  onToolState?(active: boolean): void;
+  onReplyDone?(reply: ReplyCompletion): void;
   onDiagnostic?(event: ProtocolDiagnostic): void;
 }
 
@@ -47,6 +53,16 @@ export function appendWord(previous: string, delta: string): string {
 /** Current wire rules: user deltas replace; agent deltas append; finals win. */
 export class TranscriptStore {
   readonly entries = new Map<string, TranscriptEntry>();
+  private locallyInterrupted = new Set<string>();
+  interrupt(replyId: string): TranscriptEntry | undefined {
+    const id = `robot:${replyId}`;
+    this.locallyInterrupted.add(id);
+    const previous = this.entries.get(id);
+    if (!previous) return;
+    const entry = { ...previous, final: true, interrupted: true };
+    this.entries.set(id, entry);
+    return entry;
+  }
   accept(event: ProviderEvent): TranscriptEntry | undefined {
     const human = event.type === 'transcript.user' || event.type === 'transcript.user.delta';
     const robot = event.type === 'transcript.agent' || event.type === 'transcript.agent.delta';
@@ -54,6 +70,8 @@ export class TranscriptStore {
     const key = human ? event.item_id : event.reply_id;
     if (typeof key !== 'string') return;
     const id = `${human ? 'human' : 'robot'}:${key}`;
+    // Local interruption cannot use later provider text to invent delivered words.
+    if (this.locallyInterrupted.has(id)) return;
     const previous = this.entries.get(id);
     const final = !event.type.endsWith('.delta');
     if (previous?.final && !final) return;
@@ -96,6 +114,10 @@ export class VoiceProtocol {
   private stopping?: Promise<void>;
   private pendingReply = false;
   private audioPlaying = false;
+  private held = false;
+  private toolReplies = new Set<string>();
+  private executingCount = 0;
+  private closingReply?: string;
 
   constructor(private readonly hooks: ProtocolHooks) {}
 
@@ -111,26 +133,38 @@ export class VoiceProtocol {
       return;
     }
     if (!this.ready) return;
+    if (this.closingReply) {
+      if (event.type === 'tool.call') return;
+      if (event.type === 'reply.started' && event.reply_id !== this.closingReply) {
+        // Audio has no reply ID: a later rejected reply also closes its audio gate.
+        this.currentReply = '';
+        return;
+      }
+      if (typeof event.reply_id === 'string' && event.reply_id !== this.closingReply && (event.type.startsWith('reply.') || event.type.startsWith('transcript.agent'))) return;
+    }
     if (event.type === 'input.speech.started') {
+      this.held = false;
       void this.interrupt();
+      this.hooks.onInputState?.('receiving');
       this.hooks.onStatus('listening');
       return;
     }
+    if (event.type === 'input.speech.stopped') this.hooks.onInputState?.('ready');
+    if (this.held && ['reply.started', 'reply.audio', 'tool.call', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
     if (event.type === 'reply.started' && typeof event.reply_id === 'string') {
       this.currentReply = event.reply_id;
       this.pendingReply = true;
       this.hooks.onStatus('responding');
     } else if (event.type === 'reply.audio' && typeof event.data === 'string') {
       if (!this.currentReply || this.interruptedReplies.has(this.currentReply)) return;
-      this.audioPlaying = true;
-      this.hooks.onStatus('speaking');
+      // Receiving bytes is not evidence that the output device rendered them.
       this.hooks.playAudio(event.data);
     } else if (event.type === 'tool.call') {
       this.queueTool(event);
     } else if (event.type === 'reply.done') {
       if (event.status === 'interrupted') {
         if (typeof event.reply_id === 'string') this.interruptedReplies.add(event.reply_id);
-        void this.interrupt();
+        void this.interrupt(this.held, false);
       } else if (typeof event.reply_id === 'string') {
         if (!this.interruptedReplies.has(event.reply_id)) this.completedReplies.add(event.reply_id);
         let matchedToolReply = false;
@@ -145,24 +179,46 @@ export class VoiceProtocol {
       }
       if (event.reply_id === this.currentReply) this.pendingReply = false;
       if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus('listening');
+      if (typeof event.reply_id === 'string') this.hooks.onReplyDone?.({ id: event.reply_id, status: String(event.status ?? ''), hasTools: this.toolReplies.has(event.reply_id) });
     }
     if (typeof event.reply_id === 'string' && this.interruptedReplies.has(event.reply_id) && event.type === 'transcript.agent.delta') return;
     const entry = this.transcripts.accept(event);
     if (entry) this.hooks.onTranscript(entry);
   }
 
+  playbackChanged(active: boolean): void {
+    this.audioPlaying = active && !this.stopped && !this.held;
+    this.hooks.onPlayback?.(this.audioPlaying);
+    if (this.audioPlaying) this.hooks.onStatus('speaking');
+    else if (!this.stopped && this.ready) this.hooks.onStatus(this.pendingReply ? 'responding' : 'listening');
+  }
+
   playbackDrained(): void {
-    this.audioPlaying = false;
+    this.playbackChanged(false);
     if (!this.stopped && this.ready && !this.pendingReply) this.hooks.onStatus('listening');
   }
 
+  resumeInput(): void { this.held = false; }
+
+  /** Preserve only the closing reply while its already queued playback drains. */
+  finishReply(replyId: string): void { this.closingReply ??= replyId; }
+
   /** Epoch invalidation races with commits on the server; committed work stays. */
-  interrupt(): Promise<void> {
+  interrupt(hold = false, truncate = true): Promise<void> {
+    this.held = hold;
     this.generation++;
     this.latestType = 'interruption';
     if (this.currentReply) this.interruptedReplies.add(this.currentReply);
+    const currentTranscript = this.transcripts.entries.get(`robot:${this.currentReply}`);
+    if (truncate && this.currentReply && (this.pendingReply || this.audioPlaying || currentTranscript?.final === false)) {
+      const entry = this.transcripts.interrupt(this.currentReply);
+      if (entry) this.hooks.onTranscript(entry);
+    }
     this.hooks.stopAudio();
     this.audioPlaying = false;
+    this.hooks.onPlayback?.(false);
+    this.hooks.onToolState?.(false);
+    this.executingCount = 0;
     this.pendingReply = false;
     for (const pending of this.calls.values()) pending.controller.abort();
     this.calls.clear();
@@ -180,6 +236,7 @@ export class VoiceProtocol {
     if (this.stopping) return this.stopping;
     this.stopped = true;
     this.ready = false;
+    this.hooks.onInputState?.('inactive');
     this.stopping = this.interrupt();
     return this.stopping;
   }
@@ -196,6 +253,7 @@ export class VoiceProtocol {
     // Live validation also observed ordinary reply IDs for tool-call replies.
     // Bind to the active reply, retaining the documented fc-<call_id> fallback.
     const replyId = this.currentReply || `fc-${call.callId}`;
+    this.toolReplies.add(replyId);
     const replyDone = this.completedReplies.has(replyId) || this.completedReplies.has(`fc-${call.callId}`);
     this.calls.set(call.callId, {
       call, replyId, generation: this.generation, controller: new AbortController(), replyDone, executing: false,
@@ -214,6 +272,8 @@ export class VoiceProtocol {
         this.calls.delete(id);
         this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size });
       } else if (!pending.executing) {
+        // Local actions are atomic and sequential even if a model batches calls.
+        if ([...this.calls.values()].some((call) => call.executing && !call.result)) break;
         pending.executing = true;
         void this.execute(pending);
       }
@@ -224,6 +284,8 @@ export class VoiceProtocol {
     await this.cancellation;
     if (!this.valid(pending)) return;
     this.hooks.onDiagnostic?.({ event: 'tool.execute.started', pendingCalls: this.calls.size });
+    this.executingCount++;
+    this.hooks.onToolState?.(true);
     try {
       const result = tools.has(pending.call.name)
         ? await this.hooks.executeTool(pending.call, pending.controller.signal)
@@ -239,6 +301,8 @@ export class VoiceProtocol {
       pending.result = { result: JSON.stringify({ ok: false, message: 'The action result could not be confirmed. Observe again before acting.' }), is_error: true };
     }
     this.hooks.onDiagnostic?.({ event: 'tool.execute.finished', pendingCalls: this.calls.size });
+    this.executingCount = Math.max(0, this.executingCount - 1);
+    this.hooks.onToolState?.(this.executingCount > 0);
     this.flush();
   }
 

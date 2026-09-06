@@ -1,0 +1,416 @@
+import { useEffect, useRef, useState } from 'react';
+import type { HumanView, MissionRecord, Scenario, TransportOrigin, InputMethod } from '../shared/contracts';
+import * as api from './api';
+import { LiveVoice, type TranscriptEntry, type VoiceInputState, type VoiceStatus } from './voice';
+import { simulationReply, simulationSpeech } from './mock';
+import { LocalEffects } from './effects';
+import { copy } from './strings';
+
+export interface Caption extends TranscriptEntry {
+  origin: TransportOrigin;
+  inputMethod: InputMethod;
+  roundId: string;
+  segmentId: string;
+  timestamp: number;
+  saved: boolean;
+}
+export const originLabel: Record<TransportOrigin, string> = {
+  practice: 'Practice', live_voice: 'Live Voice', live_text: 'Live Text',
+};
+type Segment = { id: string; origin: TransportOrigin };
+const emptyRecord = (roundId: string): MissionRecord => ({ roundId, messages: [], notebook: [], hintsUsed: [], debrief: null });
+
+/** Owns one mission checkpoint and at most one communication transport. */
+export function useMission() {
+  const [stage, setStage] = useState<'briefing' | 'mission' | 'debrief'>('briefing');
+  const [scenario, setScenario] = useState<Scenario>('classic');
+  const [mode, setMode] = useState<TransportOrigin>('practice');
+  const [view, setView] = useState<HumanView | null>(null);
+  const viewRef = useRef<HumanView | null>(null);
+  const [record, setRecord] = useState<MissionRecord | null>(null);
+  const [captions, setCaptions] = useState<Caption[]>([]);
+  const captionsRef = useRef<Caption[]>([]);
+  const [segment, setSegment] = useState<Segment | null>(null);
+  const segmentRef = useRef<Segment | null>(null);
+  const [connected, setConnected] = useState(false);
+  const connectedRef = useRef(false);
+  const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const [powerPending, setPowerPending] = useState<boolean | null>(null);
+  const [toolPending, setToolPending] = useState(false);
+  const [status, setStatus] = useState<VoiceStatus>('ended');
+  const [microphone, setMicrophone] = useState(false);
+  const [inputState, setInputState] = useState<VoiceInputState>('inactive');
+  const [playing, setPlaying] = useState(false);
+  const playingRef = useRef(false);
+  const [interrupted, setInterrupted] = useState(false);
+  const [error, setError] = useState('');
+  const [warning, setWarning] = useState('');
+  const [recapNotice, setRecapNotice] = useState('');
+  const [hint, setHint] = useState('');
+  const [voiceVolume, setVoiceVolume] = useState(1);
+  const [effectsVolume, setEffectsVolume] = useState(0);
+  const effects = useRef(new LocalEffects());
+  const voice = useRef<LiveVoice | null>(null);
+  const stopping = useRef<Promise<void> | null>(null);
+  const generation = useRef(0);
+  const mockTurn = useRef(0);
+  const mockAbort = useRef<AbortController | null>(null);
+  const writes = useRef(new Set<Promise<unknown>>());
+  const recordRequest = useRef(0);
+  const closingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closingGrace = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closingReplyDone = useRef(false);
+  const completionRound = useRef('');
+  const [seconds, setSeconds] = useState(0);
+  const liveStarted = useRef(0);
+
+  const setBusyNow = (value: boolean) => { busyRef.current = value; setBusy(value); };
+  const setConnectedNow = (value: boolean) => { connectedRef.current = value; setConnected(value); };
+  const showError = (cause: unknown) => setError(cause instanceof Error ? cause.message : 'The request failed. Please try again.');
+  const currentRound = (roundId: string) => viewRef.current?.roundId === roundId;
+  const applyView = (next: HumanView) => {
+    const previous = viewRef.current;
+    if (previous?.sessionId === next.sessionId && previous.roundId === next.roundId && previous.revision > next.revision) return;
+    viewRef.current = next; setView(next);
+    if (next.completed) setStage('debrief');
+  };
+  const refreshRecord = async (current = viewRef.current) => {
+    if (!current || !currentRound(current.roundId)) return;
+    const sequence = ++recordRequest.current;
+    const next = await api.missionRecord(current);
+    if (sequence === recordRequest.current && currentRound(next.roundId)) setRecord(next);
+  };
+  const addCaption = (entry: TranscriptEntry, source: Segment, roundId: string) => {
+    if (!currentRound(roundId)) return;
+    const id = source.id + ':' + entry.id;
+    const previous = captionsRef.current.find(item => item.id === id);
+    const item: Caption = {
+      ...entry, id, origin: source.origin, segmentId: source.id, roundId,
+      inputMethod: entry.role === 'robot' ? 'robot' : entry.id.startsWith('typed:') || source.origin === 'practice' ? 'typed' : 'speech',
+      timestamp: previous?.timestamp ?? Date.now(), saved: previous?.saved ?? false,
+    };
+    const update = (next: Caption) => {
+      const items = captionsRef.current.filter(value => value.id !== id);
+      // Updating a partial must not move it behind newer replies.
+      const index = captionsRef.current.findIndex(value => value.id === id);
+      if (index >= 0) items.splice(index, 0, next); else items.push(next);
+      captionsRef.current = items.slice(-200); setCaptions(captionsRef.current);
+    };
+    update(item);
+    if (!entry.final || !entry.text.trim()) return;
+    const current = viewRef.current!;
+    const promise = api.recordMessage(current, {
+      roundId, messageId: id, segmentId: source.id, role: entry.role, text: entry.text,
+      origin: source.origin, inputMethod: item.inputMethod, interrupted: !!entry.interrupted,
+    }).then(saved => {
+      if (!currentRound(roundId)) return;
+      const latest = captionsRef.current.find(value => value.id === id);
+      if (latest) update({ ...latest, timestamp: saved.timestamp, saved: true });
+    }).catch(cause => { if (currentRound(roundId)) showError(cause); });
+    writes.current.add(promise); void promise.finally(() => writes.current.delete(promise));
+  };
+  const robotSays = (message: string, source = segmentRef.current) => {
+    const current = viewRef.current;
+    if (source && current) addCaption({ id: api.requestId(), role: 'robot', text: message, final: true }, source, current.roundId);
+  };
+  const clearClosing = () => {
+    if (closingTimer.current) clearTimeout(closingTimer.current);
+    if (closingGrace.current) clearTimeout(closingGrace.current);
+    closingTimer.current = null; closingGrace.current = null; closingReplyDone.current = false;
+  };
+
+  const cancelPending = async (expected = generation.current) => {
+    const current = viewRef.current;
+    if (!current || expected !== generation.current) return;
+    const next = await api.lifecycle(current, 'cancel');
+    if (expected === generation.current && currentRound(next.roundId)) applyView(next);
+  };
+
+  const stopOperation = async () => {
+    // Close partial quotes using only delivered text before invalidating callbacks.
+    for (const item of captionsRef.current.filter(item => !item.final && item.segmentId === segmentRef.current?.id)) {
+      addCaption({ ...item, id: item.id.slice(item.segmentId.length + 1), final: true, interrupted: true }, segmentRef.current!, item.roundId);
+    }
+    const lastSpoken = captionsRef.current.filter(item => item.role === 'robot' && item.segmentId === segmentRef.current?.id).at(-1);
+    if (playingRef.current && lastSpoken) addCaption({ ...lastSpoken, id: lastSpoken.id.slice(lastSpoken.segmentId.length + 1), final: true, interrupted: true }, segmentRef.current!, lastSpoken.roundId);
+    ++generation.current; ++mockTurn.current;
+    setBusyNow(true); setConnectedNow(false); setToolPending(false); setPowerPending(null);
+    mockAbort.current?.abort(); mockAbort.current = null;
+    clearClosing();
+    const connection = voice.current; voice.current = null;
+    const ending = connection?.stop();
+    const current = viewRef.current;
+    try {
+      if (current) {
+        const next = await api.lifecycle(current, 'stop');
+        if (currentRound(next.roundId)) applyView(next);
+      }
+      await Promise.allSettled([...writes.current]);
+      await refreshRecord();
+    } catch (cause) { showError(cause); }
+    finally {
+      await ending; setMicrophone(false); setInputState('inactive'); setPlaying(false); playingRef.current = false;
+      setStatus('ended'); effects.current.setVoiceActive(false); effects.current.play('disconnect');
+      if (effectsVolume > 0) await new Promise(resolve => setTimeout(resolve, 240));
+      await effects.current.close(); setBusyNow(false);
+    }
+  };
+
+  const stop = (): Promise<void> => {
+    if (stopping.current) return stopping.current;
+    const operation = stopOperation();
+    stopping.current = operation;
+    void operation.finally(() => { if (stopping.current === operation) stopping.current = null; });
+    return operation;
+  };
+
+  const runTool = async (call: api.RobotCall, signal: AbortSignal, expected: number) => {
+    const current = viewRef.current;
+    if (!current || expected !== generation.current || signal.aborted) throw new DOMException('Canceled', 'AbortError');
+    const result = await api.executeTool(current, call, signal);
+    if (expected !== generation.current || !currentRound(result.view.roundId) || signal.aborted) throw new DOMException('Canceled', 'AbortError');
+    applyView(result.view);
+    if (result.view.completed && completionRound.current !== result.view.roundId) {
+      completionRound.current = result.view.roundId;
+      effects.current.play('complete');
+      void refreshRecord(result.view).catch(showError);
+      if (voice.current) closingTimer.current = setTimeout(() => { void stop(); }, 8000);
+      else setConnectedNow(false);
+    }
+    return { ok: result.ok, message: result.message };
+  };
+
+  const start = () => {
+    if (busyRef.current || connectedRef.current || voice.current) return;
+    setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0);
+    // Both audio paths begin in this user gesture; no capture happens on page load.
+    if (effectsVolume > 0) void effects.current.unlock();
+    const expected = ++generation.current;
+    const source: Segment = { id: api.requestId(), origin: mode };
+    segmentRef.current = source; setSegment(source);
+    const prepareMission = async () => {
+      let current = viewRef.current;
+      const retained = !!current && !current.completed && current.status !== 'ended' && stage !== 'briefing';
+      if (!retained) current = current ? await api.lifecycle(current, 'reset', scenario) : await api.createSession(scenario);
+      else current = await api.lifecycle(current!, 'resume');
+      if (expected !== generation.current) {
+        await api.lifecycle(current!, 'stop');
+        throw new DOMException('Canceled', 'AbortError');
+      }
+      applyView(current!); setStage('mission');
+      if (!retained) { captionsRef.current = []; setCaptions([]); setRecord(emptyRecord(current!.roundId)); }
+      await Promise.allSettled([...writes.current]);
+      const recap = await api.robotRecap(current!);
+      if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
+      setRecapNotice(retained ? 'Earlier reports are historical. Pip can recheck local conditions.' : '');
+      await refreshRecord(current!);
+      return { current: current!, recap: recap.entries.length ? JSON.stringify(recap) : undefined, retained };
+    };
+    if (mode === 'practice') {
+      void prepareMission().then(({ retained }) => {
+        if (expected !== generation.current) return;
+        setConnectedNow(true); setStatus('listening'); effects.current.play('connect');
+        robotSays(retained ? "I'm back, Mission Control. My earlier reports may be out of date. What should we check?" : copy.greeting, source);
+      }).catch(cause => { if (expected === generation.current) { showError(cause); setStatus('error'); } })
+        .finally(() => { if (expected === generation.current) setBusyNow(false); });
+      return;
+    }
+    // Provider call identifiers belong to one connection, not the entire retained mission.
+    const localCallIds = new Map<string, string>();
+    const connection = new LiveVoice({
+      onTranscript: entry => {
+        if (expected === generation.current && viewRef.current) addCaption(entry, source, viewRef.current.roundId);
+      },
+      onStatus: next => {
+        if (expected !== generation.current) return;
+        setStatus(next);
+        if (next === 'ended' || next === 'error') {
+          setConnectedNow(false); if (next === 'ended') voice.current = null; setMicrophone(false); setInputState('inactive'); setToolPending(false); setPlaying(false);
+          playingRef.current = false; effects.current.setVoiceActive(false); clearClosing();
+          if (next === 'ended') void effects.current.close();
+          const current = viewRef.current;
+          if (current) void api.lifecycle(current, 'stop').then(result => {
+            if (expected === generation.current && currentRound(result.roundId)) applyView(result);
+          }).catch(showError);
+        }
+      },
+      onError: message => { if (expected === generation.current) setError(message); },
+      onWarning: message => { if (expected === generation.current) setWarning(message); },
+      onMicrophone: value => { if (expected === generation.current) setMicrophone(value); },
+      onInputState: value => { if (expected === generation.current) { setInputState(value); if (value === 'receiving') setInterrupted(false); } },
+      onToolState: value => { if (expected === generation.current) setToolPending(value); },
+      onPlayback: value => {
+        if (expected !== generation.current) return;
+        setPlaying(value); playingRef.current = value; effects.current.setVoiceActive(value);
+        if (!value && closingReplyDone.current && viewRef.current?.completed) void stop();
+      },
+      onReplyDone: reply => {
+        if (expected !== generation.current || !viewRef.current?.completed || reply.hasTools || reply.status !== 'completed') return;
+        voice.current?.finishReply(reply.id);
+        closingReplyDone.current = true;
+        // Let the worklet start queued final audio before deciding it was text-only.
+        closingGrace.current = setTimeout(() => { if (!playingRef.current && expected === generation.current) void stop(); }, 300);
+      },
+    });
+    connection.setVolume(voiceVolume);
+    voice.current = connection;
+    void connection.start({
+      microphone: mode === 'live_voice',
+      token: async () => {
+        const { current, recap } = await prepareMission();
+        const token = await api.voiceToken(current);
+        if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
+        return { ...token, recap };
+      },
+      executeTool: (call, signal) => {
+        let id = localCallIds.get(call.callId);
+        if (!id) { id = api.requestId(); localCallIds.set(call.callId, id); }
+        return runTool({ ...call, callId: id }, signal, expected);
+      },
+      cancelPending: () => cancelPending(expected),
+      maxSessionSeconds: 600,
+    }).then(() => {
+      if (expected === generation.current && voice.current === connection) {
+        setConnectedNow(true); liveStarted.current = Date.now(); effects.current.play('connect');
+      }
+    }).catch(cause => {
+      if (expected === generation.current) { showError(cause); voice.current = null; setConnectedNow(false); setStatus('error'); }
+    }).finally(() => { if (expected === generation.current) setBusyNow(false); });
+  };
+
+  const interrupt = async () => {
+    if (!connectedRef.current) return;
+    setInterrupted(true); setToolPending(false); effects.current.stop();
+    mockAbort.current?.abort(); ++mockTurn.current; mockAbort.current = null;
+    try { if (voice.current) await voice.current.interrupt(); else await cancelPending(); }
+    catch (cause) { showError(cause); }
+  };
+
+  const send = async (text: string) => {
+    if (!text.trim() || text.length > 2000 || !connectedRef.current || busyRef.current || viewRef.current?.status !== 'active') return false;
+    setInterrupted(false); setError('');
+    if (voice.current) return voice.current.sendText(text);
+    const source = segmentRef.current!;
+    addCaption({ id: api.requestId(), role: 'human', text, final: true }, source, viewRef.current.roundId);
+    const reply = simulationReply(text);
+    const expected = generation.current;
+    const turn = ++mockTurn.current;
+    const hadPending = !!mockAbort.current;
+    mockAbort.current?.abort();
+    const abort = new AbortController(); mockAbort.current = abort;
+    setToolPending(!!reply.call);
+    try {
+      if (hadPending || reply.cancel) await cancelPending(expected);
+      if (expected !== generation.current || turn !== mockTurn.current || abort.signal.aborted) return true;
+      if (reply.cancel) setInterrupted(true);
+      const message = reply.call ? simulationSpeech((await runTool(reply.call, abort.signal, expected)).message) : reply.message;
+      if (expected === generation.current && turn === mockTurn.current) robotSays(message, source);
+    } catch (cause) {
+      if (expected === generation.current && turn === mockTurn.current && !(cause instanceof DOMException && cause.name === 'AbortError')) showError(cause);
+    } finally {
+      if (expected === generation.current && turn === mockTurn.current) { setToolPending(false); mockAbort.current = null; }
+    }
+    return true;
+  };
+
+  const changePower = async (powerOn: boolean) => {
+    const current = viewRef.current;
+    if (!current || powerPending !== null || busyRef.current || !connectedRef.current) return;
+    const expected = generation.current; setPowerPending(powerOn); setError('');
+    try {
+      const next = await api.setPower(current, powerOn);
+      if (expected === generation.current && currentRound(next.roundId)) {
+        applyView(next); effects.current.play('acknowledge'); await refreshRecord(next);
+      }
+    } catch (cause) {
+      if (expected !== generation.current) return;
+      showError(cause);
+      try {
+        const latest = await api.getSession(current.sessionId);
+        if (currentRound(latest.roundId)) applyView(latest);
+      } catch { /* Keep the original recovery instruction. */ }
+    } finally { if (expected === generation.current) setPowerPending(null); }
+  };
+
+  const newBriefing = async (nextScenario: Scenario = scenario) => {
+    await stop();
+    setBusyNow(true);
+    try {
+      const current = viewRef.current;
+      if (current) {
+        const reset = await api.lifecycle(current, 'reset', nextScenario);
+        applyView(reset); applyView(await api.lifecycle(reset, 'stop'));
+      }
+      captionsRef.current = []; setCaptions([]); setRecord(null); setSegment(null); segmentRef.current = null;
+      setScenario(nextScenario); setStage('briefing'); setHint(''); setRecapNotice(''); setError(''); setWarning('');
+      setInterrupted(false); setPowerPending(null); completionRound.current = ''; setSeconds(0);
+    } catch (cause) {
+      // Expired server memory can only be recovered by explicitly starting fresh.
+      showError(cause); viewRef.current = null; setView(null); setStage('briefing');
+      captionsRef.current = []; setCaptions([]); setRecord(null); setSegment(null); segmentRef.current = null;
+    } finally { setBusyNow(false); }
+  };
+
+  const pin = async (messageId: string) => {
+    const current = viewRef.current; if (!current) return;
+    try {
+      await api.addNotebook(current, { roundId: current.roundId, requestId: api.requestId(), kind: 'report', messageId });
+      await refreshRecord(current);
+    } catch (cause) { if (currentRound(current.roundId)) showError(cause); }
+  };
+  const note = async (text: string) => {
+    const current = viewRef.current; if (!current || !text.trim()) return false;
+    try {
+      await api.addNotebook(current, { roundId: current.roundId, requestId: api.requestId(), kind: 'note', text });
+      await refreshRecord(current); return true;
+    } catch (cause) { if (currentRound(current.roundId)) showError(cause); return false; }
+  };
+  const askHint = async (level: 1 | 2) => {
+    const current = viewRef.current; if (!current) return;
+    try {
+      const next = await api.requestHint(current, level);
+      if (currentRound(next.roundId)) { setHint(next.text); await refreshRecord(current); }
+    } catch (cause) { if (currentRound(current.roundId)) showError(cause); }
+  };
+  const chooseMode = (next: TransportOrigin) => {
+    if (connectedRef.current || voice.current || busyRef.current) return;
+    setMode(next); setError(''); setWarning('');
+    // Selection never relabels old captions as a different transport.
+    segmentRef.current = null; setSegment(null); setStatus('ended');
+  };
+  const changeVoiceVolume = (value: number) => { setVoiceVolume(value); voice.current?.setVolume(value); };
+  const changeEffectsVolume = (value: number) => { setEffectsVolume(value); effects.current.setVolume(value); if (value > 0) void effects.current.unlock(); else void effects.current.close(); };
+
+  useEffect(() => {
+    if (!connected || segment?.origin === 'practice') return;
+    const timer = setInterval(() => setSeconds(Math.floor((Date.now() - liveStarted.current) / 1000)), 1000);
+    return () => clearInterval(timer);
+  }, [connected, segment?.id]);
+  useEffect(() => {
+    effects.current.setVolume(0);
+    const leave = () => {
+      ++generation.current; mockAbort.current?.abort(); clearClosing();
+      const current = viewRef.current;
+      if (current) void fetch('/api/sessions/' + encodeURIComponent(current.sessionId) + '/stop', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ roundId: current.roundId, requestId: api.requestId() }), keepalive: true,
+      }).catch(() => {});
+      void voice.current?.stop(); void effects.current.close();
+    };
+    window.addEventListener('pagehide', leave);
+    return () => { window.removeEventListener('pagehide', leave); leave(); };
+  }, []);
+
+  const activeCaption = segment ? captions.filter(item => item.segmentId === segment.id).at(-1) : undefined;
+  const pipState = view?.completed ? 'success' : error ? 'error' : interrupted ? 'interrupted'
+    : !connected ? busy ? 'considering' : view ? 'paused' : 'offline'
+      : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' ? 'considering'
+        : inputState !== 'inactive' ? 'listening' : 'ready';
+  return {
+    stage, scenario, setScenario, mode, chooseMode, view, record, captions, segment, activeCaption,
+    connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
+    error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, pipState,
+    start, stop, interrupt, send, changePower, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
+  };
+}

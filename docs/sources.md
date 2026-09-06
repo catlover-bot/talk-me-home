@@ -1,5 +1,9 @@
 # Sources and attribution
 
+Goal 002 re-fetched the documentation index on 2026-09-07 before integration edits. The current events, client-side tools, browser integration, inline configuration, and prompting references below were checked for fresh-connection context, playback, tool ordering, and explicit termination. The existing documented English voice `anna` remains. There is no documented client `reply.cancel`; the UI interrupts local playback and server actions, then sends the player's wait intent through the documented user conversation role. Goal 001's observed delayed reply/tool regression remains covered.
+
+[WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), accessed 2026-09-07, informed the 4.5:1 normal-text target. Goal 002 character and sound attribution is recorded in [assets](assets.md). New offline evidence is in [Goal 002 validation](goal-002-validation.md); historical provider evidence remains in the original validation document.
+
 Official documentation consulted on 2026-09-07. The index was fetched before integration changes; settings were checked for inline session configuration rather than assumed from stored-agent examples.
 
 | Reference | Use |

@@ -2,6 +2,24 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { simulationReply, simulationSpeech } from "../game/client/mock.ts";
 
+test('simulation Maintenance selects one explicit position and respects uncertainty and stop', () => {
+  for (const position of ['Neutral', 'Anchor', 'Bridge']) {
+    const reply = simulationReply(`Please set the selector to ${position}`);
+    assert.equal(reply.call?.name, 'interact_object');
+    assert.deepEqual(reply.call?.arguments, { object: 'latch', action: `select_${position.toLowerCase()}` });
+  }
+  for (const text of ['Set the selector to Anchor or Bridge', 'Set the selector', 'Do not set the selector to Anchor']) {
+    assert.equal(simulationReply(text).call, undefined);
+  }
+  assert.deepEqual(simulationReply('Inspect the module plate').call?.arguments, { object: 'latch' });
+});
+
+test('simulation Maintenance reports natural confirmed prose without internal action names', () => {
+  const result = simulationSpeech('You set the selector to Anchor. Available interactions on latch are select_neutral, select_anchor, select_bridge, and latch_open.');
+  assert.equal(result, 'I set the selector to Anchor.');
+  assert.doesNotMatch(result, /select_|latch_open/);
+});
+
 test("simulation accepts named movement paraphrases without requiring one exact phrase", () => {
   for (const request of [
     "Cross to the far side",

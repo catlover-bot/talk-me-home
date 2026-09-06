@@ -2,7 +2,7 @@
 
 You have the map. Your partner has eyes and hands. Neither can escape alone.
 
-A browser game for one human at Mission Control and one maintenance robot. Read the static cargo-area map and wiring notes, operate remote Power, and talk the robot through one Door. The robot must observe and operate local equipment. Only the server can confirm arrival. This is a first-door prototype, with no accounts, database, or public deployment.
+A browser game for one human at Mission Control and Pip, a stranded maintenance robot. Read your map and manual, operate remote Power, and talk Pip through one Door. Pip has local eyes and hands; only the server can confirm arrival. Choose **Classic** or the optional **Maintenance** remix, which adds one equipment clue to exchange in the same room. There are no accounts, database, or public deployment.
 
 ## Run the game
 
@@ -19,26 +19,30 @@ Open **http://localhost:5173** in Windows Chrome or Edge. The game server listen
 
 Keep the existing working Node.js 24 installation. `.nvmrc` records the tested version for environments that use nvm; a version manager is not required.
 
-1. Select **Mock / Simulation** and choose **Start Mission** for an API-free check. Type requests to the deterministic simulated robot. This mode does not use speech recognition or an AI model.
-2. For real conversation, select **Live AssemblyAI**, start the mission, then choose **Connect Voice**. Allow microphone access. **Connect Text** uses the same real provider without microphone capture; it still uses a billable connection.
-3. Read the map, exchange observations, and use **Power ON** or **Power OFF** to coordinate. Subtitles preserve actual transcripts. Restart begins a fresh round.
+1. Leave **Practice** selected and choose **Start Practice** for an API-free game. Pip's deterministic simulation accepts simple inspection and action requests. It does not test AI reasoning or speech recognition.
+2. For real conversation, select **Live Voice** and choose **Start with Voice**. Allow microphone access. **Live Text / Start with Text** uses the same real provider without microphone capture; it still uses provider time. No republishing is needed.
+3. Read the route map and equipment manual, exchange observations, and use **Power ON** or **Power OFF**. Pin useful finalized captions as **Robot reports**, or add private **My notes**. Reports retain their original source and are not live telemetry.
+4. **Interrupt** stops playback and uncommitted actions while leaving a Live call connected. **Pause / End call** ends the provider connection and keeps the mission checkpoint. After ending, choose the next mode under **Connection & sound**, then explicitly resume. History retains Practice, Live Voice, or Live Text provenance, including typed input in a voice call.
+5. **Restart** confirms loss of the current round and returns to briefing. Arrival opens a factual debrief; any final Live reply has an eight-second shutdown limit. Replay never opens another Live call automatically.
 
 Live mode reads `ASSEMBLYAI_API_KEY` from your existing root `.env`. If you do not have that file, copy `.env.example` once and add your key. Do not overwrite an existing `.env`. No key is needed for Mock, builds, or automated tests. The key stays on the server; the browser receives a temporary token. The game uses inline configuration and does not require publishing the Minimal agent. Missing credentials produce an explicit Live error; the app never silently switches to simulation.
 
-End the call before walking away. Each Live connection is capped at ten minutes. Ending a call explicitly requests provider termination. A broken network can prevent that acknowledgement. Stopping preserves the current puzzle; reconnecting starts a fresh conversation, so explain earlier discoveries again. Server restarts lose all in-memory missions.
+End the call before walking away. Each Live connection is capped at ten minutes. Ending explicitly requests provider termination; a broken network can prevent acknowledgement. Resume opens a fresh connection with a bounded historical recap of earlier observations, completed actions, and communicated player information. Private notes and unread documents are excluded. Server restarts lose missions, notes, and transcripts. The app records no raw microphone audio and stores no transcripts, keys, tokens, or puzzle state in browser storage. AssemblyAI receives Live audio/text for its service.
+
+Effects are original local tones, muted by default; voice and effects volume are under **Connection & sound**. Muting output does not end a provider call. The interface supports keyboard operation, captions, reduced motion, and narrow-screen reflow; Windows Chrome/Edge microphone and audible playback acceptance remains a separate human check.
 
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Game UI and local game server |
 | `npm run typecheck` | TypeScript checks |
 | `npm test` | API-free logic, HTTP, and voice-adapter tests |
-| `npm run test:e2e` | Mock browser tests; first run `npx playwright install chromium` |
+| `npm run test:e2e` | Practice and local fake-provider browser tests; first run `npx playwright install chromium` |
 | `npm run build` | Typecheck and bundle the browser game into `dist/client` |
-| `npm run test:live` | Opt-in bounded provider text/tool probe; consumes provider time |
+| `npm run test:live` | Existing opt-in provider probe; consumes time and is **not authorized automatically for Goal 002** |
 | `npm start` | Original starter diagnostics at port 3000 |
 | `npm run publish` | Original stored-agent publishing workflow |
 
-See [architecture](docs/architecture.md), the [demo and manual voice checks](docs/demo-script.md), [recorded validation](docs/validation.md), [sources](docs/sources.md), and [next steps](docs/roadmap.md). Developer documents and tests contain puzzle details and must never be supplied to the robot as context.
+See [architecture](docs/architecture.md), [design](docs/goal-002-design.md), the [demo and pending human Live checks](docs/demo-script.md), [Goal 002 validation](docs/goal-002-validation.md), [historical Goal 001 validation](docs/validation.md), [sources](docs/sources.md), [assets](docs/assets.md), and [next steps](docs/roadmap.md). Developer documents and tests contain puzzle details and must never be supplied to the robot as context. Goal 002 automated validation uses zero real-provider seconds; the earlier budget ledger is preserved.
 
 ## Upstream starter
 

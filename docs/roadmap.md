@@ -1,5 +1,5 @@
-# After the first door
+# After the companion polish
 
-The next goal should begin with observed human voice playtests on Windows Chrome and Edge: understand where requests are ambiguous, how interruptions feel, and whether captions and map labels are readable. Keep audio evidence, provider events, and player outcomes separate.
+The next goal begins with the pending human Live acceptance sheet in [demo-script.md](demo-script.md), using Windows Chrome and Edge. Observe whether Pip offers useful local checks, whether the Maintenance clue creates a meaningful exchange, and whether people understand their contribution. Record delays, corrections, and interruptions without inventing usability scores.
 
-Use those findings to improve teammate behavior, reconnection explanations, and accessibility within the existing one-door puzzle. Consider durable progress only if session loss is a real problem. Additional rooms, new characters, public hosting, hardware, accounts, and billing features are outside Goal 001 and have not been implemented.
+Use those observations to refine the current room, prompt, captions, and accessibility. Consider durable progress only if lost server memory causes real problems. Do not expand into more rooms, a campaign, 3D rendering, additional providers, accounts, hardware, or public hosting until this small cooperative experience has been tested by people.

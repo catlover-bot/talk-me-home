@@ -1,4 +1,4 @@
-import type { HumanView, ToolResponse } from "../shared/contracts";
+import type { HumanView, ToolResponse, Scenario, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult } from "../shared/contracts";
 
 async function request<T>(
   path: string,
@@ -38,7 +38,7 @@ async function request<T>(
 }
 
 export const requestId = () => crypto.randomUUID();
-export const createSession = () => request<HumanView>("/sessions", {});
+export const createSession = (scenario: Scenario = 'classic') => request<HumanView>("/sessions", { scenario });
 export const getSession = (sessionId: string) =>
   request<HumanView>(`/sessions/${encodeURIComponent(sessionId)}`);
 
@@ -57,12 +57,14 @@ export function setPower(view: HumanView, powerOn: boolean) {
 export function lifecycle(
   view: HumanView,
   action: "stop" | "resume" | "reset" | "end" | "cancel",
+  scenario?: Scenario,
 ) {
   return request<HumanView>(
     `/sessions/${encodeURIComponent(view.sessionId)}/${action}`,
     {
       roundId: view.roundId,
       requestId: requestId(),
+      ...(scenario ? { scenario } : {}),
     },
   );
 }
@@ -99,5 +101,12 @@ export async function voiceToken(view: HumanView) {
   }>(`/sessions/${encodeURIComponent(view.sessionId)}/voice-token`, {
     roundId: view.roundId,
   });
-  return { token: data.token, config: data.sessionConfig };
+  return { token: data.token, config: data.sessionConfig, maxSessionSeconds: data.maxSessionSeconds };
 }
+
+const path = (view: HumanView, resource: string) => `/sessions/${encodeURIComponent(view.sessionId)}/${resource}`;
+export const missionRecord = (view: HumanView) => request<MissionRecord>(`${path(view, 'record')}?roundId=${encodeURIComponent(view.roundId)}`);
+export const robotRecap = (view: HumanView) => request<RobotRecap>(`${path(view, 'recap')}?roundId=${encodeURIComponent(view.roundId)}`);
+export const recordMessage = (view: HumanView, message: MessageRequest) => request<RecordedMessage>(path(view, 'messages'), message);
+export const addNotebook = (view: HumanView, entry: NotebookRequest) => request<NotebookEntry>(path(view, 'notebook'), entry);
+export const requestHint = (view: HumanView, level: 1 | 2) => request<HintResult>(path(view, 'hint'), { roundId: view.roundId, requestId: requestId(), level });

@@ -12,7 +12,7 @@ function files(directory: string): string[] {
 }
 
 test('application-authored code, UI, comments, and documentation use English', () => {
-  const paths = [...files('game'), ...files('docs'), ...files('scripts'), ...files('tests')];
+  const paths = ['README.md', 'AGENTS.md', ...files('game'), ...files('docs'), ...files('scripts'), ...files('tests')];
   for (const path of paths.filter(path => /\.(ts|tsx|js|mjs|css|html|md)$/.test(path))) {
     assert.equal(/[\u3040-\u30ff\u3400-\u9fff]/u.test(readFileSync(path, 'utf8')), false, `Unexpected non-English authored copy in ${path}`);
   }

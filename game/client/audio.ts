@@ -3,8 +3,9 @@ import { CAPTURE_WORKLET, PLAYBACK_WORKLET } from './audio-worklets.ts';
 export const WIRE_RATE = 24_000;
 
 export interface VoiceAudio {
-  prepare(microphone: boolean, onChunk: (base64: string) => void, onWarning: (message: string) => void, onDrain: () => void, onMicrophone?: (active: boolean) => void): Promise<void>;
+  prepare(microphone: boolean, onChunk: (base64: string) => void, onWarning: (message: string) => void, onDrain: () => void, onMicrophone?: (active: boolean) => void, onPlayback?: (active: boolean) => void): Promise<void>;
   play(base64: string): void;
+  setVolume?(volume: number): void;
   stopPlayback(): void;
   close(): Promise<void>;
 }
@@ -34,9 +35,21 @@ export class BrowserAudio implements VoiceAudio {
   private silenceTimer?: ReturnType<typeof setTimeout>;
   private closed = false;
   private heardInput = false;
+  private prepared = false;
+  private outputGain?: GainNode;
+  private volume = 1;
+  private generation = 0;
+  private rendering = false;
+  private notifyPlayback?: (active: boolean) => void;
+  private notifyWarning?: (message: string) => void;
 
-  async prepare(microphone: boolean, onChunk: (base64: string) => void, onWarning: (message: string) => void, onDrain: () => void, onMicrophone?: (active: boolean) => void): Promise<void> {
+  async prepare(microphone: boolean, onChunk: (base64: string) => void, onWarning: (message: string) => void, onDrain: () => void, onMicrophone?: (active: boolean) => void, onPlayback?: (active: boolean) => void): Promise<void> {
+    if (this.prepared || this.closed) throw new Error('Audio already started. Create a new call.');
+    this.prepared = true;
+    this.notifyPlayback = onPlayback;
+    this.notifyWarning = onWarning;
     onMicrophone?.(false);
+    onPlayback?.(false);
     // These constructors and resume calls happen synchronously inside the click.
     this.playbackContext = new AudioContext({ sampleRate: WIRE_RATE });
     const resumes = [this.playbackContext.resume()];
@@ -48,8 +61,19 @@ export class BrowserAudio implements VoiceAudio {
     if (this.closed) return;
     this.playback = await this.addWorklet(this.playbackContext, PLAYBACK_WORKLET, 'playback');
     if (this.closed) { this.playback.disconnect(); return; }
-    this.playback.port.onmessage = ({ data }) => { if (data === 'drained') onDrain(); };
-    this.playback.connect(this.playbackContext.destination);
+    this.outputGain = this.playbackContext.createGain();
+    this.outputGain.gain.value = this.volume;
+    this.playback.port.onmessage = ({ data }) => {
+      if (this.closed || data?.generation !== this.generation) return;
+      if (data.type === 'started') { this.rendering = true; this.reportPlayback(); }
+      if (data.type === 'drained') { this.rendering = false; this.reportPlayback(); onDrain(); }
+    };
+    this.playbackContext.onstatechange = () => {
+      this.reportPlayback();
+      if (!this.closed && this.playbackContext?.state !== 'running') onWarning('Voice output is suspended. Check browser audio and your speakers, or follow the captions. End the call and reconnect to retry audio.');
+    };
+    this.playback.connect(this.outputGain);
+    this.outputGain.connect(this.playbackContext.destination);
     if (!microphone) return;
     if (!navigator.mediaDevices?.getUserMedia) throw new DOMException('Unavailable', 'NotFoundError');
     // Capture is initialized before a token is minted, avoiding paid permission waits.
@@ -86,13 +110,32 @@ export class BrowserAudio implements VoiceAudio {
 
   play(base64: string): void {
     if (this.closed || !this.playback) return;
+    if (this.playbackContext?.state !== 'running') {
+      this.notifyWarning?.('Voice audio arrived, but browser output is unavailable. Check your speakers or follow the captions.');
+      return;
+    }
     const raw = atob(base64);
     if (raw.length % 2 !== 0) throw new Error('Invalid PCM audio.');
     const bytes = Uint8Array.from(raw, (character) => character.charCodeAt(0));
-    this.playback.port.postMessage(bytes.buffer, [bytes.buffer]);
+    this.playback.port.postMessage({ audio: bytes.buffer, generation: this.generation }, [bytes.buffer]);
   }
 
-  stopPlayback(): void { this.playback?.port.postMessage('stop'); }
+  setVolume(volume: number): void {
+    this.volume = Number.isFinite(volume) ? Math.max(0, Math.min(1, volume)) : 1;
+    if (this.outputGain) this.outputGain.gain.value = this.volume;
+    this.reportPlayback();
+  }
+
+  private reportPlayback(): void {
+    this.notifyPlayback?.(!this.closed && this.rendering && this.volume > 0 && this.playbackContext?.state === 'running');
+  }
+
+  stopPlayback(): void {
+    this.generation++;
+    this.rendering = false;
+    this.playback?.port.postMessage({ type: 'stop', generation: this.generation });
+    this.reportPlayback();
+  }
 
   async close(): Promise<void> {
     if (this.closed) return;
@@ -103,8 +146,10 @@ export class BrowserAudio implements VoiceAudio {
     this.source?.disconnect();
     this.capture?.disconnect();
     this.playback?.disconnect();
+    this.outputGain?.disconnect();
     if (this.capture) this.capture.port.onmessage = null;
     if (this.playback) this.playback.port.onmessage = null;
+    if (this.playbackContext) this.playbackContext.onstatechange = null;
     await Promise.allSettled([this.captureContext?.close(), this.playbackContext?.close()]);
   }
 

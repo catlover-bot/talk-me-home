@@ -1,4 +1,4 @@
-// Adapted from the MIT-licensed upstream browser starter in deployment/browser/server.mjs.
+// Adapted from the upstream browser starter in deployment/browser/server.mjs; see docs/sources.md.
 // Uses the actual worklet sampleRate; stop clears the ring, including queued audio.
 export const CAPTURE_WORKLET = `
   class CaptureProcessor extends AudioWorkletProcessor {
@@ -69,13 +69,18 @@ export const PLAYBACK_WORKLET = `
       // After a gap the speaker sits at zero, so interpolating from the
       // pre-gap _rsPrev would click. Reset it instead.
       this._drained = false;
+      this._playing = false;
+      this._generation = 0;
       this.port.onmessage = (e) => {
-        if (e.data === 'stop') {
+        if (e.data === 'stop' || e.data?.type === 'stop') {
+          this._generation = e.data.generation ?? this._generation;
+          this._playing = false;
           this._writePos = this._readPos = this._available = 0;
           this._rsPos = this._rsPrev = 0;
           return;
         }
-        const int16 = new Int16Array(e.data);
+        if (e.data?.audio) this._generation = e.data.generation;
+        const int16 = new Int16Array(e.data?.audio ?? e.data);
         // int16[-1] would make _rsPrev NaN, silencing the ring for good.
         if (!int16.length) return;
         if (this._drained) {
@@ -115,11 +120,18 @@ export const PLAYBACK_WORKLET = `
       for (let i = 0; i < out.length; i++) {
         if (this._available > 0) {
           out[i] = this._ring[this._readPos];
+          if (!this._playing && Math.abs(out[i]) > 0.00003) {
+            this._playing = true;
+            this.port.postMessage({ type: 'started', generation: this._generation });
+          }
           this._readPos = (this._readPos + 1) % cap;
           this._available--;
         } else {
           out[i] = 0;
-          if (!this._drained) this.port.postMessage('drained');
+          if (!this._drained) {
+            this.port.postMessage({ type: 'drained', generation: this._generation });
+            this._playing = false;
+          }
           this._drained = true;
         }
       }

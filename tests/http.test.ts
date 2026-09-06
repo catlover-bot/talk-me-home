@@ -8,14 +8,17 @@ import { createGameServer } from '../game/server/http.js'
 
 type TestServerOptions = Parameters<typeof createGameServer>[0]
 async function withServer(callback: (base: string) => Promise<void>, options: TestServerOptions = {}) {
-  const server = createGameServer({ apiKey: '', ...options })
+  const server = createGameServer({ apiKey: '', allowTestProvider: Boolean(options.fetch), ...options })
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
   try { await callback(`http://127.0.0.1:${(server.address() as AddressInfo).port}`) }
-  finally { await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve())) }
+  finally {
+    server.closeAllConnections()
+    await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()))
+  }
 }
 
 async function post(base: string, path: string, body: unknown, headers = {}) {
-  return fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) })
+  return fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body), signal: AbortSignal.timeout(5000) })
 }
 async function create(base: string): Promise<HumanView> {
   const response = await post(base, '/api/sessions', {})
@@ -159,7 +162,7 @@ test('provider token errors are sanitized and never echo credentials or diagnost
   }, { apiKey: sentinel, fetch: (async () => new Response(sentinel, { status: 401 })) as typeof fetch })
 })
 
-test('token results from a reset or stopped round are rejected before reaching the browser', async () => {
+test('token results from a reset or stopped round are rejected before reaching the browser', { timeout: 7000 }, async () => {
   let release!: () => void
   let arrived!: () => void
   const gate = new Promise<void>((resolve) => { release = resolve })
@@ -167,14 +170,89 @@ test('token results from a reset or stopped round are rejected before reaching t
   await withServer(async (base) => {
     const view = await create(base)
     const pending = post(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId })
-    await called
-    await post(base, `/api/sessions/${view.sessionId}/reset`, lifecycle(view))
-    release()
+    // If issuance fails before entering the fake, fail with its actual response instead of hanging.
+    try {
+      await Promise.race([called, pending.then((response) => { throw new Error(`Token request ended before the fake provider: HTTP ${response.status}`) })])
+      await post(base, `/api/sessions/${view.sessionId}/reset`, lifecycle(view))
+    } finally { release() }
     const response = await pending
     assert.equal(response.status, 409)
     assert.ok(!(await response.text()).includes('unit-test-temporary-token'))
   }, {
     apiKey: 'unit-test-key',
     fetch: (async () => { arrived(); await gate; return Response.json({ token: 'unit-test-temporary-token' }) }) as typeof fetch,
+  })
+})
+
+test('CI Live disable blocks ordinary connections while explicit injected fake transport remains testable', { timeout: 7000 }, async () => {
+  const previous = process.env.GAME_DISABLE_LIVE
+  process.env.GAME_DISABLE_LIVE = '1'
+  let calls = 0
+  const fakeFetch = (async () => { calls += 1; return Response.json({ token: 'unit-test-temporary-token' }) }) as typeof fetch
+  try {
+    assert.throws(() => createGameServer({ allowTestProvider: true }), /injected provider/)
+    await withServer(async (base) => {
+      const view = await create(base)
+      assert.equal((await post(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId })).status, 503)
+      assert.equal(calls, 0)
+    }, { apiKey: 'unit-test-key', fetch: fakeFetch, allowTestProvider: false })
+    await withServer(async (base) => {
+      const view = await create(base)
+      assert.equal((await post(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId })).status, 200)
+      assert.equal(calls, 1)
+    }, { apiKey: 'unit-test-key', fetch: fakeFetch })
+  } finally {
+    if (previous === undefined) delete process.env.GAME_DISABLE_LIVE
+    else process.env.GAME_DISABLE_LIVE = previous
+  }
+})
+
+test('HTTP Maintenance setup hides the plate, exposes only an inspected module, and rejects profile selection', async () => {
+  await withServer(async (base) => {
+    assert.equal((await post(base, '/api/sessions', { scenario: 'maintenance', profile: 'crescent' })).status, 400)
+    let view = await (await post(base, '/api/sessions', { scenario: 'maintenance' })).json() as HumanView
+    assert.equal(view.scenario, 'maintenance')
+    assert.doesNotMatch(JSON.stringify(view), /crescent|kite|selector|profile/i)
+    const path = `/api/sessions/${view.sessionId}`
+    const inspection = await (await post(base, `${path}/tools`, tool(view, 'inspect_object', { object: 'latch' }))).json() as ToolResponse
+    const correct = inspection.message.includes('Crescent') ? 'anchor' : 'bridge'
+    const neutral = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    assert.equal(neutral.ok, false)
+    const selected = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: `select_${correct}` }))).json() as ToolResponse
+    view = selected.view
+    const latched = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    view = latched.view
+    view = await (await post(base, `${path}/power`, { ...lifecycle(view), revision: view.revision, powerOn: false })).json() as HumanView
+    const crossed = await (await post(base, `${path}/tools`, tool(view, 'move_to', { target: 'far_side' }))).json() as ToolResponse
+    assert.equal(crossed.view.completed, true)
+    const debrief = await (await fetch(`${base}${path}/record?roundId=${view.roundId}`)).json()
+    assert.equal(debrief.debrief.timeline.at(-1).kind, 'completion')
+  })
+})
+
+test('HTTP notebook, hint and recap routes remain round scoped and never export internal observations', async () => {
+  await withServer(async (base) => {
+    const view = await create(base)
+    const path = `/api/sessions/${view.sessionId}`
+    await post(base, `${path}/tools`, tool(view, 'observe_room', {}))
+    const initial = await (await fetch(`${base}${path}/record?roundId=${view.roundId}`)).json()
+    assert.deepEqual(initial.messages, [])
+    assert.equal(initial.debrief, null)
+    assert.doesNotMatch(JSON.stringify(initial), /Latch|Conveyor|near-side/)
+    const communicated = { roundId: view.roundId, messageId: 'test:report', segmentId: 'practice:1', role: 'robot', text: 'I can see a lever.', origin: 'practice', inputMethod: 'robot', interrupted: false }
+    assert.equal((await post(base, `${path}/messages`, communicated)).status, 200)
+    const note = await (await post(base, `${path}/notebook`, { ...lifecycle(view), kind: 'report', messageId: communicated.messageId })).json()
+    assert.equal(note.text, communicated.text)
+    await post(base, `${path}/notebook`, { ...lifecycle(view), kind: 'note', text: 'PRIVATE_NOTE_ONLY' })
+    assert.equal((await post(base, `${path}/hint`, { ...lifecycle(view), level: 1 })).status, 200)
+    const recap = await (await fetch(`${base}${path}/recap?roundId=${view.roundId}`)).json()
+    assert.match(recap.entries[0].text, /near-side/)
+    assert.doesNotMatch(JSON.stringify(recap), /PRIVATE_NOTE_ONLY/)
+    assert.equal((await fetch(`${base}${path}/recap`)).status, 400)
+    assert.equal((await fetch(`${base}${path}/record?roundId=${view.roundId}&role=robot`)).status, 400)
+    assert.equal((await post(base, `${path}/recap`, {})).status, 405)
+    await post(base, `${path}/reset`, lifecycle(view))
+    assert.equal((await fetch(`${base}${path}/recap?roundId=${view.roundId}`)).status, 409)
+    assert.equal((await post(base, `${path}/messages`, communicated)).status, 409)
   })
 })

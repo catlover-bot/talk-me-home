@@ -9,6 +9,8 @@ interface ServerOptions {
   fetch?: typeof globalThis.fetch
   allowedOrigins?: string[]
   maxVoiceSessionSeconds?: number
+  /** Offline tests may exercise an explicitly injected provider while Live is disabled. */
+  allowTestProvider?: boolean
 }
 
 function reply(response: ServerResponse, status: number, body: unknown): void {
@@ -44,6 +46,7 @@ function checkLocalRequest(request: IncomingMessage, allowedOrigins: string[]): 
 }
 
 export function createGameServer(options: ServerOptions = {}) {
+  if (options.allowTestProvider && !options.fetch) throw new Error('A test provider override requires an injected provider transport.')
   const store = options.store ?? new SessionStore()
   const providerFetch = options.fetch ?? globalThis.fetch
   const apiKey = options.apiKey ?? process.env.ASSEMBLYAI_API_KEY
@@ -53,24 +56,36 @@ export function createGameServer(options: ServerOptions = {}) {
   return createServer(async (request, response) => {
     try {
       checkLocalRequest(request, allowedOrigins)
-      const path = new URL(request.url ?? '/', 'http://localhost').pathname
+      const requestUrl = new URL(request.url ?? '/', 'http://localhost')
+      const path = requestUrl.pathname
       if (request.method === 'GET' && path === '/api/health') return reply(response, 200, { ok: true })
       if (request.method === 'POST' && path === '/api/sessions') {
-        if (!exactObject(await jsonBody(request), [])) throw new GameError(400, 'Start a mission with an empty JSON object.')
-        return reply(response, 201, store.create())
+        const setup = await jsonBody(request)
+        if (exactObject(setup, [])) return reply(response, 201, store.create())
+        if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
+        return reply(response, 201, store.create(setup.scenario))
       }
-      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|tools|stop|resume|reset|end|cancel|voice-token))?$/)
+      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|tools|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
       if (!route) throw new GameError(404, 'This game endpoint does not exist.')
       const id = route[1]!
       const action = route[2]
       if (request.method === 'GET' && !action) return reply(response, 200, store.get(id))
+      if (request.method === 'GET' && (action === 'record' || action === 'recap')) {
+        const roundId = requestUrl.searchParams.get('roundId') ?? ''
+        if ([...requestUrl.searchParams.keys()].length !== 1) throw new GameError(400, 'Read the mission record using only the current round identifier.')
+        return reply(response, 200, action === 'record' ? store.record(id, roundId) : store.recap(id, roundId))
+      }
       if (request.method !== 'POST' || !action) throw new GameError(405, 'This method is not available for the game endpoint.')
       const body = await jsonBody(request)
       if (action === 'power') return reply(response, 200, await store.power(id, body))
       if (action === 'tools') return reply(response, 200, await store.tool(id, body))
+      if (action === 'messages') return reply(response, 200, await store.message(id, body))
+      if (action === 'notebook') return reply(response, 200, await store.notebook(id, body))
+      if (action === 'hint') return reply(response, 200, await store.hint(id, body))
+      if (action === 'record' || action === 'recap') throw new GameError(405, 'Read this mission record with a GET request.')
       if (action === 'voice-token') {
         const view = store.reserveToken(id, body)
-        if (process.env.GAME_DISABLE_LIVE === '1') throw new GameError(503, 'Live AssemblyAI is disabled for this server. Use Mock / Simulation.')
+        if (process.env.GAME_DISABLE_LIVE === '1' && !options.allowTestProvider) throw new GameError(503, 'Live AssemblyAI is disabled for this server. Mock / Simulation remains available.')
         if (!apiKey) throw new GameError(503, 'Live AssemblyAI is unavailable: set ASSEMBLYAI_API_KEY in the root .env file, then restart the game server. Mock / Simulation remains available.')
         // Official browser integration: token redemption and session duration are separate limits.
         // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration
