@@ -124,7 +124,7 @@ test('records reject unknown sessions, stale rounds, forged schemas, partial mes
   assert.throws(() => store.message(view.sessionId, message(view, { role: 'human' })), /input method/)
   assert.throws(() => store.message(view.sessionId, message(view, { role: 'human', inputMethod: 'speech', origin: 'practice' })), /input method/)
   assert.throws(() => store.notebook(view.sessionId, command(view, { kind: 'note', text: 'x'.repeat(501) })), /500/)
-  assert.throws(() => store.hint(view.sessionId, command(view, { level: 3 })), /level 1 or 2/)
+  assert.throws(() => store.hint(view.sessionId, command(view, { level: 4 })), /level 1 or 2/)
   await assert.rejects(store.notebook(view.sessionId, command(view, { kind: 'report', messageId: 'unknown' })), /finalized Pip/)
   const human = await store.message(view.sessionId, message(view, { role: 'human', inputMethod: 'typed' }))
   await assert.rejects(store.notebook(view.sessionId, command(view, { kind: 'report', messageId: human.messageId })), /finalized Pip/)
@@ -143,7 +143,7 @@ test('reset discards old records and refuses delayed message, pin and recap call
   await assert.rejects(pendingNote, /earlier round/)
   assert.throws(() => store.record(view.sessionId, view.roundId), /earlier round/)
   assert.throws(() => store.recap(view.sessionId, view.roundId), /earlier round/)
-  assert.deepEqual(store.record(next.sessionId, next.roundId), { roundId: next.roundId, messages: [], notebook: [], hintsUsed: [], debrief: null })
+  assert.deepEqual(store.record(next.sessionId, next.roundId), { roundId: next.roundId, messages: [], notebook: [], hintsUsed: [], hintUses: [], annotations: { chapter: 'gallery', location: null, blockedGates: [] }, debrief: null })
   assert.deepEqual(store.recap(next.sessionId, next.roundId).entries, [])
 })
 

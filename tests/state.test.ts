@@ -108,7 +108,7 @@ test('exhaustive exploration covers all five reachable physical states without s
 test('human projection never streams unreported local state', () => {
   for (const state of explore([...humanActions, ...robotActions])) {
     const projection = humanView(state)
-    assert.deepEqual(Object.keys(projection).sort(), ['sessionId', 'roundId', 'revision', 'actionEpoch', 'powerOn', 'status', 'completed', 'scenario'].sort())
+    assert.deepEqual(Object.keys(projection).sort(), ['sessionId', 'roundId', 'revision', 'actionEpoch', 'powerOn', 'status', 'completed', 'scenario', 'missionKind', 'chapter', 'chapterEpoch', 'chaptersCleared'].sort())
     assert.doesNotMatch(JSON.stringify(projection), /latch|conveyor|doorOpen|robotLocation/i)
   }
 })

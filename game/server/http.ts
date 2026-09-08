@@ -62,10 +62,11 @@ export function createGameServer(options: ServerOptions = {}) {
       if (request.method === 'POST' && path === '/api/sessions') {
         const setup = await jsonBody(request)
         if (exactObject(setup, [])) return reply(response, 201, store.create())
+        if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind))
         if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
         return reply(response, 201, store.create(setup.scenario))
       }
-      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|tools|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
+      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
       if (!route) throw new GameError(404, 'This game endpoint does not exist.')
       const id = route[1]!
       const action = route[2]
@@ -78,6 +79,8 @@ export function createGameServer(options: ServerOptions = {}) {
       if (request.method !== 'POST' || !action) throw new GameError(405, 'This method is not available for the game endpoint.')
       const body = await jsonBody(request)
       if (action === 'power') return reply(response, 200, await store.power(id, body))
+      if (action === 'relay' || action === 'dock-control') return reply(response, 200, await store.control(id, action === 'relay' ? 'relay' : 'dock', body))
+      if (action === 'annotations') return reply(response, 200, await store.annotate(id, body))
       if (action === 'tools') return reply(response, 200, await store.tool(id, body))
       if (action === 'messages') return reply(response, 200, await store.message(id, body))
       if (action === 'notebook') return reply(response, 200, await store.notebook(id, body))

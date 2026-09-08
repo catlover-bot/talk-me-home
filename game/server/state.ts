@@ -1,5 +1,7 @@
 import { randomInt, randomUUID } from 'node:crypto'
-import type { HumanView, Scenario, SessionStatus, ToolResult } from '../shared/contracts.js'
+import type { Chapter, HumanView, MissionKind, Scenario, SessionStatus, ToolResult } from '../shared/contracts.js'
+import { applyGalleryTool, galleryView, type GalleryConfiguration, type GalleryState } from './gallery.js'
+import { applyDockTool, dockReady, dockView, type DockState } from './return-dock.js'
 
 export type MaintenanceProfile = 'crescent' | 'kite'
 export type SelectorPosition = 'neutral' | 'anchor' | 'bridge'
@@ -18,32 +20,56 @@ export interface GameState {
   scenario: Scenario
   maintenanceProfile: MaintenanceProfile | null
   selector: SelectorPosition
+  missionKind: MissionKind
+  chapter: Chapter
+  chapterEpoch: number
+  gallery: GalleryState
+  dock: DockState
 }
 
 /** Tests may supply a profile here; the ordinary browser API never accepts one. */
-export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile): GameState {
+export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration): GameState {
   return {
     sessionId, roundId: randomUUID(), revision: 0, actionEpoch: 0,
     powerOn: true, doorLatched: false, robotLocation: 'near_side', status: 'active',
     scenario, maintenanceProfile: scenario === 'maintenance' ? profile ?? (randomInt(2) === 0 ? 'crescent' : 'kite') : null,
     selector: 'neutral',
+    missionKind, chapter: 'cargo', chapterEpoch: 0,
+    gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b') },
+    dock: { location: 'platform', contactHeld: false, energy: 'empty', readinessVersion: 0, grant: null },
   }
 }
 
 export const doorOpen = (state: GameState) => state.powerOn || state.doorLatched
 export const conveyorRunning = (state: GameState) => state.powerOn
+export const missionCompleted = (state: GameState) => state.missionKind === 'training' ? state.robotLocation === 'far_side' : state.dock.location === 'home'
+export const clearedChapters = (state: GameState): Chapter[] => state.missionKind === 'training'
+  ? missionCompleted(state) ? ['cargo'] : []
+  : state.chapter === 'cargo' ? [] : state.chapter === 'gallery' ? ['cargo'] : missionCompleted(state) ? ['cargo', 'gallery', 'return_dock'] : ['cargo', 'gallery']
+
+function advanceChapter(state: GameState, chapter: Chapter): void {
+  state.chapter = chapter
+  state.chapterEpoch += 1
+  state.actionEpoch += 1
+  state.dock.grant = null
+}
 
 export function humanView(state: GameState): HumanView {
   return {
     sessionId: state.sessionId, roundId: state.roundId, revision: state.revision,
     actionEpoch: state.actionEpoch, powerOn: state.powerOn, status: state.status,
-    completed: state.robotLocation === 'far_side',
+    completed: missionCompleted(state),
     scenario: state.scenario,
+    missionKind: state.missionKind, chapter: state.chapter, chapterEpoch: state.chapterEpoch, chaptersCleared: clearedChapters(state),
+    ...(state.chapter === 'gallery' ? { relay: state.gallery.relay } : {}),
+    ...(state.chapter === 'return_dock' ? { returnDock: { energy: state.dock.energy, readyForReturn: dockReady(state), returnAuthorized: state.dock.grant !== null } } : {}),
   }
 }
 
 /** A fresh local observation, obtained through observe_room, never pushed to the human. */
 export function robotView(state: GameState): ToolResult {
+  if (state.chapter === 'gallery') return galleryView(state)
+  if (state.chapter === 'return_dock') return dockView(state)
   if (state.robotLocation === 'far_side') {
     return { ok: true, message: 'You are on the far-side safe platform. Your arrival is confirmed.' }
   }
@@ -64,6 +90,12 @@ const reject = (message: string): ToolResult => ({ ok: false, message })
 /** Atomic validation and commit. Callers bind actor identity outside model arguments. */
 export function applyRobotTool(state: GameState, name: string, args: unknown): ToolResult {
   if (state.status !== 'active') return reject('The mission is stopped. Wait for Mission Control to reconnect.')
+  if (state.chapter === 'gallery') {
+    const result = applyGalleryTool(state, name, args)
+    if (result.ok && state.gallery.room === 'dock') advanceChapter(state, 'return_dock')
+    return result
+  }
+  if (state.chapter === 'return_dock') return applyDockTool(state, name, args)
   if (name === 'observe_room') {
     return exactObject(args, []) ? robotView(state) : reject('Observation takes no arguments.')
   }
@@ -111,6 +143,10 @@ export function applyRobotTool(state: GameState, name: string, args: unknown): T
     if (!doorOpen(state)) return reject('The Door is closed. You remain on the safe platform.')
     state.robotLocation = 'far_side'
     state.revision += 1
+    if (state.missionKind === 'rescue') {
+      advanceChapter(state, 'gallery')
+      return { ok: true, message: 'You crossed the stopped Conveyor and passed through the open Door. The Cargo Bay checkpoint confirms your arrival at the Relay Gallery entrance. The rescue continues. Observe your new surroundings before choosing another local action.' }
+    }
     return { ok: true, message: 'You crossed the stopped Conveyor and passed through the open Door. Arrival on the far-side safe platform is confirmed.' }
   }
   return reject('That tool is not available. Use an implemented local game tool.')
@@ -118,6 +154,7 @@ export function applyRobotTool(state: GameState, name: string, args: unknown): T
 
 export function applyHumanPower(state: GameState, powerOn: boolean): ToolResult {
   if (state.status !== 'active') return reject('The mission is stopped. Resume the mission before changing Power.')
+  if (state.chapter !== 'cargo') return reject('The Power circuit belongs to the Cargo Bay. Use the current chapter control.')
   if (state.robotLocation === 'far_side') return reject('The mission is complete. Restart to begin another round.')
   if (state.powerOn !== powerOn) {
     state.powerOn = powerOn
