@@ -14,7 +14,7 @@ export default defineConfig({
     { name: 'chromium-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run build && node scripts/dev.mjs --preview',
     url: 'http://127.0.0.1:5173',
     reuseExistingServer: false,
     env: { GAME_DISABLE_LIVE: '1', ASSEMBLYAI_API_KEY: '' },

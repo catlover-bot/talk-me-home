@@ -1,9 +1,9 @@
 import { BrowserAudio, microphoneError, type VoiceAudio } from './audio.ts';
-import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion } from './voice-protocol.ts';
-export type { ToolCall, TranscriptEntry, VoiceStatus, VoiceInputState, ReplyCompletion } from './voice-protocol.ts';
+import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion, type CancellationReason } from './voice-protocol.ts';
+export type { ToolCall, TranscriptEntry, VoiceStatus, VoiceInputState, ReplyCompletion, CancellationReason } from './voice-protocol.ts';
 
 export interface VoiceCallbacks {
-  onTranscript(entry: TranscriptEntry): void;
+  onTranscript(entry: TranscriptEntry, context?: unknown): void;
   onStatus(status: VoiceStatus): void;
   onError(message: string): void;
   onWarning?(message: string): void;
@@ -12,6 +12,8 @@ export interface VoiceCallbacks {
   onInputState?(state: VoiceInputState): void;
   onToolState?(active: boolean): void;
   onReplyDone?(reply: ReplyCompletion): void;
+  /** Called at the client connection cap; the owner preserves the mission checkpoint. */
+  onSessionLimit?(): void;
 }
 
 export interface VoiceStartOptions {
@@ -20,8 +22,9 @@ export interface VoiceStartOptions {
   /** Server-projected historical knowledge only, never the human notebook. */
   recap?: string;
   microphone: boolean;
-  executeTool(call: ToolCall, signal: AbortSignal): Promise<unknown>;
-  cancelPending(): Promise<void>;
+  captureToolContext?(): unknown;
+  executeTool(call: ToolCall, signal: AbortSignal, context?: unknown): Promise<unknown>;
+  cancelPending(reason: CancellationReason): Promise<void>;
   maxSessionSeconds?: number;
 }
 
@@ -54,6 +57,7 @@ export class LiveVoice {
   private cleanEnd = false;
   private handshakeTimer?: ReturnType<typeof setTimeout>;
   private durationTimer?: ReturnType<typeof setTimeout>;
+  private warningTimer?: ReturnType<typeof setTimeout>;
   private resolveReady?: () => void;
   private rejectReady?: (error: Error) => void;
   private resolveClosed?: () => void;
@@ -61,6 +65,7 @@ export class LiveVoice {
   private volume = 1;
   private microphoneActive = false;
   private recap?: string;
+  private captureContext?: () => unknown;
 
   constructor(private readonly callbacks: VoiceCallbacks, private readonly dependencies: VoiceDependencies = {
     createAudio: () => new BrowserAudio(),
@@ -70,6 +75,7 @@ export class LiveVoice {
   async start(options: VoiceStartOptions): Promise<void> {
     if (this.started || this.ended) throw new Error('This call has already started. Create a new connection.');
     this.started = true;
+    this.captureContext = options.captureToolContext;
     this.callbacks.onStatus('connecting');
     this.audio = this.dependencies.createAudio();
     this.audio.setVolume?.(this.volume);
@@ -77,6 +83,7 @@ export class LiveVoice {
       ...this.callbacks,
       send: (event) => this.send(event),
       executeTool: options.executeTool,
+      captureToolContext: options.captureToolContext,
       cancelPending: options.cancelPending,
       playAudio: (data) => this.audio?.play(data),
       stopAudio: () => this.audio?.stopPlayback(),
@@ -111,9 +118,14 @@ export class LiveVoice {
       const established = new Promise<void>((resolve, reject) => { this.resolveReady = resolve; this.rejectReady = reject; });
       this.handshakeTimer = setTimeout(() => this.fail('The voice connection timed out. End the call and try again.'), this.dependencies.handshakeMs ?? 15_000);
       // Also cap startup: the watchdog starts when the socket is created.
-      const cap = Math.max(1, Math.min(600, options.maxSessionSeconds ?? 600));
+      const requestedCap = options.maxSessionSeconds ?? 600;
+      const cap = Number.isFinite(requestedCap) ? Math.max(1, Math.min(600, requestedCap)) : 600;
+      this.warningTimer = setTimeout(() => {
+        this.callbacks.onWarning?.(`This Live connection will end in ${Math.min(60, Math.ceil(cap))} seconds. Your mission checkpoint will remain available; reconnect explicitly to continue.`);
+      }, Math.max(0, cap - 60) * 1000);
       this.durationTimer = setTimeout(() => {
-        this.callbacks.onWarning?.('The development call time limit was reached. Reconnect to continue.');
+        this.callbacks.onWarning?.('The Live connection limit was reached. Your mission checkpoint is preserved. Reconnect to continue.');
+        this.callbacks.onSessionLimit?.();
         void this.stop();
       }, cap * 1000);
       socket.onopen = () => {
@@ -145,13 +157,13 @@ export class LiveVoice {
     const protocol = this.protocol;
     protocol.resumeInput();
     const sequence = ++this.textSequence;
-    void protocol.interrupt().then(() => {
+    void protocol.beginInput().then(() => {
       if (!this.ready || this.ended || !protocol.ready) return;
       // Current reference documents these messages, not an input.text event.
       // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
       if (!this.send({ type: 'conversation.message', role: 'user', content })) return;
       // Only communicated input belongs in transcript history and a later recap.
-      this.callbacks.onTranscript({ id: `typed:${sequence}`, role: 'human', text, final: true });
+      this.callbacks.onTranscript({ id: `typed:${sequence}`, role: 'human', text, final: true }, this.captureContext?.());
       this.send({ type: 'reply.create' });
       this.callbacks.onStatus('responding');
     });
@@ -185,6 +197,7 @@ export class LiveVoice {
     this.ready = false;
     clearTimeout(this.handshakeTimer);
     clearTimeout(this.durationTimer);
+    clearTimeout(this.warningTimer);
     this.rejectReady?.(new Error('The call ended before it was ready.'));
     this.rejectReady = undefined;
     this.audio?.stopPlayback();

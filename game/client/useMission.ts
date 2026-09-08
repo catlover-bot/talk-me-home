@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import type { HumanView, MissionRecord, Scenario, TransportOrigin, InputMethod } from '../shared/contracts';
+import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason } from '../shared/contracts';
 import * as api from './api';
 import { LiveVoice, type TranscriptEntry, type VoiceInputState, type VoiceStatus } from './voice';
-import { simulationReply, simulationSpeech } from './mock';
+import { simulationReply, simulationSpeech, rememberLocalResult, type PracticeMemory } from './mock';
 import { LocalEffects } from './effects';
 import { copy } from './strings';
 
@@ -13,6 +13,8 @@ export interface Caption extends TranscriptEntry {
   segmentId: string;
   timestamp: number;
   saved: boolean;
+  chapter: Chapter;
+  chapterEpoch: number;
 }
 export const originLabel: Record<TransportOrigin, string> = {
   practice: 'Practice', live_voice: 'Live Voice', live_text: 'Live Text',
@@ -24,6 +26,7 @@ const emptyRecord = (roundId: string): MissionRecord => ({ roundId, messages: []
 export function useMission() {
   const [stage, setStage] = useState<'briefing' | 'mission' | 'debrief'>('briefing');
   const [scenario, setScenario] = useState<Scenario>('classic');
+  const [missionKind, setMissionKind] = useState<MissionKind>('rescue');
   const [mode, setMode] = useState<TransportOrigin>('practice');
   const [view, setView] = useState<HumanView | null>(null);
   const viewRef = useRef<HumanView | null>(null);
@@ -37,6 +40,8 @@ export function useMission() {
   const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
   const [powerPending, setPowerPending] = useState<boolean | null>(null);
+  const [controlPending, setControlPending] = useState<string | null>(null);
+  const controlBusy = useRef(false);
   const [toolPending, setToolPending] = useState(false);
   const [status, setStatus] = useState<VoiceStatus>('ended');
   const [microphone, setMicrophone] = useState(false);
@@ -54,6 +59,7 @@ export function useMission() {
   const voice = useRef<LiveVoice | null>(null);
   const stopping = useRef<Promise<void> | null>(null);
   const generation = useRef(0);
+  const lastCancellation = useRef<Pick<HumanView, 'roundId' | 'chapterEpoch' | 'actionEpoch'> | null>(null);
   const mockTurn = useRef(0);
   const mockAbort = useRef<AbortController | null>(null);
   const writes = useRef(new Set<Promise<unknown>>());
@@ -64,6 +70,7 @@ export function useMission() {
   const completionRound = useRef('');
   const [seconds, setSeconds] = useState(0);
   const liveStarted = useRef(0);
+  const practiceMemory = useRef<PracticeMemory>({ chapter: 'cargo', gates: [] });
 
   const setBusyNow = (value: boolean) => { busyRef.current = value; setBusy(value); };
   const setConnectedNow = (value: boolean) => { connectedRef.current = value; setConnected(value); };
@@ -73,6 +80,12 @@ export function useMission() {
     const previous = viewRef.current;
     if (previous?.sessionId === next.sessionId && previous.roundId === next.roundId && previous.revision > next.revision) return;
     viewRef.current = next; setView(next);
+    if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
+      setHint('');
+      setRecapNotice('Checkpoint confirmed. Earlier reports remain in history with their original chapter.');
+      practiceMemory.current = { chapter: next.chapter, gates: [] };
+      void refreshRecord(next).catch(showError);
+    }
     if (next.completed) setStage('debrief');
   };
   const refreshRecord = async (current = viewRef.current) => {
@@ -81,7 +94,7 @@ export function useMission() {
     const next = await api.missionRecord(current);
     if (sequence === recordRequest.current && currentRound(next.roundId)) setRecord(next);
   };
-  const addCaption = (entry: TranscriptEntry, source: Segment, roundId: string) => {
+  const addCaption = (entry: TranscriptEntry, source: Segment, roundId: string, captured?: HumanView) => {
     if (!currentRound(roundId)) return;
     const id = source.id + ':' + entry.id;
     const previous = captionsRef.current.find(item => item.id === id);
@@ -89,6 +102,8 @@ export function useMission() {
       ...entry, id, origin: source.origin, segmentId: source.id, roundId,
       inputMethod: entry.role === 'robot' ? 'robot' : entry.id.startsWith('typed:') || source.origin === 'practice' ? 'typed' : 'speech',
       timestamp: previous?.timestamp ?? Date.now(), saved: previous?.saved ?? false,
+      chapter: previous?.chapter ?? captured?.chapter ?? viewRef.current!.chapter,
+      chapterEpoch: previous?.chapterEpoch ?? captured?.chapterEpoch ?? viewRef.current!.chapterEpoch,
     };
     const update = (next: Caption) => {
       const items = captionsRef.current.filter(value => value.id !== id);
@@ -103,6 +118,7 @@ export function useMission() {
     const promise = api.recordMessage(current, {
       roundId, messageId: id, segmentId: source.id, role: entry.role, text: entry.text,
       origin: source.origin, inputMethod: item.inputMethod, interrupted: !!entry.interrupted,
+      chapter: item.chapter, chapterEpoch: item.chapterEpoch,
     }).then(saved => {
       if (!currentRound(roundId)) return;
       const latest = captionsRef.current.find(value => value.id === id);
@@ -120,11 +136,14 @@ export function useMission() {
     closingTimer.current = null; closingGrace.current = null; closingReplyDone.current = false;
   };
 
-  const cancelPending = async (expected = generation.current) => {
+  const cancelPending = async (expected = generation.current, reason: CancelReason = 'interrupt') => {
     const current = viewRef.current;
     if (!current || expected !== generation.current) return;
-    const next = await api.lifecycle(current, 'cancel');
-    if (expected === generation.current && currentRound(next.roundId)) applyView(next);
+    const next = await api.lifecycle(current, 'cancel', { reason });
+    if (expected === generation.current && currentRound(next.roundId)) {
+      lastCancellation.current = { roundId: next.roundId, chapterEpoch: next.chapterEpoch, actionEpoch: next.actionEpoch };
+      applyView(next);
+    }
   };
 
   const stopOperation = async () => {
@@ -135,7 +154,7 @@ export function useMission() {
     const lastSpoken = captionsRef.current.filter(item => item.role === 'robot' && item.segmentId === segmentRef.current?.id).at(-1);
     if (playingRef.current && lastSpoken) addCaption({ ...lastSpoken, id: lastSpoken.id.slice(lastSpoken.segmentId.length + 1), final: true, interrupted: true }, segmentRef.current!, lastSpoken.roundId);
     ++generation.current; ++mockTurn.current;
-    setBusyNow(true); setConnectedNow(false); setToolPending(false); setPowerPending(null);
+    setBusyNow(true); setConnectedNow(false); setToolPending(false); setPowerPending(null); setControlPending(null); controlBusy.current = false;
     mockAbort.current?.abort(); mockAbort.current = null;
     clearClosing();
     const connection = voice.current; voice.current = null;
@@ -165,12 +184,13 @@ export function useMission() {
     return operation;
   };
 
-  const runTool = async (call: api.RobotCall, signal: AbortSignal, expected: number) => {
-    const current = viewRef.current;
+  const runTool = async (call: api.RobotCall, signal: AbortSignal, expected: number, captured?: HumanView) => {
+    const current = captured ?? viewRef.current;
     if (!current || expected !== generation.current || signal.aborted) throw new DOMException('Canceled', 'AbortError');
     const result = await api.executeTool(current, call, signal);
     if (expected !== generation.current || !currentRound(result.view.roundId) || signal.aborted) throw new DOMException('Canceled', 'AbortError');
     applyView(result.view);
+    if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
     if (result.view.completed && completionRound.current !== result.view.roundId) {
       completionRound.current = result.view.roundId;
       effects.current.play('complete');
@@ -192,18 +212,20 @@ export function useMission() {
     const prepareMission = async () => {
       let current = viewRef.current;
       const retained = !!current && !current.completed && current.status !== 'ended' && stage !== 'briefing';
-      if (!retained) current = current ? await api.lifecycle(current, 'reset', scenario) : await api.createSession(scenario);
+      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind === 'rescue' ? 'classic' : scenario, missionKind }) : await api.createSession(missionKind === 'rescue' ? 'classic' : scenario, missionKind);
       else current = await api.lifecycle(current!, 'resume');
       if (expected !== generation.current) {
         await api.lifecycle(current!, 'stop');
         throw new DOMException('Canceled', 'AbortError');
       }
       applyView(current!); setStage('mission');
-      if (!retained) { captionsRef.current = []; setCaptions([]); setRecord(emptyRecord(current!.roundId)); }
+      if (!retained) { captionsRef.current = []; setCaptions([]); setRecord(emptyRecord(current!.roundId)); practiceMemory.current = { chapter: current!.chapter, gates: [] }; }
       await Promise.allSettled([...writes.current]);
       const recap = await api.robotRecap(current!);
       if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
       setRecapNotice(retained ? 'Earlier reports are historical. Pip can recheck local conditions.' : '');
+      // Practice remembers only locally reported targets from allowed historical context.
+      for (const entry of recap.entries) if (entry.kind !== 'player_quote' && entry.chapter === current!.chapter) practiceMemory.current = rememberLocalResult(practiceMemory.current, entry.text, current!.chapter);
       await refreshRecord(current!);
       return { current: current!, recap: recap.entries.length ? JSON.stringify(recap) : undefined, retained };
     };
@@ -219,8 +241,9 @@ export function useMission() {
     // Provider call identifiers belong to one connection, not the entire retained mission.
     const localCallIds = new Map<string, string>();
     const connection = new LiveVoice({
-      onTranscript: entry => {
-        if (expected === generation.current && viewRef.current) addCaption(entry, source, viewRef.current.roundId);
+      onTranscript: (entry, context) => {
+        const captured = context as HumanView | undefined;
+        if (expected === generation.current && viewRef.current) addCaption(entry, source, captured?.roundId ?? viewRef.current.roundId, captured);
       },
       onStatus: next => {
         if (expected !== generation.current) return;
@@ -237,6 +260,7 @@ export function useMission() {
       },
       onError: message => { if (expected === generation.current) setError(message); },
       onWarning: message => { if (expected === generation.current) setWarning(message); },
+      onSessionLimit: () => { if (expected === generation.current) void stop(); },
       onMicrophone: value => { if (expected === generation.current) setMicrophone(value); },
       onInputState: value => { if (expected === generation.current) { setInputState(value); if (value === 'receiving') setInterrupted(false); } },
       onToolState: value => { if (expected === generation.current) setToolPending(value); },
@@ -263,12 +287,21 @@ export function useMission() {
         if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
         return { ...token, recap };
       },
-      executeTool: (call, signal) => {
+      captureToolContext: () => viewRef.current ? { ...viewRef.current } : undefined,
+      executeTool: (call, signal, context) => {
         let id = localCallIds.get(call.callId);
         if (!id) { id = api.requestId(); localCallIds.set(call.callId, id); }
-        return runTool({ ...call, callId: id }, signal, expected);
+        const captured = context as HumanView | undefined;
+        const cancellation = lastCancellation.current;
+        // A new-input cancellation may settle after receipt. Old protocol work is aborted;
+        // fresh work may adopt only that acknowledged cancellation epoch. A later room
+        // movement must not revive queued intent captured in the previous room.
+        const bound = captured && cancellation && captured.roundId === cancellation.roundId
+          && captured.chapterEpoch === cancellation.chapterEpoch && cancellation.actionEpoch > captured.actionEpoch
+          ? { ...captured, actionEpoch: cancellation.actionEpoch } : captured;
+        return runTool({ ...call, callId: id }, signal, expected, bound);
       },
-      cancelPending: () => cancelPending(expected),
+      cancelPending: reason => cancelPending(expected, reason),
       maxSessionSeconds: 600,
     }).then(() => {
       if (expected === generation.current && voice.current === connection) {
@@ -293,7 +326,7 @@ export function useMission() {
     if (voice.current) return voice.current.sendText(text);
     const source = segmentRef.current!;
     addCaption({ id: api.requestId(), role: 'human', text, final: true }, source, viewRef.current.roundId);
-    const reply = simulationReply(text);
+    const reply = simulationReply(text, practiceMemory.current);
     const expected = generation.current;
     const turn = ++mockTurn.current;
     const hadPending = !!mockAbort.current;
@@ -301,7 +334,7 @@ export function useMission() {
     const abort = new AbortController(); mockAbort.current = abort;
     setToolPending(!!reply.call);
     try {
-      if (hadPending || reply.cancel) await cancelPending(expected);
+      if (hadPending || reply.cancel) await cancelPending(expected, reply.cancel ? 'interrupt' : 'supersede');
       if (expected !== generation.current || turn !== mockTurn.current || abort.signal.aborted) return true;
       if (reply.cancel) setInterrupted(true);
       const message = reply.call ? simulationSpeech((await runTool(reply.call, abort.signal, expected)).message) : reply.message;
@@ -316,8 +349,8 @@ export function useMission() {
 
   const changePower = async (powerOn: boolean) => {
     const current = viewRef.current;
-    if (!current || powerPending !== null || busyRef.current || !connectedRef.current) return;
-    const expected = generation.current; setPowerPending(powerOn); setError('');
+    if (!current || controlBusy.current || busyRef.current || !connectedRef.current) return;
+    const expected = generation.current; controlBusy.current = true; setControlPending(powerOn ? 'power_on' : 'power_off'); setPowerPending(powerOn); setError('');
     try {
       const next = await api.setPower(current, powerOn);
       if (expected === generation.current && currentRound(next.roundId)) {
@@ -330,20 +363,37 @@ export function useMission() {
         const latest = await api.getSession(current.sessionId);
         if (currentRound(latest.roundId)) applyView(latest);
       } catch { /* Keep the original recovery instruction. */ }
-    } finally { if (expected === generation.current) setPowerPending(null); }
+    } finally { if (expected === generation.current) { setPowerPending(null); setControlPending(null); controlBusy.current = false; } }
   };
 
-  const newBriefing = async (nextScenario: Scenario = scenario) => {
+  const changeControl = async (pending: string, command: (current: HumanView) => Promise<HumanView>) => {
+    const current = viewRef.current;
+    if (!current || controlBusy.current || busyRef.current || !connectedRef.current) return;
+    const expected = generation.current; controlBusy.current = true; setControlPending(pending); setError('');
+    try {
+      const next = await command(current);
+      if (expected === generation.current && currentRound(next.roundId)) { applyView(next); effects.current.play('acknowledge'); await refreshRecord(next); }
+    } catch (cause) {
+      if (expected !== generation.current) return;
+      showError(cause);
+      try { const latest = await api.getSession(current.sessionId); if (currentRound(latest.roundId)) applyView(latest); } catch { /* Preserve the original control error. */ }
+    } finally { if (expected === generation.current) { controlBusy.current = false; setControlPending(null); } }
+  };
+  const changeRelay = (relay: Relay) => changeControl(relay, current => api.setRelay(current, relay));
+  const dockControl = (action: DockControl) => changeControl(action, current => api.dockControl(current, action));
+
+  const newBriefing = async (nextScenario: Scenario = scenario, nextKind: MissionKind = missionKind) => {
     await stop();
     setBusyNow(true);
     try {
       const current = viewRef.current;
       if (current) {
-        const reset = await api.lifecycle(current, 'reset', nextScenario);
+        const reset = await api.lifecycle(current, 'reset', { scenario: nextKind === 'rescue' ? 'classic' : nextScenario, missionKind: nextKind });
         applyView(reset); applyView(await api.lifecycle(reset, 'stop'));
       }
       captionsRef.current = []; setCaptions([]); setRecord(null); setSegment(null); segmentRef.current = null;
-      setScenario(nextScenario); setStage('briefing'); setHint(''); setRecapNotice(''); setError(''); setWarning('');
+      setScenario(nextScenario); setMissionKind(nextKind); setStage('briefing'); setHint(''); setRecapNotice(''); setError(''); setWarning('');
+      practiceMemory.current = { chapter: 'cargo', gates: [] };
       setInterrupted(false); setPowerPending(null); completionRound.current = ''; setSeconds(0);
     } catch (cause) {
       // Expired server memory can only be recovered by explicitly starting fresh.
@@ -366,12 +416,19 @@ export function useMission() {
       await refreshRecord(current); return true;
     } catch (cause) { if (currentRound(current.roundId)) showError(cause); return false; }
   };
-  const askHint = async (level: 1 | 2) => {
+  const askHint = async (level: HintLevel) => {
     const current = viewRef.current; if (!current) return;
     try {
       const next = await api.requestHint(current, level);
-      if (currentRound(next.roundId)) { setHint(next.text); await refreshRecord(current); }
+      if (currentRound(next.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) { setHint(next.text); await refreshRecord(current); }
     } catch (cause) { if (currentRound(current.roundId)) showError(cause); }
+  };
+  const annotate = async (change: api.AnnotationChange) => {
+    const current = viewRef.current; if (!current) return;
+    try {
+      await api.annotate(current, change);
+      if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) await refreshRecord(viewRef.current);
+    } catch (cause) { if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) showError(cause); }
   };
   const chooseMode = (next: TransportOrigin) => {
     if (connectedRef.current || voice.current || busyRef.current) return;
@@ -394,7 +451,7 @@ export function useMission() {
       const current = viewRef.current;
       if (current) void fetch('/api/sessions/' + encodeURIComponent(current.sessionId) + '/stop', {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ roundId: current.roundId, requestId: api.requestId() }), keepalive: true,
+        body: JSON.stringify({ roundId: current.roundId, chapterEpoch: current.chapterEpoch, requestId: api.requestId() }), keepalive: true,
       }).catch(() => {});
       void voice.current?.stop(); void effects.current.close();
     };
@@ -408,9 +465,9 @@ export function useMission() {
       : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' ? 'considering'
         : inputState !== 'inactive' ? 'listening' : 'ready';
   return {
-    stage, scenario, setScenario, mode, chooseMode, view, record, captions, segment, activeCaption,
+    stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, pipState,
-    start, stop, interrupt, send, changePower, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
+    start, stop, interrupt, send, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
   };
 }

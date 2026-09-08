@@ -1,4 +1,4 @@
-import type { HumanView, ToolResponse, Scenario, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult } from "../shared/contracts";
+import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, GalleryAnnotation, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
 
 async function request<T>(
   path: string,
@@ -38,7 +38,7 @@ async function request<T>(
 }
 
 export const requestId = () => crypto.randomUUID();
-export const createSession = (scenario: Scenario = 'classic') => request<HumanView>("/sessions", { scenario });
+export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training') => request<HumanView>("/sessions", { scenario, missionKind });
 export const getSession = (sessionId: string) =>
   request<HumanView>(`/sessions/${encodeURIComponent(sessionId)}`);
 
@@ -47,6 +47,7 @@ export function setPower(view: HumanView, powerOn: boolean) {
     `/sessions/${encodeURIComponent(view.sessionId)}/power`,
     {
       roundId: view.roundId,
+      chapterEpoch: view.chapterEpoch,
       revision: view.revision,
       requestId: requestId(),
       powerOn,
@@ -57,14 +58,15 @@ export function setPower(view: HumanView, powerOn: boolean) {
 export function lifecycle(
   view: HumanView,
   action: "stop" | "resume" | "reset" | "end" | "cancel",
-  scenario?: Scenario,
+  options: { scenario?: Scenario; missionKind?: MissionKind; reason?: CancelReason } = {},
 ) {
   return request<HumanView>(
     `/sessions/${encodeURIComponent(view.sessionId)}/${action}`,
     {
       roundId: view.roundId,
+      chapterEpoch: view.chapterEpoch,
       requestId: requestId(),
-      ...(scenario ? { scenario } : {}),
+      ...options,
     },
   );
 }
@@ -84,6 +86,7 @@ export function executeTool(
     `/sessions/${encodeURIComponent(view.sessionId)}/tools`,
     {
       roundId: view.roundId,
+      chapterEpoch: view.chapterEpoch,
       actionEpoch: view.actionEpoch,
       callId: call.callId,
       name: call.name,
@@ -108,5 +111,11 @@ const path = (view: HumanView, resource: string) => `/sessions/${encodeURICompon
 export const missionRecord = (view: HumanView) => request<MissionRecord>(`${path(view, 'record')}?roundId=${encodeURIComponent(view.roundId)}`);
 export const robotRecap = (view: HumanView) => request<RobotRecap>(`${path(view, 'recap')}?roundId=${encodeURIComponent(view.roundId)}`);
 export const recordMessage = (view: HumanView, message: MessageRequest) => request<RecordedMessage>(path(view, 'messages'), message);
-export const addNotebook = (view: HumanView, entry: NotebookRequest) => request<NotebookEntry>(path(view, 'notebook'), entry);
-export const requestHint = (view: HumanView, level: 1 | 2) => request<HintResult>(path(view, 'hint'), { roundId: view.roundId, requestId: requestId(), level });
+export const addNotebook = (view: HumanView, entry: NotebookRequest) => request<NotebookEntry>(path(view, 'notebook'), { ...entry, chapterEpoch: view.chapterEpoch });
+export const requestHint = (view: HumanView, level: HintLevel) => request<HintResult>(path(view, 'hint'), { roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: requestId(), level });
+
+const controlEnvelope = (view: HumanView) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, revision: view.revision, requestId: requestId() });
+export const setRelay = (view: HumanView, relay: Relay) => request<HumanView>(path(view, 'relay'), { ...controlEnvelope(view), relay });
+export const dockControl = (view: HumanView, action: DockControl) => request<HumanView>(path(view, 'dock-control'), { ...controlEnvelope(view), action });
+export type AnnotationChange = { kind: 'location'; target: GalleryAnnotation['location'] } | { kind: 'blocked_gate'; target: string; marked: boolean };
+export const annotate = (view: HumanView, change: AnnotationChange) => request<MissionRecord>(path(view, 'annotations'), { roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: requestId(), ...change });

@@ -38,6 +38,8 @@ export function applyGalleryTool(state: GameState, name: string, args: unknown):
     if (state.gallery.relay !== gate.circuit) return reject('This gate is closed. You remain in the safe room. Ask Mission Control about its circuit, then check again.')
     state.gallery.room = gate.from === state.gallery.room ? gate.to : gate.from
     state.revision += 1
+    // A queued intent from the previous room must not turn into an accidental backtrack.
+    state.actionEpoch += 1
     if (state.gallery.room === 'dock') return { ok: true, message: 'You passed through the open gate. The Relay Gallery checkpoint confirms arrival at the Return Dock. The rescue continues. Observe the equipment within reach before acting.' }
     return { ok: true, message: `You passed through the open gate. ${galleryView(state).message}` }
   }

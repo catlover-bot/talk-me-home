@@ -1,10 +1,12 @@
-import type { Scenario, TransportOrigin } from "../../shared/contracts";
+import type { MissionKind, Scenario, TransportOrigin } from "../../shared/contracts";
 import { PipPortrait } from "./PipPortrait";
 
 export interface BriefingProps {
   scenario: Scenario;
+  missionKind: MissionKind;
   mode: TransportOrigin;
   onScenario(scenario: Scenario): void;
+  onMissionKind(kind: MissionKind): void;
   onMode(mode: TransportOrigin): void;
   onStart(): void;
   busy?: boolean;
@@ -13,8 +15,10 @@ export interface BriefingProps {
 
 export function Briefing({
   scenario,
+  missionKind,
   mode,
   onScenario,
+  onMissionKind,
   onMode,
   onStart,
   busy = false,
@@ -38,8 +42,8 @@ export function Briefing({
         <div className="role-note">
           <span aria-hidden="true">↗</span>
           <p>
-            Help a stranded maintenance robot through a cargo bay. Read your
-            documents, share clues, and coordinate your next move.
+            Bring a stranded maintenance robot home. Read your documents,
+            share what each of you knows, and find the next step together.
           </p>
         </div>
         <fieldset className="setup-fieldset">
@@ -47,45 +51,46 @@ export function Briefing({
           <div className="scenario-choices">
             <label
               className="scenario-choice"
-              data-selected={scenario === "classic"}
+              data-selected={missionKind === "rescue"}
             >
               <input
                 type="radio"
-                name="scenario"
-                value="classic"
-                checked={scenario === "classic"}
-                onChange={() => onScenario("classic")}
+                name="mission-kind"
+                value="rescue"
+                checked={missionKind === "rescue"}
+                onChange={() => onMissionKind("rescue")}
                 disabled={busy}
               />
               <span>
-                <strong>Classic</strong>
-                <small>Start with the first Door.</small>
+                <strong>Rescue Mission <span className="recommended-label">Recommended</span></strong>
+                <small>Three chapters. One way home.</small>
+              </span>
+              <span className="choice-index" aria-hidden="true">
+                03
+              </span>
+            </label>
+            <label
+              className="scenario-choice"
+              data-selected={missionKind === "training"}
+            >
+              <input
+                type="radio"
+                name="mission-kind"
+                value="training"
+                checked={missionKind === "training"}
+                onChange={() => onMissionKind("training")}
+                disabled={busy}
+              />
+              <span>
+                <strong>Training</strong>
+                <small>One room. A shorter first step.</small>
               </span>
               <span className="choice-index" aria-hidden="true">
                 01
               </span>
             </label>
-            <label
-              className="scenario-choice"
-              data-selected={scenario === "maintenance"}
-            >
-              <input
-                type="radio"
-                name="scenario"
-                value="maintenance"
-                checked={scenario === "maintenance"}
-                onChange={() => onScenario("maintenance")}
-                disabled={busy}
-              />
-              <span>
-                <strong>Maintenance</strong>
-                <small>A new clue in the same room.</small>
-              </span>
-              <span className="choice-index" aria-hidden="true">
-                02
-              </span>
-            </label>
           </div>
+          {missionKind === "training" ? <div className="training-choice"><label htmlFor="training-scenario">Training exercise</label><select id="training-scenario" value={scenario} onChange={event => onScenario(event.target.value as Scenario)} disabled={busy}><option value="classic">Classic — the first Door</option><option value="maintenance">Maintenance — a module clue</option></select></div> : <ol className="briefing-journey" aria-label="Rescue Mission chapters"><li><span>01</span>Cargo Bay</li><li><span>02</span>Relay Gallery</li><li><span>03</span>Return Dock</li></ol>}
         </fieldset>
         <fieldset className="setup-fieldset">
           <legend>How would you like to talk?</legend>
@@ -179,6 +184,16 @@ export function Briefing({
           </button>
           <span>No countdown. Take your time.</span>
         </div>
+        <details className="quick-guide">
+          <summary>Quick guide <span>Optional · how the desk works</span></summary>
+          <p>The remote sensors are damaged. You have the plans; Pip supplies the local checks.</p>
+          <ol>
+            <li><strong>Your map</strong><p>Read the static documents and compare them with what Pip reports. They are not a live camera.</p></li>
+            <li><strong>Your controls</strong><p>You handle remote equipment. Tell Pip when you change it; Pip performs the local actions.</p></li>
+            <li><strong>Talk with Pip</strong><p>Speak in Live Voice or type a message. Captions and history keep both sides of the conversation.</p></li>
+            <li><strong>Pause when needed</strong><p>Pause keeps this mission’s progress and ends any Live call. Resume explicitly when you are ready.</p></li>
+          </ol>
+        </details>
       </div>
       <aside className="briefing-companion" aria-label="Meet your partner">
         <div className="companion-intro">
@@ -195,7 +210,7 @@ export function Briefing({
           </p>
           <div className="partner-roles">
             <span>
-              <b>You</b> Documents &amp; remote Power
+              <b>You</b> Documents &amp; remote controls
             </span>
             <span>
               <b>Pip</b> Local eyes &amp; hands

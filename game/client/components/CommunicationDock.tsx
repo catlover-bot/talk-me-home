@@ -1,6 +1,8 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { originLabel, type Caption, type useMission } from '../useMission';
 import type { TransportOrigin } from '../../shared/contracts';
+import { chapterNames } from './ChapterHeader';
+import { PipPortrait, type PipState } from './PipPortrait';
 
 type Mission = ReturnType<typeof useMission>;
 export function MessageQuote({ item, onPin, historical = false }: { item: Caption; onPin(id: string): void; historical?: boolean }) {
@@ -8,6 +10,7 @@ export function MessageQuote({ item, onPin, historical = false }: { item: Captio
     <div className="caption-meta"><strong>{item.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
       <span className="source-label">{originLabel[item.origin]}{item.inputMethod === 'typed' ? ' · Typed' : item.inputMethod === 'speech' ? ' · Speech' : ''}</span>
       {historical && <span className="earlier">Previous call</span>}
+      {item.chapter && <span className="source-label chapter-source">{chapterNames[item.chapter]}</span>}
       <time dateTime={new Date(item.timestamp).toISOString()}>{new Date(item.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}</time>
     </div>
     <p>{item.text}</p>
@@ -18,7 +21,34 @@ export function MessageQuote({ item, onPin, historical = false }: { item: Captio
 }
 export function CommunicationDock({ mission: m }: { mission: Mission }) {
   const [text, setText] = useState('');
-  const history = useRef<HTMLDialogElement>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [captionOverflow, setCaptionOverflow] = useState(false);
+  const [historyOverflow, setHistoryOverflow] = useState(false);
+  const captionText = useRef<HTMLParagraphElement>(null);
+  const historyList = useRef<HTMLDivElement>(null);
+  const historyTrigger = useRef<HTMLButtonElement>(null);
+  const closeHistory = () => { setHistoryOpen(false); historyTrigger.current?.focus({ preventScroll: true }); };
+  useEffect(() => {
+    if (!historyOpen) return;
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !document.querySelector('dialog[open]')) {
+        event.preventDefault(); setHistoryOpen(false); historyTrigger.current?.focus({ preventScroll: true });
+      }
+    };
+    document.addEventListener('keydown', onEscape);
+    return () => document.removeEventListener('keydown', onEscape);
+  }, [historyOpen]);
+  useEffect(() => {
+    const measure = () => {
+      setCaptionOverflow(Boolean(captionText.current && captionText.current.scrollHeight > captionText.current.clientHeight + 1));
+      setHistoryOverflow(Boolean(historyList.current && historyList.current.scrollHeight > historyList.current.clientHeight + 1));
+    };
+    const observer = new ResizeObserver(measure);
+    if (captionText.current) observer.observe(captionText.current);
+    if (historyList.current) observer.observe(historyList.current);
+    measure();
+    return () => observer.disconnect();
+  }, [m.activeCaption?.text, m.captions.length, historyOpen, m.connected]);
   const send = (event: FormEvent) => {
     event.preventDefault(); const message = text; if (!message.trim()) return;
     // Clear immediately so fast Practice replies do not make typing feel blocked.
@@ -39,10 +69,10 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
     <div className="caption-panel">
       <div className="caption-speaker"><strong>{m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
         {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : ''}</span>}</div>
-      <p className="caption-text" data-testid="caption" tabIndex={0} title="Scroll for longer replies. History keeps the full text." aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? (m.connected ? m.toolPending ? 'Pip is checking local equipment.' : 'Connected. Say hello or type a message.' : m.captions.length ? 'Earlier conversations are in history. Choose how to reconnect.' : 'Your partner is waiting for a connection.')}</p>
+      <div className="caption-reading" data-overflow={captionOverflow}><p ref={captionText} className="caption-text" data-testid="caption" tabIndex={0} title="Scroll for longer replies. History keeps the full text." aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? (m.connected ? m.toolPending ? 'Pip is checking local equipment.' : 'Connected. Say hello or type a message.' : m.captions.length ? 'Earlier conversations are in history. Choose how to reconnect.' : 'Your partner is waiting for a connection.')}</p>{captionOverflow && <span className="caption-scroll-cue" title="Scroll this caption for more" aria-hidden="true">↕</span>}</div>
       <div className="caption-meta">{m.activeCaption?.interrupted ? <span>Interrupted / incomplete speech</span> : m.activeCaption && !m.activeCaption.final ? <span>Partial transcript</span> : null}
         {m.activeCaption?.role === 'robot' && m.activeCaption.final && <button className="text-button" disabled={!m.activeCaption.saved} onClick={() => { void m.pin(m.activeCaption!.id); }}>Pin report</button>}
-        <button className="text-button" onClick={() => history.current?.showModal()} aria-label="Open transcript history">History ({m.captions.length})</button>
+        <button ref={historyTrigger} className="text-button" onClick={() => setHistoryOpen(!historyOpen)} aria-expanded={historyOpen} aria-controls="conversation-history" aria-label="Open transcript history">History ({m.captions.length})</button>
       </div>
     </div>
     <form className="message-form" onSubmit={send}>
@@ -70,10 +100,11 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       {m.voiceVolume === 0 && <p className="notice">Voice output is muted. Captions remain available. Muting does not end the call.</p>}
       <p className="muted">{m.mode === 'practice' ? 'Practice uses deterministic text matching, with no AI or microphone.' : 'Live Voice and Live Text both use AssemblyAI. No raw microphone audio is recorded by this app.'}</p>
     </details>
-    <dialog ref={history} className="history-dialog" aria-labelledby="history-title">
-      <div className="dialog-heading"><h2 id="history-title">Conversation history</h2><button onClick={() => history.current?.close()} autoFocus>Close history</button></div>
+    {historyOpen && <section id="conversation-history" className="history-panel" aria-labelledby="history-title">
+      <div className="dialog-heading"><div className="history-partner"><PipPortrait state={m.pipState as PipState} mini /><div><h2 id="history-title">Conversation history</h2><span>{historyOverflow ? 'Pip · Scroll entries ↕' : 'Pip · UNIT 04'}</span></div></div><button onClick={closeHistory}>Close history</button></div>
       <p>Original transcripts, grouped by source. A report is a claim, not a current reading.</p>
-      <div className="history-list">{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical={!m.connected || item.segmentId !== m.segment?.id} />)}</div>
-    </dialog>
+      <div ref={historyList} className="history-list" tabIndex={0} aria-label="Conversation history entries. Scroll for earlier reports.">{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical={!m.connected || item.segmentId !== m.segment?.id} />)}</div>
+      <p className="history-help">Escape closes history. Your map and call controls remain available.</p>
+    </section>}
   </section>;
 }

@@ -1,8 +1,12 @@
-import type { MissionRecord, Scenario } from "../../shared/contracts";
+import type { HumanView, MissionRecord, Scenario } from "../../shared/contracts";
+import type { ReactNode } from 'react';
 import { PipPortrait } from "./PipPortrait";
+import { Homecoming } from './Homecoming';
+import { chapterNames } from './ChapterHeader';
 
 export interface DebriefProps {
   scenario: Scenario;
+  view?: HumanView;
   record: MissionRecord | null;
   onReplay(): void;
   onMaintenance(): void;
@@ -10,11 +14,13 @@ export interface DebriefProps {
   busy?: boolean;
   connectionEnded?: boolean;
   practice?: boolean;
+  closingCaption?: ReactNode;
 }
 
 /** Mount only after the authoritative human projection confirms arrival. */
 export function Debrief({
   scenario,
+  view,
   record,
   onReplay,
   onMaintenance,
@@ -22,21 +28,25 @@ export function Debrief({
   busy = false,
   connectionEnded = false,
   practice = false,
+  closingCaption,
 }: DebriefProps) {
   const timeline = record?.debrief?.timeline ?? [];
+  const rescue = view?.missionKind === 'rescue';
   const humanActions = timeline.filter(
-    (entry) => entry.actor === "human" && entry.kind === "power",
+    (entry) => entry.actor === "human" && ['power', 'relay', 'dock'].includes(entry.kind),
   ).length;
   const robotActions = timeline.filter(
     (entry) => entry.actor === "robot" && entry.kind === "action",
   ).length;
+  const eventList = timeline.length ? <ol className="collaboration-timeline" tabIndex={0} aria-label="Confirmed collaboration events. Scroll for a longer timeline.">{timeline.map(entry => <li key={entry.id}><span className={`timeline-actor actor-${entry.actor}`}>{entry.actor === 'human' ? 'You' : entry.actor === 'robot' ? 'Pip' : 'Mission'}</span><div>{rescue && entry.chapter && <span className="timeline-chapter">{chapterNames[entry.chapter]}</span>}<p>{entry.actor === 'robot' ? entry.text.replace(/^You\b/, 'Pip') : entry.text}</p></div></li>)}</ol> : <p className="debrief-loading">Loading this round’s confirmed record…</p>;
   return (
-    <section className="debrief" aria-labelledby="debrief-title">
+    <section className={`debrief ${rescue ? 'rescue-debrief' : ''}`} aria-labelledby="debrief-title">
       <div className="debrief-companion">
         <span className="arrival-stamp">
           <span aria-hidden="true">✓</span>Arrival confirmed
         </span>
         <PipPortrait state="success" />
+        {rescue && view.completed && <Homecoming chaptersCleared={view.chaptersCleared} />}
         <p>
           A safe arrival.
           <br />A shared effort.
@@ -49,16 +59,16 @@ export function Debrief({
       </div>
       <div className="debrief-paper">
         <p className="section-kicker">
-          {scenario === "classic" ? "Classic" : "Maintenance"} · Mission debrief
+          {rescue ? 'Rescue Mission' : `${scenario === "classic" ? "Classic" : "Maintenance"} Training`} · Mission debrief
         </p>
-        <h1 id="debrief-title">You got Pip through.</h1>
+        <h1 id="debrief-title">{rescue ? 'You brought Pip home.' : 'You got Pip through.'}</h1>
         <p className="debrief-intro">
-          You brought the documents and remote Power. Pip brought local eyes and
+          You brought the documents and remote controls. Pip brought local eyes and
           hands. This is what you did together.
         </p>
         <div className="contribution-strip">
           <span>
-            <strong>{record?.debrief ? humanActions : '—'}</strong>acknowledged Power{" "}
+            <strong>{record?.debrief ? humanActions : '—'}</strong>acknowledged remote{" "}
             {humanActions === 1 ? "command" : "commands"}
           </span>
           <span>
@@ -66,43 +76,29 @@ export function Debrief({
             {robotActions === 1 ? "action" : "actions"}
           </span>
           <span>
-            <strong>{record?.debrief ? record.hintsUsed.length : '—'}</strong>
-            {record?.hintsUsed.length === 1 ? "hint used" : "hints used"}
+            <strong>{record?.debrief ? record.hintUses?.length ?? record.hintsUsed.length : '—'}</strong>
+            {(record?.hintUses?.length ?? record?.hintsUsed.length) === 1 ? "hint used" : "hints used"}
           </span>
         </div>
-        <h2>Your collaboration</h2>
-        {timeline.length ? (
-          <ol className="collaboration-timeline" tabIndex={0} aria-label="Confirmed collaboration events. Scroll for a longer timeline.">
-            {timeline.map((entry) => (
-              <li key={entry.id}>
-                <span className={`timeline-actor actor-${entry.actor}`}>
-                  {entry.actor === "human"
-                    ? "You"
-                    : entry.actor === "robot"
-                      ? "Pip"
-                      : "Mission"}
-                </span>
-                <p>{entry.actor === 'robot' ? entry.text.replace(/^You\b/, 'Pip') : entry.text}</p>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="debrief-loading">
-            Loading this round’s confirmed record…
-          </p>
-        )}
+        <h2>{rescue ? 'Your journey together' : 'Your collaboration'}</h2>
+        {rescue ? <><p className="journey-source">Excerpts from the last recorded local action in each chapter.</p><ol className="journey-summary">{(['cargo', 'gallery', 'return_dock'] as const).map((chapter, index) => {
+          const last = timeline.findLast(entry => entry.chapter === chapter && entry.actor === 'robot' && entry.kind === 'action');
+          const sentence = last?.text.replace(/^You\b/, 'Pip').split(/(?<=[.!?])\s+/)[0];
+          return <li key={chapter}><span className="journey-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><div><h3>{chapterNames[chapter]}</h3><p>{sentence ?? (record?.debrief ? 'No local action is retained in this chapter’s record.' : 'Loading the confirmed record…')}</p></div></li>;
+        })}</ol><details className="full-timeline"><summary>Full collaboration record ({timeline.length} events)</summary>{eventList}</details></> : eventList}
         {record?.debrief?.truncated && (
           <p className="timeline-footnote">
             The newest events are shown. This round’s record exceeded its
             history limit.
           </p>
         )}
+        {closingCaption}
         <div className="debrief-actions">
           <button className="primary-button" onClick={onReplay} disabled={busy}>
-            Play {scenario === "classic" ? "Classic" : "Maintenance"} again
+            {rescue ? 'Start another rescue' : `Play ${scenario === "classic" ? "Classic" : "Maintenance"} again`}
             <span aria-hidden="true">↗</span>
           </button>
-          {scenario === "classic" && (
+          {!rescue && scenario === "classic" && (
             <button
               className="secondary-button"
               onClick={onMaintenance}

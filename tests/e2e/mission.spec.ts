@@ -8,7 +8,8 @@ test.beforeEach(async ({ page }) => {
 });
 async function start(page: Page, maintenance = false) {
   await page.goto('/');
-  if (maintenance) await page.getByRole('radio', { name: /Maintenance/ }).check();
+  await page.getByRole('radio', { name: /Training/ }).check();
+  if (maintenance) await page.getByLabel('Training exercise').selectOption('maintenance');
   await page.getByRole('button', { name: 'Start Practice' }).click();
   await expect(page.getByLabel('Type a message')).toBeEnabled();
 }
@@ -31,12 +32,27 @@ async function restart(page: Page) {
 test('briefing is English, keyboard accessible, and hides local discoveries', async ({ page }, info) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => document.activeElement?.tagName !== 'BODY')).toBe(true);
   await expect(page.getByText(/Simulation.*type to play/)).toBeVisible();
   await expect(page.locator('body')).not.toContainText(/Latch|latched/);
   await expect(page.getByRole('button', { name: 'Start Practice' })).toBeInViewport({ ratio: 1 });
-  await page.screenshot({ path: 'test-results/g2-briefing-' + info.project.name + '.png', fullPage: true });
-  await page.keyboard.press('Tab');
-  expect(await page.evaluate(() => document.activeElement?.tagName !== 'BODY')).toBe(true);
+  const guide = page.locator('.quick-guide');
+  const guideToggle = guide.locator('summary');
+  await expect(guide).not.toHaveAttribute('open', '');
+  await guideToggle.focus();
+  await page.keyboard.press('Enter');
+  await expect(guide).toHaveAttribute('open', '');
+  await expect(guide).toContainText('remote sensors are damaged');
+  for (const fact of ['Your map', 'Your controls', 'Talk with Pip', 'Pause when needed']) {
+    await expect(guide.getByText(fact, { exact: true })).toBeVisible();
+  }
+  await expect(guide).toContainText('ends any Live call');
+  await page.keyboard.press('Space');
+  await expect(guide).not.toHaveAttribute('open', '');
+  await page.evaluate(() => { (document.activeElement as HTMLElement | null)?.blur(); scrollTo(0, 0); });
+  await expect(page.getByRole('button', { name: 'Start Practice' })).toBeInViewport({ ratio: 1 });
+  await page.screenshot({ path: 'test-results/goal-003-briefing-' + info.project.name + '.png', fullPage: true, animations: 'disabled' });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
 });
 test('Classic cooperation reaches only a validated arrival and debrief', async ({ page }, info) => {
@@ -47,7 +63,7 @@ test('Classic cooperation reaches only a validated arrival and debrief', async (
   await page.evaluate(() => scrollTo(0, 0));
   await expect(page.getByLabel('Type a message')).toBeInViewport({ ratio: 1 });
   await expect(page.getByRole('button', { name: 'Pause mission' })).toBeInViewport({ ratio: 1 });
-  await page.screenshot({ path: 'test-results/g2-classic-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-classic-' + info.project.name + '.png', fullPage: true });
   await say(page, 'Inspect the latch');
   await say(page, 'Keep the door open');
   await power(page, 'OFF');
@@ -55,7 +71,7 @@ test('Classic cooperation reaches only a validated arrival and debrief', async (
   await expect(page.getByRole('heading', { name: 'You got Pip through.' })).toBeVisible();
   await expect(page.locator('.arrival-stamp')).toContainText('Arrival confirmed');
   await expect(page.getByText('Practice complete · no provider connection')).toBeVisible();
-  await page.screenshot({ path: 'test-results/g2-debrief-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-debrief-' + info.project.name + '.png', fullPage: true });
 });
 test('early Power loss recovers and Restart clears observations without opening another connection', async ({ page }) => {
   await start(page); await power(page, 'OFF');
@@ -75,8 +91,8 @@ test('faithful raw captions, source history and keyboard entry remain available'
   await page.getByLabel('Type a message').press('Enter');
   await expect(page.getByTestId('caption')).toContainText(/latch/i);
   await page.getByRole('button', { name: 'Open transcript history' }).click();
-  await expect(page.getByRole('dialog')).toContainText(message);
-  await expect(page.getByRole('dialog')).toContainText('Practice · Typed');
+  await expect(page.getByRole('region', { name: 'Conversation history', exact: true })).toContainText(message);
+  await expect(page.getByRole('region', { name: 'Conversation history', exact: true })).toContainText('Practice · Typed');
 });
 test('missing Live token stays Live and never silently becomes simulation', async ({ page }) => {
   await page.goto('/');
@@ -97,14 +113,14 @@ test('Pause preserves Power and explicit keyboard resume marks earlier knowledge
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
   await page.getByRole('button', { name: 'Pause mission' }).click();
   await expect(page.getByLabel('Type a message')).toBeDisabled();
-  await page.screenshot({ path: 'test-results/g2-paused-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-paused-' + info.project.name + '.png', fullPage: true });
   await page.getByRole('button', { name: 'Resume Practice' }).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
   await expect(page.locator('.notebook-list')).toContainText('Earlier report — recheck if needed');
   await expect(page.locator('.recap-notice')).toContainText('historical');
-  await page.screenshot({ path: 'test-results/g2-resumed-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-resumed-' + info.project.name + '.png', fullPage: true });
 });
 test('delayed old-round robot response cannot disclose into a restarted briefing', async ({ page }) => {
   await start(page);
@@ -141,7 +157,7 @@ test('Maintenance exchanges a real report and manual setting; wrong selector is 
   await page.getByLabel('My note', { exact: true }).fill('My private plan stays here.');
   await page.getByRole('button', { name: 'Add note' }).click();
   await expect(page.locator('.notebook-list')).toContainText('Private. Not sent to Pip.');
-  await page.screenshot({ path: 'test-results/g2-maintenance-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-maintenance-' + info.project.name + '.png', fullPage: true });
   await say(page, 'Set the selector to ' + wrong);
   await say(page, 'Latch the door open');
   await expect(page.getByTestId('caption')).toContainText(/does not seat|did not seat/);
@@ -183,7 +199,7 @@ test('390px reflow, reduced motion, long captions, and 200 percent zoom retain c
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await expect(page.getByRole('button', { name: 'Pause mission' })).toBeVisible();
-  await page.screenshot({ path: 'test-results/g2-narrow-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-narrow-' + info.project.name + '.png', fullPage: true });
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
   const documents = await page.locator('.mission-documents').boundingBox();
@@ -192,5 +208,5 @@ test('390px reflow, reduced motion, long captions, and 200 percent zoom retain c
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.getByLabel('Type a message').focus();
   await expect(page.getByLabel('Type a message')).toBeFocused();
-  await page.screenshot({ path: 'test-results/g2-zoom-' + info.project.name + '.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/goal-003-training-zoom-' + info.project.name + '.png', fullPage: true });
 });

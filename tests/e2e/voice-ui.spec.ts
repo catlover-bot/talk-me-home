@@ -3,6 +3,7 @@ import { fakeProvider, fixtureScreenshot } from './fake-provider';
 
 async function startLive(page: Page, kind: 'Voice' | 'Text' = 'Text') {
   await page.goto('/');
+  await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: new RegExp(`Live ${kind}`) }).check();
   await page.getByRole('button', { name: `Start with ${kind}` }).click();
   await expect(page.getByLabel('Type a message')).toBeEnabled();
@@ -18,6 +19,7 @@ test('simulated Live Voice: one capture path, honest playback state, local mute,
   await page.goto('/');
   expect(await provider.audioState()).toEqual({ captures: 0, activeTracks: 0, contexts: 0, closedContexts: 0, queuedChunks: 0 });
   expect(provider.tokenRequests).toBe(0);
+  await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: /Live Voice/ }).check();
   await page.getByRole('button', { name: 'Start with Voice' }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
   await expect(page.getByLabel('Type a message')).toBeEnabled();
@@ -28,7 +30,7 @@ test('simulated Live Voice: one capture path, honest playback state, local mute,
   provider.emit({ type: 'transcript.user.delta', item_id: 'human-one', text: 'Could you look around?' });
   await expect(page.locator('.pip-portrait')).toHaveAttribute('data-state', 'listening');
   await expect(page.getByTestId('caption')).toHaveText('Could you look around?');
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-listening-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-listening-${info.project.name}.png`);
   provider.emit({ type: 'input.speech.stopped' });
   provider.emit({ type: 'transcript.user', item_id: 'human-one', text: 'Could you look around?' });
   provider.emit({ type: 'reply.started', reply_id: 'spoken' });
@@ -38,7 +40,7 @@ test('simulated Live Voice: one capture path, honest playback state, local mute,
   await expect(page.locator('.pip-portrait')).toHaveAttribute('data-state', 'considering');
   await provider.render();
   await expect(page.locator('.pip-portrait')).toHaveAttribute('data-state', 'speaking');
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-speaking-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-speaking-${info.project.name}.png`);
   await page.getByText('Connection & sound', { exact: true }).click();
   await expect(page.getByLabel('Next connection')).toBeDisabled();
   await page.getByRole('button', { name: 'Mute all audio' }).click();
@@ -81,7 +83,7 @@ test('simulated Live Voice to Practice to Live Text: provenance and private note
   await page.getByLabel('Next connection').selectOption('practice');
   await expect(page.getByTestId('caption')).toContainText('Earlier conversations are in history.');
   await page.getByRole('button', { name: 'Open transcript history' }).click();
-  const history = page.getByRole('dialog', { name: 'Conversation history' });
+  const history = page.getByRole('region', { name: 'Conversation history', exact: true });
   await expect(history).toContainText('Live Voice');
   await expect(history).toContainText('Previous call');
   await expect(history).toContainText('Typed');
@@ -96,7 +98,7 @@ test('simulated Live Voice to Practice to Live Text: provenance and private note
     return (levels[0]! + 0.05) / (levels[1]! + 0.05);
   });
   expect(pinContrast).toBeGreaterThanOrEqual(4.5);
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-history-transition-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-history-transition-${info.project.name}.png`);
   await page.getByRole('button', { name: 'Close history' }).click();
   await page.getByRole('button', { name: 'Resume Practice' }).click();
   await expect(page.getByLabel('Type a message')).toBeEnabled();
@@ -121,7 +123,7 @@ test('simulated Live Voice to Practice to Live Text: provenance and private note
   expect(newObservation.message).toMatch(/Conveyor \(conveyor\) is stopped/);
   expect(newObservation.message).not.toBe(observation.message);
   await expect(page.locator('.notebook-list')).toContainText('Earlier report');
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-recap-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-recap-${info.project.name}.png`);
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
 });
 
@@ -136,7 +138,7 @@ test('simulated tool lifecycle: checking reflects a pending real server request,
   provider.emit({ type: 'reply.done', reply_id: 'pending-action', status: 'completed' });
   await expect(page.locator('.pip-portrait')).toHaveAttribute('data-state', 'checking');
   await expect(page.locator('body')).not.toContainText(/Latch|latched/);
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-checking-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-checking-${info.project.name}.png`);
   const cancellation = page.waitForResponse(response => response.url().endsWith('/cancel'));
   await page.getByRole('button', { name: 'Interrupt', exact: true }).click();
   expect((await cancellation).ok()).toBe(true);
@@ -178,12 +180,13 @@ test('simulated success: authoritative cooperation permits one closing response 
   expect(audio.closedContexts).toBe(audio.contexts);
   await expect(page.locator('.collaboration-timeline li').last()).toBeInViewport({ ratio: 1 });
   await expect(page.getByRole('button', { name: 'Play Classic again' })).toBeInViewport({ ratio: 1 });
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-completion-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-completion-${info.project.name}.png`);
 });
 
 test('simulated permission failure: no token or connection is minted and the recovery message is visible', async ({ page }, info) => {
   const provider = await fakeProvider(page, { permissionDenied: true });
   await page.goto('/');
+  await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: /Live Voice/ }).check();
   await page.getByRole('button', { name: 'Start with Voice' }).click();
   await expect(page.getByRole('alert')).toContainText('Microphone access was denied');
@@ -191,7 +194,7 @@ test('simulated permission failure: no token or connection is minted and the rec
   expect(provider.connections).toBe(0);
   expect((await provider.audioState()).activeTracks).toBe(0);
   await expect(page.getByRole('radio', { name: /Live Voice/ })).toBeChecked();
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-permission-error-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-permission-error-${info.project.name}.png`);
 });
 
 test('simulated rejection: sanitizes diagnostics, shows connection error, and releases the capture', async ({ page }, info) => {
@@ -209,7 +212,7 @@ test('simulated rejection: sanitizes diagnostics, shows connection error, and re
   await expect.poll(() => provider.ended).toBe(1);
   expect((await provider.audioState()).activeTracks).toBe(0);
   await expect.poll(async () => (await provider.audioState()).closedContexts).toBe(voiceContexts + 1);
-  await fixtureScreenshot(page, `test-results/goal-002-simulated-connection-error-${info.project.name}.png`);
+  await fixtureScreenshot(page, `test-results/goal-003-training-simulated-connection-error-${info.project.name}.png`);
 });
 
 test('simulated success watchdog: an absent closing response cannot keep the call open', async ({ page }) => {

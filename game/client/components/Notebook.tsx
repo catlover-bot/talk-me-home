@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import type { MissionRecord } from '../../shared/contracts';
 import { originLabel } from '../useMission';
+import { chapterNames } from './ChapterHeader';
 
 export function Notebook({ record, onNote }: { record: MissionRecord | null; onNote(text: string): Promise<boolean> }) {
   const [text, setText] = useState('');
@@ -16,6 +17,7 @@ export function Notebook({ record, onNote }: { record: MissionRecord | null; onN
       {record?.notebook.map(entry => <li key={entry.id} className={'notebook-entry ' + (entry.kind === 'report' ? 'report' : 'private-note')}>
         <div className="caption-meta"><strong>{entry.kind === 'report' ? 'Robot report' : 'My note'}</strong>
           {entry.origin && <span className="source-label">{originLabel[entry.origin]}</span>}
+          {entry.chapter && <span className="source-label chapter-source">{chapterNames[entry.chapter]}</span>}
           <time dateTime={new Date(entry.reportedAt ?? entry.timestamp).toISOString()}>{new Date(entry.reportedAt ?? entry.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}</time>
         </div>
         {entry.kind === 'report' ? <blockquote>{entry.text}</blockquote> : <p>{entry.text}</p>}

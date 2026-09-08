@@ -29,9 +29,11 @@ export const pipStateLabels: Record<PipState, string> = {
 export function PipPortrait({
   state,
   compact = false,
+  mini = false,
 }: {
   state: PipState;
   compact?: boolean;
+  mini?: boolean;
 }) {
   const id = useId().replace(/:/g, "");
   const resting = state === "offline" || state === "paused";
@@ -39,13 +41,13 @@ export function PipPortrait({
   const busy = state === "checking" || state === "considering";
   return (
     <figure
-      className={`pip-portrait ${compact ? "pip-compact" : ""}`}
+      className={`pip-portrait ${compact ? "pip-compact" : ""} ${mini ? 'pip-mini' : ''}`}
       data-state={state}
       aria-label={`Pip, UNIT 04. ${pipStateLabels[state]}.`}
     >
       <svg
         className="pip-art"
-        viewBox="0 0 400 350"
+        viewBox={mini ? '90 18 215 195' : '0 0 400 350'}
         role="img"
         aria-labelledby={`${id}-title`}
       >
@@ -218,6 +220,7 @@ export function PipPortrait({
             stroke="#e5b38b"
             strokeWidth="1.5"
           />
+          <path d="m 239 201-2 22m19-18-2 21" fill="none" stroke="#704635" strokeWidth="1.4" strokeDasharray="2 3" />
         </g>
         <g className="pip-head">
           <path
@@ -233,6 +236,7 @@ export function PipPortrait({
             strokeLinecap="round"
           />
           <circle
+            className="pip-antenna-tip"
             cx="257"
             cy="31"
             r="8"
@@ -259,6 +263,7 @@ export function PipPortrait({
             strokeLinecap="round"
             opacity=".86"
           />
+          <path d="m 278 83-5 8m10-1-4 7 M 118 168l4 7" stroke="#a39882" strokeWidth="1.8" strokeLinecap="round" />
           <rect x="122" y="92" width="155" height="91" rx="30" fill="#455145" />
           <rect
             x="125"
@@ -372,13 +377,14 @@ export function PipPortrait({
             <path d="M 318 114 Q 331 132 318 150 M 330 105 Q 350 132 330 159" />
           </g>
         )}
-        {busy && (
+        {state === 'considering' && (
           <g className="pip-thought" fill="#c8b58b">
             <circle cx="317" cy="78" r="4" />
             <circle cx="331" cy="69" r="5" />
             <circle cx="348" cy="66" r="6" />
           </g>
         )}
+        {state === 'checking' && <g className="pip-checking" fill="none" stroke="#d5c49a" strokeWidth="2.5" strokeLinecap="round"><path d="M 318 71 V 61 H 328 M 344 61 H 354 V 71 M 354 88 V 98 H 344 M 328 98 H 318 V 88" /><path d="m 325 80 7 7 14-16" /></g>}
         {state === "paused" && (
           <g fill="#b8baa4">
             <rect x="317" y="88" width="7" height="24" rx="2" />

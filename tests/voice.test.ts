@@ -532,6 +532,11 @@ test('Pip prompt: bounded initiative, communicated intent, historical provenance
   assert.match(prompt, /Completed actions are history, never commands to replay/);
   assert.match(prompt, /Take corrections practically/);
   assert.doesNotMatch(JSON.stringify(sessionConfig), /crescent|kite|anchor|bridge|select_anchor|select_bridge|maintenanceProfile/i);
+  assert.match(prompt, /roughly 15–35 words/);
+  assert.match(prompt, /Execute a clear request without asking permission again/);
+  assert.match(prompt, /never the raw transcript or a completed physical fact/);
+  assert.match(prompt, /do not repeat the greeting or claim home until the server confirms final completion/);
+  assert.doesNotMatch(JSON.stringify(sessionConfig), /gallery\.g|return\.contact|confirm_return|charge.*store|\b(obstruction|Beacon|Harbor|Sail|Leaf|Fork|Ring)\b|chapterEpoch|Configuration [AB]/i);
 });
 
 test('voice playback state: received bytes and transcripts never assert actual playback', async () => {
@@ -737,4 +742,128 @@ test('live adapter fake: client duration cap explicitly ends a connection and re
   assert.equal(h.socket.sent.filter((event) => event.type === 'session.end').length, 1);
   assert.equal(h.audio.closed, 1);
   assert.equal(h.statuses.at(-1), 'ended');
+});
+
+test('campaign voice: tool context binds on receipt; transition success sends once and old queued work remains stale', async () => {
+  let epoch = 1;
+  const crossing = deferred<void>();
+  const contexts: number[] = [];
+  const h = harness({
+    captureToolContext: () => ({ chapterEpoch: epoch }),
+    executeTool: async (tool, _signal, context) => {
+      const captured = (context as { chapterEpoch: number }).chapterEpoch;
+      contexts.push(captured);
+      if (captured !== epoch) return { ok: false, message: 'That request belongs to the previous area.' };
+      if (tool.name === 'move_to') {
+        await crossing.promise;
+        epoch = 2;
+        return { ok: true, message: 'You crossed safely into a new area.', view: { chapterEpoch: epoch, hiddenMap: 'never-forward' } };
+      }
+      return { ok: true, message: 'A current local observation.' };
+    },
+  });
+  call(h.protocol, 'cross', 'move_to');
+  h.protocol.receive({ type: 'tool.call', call_id: 'old-inspect', name: 'inspect_object', arguments: { object: 'old-target' } });
+  done(h.protocol, 'cross');
+  await tick();
+  assert.deepEqual(contexts, [1]);
+  crossing.resolve();
+  await tick(); await tick();
+  assert.deepEqual(contexts, [1, 1]);
+  assert.equal(h.sent.filter(event => event.call_id === 'cross').length, 1);
+  assert.equal(JSON.parse(String(h.sent[0]?.result)).ok, true);
+  assert.equal(h.sent[1]?.is_error, true);
+  assert.doesNotMatch(JSON.stringify(h.sent), /hiddenMap|never-forward|chapterEpoch/);
+  assert.equal(h.protocol.ready, true);
+  assert.equal(h.cancellations, 0);
+  // Duplicate transition packets cannot replay the crossing or its result.
+  h.protocol.receive({ type: 'tool.call', call_id: 'cross', name: 'move_to', arguments: {} });
+  done(h.protocol, 'cross');
+  call(h.protocol, 'new-survey'); done(h.protocol, 'new-survey'); await tick();
+  assert.deepEqual(contexts, [1, 1, 2]);
+  assert.equal(h.sent.filter(event => event.call_id === 'cross').length, 1);
+  await h.protocol.stop();
+});
+
+test('campaign voice: normal spoken input preserves authorization; actual interruption and stop revoke it', async () => {
+  const reasons: string[] = [];
+  const h = harness({ cancelPending: async reason => { reasons.push(reason); } });
+  h.protocol.receive({ type: 'input.speech.started' });
+  await tick();
+  assert.deepEqual(reasons, ['supersede']);
+  h.protocol.receive({ type: 'reply.started', reply_id: 'active' });
+  h.protocol.receive({ type: 'input.speech.started' });
+  await tick();
+  assert.equal(reasons.at(-1), 'interrupt');
+  h.protocol.receive({ type: 'reply.done', reply_id: 'active', status: 'interrupted' });
+  await tick();
+  assert.equal(reasons.at(-1), 'interrupt');
+  await h.protocol.interrupt(true);
+  assert.equal(reasons.at(-1), 'interrupt');
+  await h.protocol.stop();
+  assert.equal(reasons.at(-1), 'stop');
+});
+
+test('campaign captions: final-only late speech preserves the chapter captured before transition', async () => {
+  let chapter = 'cargo';
+  const captions: { text: string; chapter: unknown }[] = [];
+  const h = harness({
+    captureToolContext: () => ({ chapter }),
+    onTranscript: (entry, context) => captions.push({ text: entry.text, chapter: (context as { chapter: string }).chapter }),
+  });
+  h.protocol.receive({ type: 'input.speech.started' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'old-area-report' });
+  chapter = 'gallery';
+  h.protocol.receive({ type: 'transcript.agent', reply_id: 'old-area-report', text: 'That mechanism is secured.' });
+  h.protocol.receive({ type: 'transcript.user', item_id: 'old-utterance', text: 'Cross when it is safe.' });
+  h.protocol.receive({ type: 'reply.done', reply_id: 'old-area-report', status: 'completed' });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'new-area-report' });
+  h.protocol.receive({ type: 'transcript.agent', reply_id: 'new-area-report', text: 'I can now inspect this area.' });
+  assert.deepEqual(captions.map(entry => entry.chapter), ['cargo', 'cargo', 'gallery']);
+  assert.deepEqual(h.sent, []);
+  await h.protocol.stop();
+});
+
+test('campaign live text fake: a fresh confirmation supersedes old input without revoking a ready grant', async () => {
+  const reasons: string[] = [];
+  const h = liveHarness();
+  h.options.cancelPending = async reason => { reasons.push(reason); };
+  const starting = h.live.start(h.options);
+  await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
+  assert.equal(h.live.sendText('Please confirm the return.'), true);
+  await tick();
+  assert.deepEqual(reasons, ['supersede']);
+  assert.equal(h.socket.sent.at(-1)?.type, 'reply.create');
+  h.socket.emit({ type: 'reply.started', reply_id: 'active' });
+  h.live.sendText('Wait. I need to change that.');
+  await tick();
+  assert.equal(reasons.at(-1), 'interrupt');
+  await h.live.stop();
+});
+
+test('campaign connection clock fake: warning at 540 seconds, cap at 600, checkpoint callback once and no reconnect', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const warnings: string[] = [];
+  let limits = 0;
+  const h = liveHarness({ onWarning: message => warnings.push(message), onSessionLimit: () => { limits++; } });
+  // Caller input cannot enlarge the existing ten-minute cap.
+  h.options.maxSessionSeconds = 3600;
+  const starting = h.live.start(h.options);
+  await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
+  t.mock.timers.tick(539_999);
+  assert.equal(warnings.length, 0);
+  t.mock.timers.tick(1);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0]!, /60 seconds/);
+  assert.equal(limits, 0);
+  t.mock.timers.tick(60_000);
+  await tick(); await h.live.stop();
+  assert.equal(limits, 1);
+  assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+  assert.equal(h.audio.closed, 1);
+  assert.equal(h.sockets, 1);
+  t.mock.timers.tick(600_000);
+  assert.equal(limits, 1);
+  assert.equal(warnings.length, 2);
 });

@@ -124,7 +124,7 @@ export async function fixtureScreenshot(page: Page, path: string) {
     Object.assign(node.style, { display: 'table', margin: '8px 26px 16px', padding: '7px 10px', background: '#fff8e9', color: '#253a32', border: '1px solid #253a32', font: '12px system-ui', pointerEvents: 'none' });
     document.body.append(node); return node;
   });
-  await page.screenshot({ path, fullPage: true });
+  await page.screenshot({ path, fullPage: true, animations: 'disabled' });
   await label.evaluate(node => node.remove());
   await label.dispose();
 }

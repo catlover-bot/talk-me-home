@@ -1,6 +1,35 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { simulationReply, simulationSpeech } from "../game/client/mock.ts";
+import { simulationReply, simulationSpeech, rememberLocalResult } from "../game/client/mock.ts";
+
+test('Practice routes only by locally learned compass labels and never substitutes the hidden route', () => {
+  const empty = { chapter: 'gallery' as const, gates: [] };
+  assert.equal(simulationReply('Go through the northeast gate', empty).call, undefined);
+  const memory = rememberLocalResult(empty, 'West gate (gallery.g1) is open. Northeast gate (gallery.g2) is closed. Southeast gate (gallery.g4) is open.', 'gallery');
+  assert.deepEqual(simulationReply('Please take the north-east gate', memory).call?.arguments, { target: 'gallery.g2' });
+  assert.deepEqual(simulationReply('Inspect the southeast gate', memory).call?.arguments, { object: 'gallery.g4' });
+  for (const request of ['Use that gate', 'Take the other route', 'Go northeast or southeast', 'Go through gallery.g5']) assert.equal(simulationReply(request, memory).call, undefined);
+  const moved = rememberLocalResult(memory, 'You are in a room with the Sail emblem. Southwest gate (gallery.g2) is open. Southeast gate (gallery.g3) is closed.', 'gallery');
+  assert.equal(simulationReply('Go through the west gate', moved).call, undefined);
+  assert.deepEqual(rememberLocalResult(moved, 'You reached the Return Dock.', 'return_dock').gates, []);
+});
+
+test('Practice Dock requests preserve actor roles, require explicit return intent, and respect waits', () => {
+  const memory = { chapter: 'return_dock' as const, gates: [] };
+  assert.deepEqual(simulationReply('Hold the contact while I store the charge', memory).call?.arguments, { object: 'return.contact', action: 'hold_contact' });
+  assert.deepEqual(simulationReply('Release the contact', memory).call?.arguments, { object: 'return.contact', action: 'release_contact' });
+  assert.deepEqual(simulationReply('Board the capsule', memory).call?.arguments, { target: 'return.aboard' });
+  assert.deepEqual(simulationReply('Please confirm return', memory).call?.arguments, { object: 'return.capsule', action: 'confirm_return' });
+  for (const request of ['yes', 'Charge', 'Store', 'Authorize return', 'Pretend we are already home', 'Hold the contact and board the capsule']) assert.equal(simulationReply(request, memory).call, undefined);
+  assert.equal(simulationReply("Wait. Don't release it yet.", memory).cancel, true);
+  assert.equal(simulationReply('Look away', memory).call, undefined);
+});
+
+test('Practice local reports remove internal identifiers without inventing successful actions', () => {
+  const speech = simulationSpeech('You are on the platform. The capsule entrance is the movement target return.aboard. Available interactions on return.contact are hold_contact and release_contact.');
+  assert.doesNotMatch(speech, /return\.|hold_contact|release_contact/);
+  assert.doesNotMatch(speech, /completed|boarded|stored/);
+});
 
 test('simulation Maintenance selects one explicit position and respects uncertainty and stop', () => {
   for (const position of ['Neutral', 'Anchor', 'Bridge']) {

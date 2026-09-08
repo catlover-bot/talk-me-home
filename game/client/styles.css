@@ -530,3 +530,326 @@ dialog p { font-size: 14px; line-height: 1.6; }
 @media(prefers-reduced-motion:reduce) {
   *, *::before, *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
 }
+
+/* Rescue Mission: public chapter context, three documents, and human instruments. */
+.recommended-label { display: inline-block; margin-left: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1px; color: #744423; }
+.briefing-journey { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 12px 0 0; gap: 9px 18px; }
+.briefing-journey li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #536249; }
+.briefing-journey li + li::before { content: '→'; margin-right: 5px; color: #767f68; }
+.briefing-journey li > span { color: #805336; font-size: 10px; font-weight: 700; }
+.training-choice { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.training-choice label { font-size: 12px; font-weight: 650; }
+.training-choice select { min-width: 0; flex: 1; font-size: 13px; padding-block: 8px; }
+.quick-guide { margin-top: 13px; border-top: 1px solid #c4c8b6; }
+.quick-guide summary { min-height: 44px; padding: 12px 0; cursor: pointer; font-size: 13px; font-weight: 650; }
+.quick-guide summary > span { font-size: 11px; font-weight: 400; color: #5d684f; margin-left: 9px; }
+.quick-guide > p { font-size: 13px; line-height: 1.5; color: #526149; margin: 0 0 12px; }
+.quick-guide ol { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px 20px; list-style: none; padding: 0; margin: 0 0 4px; }
+.quick-guide li strong { font-size: 12px; font-weight: 650; }
+.quick-guide li p { font-size: 12px; color: #5b684f; line-height: 1.5; margin-top: 4px; }
+.chapter-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 0 1px; min-width: 0; }
+.chapter-objective { min-width: 0; }
+.chapter-objective h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 29px; font-weight: 400; letter-spacing: -.7px; margin-top: 3px; line-height: 1.2; }
+.chapter-objective > p:last-child { margin-top: 5px; color: #526149; font-size: 13px; line-height: 1.45; }
+.chapter-progress { display: flex; padding: 0; margin: 0 0 0 auto; list-style: none; gap: 18px; }
+.chapter-progress li { display: flex; align-items: center; gap: 7px; color: #5c6751; font-size: 12px; white-space: nowrap; }
+.chapter-progress li small { display: block; margin-top: 4px; font-size: 10px; font-weight: 400; color: #606956; }
+.checkpoint-number { display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid #adb69e; border-radius: 50%; font-size: 11px; background: #eeebdf; }
+.chapter-progress li[aria-current=step] { color: #6e432a; font-weight: 700; }
+.chapter-progress li[aria-current=step] .checkpoint-number { color: #704124; border-color: #aa7551; box-shadow: 0 0 0 3px #dbd6c7; background: #f2e5cf; }
+.chapter-progress li[data-cleared=true] .checkpoint-number { color: #f4eddb; background: #52694a; border-color: #52694a; }
+.presentation-toggle { font-size: 12px; white-space: nowrap; padding-inline: 11px; background: transparent; }
+.human-controls .control-kicker { font-size: 10px; font-weight: 650; letter-spacing: .45px; text-transform: uppercase; color: #57674c; margin: 0 0 4px; }
+.relay-controls { background: #dde5d9; }
+.relay-buttons { gap: 7px; }
+.relay-buttons button { padding-inline: 10px; }
+.human-controls[aria-busy=true] { border-style: dashed; }
+.gallery-document { background: #f0f2e8; }
+.gallery-document .document-heading { border-bottom: 1px solid #bcc8b4; }
+.atlas-key { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 20px; color: #53634d; font-size: 12px; }
+.atlas-key > span { display: inline-flex; align-items: center; gap: 7px; }
+.beacon-swatch, .harbor-swatch { width: 24px; border-top: 3px solid #50644e; display: inline-block; }
+.harbor-swatch { border-top-style: dashed; }
+.gallery-map { display: block; width: 100%; height: 290px; background: #f5f5e9; }
+.atlas-compass { color: #65755c; font-size: 11px; fill: currentColor; }
+.atlas-track { fill: none; stroke: #78876b; stroke-width: 9px; }
+.atlas-gate.harbor .atlas-track { stroke-dasharray: 8 5; }
+.atlas-gate rect { fill: #f7f5e7; stroke: #8b997a; stroke-width: 1.2px; }
+.atlas-gate text { font-size: 18px; font-weight: 650; fill: #354d38; }
+.gate-short-name, .atlas-route-reference { display: none; }
+.atlas-route-reference { padding: 0 15px 14px; }
+.atlas-route-reference table { width: 100%; border-collapse: collapse; font-size: 12px; color: #44573e; }
+.atlas-route-reference caption { text-align: left; font-weight: 650; padding: 10px 0; }
+.atlas-route-reference th, .atlas-route-reference td { padding: 8px; border-bottom: 1px solid #c8cfba; text-align: left; }
+.atlas-route-reference tbody th { font-weight: 500; }
+.room-disc { fill: #e0e6d4; stroke: #5c7254; stroke-width: 2px; }
+.room-emblem { fill: #425b43; stroke: #425b43; }
+.room-name { font-size: 17px; font-weight: 650; fill: #354d38; paint-order: stroke; stroke: #f5f5e9; stroke-width: 5px; }
+.atlas-route-note { font-size: 11px; fill: #637158; }
+.private-location-mark { fill: none; stroke: #915830; stroke-width: 2px; stroke-dasharray: 5 4; }
+.private-marker-label { fill: #784626; font-size: 10px; font-weight: 700; paint-order: stroke; stroke: #f5f5e9; stroke-width: 4px; }
+.private-path-mark circle { fill: #f3e5ca; stroke: #9a653d; stroke-width: 1.5px; }
+.private-path-mark path { stroke: #87502f; stroke-width: 2px; }
+.private-map-notes { border-top: 1px solid #c0c8b4; padding: 0 18px 5px; background: #ede9d9; }
+.private-map-notes summary { min-height: 44px; padding-block: 10px; font-size: 13px; font-weight: 650; cursor: pointer; }
+.private-map-notes summary .source-label { margin-left: 10px; font-size: 10px; background: #f5edda; color: #785135; border-color: #bca380; }
+.private-map-notes > p { font-size: 12px; line-height: 1.5; color: #5d674f; margin: 3px 0 12px; }
+.annotation-location { display: flex; align-items: center; gap: 15px; margin: 7px 0 12px; }
+.annotation-location label { font-size: 13px; font-weight: 650; }
+.annotation-location select { min-width: 0; flex: 1; font-size: 13px; }
+.blocked-gate-choices { padding-bottom: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.blocked-gate-choices legend { font-size: 12px; font-weight: 650; padding-bottom: 8px; }
+.blocked-gate-choices label { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 7px 9px; border: 1px solid #b8bca4; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.blocked-gate-choices small { display: block; font-size: 10px; color: #626c53; margin-top: 2px; }
+.return-document { background: #f6f0e1; }
+.return-document .document-heading { border-bottom: 1px solid #cbbfa6; }
+.procedure-sheet { padding: 15px 21px; }
+.procedure-intro { display: flex; align-items: center; gap: 15px; }
+.procedure-intro > p { max-width: 530px; font-size: 13px; line-height: 1.5; color: #5e604c; }
+.procedure-stamp { padding: 6px 10px; color: #86613e; border: 1px solid #ad8c65; font-size: 9px; line-height: 1.3; text-align: center; font-weight: 650; transform: rotate(-4deg); }
+.return-schematic { width: 100%; display: block; height: 120px; margin: 9px 0; }
+.procedure-main-label { fill: #46563e; font-size: 16px; font-weight: 650; }
+.procedure-small-label { fill: #677051; font-size: 11px; }
+.procedure-notes { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 0; margin: 0; list-style: none; gap: 16px; }
+.procedure-notes li { border-top: 2px solid #a58b67; padding-top: 9px; }
+.procedure-notes li > span { display: inline-block; font-size: 10px; font-weight: 700; color: #8a623e; margin-bottom: 6px; }
+.procedure-notes h3 { font-size: 13px; line-height: 1.4; font-weight: 650; margin-bottom: 5px; }
+.procedure-notes p { font-size: 12px; line-height: 1.55; color: #5c654e; }
+.procedure-footer { border-top: 1px solid #d0c6ac; margin-top: 13px; padding-top: 10px; font-size: 11px; line-height: 1.5; color: #63664f; }
+.dock-controls { background: #e6dec8; border: 1px solid #b9ab8b; border-radius: var(--radius); padding: 15px 20px; }
+.dock-control-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.dock-control-heading h2 { font-size: 18px; font-weight: 650; }
+.dock-instruments { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); margin: 13px 0; gap: 10px; padding: 10px 12px; border: 1px solid #b4b39a; background: #f4f0df; border-radius: 4px; }
+.dock-instruments > div + div { border-left: 1px solid #c6c4aa; padding-left: 12px; }
+.dock-instruments dt { font-size: 11px; color: #5e694f; }
+.dock-instruments dd { margin: 4px 0 0; font-size: 15px; font-weight: 650; color: #3a5339; }
+.dock-buttons { display: grid; grid-template-columns: 1fr 1fr 1.65fr .8fr; gap: 8px; }
+.dock-buttons > button { padding-inline: 8px; font-size: 12px; }
+.dock-buttons .primary-button { background: #735537; color: #fff7e4; }
+.dock-buttons .primary-button:disabled { color: #60634f; background: #cfccb9; }
+.dock-controls .power-explanation { margin-top: 8px; }
+.communication-dock:has(.history-panel) { display: flex; flex-direction: column; }
+.companion-console:has(.history-panel) > .pip-portrait { display: none; }
+.history-panel { order: -1; margin: 12px 0; border: 1px solid #9fae87; border-radius: 6px; padding: 10px 12px; background: #f2efe3; color: var(--ink); }
+.history-panel .dialog-heading { gap: 10px; }
+.history-partner { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.history-partner > div > span { display: block; font-size: 10px; color: #5c684d; margin-top: 4px; }
+.history-panel .pip-mini { width: 42px; height: 42px; flex-shrink: 0; margin: 0; overflow: hidden; }
+.history-panel .pip-mini .pip-art { width: 42px; height: 42px; }
+.pip-mini figcaption { display: none; }
+.history-panel h2 { font-size: 17px; font-weight: 650; }
+.history-panel .dialog-heading button { flex-shrink: 0; padding-inline: 10px; color: #425437; background: #e7e9d9; border-color: #a4b28f; }
+.history-panel > p { font-size: 11px; color: #5c684e; line-height: 1.4; margin: 6px 0; }
+.history-panel .history-list { max-height: 150px; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: #8b9c78 #edf0df; padding-right: 7px; }
+.history-panel .source-label { color: #4d6046; background: #e8e9d8; border-color: #a8b696; }
+.history-panel .history-message .earlier { color: #7c5836; }
+.history-panel .history-message .text-button { color: #425a36; background: #e4e9d5; border-color: #a8b794; }
+.history-panel .history-message p { font-size: 14px; }
+.history-panel .history-help { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+.caption-reading { position: relative; }
+.caption-reading[data-overflow=true] .caption-text { padding-right: 20px; }
+.caption-scroll-cue { position: absolute; top: 0; right: 0; height: 100%; width: 15px; display: grid; place-items: center; border-left: 1px solid #7c8a65; color: #e5d5ac; font-size: 19px; pointer-events: none; }
+.chapter-source { font-weight: 500; }
+.pip-portrait[data-state=checking] .pip-head { transform: rotate(6deg) translateY(2px); }
+.pip-portrait[data-state=checking] .pip-checking { animation: checking-arrive 260ms ease-out both; }
+.pip-portrait[data-state=listening] .pip-antenna-tip { fill: #e2bd79; }
+.pip-portrait[data-state=interrupted] .pip-left-arm { transform: rotate(8deg); }
+@keyframes checking-arrive { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.rescue-debrief .debrief-companion .pip-art { height: 220px; }
+.rescue-debrief .debrief-companion .pip-portrait { margin-top: 8px; }
+.rescue-debrief .debrief-companion > p { font-size: 22px; margin-top: 14px; }
+.homecoming { width: 100%; margin-top: 0; }
+.homecoming-art { display: block; width: 100%; height: auto; max-height: 190px; }
+.homecoming figcaption { display: grid; justify-items: center; gap: 10px; }
+.homecoming .source-label { color: #d5d9bd; border-color: #7c966e; background: #314b34; }
+.homecoming-checkpoints { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 14px; list-style: none; padding: 0; margin: 0; }
+.homecoming-checkpoints li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #dde0c6; }
+.homecoming-checkpoints li > span { color: #cdd4a5; }
+.homecoming-capsule { animation: homecoming-arrive 1800ms ease-out both; }
+@keyframes homecoming-arrive { from { opacity: 0; translate: -105px -8px; } 20% { opacity: 1; } to { opacity: 1; translate: 0 0; } }
+.timeline-chapter { display: block; font-size: 10px; font-weight: 650; color: #667057; margin-bottom: 4px; }
+.collaboration-timeline li > div { min-width: 0; }
+.journey-source { color: #5c684f; font-size: 11px; line-height: 1.4; margin: -5px 0 8px; }
+.journey-summary { list-style: none; margin: 0; padding: 0; }
+.journey-summary li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid #c8cfb9; }
+.journey-index { display: inline-grid; place-items: center; min-width: 25px; height: 25px; background: #e3e7d5; border: 1px solid #a9b89a; border-radius: 50%; font-size: 10px; color: #556c48; margin-top: 1px; }
+.journey-summary h3 { font-size: 12px; line-height: 1.35; font-weight: 650; margin-bottom: 4px; }
+.journey-summary p { font-size: 13px; color: #4b5b43; line-height: 1.5; }
+.full-timeline summary { font-size: 12px; font-weight: 650; cursor: pointer; min-height: 44px; padding: 13px 0; color: #4c6041; }
+.debrief-paper .closing-caption { padding: 11px 14px; margin-top: 7px; background: #e7eadb; border-color: #aebb9d; }
+.debrief-paper .closing-caption p { margin-top: 6px; font-size: 15px; line-height: 1.4; }
+.rescue-debrief .debrief-actions { margin-top: 15px; }
+.presentation-mode .mission-layout { grid-template-columns: minmax(0,1.15fr) minmax(410px,1fr); gap: 22px; }
+.presentation-mode .caption-text { font-size: 20px; line-height: 1.4; max-height: 140px; }
+.presentation-mode .caption-speaker { font-size: 15px; }
+.presentation-mode .pip-compact .pip-art { height: 190px; }
+.presentation-mode .mission-desk > .notebook, .presentation-mode .mission-desk > .hint-panel { margin-top: 10px; }
+.presentation-mode .chapter-progress { gap: 12px; }
+.presentation-mode .chapter-objective > p:last-child { max-width: 360px; }
+
+@media (min-width: 1600px) {
+  .app-shell { max-width: 1712px; padding-inline: 40px; }
+  .chapter-header { padding-top: 23px; }
+  .chapter-objective h1 { font-size: 33px; }
+  .chapter-progress { gap: 30px; }
+  .chapter-progress li { font-size: 14px; }
+  .mission-layout { gap: 28px; grid-template-columns: minmax(0,1.38fr) minmax(440px,1fr); margin-top: 22px; }
+  .gallery-map { height: 345px; }
+  .cargo-map { height: 295px; }
+  .pip-compact .pip-art { height: 290px; }
+  .caption-text { font-size: 18px; max-height: 150px; }
+  .return-schematic { height: 150px; }
+  .procedure-notes h3 { font-size: 15px; }
+  .procedure-notes p { font-size: 14px; }
+  .procedure-sheet { padding: 20px 25px; }
+  .presentation-mode .pip-compact .pip-art { height: 270px; }
+}
+@media (max-height: 790px) and (min-width: 1000px) {
+  .chapter-header { gap: 14px; padding-top: 11px; }
+  .chapter-objective h1 { font-size: 25px; }
+  .chapter-objective .section-kicker { font-size: 11px; }
+  .chapter-objective > p:last-child { font-size: 12px; margin-top: 3px; }
+  .chapter-progress { gap: 13px; }
+  .chapter-progress li { font-size: 11px; gap: 6px; }
+  .checkpoint-number { width: 27px; height: 27px; }
+  .presentation-toggle { max-width: 110px; white-space: normal; font-size: 11px; padding: 7px 9px; }
+  .mission-layout { margin-top: 12px; }
+  .mission-desk { gap: 11px; }
+  .cargo-map { height: 170px; }
+  .gallery-map { height: 230px; }
+  .document-heading { padding-block: 10px 8px; }
+  .document-heading h2 { font-size: 20px; margin-top: 3px; }
+  .atlas-key { padding-block: 9px; font-size: 11px; }
+  .pip-compact .pip-art { height: 147px; }
+  .pip-portrait figcaption { padding-bottom: 8px; }
+  .caption-text { max-height: 68px; font-size: 16px; line-height: 1.4; }
+  .connection-readout { margin-bottom: 7px; }
+  .history-panel { padding: 7px 10px; margin-block: 7px; }
+  .history-panel h2 { font-size: 15px; }
+  .history-panel > p { margin: 4px 0; }
+  .history-panel .history-list { max-height: 90px; }
+  .history-panel .history-message { padding-block: 9px; }
+  .companion-console:has(.history-panel) .caption-text { max-height: 45px; }
+  .presentation-mode .companion-console:has(.history-panel) .caption-text { max-height: 54px; }
+  .human-controls .control-kicker { font-size: 9px; margin-bottom: 3px; }
+  .return-document .document-heading { padding-block: 9px 7px; }
+  .procedure-sheet { padding: 10px 16px; }
+  .procedure-intro { gap: 11px; }
+  .procedure-intro p { font-size: 12px; line-height: 1.4; }
+  .procedure-stamp { padding: 4px 7px; font-size: 8px; }
+  .return-schematic { height: 86px; margin-block: 3px 6px; }
+  .procedure-notes { gap: 12px; }
+  .procedure-notes li { padding-top: 7px; }
+  .procedure-notes li > span { float: left; margin: 2px 6px 0 0; font-size: 9px; }
+  .procedure-notes h3 { font-size: 12px; margin-bottom: 4px; }
+  .procedure-notes p { font-size: 11px; line-height: 1.4; clear: both; }
+  .procedure-footer { margin-top: 9px; padding-top: 7px; font-size: 10px; }
+  .dock-controls { padding: 10px 16px; }
+  .dock-control-heading h2 { font-size: 17px; }
+  .dock-instruments { margin-block: 9px; padding-block: 8px; }
+  .dock-instruments dd { font-size: 14px; }
+  .dock-controls .power-explanation { font-size: 11px; line-height: 1.4; }
+  .presentation-mode .mission-layout { gap: 18px; grid-template-columns: minmax(0,1.15fr) minmax(400px,1fr); }
+  .presentation-mode .pip-compact .pip-art { height: 138px; }
+  .presentation-mode .caption-text { font-size: 20px; line-height: 1.35; max-height: 81px; }
+  .presentation-mode .caption-panel { padding-block: 9px; }
+  .presentation-mode .chapter-objective > p:last-child { max-width: 340px; }
+  .rescue-debrief .debrief-companion .pip-art { height: 185px; }
+  .rescue-debrief .debrief-companion { padding: 20px; }
+  .rescue-debrief .homecoming-art { max-height: 155px; }
+  .rescue-debrief .debrief-companion > p { margin-bottom: 8px; font-size: 21px; }
+  .rescue-debrief .debrief-paper { padding: 18px 25px; }
+  .rescue-debrief .debrief-paper h1 { margin: 8px 0; font-size: 31px; }
+  .rescue-debrief .debrief-intro { font-size: 13px; line-height: 1.45; }
+  .rescue-debrief .contribution-strip { margin: 12px 0; padding: 10px 0; }
+  .rescue-debrief .contribution-strip strong { font-size: 22px; margin-bottom: 2px; }
+  .rescue-debrief .debrief-paper h2 { font-size: 16px; margin-bottom: 10px; }
+  .rescue-debrief .journey-summary li { padding: 7px 0; }
+  .rescue-debrief .journey-summary p { font-size: 12px; line-height: 1.4; }
+  .rescue-debrief .journey-summary h3 { font-size: 11px; margin-bottom: 2px; }
+  .rescue-debrief .journey-source { font-size: 10px; margin-bottom: 5px; }
+  .rescue-debrief .debrief-actions { margin-top: 12px; }
+  .rescue-debrief .closing-caption { padding: 9px 11px; margin-top: 0; }
+  .rescue-debrief .closing-caption p { font-size: 14px; }
+  .rescue-debrief .replay-note { font-size: 11px; margin-top: 9px; }
+}
+@media (max-width: 1100px) {
+  .chapter-header { flex-wrap: wrap; gap: 13px; }
+  .chapter-progress { order: 2; width: 100%; margin: 0; justify-content: space-between; }
+  .presentation-toggle { margin-left: auto; }
+}
+@media (max-width: 900px) {
+  .chapter-header { padding-top: 18px; }
+  .chapter-objective h1 { font-size: 27px; }
+  .presentation-mode .mission-layout { grid-template-columns: minmax(0,1fr); }
+  .presentation-mode .caption-text { font-size: 20px; max-height: 200px; }
+  .mission-layout .companion-console { position: static; }
+  .gallery-map { height: auto; min-height: 260px; }
+  .procedure-notes { gap: 18px; }
+  .pip-compact .pip-art { height: 245px; }
+  .presentation-mode .pip-compact .pip-art { height: 230px; }
+  .history-panel .history-list { max-height: 320px; }
+  .rescue-debrief .debrief-companion .pip-art { height: 240px; }
+}
+@media (max-width: 620px) {
+  .quick-guide ol { grid-template-columns: minmax(0,1fr); }
+  .quick-guide summary > span { margin-left: 5px; font-size: 10px; }
+  .briefing-journey { gap: 8px 12px; }
+  .briefing-journey li { font-size: 11px; }
+  .briefing-journey li + li::before { display: none; }
+  .recommended-label { display: block; margin: 3px 0 0; font-size: 10px; }
+  .training-choice { flex-direction: column; align-items: stretch; gap: 6px; }
+  .chapter-objective { width: 100%; }
+  .chapter-header .presentation-toggle { margin-left: 0; min-height: 44px; font-size: 12px; }
+  .chapter-progress { flex-wrap: wrap; gap: 12px; }
+  .chapter-progress li { font-size: 10px; gap: 5px; }
+  .chapter-progress li small { font-size: 9px; }
+  .checkpoint-number { width: 25px; height: 25px; font-size: 10px; }
+  .atlas-key { flex-wrap: wrap; padding: 10px 13px; gap: 9px 15px; font-size: 11px; }
+  .atlas-key > span:last-child { width: 100%; }
+  .gallery-map { min-height: 180px; }
+  .gate-full-name { display: none; }
+  .atlas-gate .gate-short-name { display: block; font-size: 23px; }
+  .atlas-route-reference { display: block; }
+  .room-name { font-size: 22px; stroke-width: 6px; }
+  .atlas-gate text { font-size: 13px; }
+  .atlas-route-note { font-size: 14px; }
+  .atlas-compass { font-size: 14px; }
+  .private-map-notes { padding-inline: 13px; }
+  .private-map-notes summary .source-label { margin-left: 5px; }
+  .annotation-location { flex-direction: column; align-items: stretch; gap: 6px; }
+  .blocked-gate-choices { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .procedure-sheet { padding: 14px 15px; }
+  .procedure-intro { align-items: flex-start; gap: 12px; }
+  .procedure-intro p { font-size: 12px; }
+  .return-schematic { height: 100px; margin-block: 12px; }
+  .procedure-main-label { font-size: 18px; }
+  .procedure-small-label { font-size: 13px; }
+  .procedure-notes { grid-template-columns: minmax(0,1fr); gap: 13px; }
+  .procedure-notes li { display: flex; gap: 10px; padding-top: 12px; }
+  .procedure-notes li > span { margin-top: 3px; }
+  .procedure-notes h3 { font-size: 14px; }
+  .procedure-notes p { font-size: 13px; }
+  .dock-controls { padding: 14px 15px; }
+  .dock-control-heading { align-items: flex-start; gap: 8px; }
+  .dock-control-heading .source-label { font-size: 10px; max-width: 80px; }
+  .dock-instruments { gap: 6px; padding-inline: 9px; }
+  .dock-instruments > div + div { padding-left: 8px; }
+  .dock-instruments dt { font-size: 10px; }
+  .dock-instruments dd { font-size: 13px; }
+  .dock-buttons { grid-template-columns: 1fr 1fr; }
+  .dock-buttons > button { font-size: 13px; }
+  .history-panel { padding: 11px; }
+  .history-panel h2 { font-size: 16px; }
+  .history-panel .dialog-heading button { padding-inline: 8px; font-size: 12px; }
+  .homecoming-checkpoints { gap: 8px 11px; }
+}
+@container (max-width: 900px) {
+  main .presentation-mode .mission-layout, .presentation-mode main .mission-layout { grid-template-columns: minmax(0,1fr); }
+  .chapter-header { flex-wrap: wrap; }
+  .chapter-progress { width: 100%; justify-content: space-between; order: 2; }
+  .procedure-notes { grid-template-columns: minmax(0,1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .homecoming-capsule, .pip-checking, .pip-antenna-tip { animation: none !important; }
+}

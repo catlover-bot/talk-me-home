@@ -1,5 +1,7 @@
 import { useState } from "react";
-import type { Scenario } from "../../shared/contracts";
+import type { Chapter, GalleryAnnotation, Scenario } from "../../shared/contracts";
+import { GalleryDocument, type AnnotationChange } from './GalleryDocument';
+import { ReturnDockDocument } from './ReturnDockDocument';
 
 function CargoMap() {
   return (
@@ -235,8 +237,13 @@ function ModuleMark({ shape }: { shape: "crescent" | "kite" }) {
   );
 }
 
-export function MissionDocuments({ scenario }: { scenario: Scenario }) {
+export function MissionDocuments({ scenario, chapter = 'cargo', annotation, onAnnotation, busy = false }: {
+  scenario: Scenario; chapter?: Chapter; annotation?: GalleryAnnotation;
+  onAnnotation?(change: AnnotationChange): Promise<unknown>; busy?: boolean;
+}) {
   const [tab, setTab] = useState<"map" | "manual">("map");
+  if (chapter === 'gallery') return <GalleryDocument annotation={annotation} onAnnotation={onAnnotation} busy={busy} />;
+  if (chapter === 'return_dock') return <ReturnDockDocument />;
   return (
     <section
       className="mission-documents"

@@ -133,6 +133,26 @@ test('Gallery gate compass labels match the fixed map orientation on both servic
   assert.match(robotView(state).message, /Southwest gate \(gallery.g2\).*Southeast gate \(gallery.g3\)/)
 })
 
+test('all Gallery human projections are independent of hidden configuration and surveys reveal only adjacent gates', () => {
+  const local = explore(gallery(), all.map(action => state => { if (state.chapter === 'gallery') action(state) }))
+  const visible: Record<string, string[]> = { ring: ['g1'], fork: ['g1', 'g2', 'g4'], sail: ['g2', 'g3'], leaf: ['g4', 'g5'] }
+  for (const state of local.filter(state => state.chapter === 'gallery')) {
+    const alternative = structuredClone(state); alternative.gallery.configuration = 'b'
+    assert.deepEqual(humanView(state), humanView(alternative))
+    assert.deepEqual(robotView(state), robotView(alternative))
+    const result = robotView(state).message
+    const observed = [...result.matchAll(/gallery\.(g[1-5])/g)].map(match => match[1])
+    assert.deepEqual(observed, visible[state.gallery.room])
+    assert.doesNotMatch(result, /Beacon|Harbor|configuration|return\.contact|return\.capsule/)
+    for (const object of ['gallery.configuration', 'gallery.map', 'return.contact', 'far_side']) {
+      const before = structuredClone(state)
+      assert.equal(inspect(state, object).ok, false)
+      assert.deepEqual(state, before)
+      assert.doesNotMatch(inspect(state, object).message, /Beacon|Harbor|Sail|Leaf|blocked|configuration/)
+    }
+  }
+})
+
 test('a saturated request cache still permits bounded safety commands and Restart without evicting action receipts', async () => {
   const store = new SessionStore(), initial = store.create('classic', 'rescue')
   const first = call(initial, 'observe_room'), original = await store.tool(initial.sessionId, first)
@@ -292,6 +312,57 @@ test('delayed final confirmation cannot commit after accepted revoke even if aut
   release()
   assert.equal((await pending).ok, false); assert.equal(store.get(view.sessionId).completed, false)
   assert.equal((await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' }))).ok, true)
+})
+
+test('Gallery movement rechecks the latest Relay selection immediately before a delayed commit', async () => {
+  let hold = false, release!: () => void
+  const gate = new Promise<void>(resolve => { release = resolve })
+  const store = new SessionStore({ galleryConfiguration: 'b', beforeToolCommit: async () => { if (hold) await gate } })
+  let view = await enterGallery(store)
+  view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
+  hold = true
+  const pending = store.tool(view.sessionId, call(view, 'move_to', { target: 'gallery.g1' }))
+  await new Promise<void>(resolve => setImmediate(resolve))
+  try {
+    view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'off' }))
+  } finally { release() }
+  const result = await pending
+  assert.equal(result.ok, false); assert.match(result.message, /gate is closed/)
+  assert.equal(result.view.revision, view.revision)
+  const observation = await store.tool(view.sessionId, call(view, 'observe_room'))
+  assert.match(observation.message, /Ring emblem/)
+  assert.equal(store.recap(view.sessionId, view.roundId).entries.filter(entry => entry.kind === 'action' && entry.chapter === 'gallery').length, 0)
+})
+
+test('two queued moves cannot bounce through one Gallery gate; a newly requested return remains valid', async () => {
+  const store = new SessionStore({ galleryConfiguration: 'a' })
+  let view = await enterGallery(store)
+  view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
+  const first = call(view, 'move_to', { target: 'gallery.g1' }), stale = call(view, 'move_to', { target: 'gallery.g1' })
+  const [moved, rejected] = await Promise.all([store.tool(view.sessionId, first), store.tool(view.sessionId, stale)])
+  assert.equal(moved.ok, true); assert.match(moved.message, /Fork emblem/)
+  assert.equal(rejected.ok, false); assert.match(rejected.message, /canceled before it committed/)
+  assert.equal(rejected.view.revision, moved.view.revision)
+  assert.deepEqual(await store.tool(view.sessionId, first), moved)
+  const returned = await store.tool(view.sessionId, call(moved.view, 'move_to', { target: 'gallery.g1' }))
+  assert.equal(returned.ok, true); assert.match(returned.message, /Ring emblem/)
+  assert.equal(store.recap(view.sessionId, view.roundId).entries.filter(entry => entry.kind === 'action' && entry.chapter === 'gallery').length, 2)
+})
+
+test('chapter-aware recap byte limits preserve whole faithful quotes and never admit private hints or annotations', async () => {
+  const store = new SessionStore({ galleryConfiguration: 'a' })
+  const cargo = store.create('classic', 'rescue'), current = await enterGallery(store, cargo)
+  const text = String.fromCharCode(0x22, 0x5c, 0x01).repeat(500)
+  for (let index = 0; index < 4; index += 1) await store.message(current.sessionId, speech(index % 2 ? current : cargo, { messageId: `expanded-${index}`, text: `${index}:${text}` }))
+  await store.annotate(current.sessionId, envelope(current, { kind: 'blocked_gate', target: 'g5', marked: true }))
+  await store.hint(current.sessionId, envelope(current, { level: 3 }))
+  const recap = store.recap(current.sessionId, current.roundId)
+  assert.equal(recap.chapter, 'gallery')
+  assert.ok(Buffer.byteLength(JSON.stringify(recap), 'utf8') <= 11_000)
+  assert.deepEqual(recap.entries.map(entry => entry.messageId), ['expanded-2', 'expanded-3'])
+  assert.deepEqual(recap.entries.map(entry => entry.chapter), ['cargo', 'gallery'])
+  assert.deepEqual(recap.entries.map(entry => entry.text), [`2:${text}`, `3:${text}`])
+  assert.doesNotMatch(JSON.stringify(recap), /blockedGates|Either service bay|gallery\.g5/)
 })
 
 test('chapter-aware records retain historical conversation but exclude private map annotations, notes and unobserved graph', async () => {

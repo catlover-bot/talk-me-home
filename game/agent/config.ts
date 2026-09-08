@@ -2,7 +2,7 @@ import { robotGreeting, robotPrompt } from './prompt.ts';
 
 const objectParameter = {
   type: 'string',
-  description: 'The exact local object identifier returned by observe_room. Inspect to learn its available actions. Ask the player if their intended object is ambiguous.',
+  description: 'The exact reachable object identifier observed at your current location. Old-area identifiers may no longer apply. Inspect to learn actions; clarify an ambiguous object.',
 };
 
 // Function tools run through the browser and the authoritative game server.
@@ -11,7 +11,7 @@ const objectParameter = {
 export const robotTools = [
   {
     type: 'function', name: 'observe_room',
-    description: 'Observe your current location. Use before describing local facts, or when equipment may have changed. Returns only what you can currently observe.',
+    description: 'Survey your current location without changing anything. Use before describing unfamiliar surroundings or after relevant changes. Normally make one survey and one useful inspection, then return the turn. This reveals no remote map.',
     parameters: { type: 'object', properties: {}, additionalProperties: false },
   },
   {
@@ -21,7 +21,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'interact_object',
-    description: 'Attempt one local interaction learned by inspection, following the player\'s intent or agreed plan. Never guess an ambiguous setting. A successful server result is required before saying you acted. This cannot operate remote Mission Control equipment.',
+    description: 'Attempt one inspected local action following clear player intent or an agreed plan. Do not ask permission twice or guess an uncertain setting. Act sequentially and await a valid result. This cannot operate remote Mission Control controls.',
     parameters: { type: 'object', properties: {
       object: objectParameter,
       action: { type: 'string', description: 'One exact available action identifier returned by inspect_object.' },
@@ -29,9 +29,9 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'move_to',
-    description: 'Attempt one move to an observed destination, following the player\'s intent or agreed plan. Current traversal conditions are checked by the server. Never claim arrival before a successful result.',
+    description: 'Attempt one move through a currently observed passage or to an observed destination, following the player\'s intent. Clarify ambiguous directions. The server checks current traversal conditions. A successful move can reach a new area without completing the mission; observe there before another move.',
     parameters: { type: 'object', properties: {
-      target: { type: 'string', description: 'One exact destination identifier returned by observe_room or inspect_object.' },
+      target: { type: 'string', description: 'One exact reachable passage or destination identifier returned by the latest local observation or inspection.' },
     }, required: ['target'], additionalProperties: false },
   },
 ];

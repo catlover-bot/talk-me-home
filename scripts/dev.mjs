@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 // Direct child processes allow one Ctrl+C to stop both development servers.
 const children = [
   spawn(process.execPath, ['--import', 'tsx', 'game/server/index.ts'], { stdio: 'inherit' }),
-  spawn(process.execPath, ['node_modules/vite/bin/vite.js'], { stdio: 'inherit' }),
+  spawn(process.execPath, ['node_modules/vite/bin/vite.js', ...(process.argv.includes('--preview') ? ['preview'] : [])], { stdio: 'inherit' }),
 ];
 let stopping = false;
 function stop(code = 0) {

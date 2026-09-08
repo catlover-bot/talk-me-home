@@ -28,7 +28,8 @@ test.afterEach(async ({ page }) => {
 
 async function start(page: Page, maintenance = false): Promise<HumanView> {
   await page.goto('/');
-  if (maintenance) await page.getByRole('radio', { name: /Maintenance/ }).check();
+  await page.getByRole('radio', { name: /Training/ }).check();
+  if (maintenance) await page.getByLabel('Training exercise').selectOption('maintenance');
   const created = page.waitForResponse(response => /\/api\/sessions$/.test(response.url()) && response.request().method() === 'POST');
   await page.getByRole('button', { name: 'Start Practice' }).click();
   const view = await (await created).json() as HumanView;
@@ -142,7 +143,7 @@ test('scenario choice creates a clean round and old hint callbacks cannot supply
     await page.getByRole('button', { name: 'Hint 2', exact: true }).click();
     await expect.poll(() => held).toBe(true);
     await restart(page);
-    await page.getByRole('radio', { name: /Classic/ }).check();
+    await page.getByLabel('Training exercise').selectOption('classic');
     const reset = page.waitForResponse(response => response.url().endsWith('/reset') && response.request().postDataJSON().scenario === 'classic');
     await page.getByRole('button', { name: 'Start Practice' }).click();
     const current = await (await reset).json() as HumanView;
@@ -155,7 +156,7 @@ test('scenario choice creates a clean round and old hint callbacks cannot supply
     const recap = await page.request.get(`/api/sessions/${current.sessionId}/recap?roundId=${current.roundId}`);
     expect((await recap.json()).entries).toEqual([]);
     await page.getByRole('button', { name: 'Open transcript history' }).click();
-    await expect(page.getByRole('dialog', { name: 'Conversation history' })).not.toContainText(report);
+    await expect(page.getByRole('region', { name: 'Conversation history', exact: true })).not.toContainText(report);
   } finally { hint.release(); }
 });
 
@@ -193,7 +194,8 @@ test('repeated Start produces one session, and changing paused modes preserves t
   let created = 0;
   page.on('request', request => { if (/\/api\/sessions$/.test(request.url()) && request.method() === 'POST') created += 1; });
   await page.goto('/');
-  await page.getByRole('radio', { name: /Maintenance/ }).check();
+  await page.getByRole('radio', { name: /Training/ }).check();
+  await page.getByLabel('Training exercise').selectOption('maintenance');
   await page.getByRole('button', { name: 'Start Practice' }).evaluate(button => {
     (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click();
   });

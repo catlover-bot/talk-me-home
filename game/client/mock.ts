@@ -1,5 +1,14 @@
 import type { RobotCall } from "./api";
 import { requestId } from "./api";
+import type { Chapter } from '../shared/contracts';
+
+/** Practice retains only labels in validated local reports, never the human route map. */
+export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[] }
+export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter): PracticeMemory {
+  const gates = [...message.matchAll(/\b(Northeast|Northwest|Southeast|Southwest|East|West|North|South) gate \((gallery\.g[1-5])\)/gi)]
+    .map(match => ({ label: match[1]!.toLowerCase(), id: match[2]! }));
+  return { chapter, gates: gates.length ? gates : memory.chapter === chapter ? memory.gates : [] };
+}
 
 export interface MockReply {
   message: string;
@@ -8,7 +17,7 @@ export interface MockReply {
 }
 
 /** An explicit API-free test driver. It never decides whether a game action succeeds. */
-export function simulationReply(raw: string): MockReply {
+export function simulationReply(raw: string, memory?: PracticeMemory): MockReply {
   const text = raw.toLowerCase().trim();
   const call = (
     name: string,
@@ -19,7 +28,7 @@ export function simulationReply(raw: string): MockReply {
   });
   if (
     /\b(stop|wait|pause|hold on|cancel)\b/.test(text) ||
-    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select)\b/.test(
+    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select|release|board|return|confirm)\b/.test(
       text,
     )
   ) {
@@ -53,6 +62,32 @@ export function simulationReply(raw: string): MockReply {
       message:
         "Only Mission Control can change the Power. You have the remote control.",
     };
+  }
+  if (/\blook away\b/.test(text)) return { message: 'Do you want me to look around, or wait? I will keep your words as they were received.' };
+  if (memory?.chapter === 'gallery') {
+    if (/\b(beacon|harbor|relay|circuit)\b/.test(text) && /\b(switch|set|select|said|turn)\b/.test(text)) return { message: 'Mission Control owns the Relay. Tell me which local gate to check after you set the circuit.' };
+    if (/\b(gate|move|go|head|walk|take|cross|backtrack|return)\b/.test(text) && !/\b(see|around|where|describe|observe|surroundings)\b/.test(text)) {
+      const normalized = text.replace(/north[ -]east/g, 'northeast').replace(/north[ -]west/g, 'northwest').replace(/south[ -]east/g, 'southeast').replace(/south[ -]west/g, 'southwest');
+      const matches = memory.gates.filter(gate => new RegExp(`\\b${gate.label}\\b`).test(normalized) || normalized.includes(gate.id));
+      if (matches.length !== 1 || /\b(and|or|then)\b/.test(normalized)) return { message: 'Which gate do you mean? Use one compass label from my local report. I can look around again if needed.' };
+      if (/\b(inspect|examine|check|look at)\b/.test(text)) return call('inspect_object', { object: matches[0]!.id });
+      return call('move_to', { target: matches[0]!.id });
+    }
+  }
+  if (memory?.chapter === 'return_dock') {
+    const localIntents = [/\b(hold|press)\b.*\bcontact\b/, /\b(release|let go)\b/, /\b(board|enter|step into)\b/, /\bconfirm\b.*\breturn\b/].filter(pattern => pattern.test(text));
+    if (localIntents.length > 1 && /\b(and|or|then)\b/.test(text)) return { message: 'Which local action should I do first? I will take one step at a time.' };
+    if (/\b(inspect|examine|check|look at|tell me about|how does)\b/.test(text)) {
+      const contact = /\b(contact|plaque)\b/.test(text), capsule = /\b(capsule|aboard|return)\b/.test(text);
+      if (contact && capsule) return { message: 'Should I inspect the contact or the capsule first?' };
+      if (contact || capsule) return call('inspect_object', { object: contact ? 'return.contact' : 'return.capsule' });
+    }
+    if (/\b(release|let go)\b/.test(text) && /\b(contact|it)\b/.test(text)) return call('interact_object', { object: 'return.contact', action: 'release_contact' });
+    if (/\b(hold|keep|press)\b/.test(text) && /\bcontact\b/.test(text)) return call('interact_object', { object: 'return.contact', action: 'hold_contact' });
+    if (/\b(board|aboard|enter|step into)\b/.test(text) && /\b(capsule|aboard)\b/.test(text)) return call('move_to', { target: 'return.aboard' });
+    if (/\b(confirm|begin|make)\b.*\breturn\b/.test(text) || /\b(return|go|come) home\b/.test(text)) return call('interact_object', { object: 'return.capsule', action: 'confirm_return' });
+    if (/\b(charge|store|authorize|revoke)\b/.test(text) && !/\b(see|observe|around)\b/.test(text)) return { message: 'The remote charge controller belongs to Mission Control. I can inspect or operate the local contact and capsule.' };
+    if (/^yes[.! ]*$/.test(text)) return { message: 'Please tell me the next local action. A general yes does not confirm the return.' };
   }
   if (/\b(set|select|choose|turn|put)\b/.test(text) && /\b(selector|neutral|anchor|bridge)\b/.test(text)) {
     const positions = ['neutral', 'anchor', 'bridge'].filter(position => new RegExp(`\\b${position}\\b`).test(text));
@@ -155,6 +190,15 @@ export function simulationReply(raw: string): MockReply {
 /** Render confirmed local results as simulation dialogue without reading technical identifiers. */
 export function simulationSpeech(message: string): string {
   return message
+    .replace(/ \((?:gallery\.g[1-5]|return\.(?:contact|capsule|aboard))\)/g, '')
+    .replace(/\b(?:Target|Available (?:action|interaction|movement)s?|Local (?:action|interaction|movement))[^.]*?(?:return\.[a-z_]+|hold_contact|release_contact|confirm_return)[^.]*\./g, '')
+    .replace(/ Available interactions? on return\.(?:contact|capsule) (?:are|is) [^.]*\./g, '')
+    .replace(' The capsule entrance is the movement target return.aboard.', ' The capsule entrance is within reach.')
+    .replace('The capsule entrance is reachable at return.aboard.', 'The capsule entrance is within reach.')
+    .replace(' Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target.', ' I can inspect a reachable gate to check the opening.')
+    .replace(' You cannot see Mission Control\'s route map.', '')
+    .replace(' Inspect the local plaques to learn the available actions.', '')
+    .replace(' It is a reachable movement target.', '')
     .replace(/ \((?:door|conveyor|latch)\)/g, "")
     .replace(" You can inspect these objects.", "")
     .replace(" The far-side safe platform is the destination far_side.", "")
@@ -165,6 +209,7 @@ export function simulationSpeech(message: string): string {
     .replace(/\bYou engaged\b/g, "I engaged")
     .replace(/\bYou crossed\b/g, "I crossed")
     .replace(/\bYou set\b/g, "I set")
+    .replace(/\bYou (held|released|boarded|returned|moved|entered|passed|confirmed)\b/g, 'I $1')
     .replace(/\byou remain\b/g, "I remain")
     .replace(/\bYou remain\b/g, "I remain")
     .replace(/\byour safe platform\b/g, "my safe platform")

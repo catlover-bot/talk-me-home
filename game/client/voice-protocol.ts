@@ -14,6 +14,7 @@ export interface ToolCall {
 
 export type VoiceStatus = 'connecting' | 'listening' | 'responding' | 'speaking' | 'ended' | 'error';
 export type VoiceInputState = 'inactive' | 'ready' | 'receiving';
+export type CancellationReason = 'interrupt' | 'supersede' | 'stop';
 export interface ReplyCompletion { id: string; status: string; hasTools: boolean }
 export type ProviderEvent = Record<string, unknown> & { type: string };
 
@@ -27,9 +28,11 @@ export interface ProtocolDiagnostic {
 
 export interface ProtocolHooks {
   send(event: Record<string, unknown>): void;
-  executeTool(call: ToolCall, signal: AbortSignal): Promise<unknown>;
-  cancelPending(): Promise<void>;
-  onTranscript(entry: TranscriptEntry): void;
+  /** Capture trusted app context when the provider request arrives, not at execution. */
+  captureToolContext?(): unknown;
+  executeTool(call: ToolCall, signal: AbortSignal, context?: unknown): Promise<unknown>;
+  cancelPending(reason: CancellationReason): Promise<void>;
+  onTranscript(entry: TranscriptEntry, context?: unknown): void;
   onStatus(status: VoiceStatus): void;
   onError(message: string): void;
   playAudio(data: string): void;
@@ -90,6 +93,7 @@ export class TranscriptStore {
 
 interface PendingTool {
   call: ToolCall;
+  context?: unknown;
   replyId: string;
   generation: number;
   controller: AbortController;
@@ -118,6 +122,8 @@ export class VoiceProtocol {
   private toolReplies = new Set<string>();
   private executingCount = 0;
   private closingReply?: string;
+  private transcriptContexts = new Map<string, unknown>();
+  private speechContext?: unknown;
 
   constructor(private readonly hooks: ProtocolHooks) {}
 
@@ -144,7 +150,8 @@ export class VoiceProtocol {
     }
     if (event.type === 'input.speech.started') {
       this.held = false;
-      void this.interrupt();
+      this.speechContext = this.hooks.captureToolContext?.();
+      void this.beginInput();
       this.hooks.onInputState?.('receiving');
       this.hooks.onStatus('listening');
       return;
@@ -153,6 +160,7 @@ export class VoiceProtocol {
     if (this.held && ['reply.started', 'reply.audio', 'tool.call', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
     if (event.type === 'reply.started' && typeof event.reply_id === 'string') {
       this.currentReply = event.reply_id;
+      this.rememberTranscriptContext(`robot:${event.reply_id}`, this.hooks.captureToolContext?.());
       this.pendingReply = true;
       this.hooks.onStatus('responding');
     } else if (event.type === 'reply.audio' && typeof event.data === 'string') {
@@ -183,7 +191,11 @@ export class VoiceProtocol {
     }
     if (typeof event.reply_id === 'string' && this.interruptedReplies.has(event.reply_id) && event.type === 'transcript.agent.delta') return;
     const entry = this.transcripts.accept(event);
-    if (entry) this.hooks.onTranscript(entry);
+    if (entry) {
+      if (!this.transcriptContexts.has(entry.id)) this.rememberTranscriptContext(entry.id,
+        entry.role === 'human' ? this.speechContext ?? this.hooks.captureToolContext?.() : this.hooks.captureToolContext?.());
+      this.hooks.onTranscript(entry, this.transcriptContexts.get(entry.id));
+    }
   }
 
   playbackChanged(active: boolean): void {
@@ -200,11 +212,17 @@ export class VoiceProtocol {
 
   resumeInput(): void { this.held = false; }
 
+  /** An ordinary new turn cancels uncertain work without revoking a ready grant. */
+  beginInput(): Promise<void> {
+    const active = this.pendingReply || this.audioPlaying || this.calls.size > 0;
+    return this.interrupt(false, true, active ? 'interrupt' : 'supersede');
+  }
+
   /** Preserve only the closing reply while its already queued playback drains. */
   finishReply(replyId: string): void { this.closingReply ??= replyId; }
 
   /** Epoch invalidation races with commits on the server; committed work stays. */
-  interrupt(hold = false, truncate = true): Promise<void> {
+  interrupt(hold = false, truncate = true, reason: CancellationReason = 'interrupt'): Promise<void> {
     this.held = hold;
     this.generation++;
     this.latestType = 'interruption';
@@ -212,7 +230,7 @@ export class VoiceProtocol {
     const currentTranscript = this.transcripts.entries.get(`robot:${this.currentReply}`);
     if (truncate && this.currentReply && (this.pendingReply || this.audioPlaying || currentTranscript?.final === false)) {
       const entry = this.transcripts.interrupt(this.currentReply);
-      if (entry) this.hooks.onTranscript(entry);
+      if (entry) this.hooks.onTranscript(entry, this.transcriptContexts.get(entry.id));
     }
     this.hooks.stopAudio();
     this.audioPlaying = false;
@@ -224,7 +242,7 @@ export class VoiceProtocol {
     this.calls.clear();
     this.completedReplies.clear();
     // Serialize cancellation requests so an older response cannot replace a new epoch.
-    this.cancellation = this.cancellation.then(() => this.hooks.cancelPending()).catch(() => {
+    this.cancellation = this.cancellation.then(() => this.hooks.cancelPending(reason)).catch(() => {
       this.stopped = true;
       this.ready = false;
       this.hooks.onError('Could not confirm that pending actions stopped. End the call and reconnect.');
@@ -237,7 +255,7 @@ export class VoiceProtocol {
     this.stopped = true;
     this.ready = false;
     this.hooks.onInputState?.('inactive');
-    this.stopping = this.interrupt();
+    this.stopping = this.interrupt(false, true, 'stop');
     return this.stopping;
   }
 
@@ -256,7 +274,7 @@ export class VoiceProtocol {
     this.toolReplies.add(replyId);
     const replyDone = this.completedReplies.has(replyId) || this.completedReplies.has(`fc-${call.callId}`);
     this.calls.set(call.callId, {
-      call, replyId, generation: this.generation, controller: new AbortController(), replyDone, executing: false,
+      call, context: this.hooks.captureToolContext?.(), replyId, generation: this.generation, controller: new AbortController(), replyDone, executing: false,
     });
     this.hooks.onDiagnostic?.({ event: 'tool.queued', pendingCalls: this.calls.size, replyAlreadyDone: replyDone });
     // The documented sequence allows reply.done before tool.call; drain here too.
@@ -288,7 +306,7 @@ export class VoiceProtocol {
     this.hooks.onToolState?.(true);
     try {
       const result = tools.has(pending.call.name)
-        ? await this.hooks.executeTool(pending.call, pending.controller.signal)
+        ? await this.hooks.executeTool(pending.call, pending.controller.signal, pending.context)
         : { ok: false, message: 'That local tool is not available.' };
       if (!this.valid(pending)) return;
       // Never forward HumanView or arbitrary transport diagnostics into the model.
@@ -308,5 +326,11 @@ export class VoiceProtocol {
 
   private valid(pending: PendingTool): boolean {
     return !this.stopped && !pending.controller.signal.aborted && pending.generation === this.generation;
+  }
+
+  private rememberTranscriptContext(id: string, context: unknown): void {
+    if (this.transcriptContexts.has(id)) return;
+    this.transcriptContexts.set(id, context);
+    if (this.transcriptContexts.size > 200) this.transcriptContexts.delete(this.transcriptContexts.keys().next().value!);
   }
 }
