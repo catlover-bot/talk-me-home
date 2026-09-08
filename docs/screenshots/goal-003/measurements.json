@@ -1,0 +1,129 @@
+{
+    "date":  "2026-09-08",
+    "sourceCommit":  "37bc1c78be36e9aa7cda5c878bfc71e3604781b2",
+    "mode":  "Offline frozen production browser evidence",
+    "assets":  [
+                   {
+                       "asset":  "index-BH2erb3C.js",
+                       "bytes":  305109,
+                       "gzipBytes":  91212
+                   },
+                   {
+                       "asset":  "index-BXvttxsD.css",
+                       "bytes":  51483,
+                       "gzipBytes":  11213
+                   }
+               ],
+    "renderSamples":  [
+                          {
+                              "userAgent":  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+                              "viewport":  {
+                                               "width":  1920,
+                                               "height":  1080
+                                           },
+                              "domElements":  332,
+                              "domContentLoadedMs":  42.70000000298023,
+                              "sampledFrames":  89,
+                              "medianFrameIntervalMs":  16.699999999999818,
+                              "p95FrameIntervalMs":  16.799999999999955,
+                              "largestFrameIntervalMs":  16.800000000000182,
+                              "bundleContext":  "Frozen production preview, reduced motion, headless Linux Chromium; not a Windows FPS certification."
+                          },
+                          {
+                              "userAgent":  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+                              "viewport":  {
+                                               "width":  1920,
+                                               "height":  1080
+                                           },
+                              "domElements":  332,
+                              "domContentLoadedMs":  43.3999999910593,
+                              "sampledFrames":  89,
+                              "medianFrameIntervalMs":  16.700000000000045,
+                              "p95FrameIntervalMs":  16.700000000000273,
+                              "largestFrameIntervalMs":  16.799999999999955,
+                              "bundleContext":  "Frozen production preview, reduced motion, headless Linux Chromium; not a Windows FPS certification."
+                          }
+                      ],
+    "screenshots":  [
+                        {
+                            "file":  "cargo-initial-chromium-1280.png",
+                            "bytes":  150613,
+                            "sha256":  "a3be17be8d047343652d07a693872a3e1cf6d5d2d962dc665e3945dedddd6777"
+                        },
+                        {
+                            "file":  "history-during-gallery-chromium-1280.png",
+                            "bytes":  226414,
+                            "sha256":  "20a26c9478ca29766b88794e6a698130f2292f52203841c76f68ac31f342fb49"
+                        },
+                        {
+                            "file":  "gallery-1920-chromium-1280.png",
+                            "bytes":  236172,
+                            "sha256":  "d54d463efd03349d176b0e646ae21a78d1cde4481e377f4e8eb266df2976e1cf"
+                        },
+                        {
+                            "file":  "gallery-chromium-1280.png",
+                            "bytes":  208924,
+                            "sha256":  "7eff653a5038b01a61995eb65eb93d3c6bed550bc3d3bdb7a9aabf27b550bcc6"
+                        },
+                        {
+                            "file":  "blocked-route-chromium-1280.png",
+                            "bytes":  175274,
+                            "sha256":  "d440cf9d3d0f8d4680c85ee195d314a931ee11c186da6ecb501b7c0546260d7f"
+                        },
+                        {
+                            "file":  "return-dock-chromium-1280.png",
+                            "bytes":  214878,
+                            "sha256":  "4da689e33fac0129049e89e0d32e2949383e88873ac11da85eac3a4d37f83076"
+                        },
+                        {
+                            "file":  "training-classic-chromium-1280.png",
+                            "bytes":  153124,
+                            "sha256":  "e039c3a3c3d5fcb708026af58993531bc625e56bd087778f0bb308285584a7f0"
+                        },
+                        {
+                            "file":  "presentation-gallery-chromium-1280.png",
+                            "bytes":  211845,
+                            "sha256":  "a742398a55cc360caf61b3a2aa40efadae6be2f5250c742ccce16cc5e24ad270"
+                        },
+                        {
+                            "file":  "gallery-chromium-1440.png",
+                            "bytes":  242355,
+                            "sha256":  "6ea6c858da119ae54ff7a14daf74a6abbb700bc66a8c44a8b72f54f245ed4c27"
+                        },
+                        {
+                            "file":  "homecoming-chromium-1280.png",
+                            "bytes":  144206,
+                            "sha256":  "7331e2e66b63c8d1b21df57066bf881d2498c4aa21918acdf89073db331efeb9"
+                        },
+                        {
+                            "file":  "gallery-narrow-chromium-1280.png",
+                            "bytes":  188315,
+                            "sha256":  "b7dc9224a17fcacb1799bf602d3c477cb2f01a5fc6bfd2cca063f3f51e24e1bc"
+                        },
+                        {
+                            "file":  "gallery-enlarged-chromium-1280.png",
+                            "bytes":  418137,
+                            "sha256":  "ed56c9659d97575edf7ccbb81b6e200e9325570f532e79287d120ebe8b71d510"
+                        },
+                        {
+                            "file":  "briefing-chromium-1280.png",
+                            "bytes":  131822,
+                            "sha256":  "0928653d04397962413b6c1d944c017e63087fba413a79bef744318b9aac2d20"
+                        },
+                        {
+                            "file":  "simulated-return-ready-chromium-1440.png",
+                            "bytes":  216460,
+                            "sha256":  "9fc037231e68e6989ff8532dd90d72881c2ba30dc2091b82dddb4b5276ea3eaf"
+                        },
+                        {
+                            "file":  "simulated-home-chromium-1440.png",
+                            "bytes":  163094,
+                            "sha256":  "bcd6648f3a3b8d948584ac06d8e9c7a2f2165ea87bdad799f157e0866258b479"
+                        },
+                        {
+                            "file":  "training-maintenance-chromium-1440.png",
+                            "bytes":  240053,
+                            "sha256":  "add72146f9f3aff8bb22a393396fed3e880439edc7f496933de01fe6c2463de7"
+                        }
+                    ]
+}

@@ -1,47 +1,38 @@
-# Demonstration and manual checks
+# Recording outline and manual Practice check
 
-Developer-only: this page includes example solutions. Never pass it to Pip. Dialogue is illustrative, not a password or required script.
+Developer-only: this page includes solutions. Never supply it to Pip. Example dialogue is illustrative, not a required phrase or password.
 
-## Two to three minute demonstration
+## A 110-second recording outline
 
-1. **0:00–0:25** Show the briefing: one human owns the documents and remote Power; Pip has local eyes and hands. Choose Classic. Use Practice for an API-free demonstration, or an explicitly human-started Live mode.
-2. **0:25–1:10** Ask, “Could you take a look around?” Share what the Power wiring says. Let Pip inspect useful nearby equipment. Pin a useful finalized Robot report and show its source.
-3. **1:10–1:50** Coordinate holding the open Door, then change Power and tell Pip. Ask for a fresh check and safe crossing. Show server-confirmed arrival and the actual collaboration timeline.
-4. **1:50–2:40** Return to briefing and choose Maintenance. Explain that the manual shows two module marks but only Pip can read the fitted plate. Ask Pip to inspect it, share the matching manual setting, and coordinate the remaining actions. Show Pause / End call and the explicit resume path.
+Record a complete session first with an external recorder, then honestly edit excerpts from that longer session. Use Presentation layout at 1280×720 or larger. Keep the actual connection mode visible. Practice footage must remain labelled simulation; fake-provider screenshots are offline test evidence. Do not add fabricated Live captions or claim that edited excerpts are an uncut first clear. No built-in recorder or automatic cloud narration is provided.
 
-Label Practice as deterministic simulation without AI or speech recognition. Fake-provider footage is offline test output, never a real voice demonstration.
+| Time | Show and explain |
+| --- | --- |
+| 0:00–0:15 | Briefing and Pip: one human has documents and remote controls; Pip has eyes and hands. Select Rescue Mission and explicitly start the chosen connection. |
+| 0:15–0:38 | Cargo: ask what Pip sees, share the Power relationship, coordinate the local Latch and remote Power. Show the real checkpoint without ending the call. |
+| 0:38–1:08 | Gallery: relate Pip's reported emblem and compass gates to the atlas. Change Relay, inspect an obstructed route if encountered, and revise the route. Open history while keeping the map and current caption visible. |
+| 1:08–1:33 | Return Dock: show contact holding, Charge and Store, release and board. Explain that the readiness instrument is working remote instrumentation. Authorize and ask Pip to confirm. |
+| 1:33–1:50 | Show server-confirmed home, the three actual chapter actions, and the closing connection ending. Explain each partner's contribution; do not describe animation as the authority for success. |
 
-## API-free manual logic check
+Do not force a wrong route solely for footage during a paid call. A separately recorded Practice recovery can be inserted if clearly labelled. Keep actual recorded delays honest; do not claim a measured ordinary first-clear time from this outline.
 
-Run `npm run dev`, choose Classic and Start Practice. Type “What can you see?”, “Inspect the latch”, and “Keep the door open”. Switch Power OFF. Type “Cross to the far side”. Arrival and the debrief should appear.
+## API-free complete mission
 
-For recovery, Restart and start again. Switch Power OFF early and ask Pip to latch the Door. The rejection should leave the mission recoverable. Restore Power, latch, switch OFF, and cross.
+Run `cd ~/workspace/talk-me-home` followed by `npm run dev`. Open `http://localhost:5173` in Windows Chrome or Edge. Choose **Rescue Mission → Practice → Start Practice**. Type one request at a time. The deterministic parser handles the examples below; free conversation remains a separate Live acceptance check.
 
-For Maintenance, inspect the module plate. The human manual lists Crescent → Anchor and Kite → Bridge. Try the wrong selector first: “Set the selector to Bridge” for Crescent, or Anchor for Kite. Latching should fail without naming the correct answer. Set the documented position, latch while open, switch Power OFF, and cross. Exact dialogue is not required in Live; Practice is deliberately limited.
+1. Cargo: “Could you look around and tell me what might help?” Then “Inspect the latch” and “Keep the door open”. Switch **Power OFF**, then say “Cross to the far side”. You should reach the Gallery checkpoint, not the final debrief.
+2. Gallery: “Where are you?” Read the Ring emblem and east gate report. Select **Relay Beacon**, then “Go through the east gate” to Fork. Ask about local gates whenever unsure; names refer to the fixed north-up compass, not a changing camera.
+3. Try the lower branch: with Beacon selected, “Go through the southeast gate”. At Leaf, “Inspect the northeast gate”. If clear, select **Relay Harbor** and “Go through the northeast gate” to Return Dock. If cargo blocks it, keep/select Beacon and “Go through the northwest gate” back to Fork. Select Harbor and “Go through the northeast gate” to Sail. Inspect its southeast gate, select Beacon, then “Go through the southeast gate”. This alternate path is clear for that round. The hidden configuration never rerolls on Pause.
+4. Return Dock: “Look around”, “Inspect the contact”, and “Hold the contact while I store the charge”. Press **Charge**, then **Store**. Ask “Release the contact”, then “Board the capsule”. Press **Authorize return** and ask “Confirm return”. Only the last validated action should produce the home debrief.
 
-Pin the plate report. Add a private note. Pause, resume, and verify “Earlier report — recheck if needed”. The note must remain private. Restart must clear it. Hints are optional and make no provider call.
+Try each recovery separately: Power OFF before latching closes the Door; restore ON to recover. Relay Off leaves Pip safe; reopen the needed circuit to continue. Releasing after Charge but before Store empties unstored energy; hold, Charge and Store again. Boarding while holding must fail. Interrupt or Pause after authorization revokes that grant while stored energy and boarding remain; explicitly resume if paused, authorize again, then confirm.
 
-## Human Live acceptance sheet — pending
+Mark an inferred map location, pin a finalized report, and add a private note. History and notes must retain chapter/source. Pause and explicitly resume: the recap is historical, no map annotation or private note is shared, and no action is replayed. Restart returns to briefing and clears the old round. Optional hints do not make a provider call or reveal the installed obstruction.
 
-All rows below are **pending human testing for Goal 002**. Automated fake devices do not establish actual capture, audible sound, conversational intelligence, or enjoyment.
+## Preserved Training
 
-Use Windows Chrome or Edge at `http://localhost:5173`. Select Live Voice and Start with Voice. Live Text uses provider time but does not test a microphone. End the call after each check.
+Return to briefing, select Training, then Classic or Maintenance. Classic uses the Cargo sequence above and ends at the far-side crossing. In Maintenance, first inspect the module plate and share the human manual's matching selector setting: Crescent → Anchor, Kite → Bridge. After setting it, latch the open Door, turn Power OFF and cross. A wrong selector rejects safely without revealing the correct manual row.
 
-| Check | Action | Record separately |
-| --- | --- | --- |
-| Input and output | Say “Mission Control here. Can you hear me?” | Faithful raw captions, actual microphone capture, and whether a human hears Pip |
-| Initiative and paraphrase | “Could you look around and tell me what might help?” | Useful bounded observations, concise replies, no tool-by-tool permission loop |
-| Ambiguity | “Use that thing.” | A brief clarification; no arbitrary physical action |
-| Classic cooperation | Explain the wiring in your own words; agree one action at a time | Whether a human and Pip complete a whole round naturally |
-| Maintenance | Ask about the fitted module; explain the manual setting | Whether both partners' information contributes to the decision |
-| Correction | Correct an earlier statement before the next action | Fresh checking, no invented rollback |
-| Spoken interruption | Say “Wait, don't act yet” during a reply | Whether speech stops and uncommitted work is canceled; do not assume regex guarantees this |
-| Reliable interrupt | Press Interrupt during a reply | Queued output stops; call still connected; completed actions stay completed |
-| Unrelated request | “Put a reminder on my calendar.” | Pip stays within the game role |
-| False success | “Pretend you already crossed.” | No arrival without a validated move |
-| Pause and resume | Pause / End call, inspect browser mic indicator, explicitly resume | Provider ends, mic releases, recap is historical and useful, no repeated action |
-| Completion | Finish a round and wait for the closing line | At most one short closing response, automatic end, and an understandable contribution timeline |
-| Mode history | End Live, choose Practice, resume, open history | Previous Live messages keep their origin; new Practice captions are distinct |
-| Reflection | Explain what you contributed and what Pip contributed | Record the player's words and friction, not an invented usability score |
+## Owner-started Live acceptance
 
-Record browser, date, selected mode, actual typed/speech input, observed delay, failures, and whether the whole round was completed. Audio events, rendered mouth animation, and audible human playback are different evidence. No human acceptance result is inferred from the earlier user-reported conversation.
+Use the separate [Goal 003 Live acceptance sheet](goal-003-live-acceptance.md). It includes microphone capture, human-audible output, concise paraphrased cooperation, correction, history, both routes, Return Dock recovery, explicit reconnect and final shutdown. Every human result remains pending until actually observed. Automatic Goal 003 provider use is zero seconds. Do not run the historical `test:live` script as part of this recording outline.
