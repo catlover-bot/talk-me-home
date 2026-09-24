@@ -1,6 +1,10 @@
 # Talk Me Home
 
-You have the map. Your partner has eyes and hands. Neither can escape alone.
+You have the map. Pip has eyes and hands. Neither can get home alone.
+
+![Original Talk Me Home cover illustration, not gameplay](submission/assets/cover-illustration-1600x900.png)
+
+**Goal 004 release candidate:** original station artwork, three illustrated documents, local microphone/output checks, a confirmed homecoming, and a single production Node service. Use **`work/goal-004-release-candidate`**, not the starter-only `main`. [Deploy/access steps](OWNER_ACTIONS.md) · [Submission package](submission/release-checklist.md) · [Current validation](docs/goal-004-validation.md). Public demo: **NOT DEPLOYED**.
 
 A browser game for one human at Mission Control and Pip, UNIT 04. Guide a stranded maintenance robot through **Cargo Bay**, the **Relay Gallery**, and the **Return Dock** to a recovery capsule. You read the documents and operate remote controls; Pip observes nearby equipment and acts locally. Only a validated return establishes that Pip is home.
 
@@ -22,7 +26,7 @@ Open **http://localhost:5173** in Windows Chrome or Edge. The game server listen
 Keep the existing working Node.js 24 installation. `.nvmrc` records the tested version for environments that use nvm; a version manager is not required.
 
 1. Leave **Rescue Mission** and **Practice** selected, then choose **Start Practice** for an API-free complete mission. Pip's deterministic simulation accepts simple inspection and action requests, including local compass directions. It does not test AI reasoning or speech recognition.
-2. For real conversation, select **Live Voice** and choose **Start with Voice**. Allow microphone access. **Live Text / Start with Text** uses the same real provider without microphone capture; it still uses provider time. No republishing is needed.
+2. For real conversation, choose **Play with voice**. Check the microphone and output locally before starting the provider connection. Permission is requested only when you choose the microphone check. **Live Text / Start with Text** uses the same real provider without microphone capture; it still uses provider time. Public deployments require the owner's demo code and an available server allowance. No republishing is needed.
 3. Exchange observations and use your chapter's remote controls: Power, Relay, then the charge controller. Read the fixed documents, mark your inferred Gallery location, and revise your route when Pip reports an obstruction. Your map marks and notes are private guesses. Pin useful finalized captions as **Robot reports**; these retain their source and chapter and are not live telemetry.
 4. **Interrupt** stops playback and uncommitted actions while leaving a Live call connected. **Pause / End call** ends the provider connection and keeps the mission checkpoint. After ending, choose the next mode under **Connection & sound**, then explicitly resume. History retains Practice, Live Voice, or Live Text provenance, including typed input in a voice call.
 5. Cargo and Gallery checkpoints advance the same mission without ending a Live connection. **Restart** confirms loss of the round and returns to briefing. Only final return opens the Rescue debrief; any final Live reply has an eight-second shutdown limit. Replay never opens another Live call automatically.
@@ -40,6 +44,9 @@ History stays beside the map on desktop, with current captions and Pause availab
 | `npm test` | API-free logic, HTTP, and voice-adapter tests |
 | `npm run test:e2e` | Builds once and tests frozen production output with Practice and local fake providers; first run `npx playwright install chromium` |
 | `npm run build` | Typecheck and bundle the browser game into `dist/client` |
+| `npm run build:game` | Build the browser and compiled production Node server |
+| `npm run start:game` | Serve the production game and API from one origin; hosting environment only, no `.env` loading |
+| `npm run game:allowance -- N` | Explicit owner creation of a durable allowance for N full 600-second token attempts |
 | `npm run test:live` | Historical opt-in provider probe; consumes time and is **not authorized automatically for Goal 003** |
 | `npm start` | Original starter diagnostics at port 3000 |
 | `npm run publish` | Original stored-agent publishing workflow |
@@ -47,6 +54,8 @@ History stays beside the map on desktop, with current captions and Pause availab
 See [architecture](docs/architecture.md), [rescue design](docs/goal-003-design.md), [developer gameplay rules](docs/goal-003-gameplay.md), [recording outline and Practice check](docs/demo-script.md), [pending owner Live acceptance](docs/goal-003-live-acceptance.md), [Goal 003 validation](docs/goal-003-validation.md), [sources](docs/sources.md), [assets](docs/assets.md), and [next steps](docs/roadmap.md). Developer documents and tests contain puzzle details and must never be supplied to Pip as context. Goal 003 automated validation uses **zero real-provider seconds**. [Goal 002 validation](docs/goal-002-validation.md), [Goal 001 validation](docs/validation.md), and the earlier ignored budget ledger remain historical records.
 
 ## Upstream starter
+
+The game deployment uses [render.game.yaml](render.game.yaml), `build:game`, and `start:game`. The original root `render.yaml` and `npm start` below continue to launch starter diagnostics. Never use them as the Rescue release service. Public Live defaults off, and fails closed without its durable allowance and access configuration. See [OWNER_ACTIONS.md](OWNER_ACTIONS.md).
 
 The original starter and its history are preserved below. Its dependency-free description and telephone examples refer to the original diagnostic commands, not the React game. No telephone functionality was added to Talk Me Home.
 

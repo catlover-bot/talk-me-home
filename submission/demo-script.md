@@ -1,0 +1,20 @@
+# Owner recording plan — approximately 2 minutes 40 seconds
+
+This is a recording plan, not a completed video or evidence of a Live playthrough. Video link: **NOT PROVIDED**. Record a real human speaking and Pip's actual output. Use the shipped release branch and an explicitly enabled, bounded Live allowance from `OWNER_ACTIONS.md`. Automated Goal 004 work used zero provider seconds.
+
+Capture the browser at 1440×900 or 1280×720 with the mode badge, captions, remote control, and Pause/End controls visible. Check microphone and output locally before connecting. Use headphones; record human voice and browser output with the owner's external recording tool. The game does not record microphone audio. Never capture an access code, provider credential, or hosting environment panel.
+
+| Edited time | Picture and real interaction | Optional human narration |
+| --- | --- | --- |
+| 0:00–0:15 | Show the illustrated title and choose Rescue Mission. Keep the image's illustration label visible. | “I have the map. Pip has eyes and hands. Neither of us can get home alone.” |
+| 0:15–0:30 | Show the local readiness check and actual Live Voice mode, then connect intentionally. Preserve Pip's real greeting. Omit access-code entry from the recording. | “My documents are a reference. I need Pip to tell me what is actually there.” |
+| 0:30–1:05 | Cargo Bay: ask Pip to look around and inspect relevant equipment. Show one real spoken instruction, its reply, and an accepted human Power command. Include the validated crossing. | Let the conversation explain why both partners are needed; do not narrate over Pip. |
+| 1:05–1:40 | Relay Gallery: compare Pip's reported emblem/direction with the atlas, select a Relay circuit, and give a movement instruction. Include one actual recoverable rejection or corrected plan, then the successful alternative. Show a private map annotation only if the player actually makes it. | “That is my route guess, not a tracking marker. I can change the plan when Pip finds an obstacle.” |
+| 1:40–2:15 | Return Dock: retain the real exchange around holding contact, human Charge/Store, preparation, human authorization, and Pip's confirmation. These are separate cooperative steps. | “The last decision still needs both of us.” |
+| 2:15–2:40 | Show the server-confirmed homecoming and small chapter recap. Keep the actual closing reply and call-ended state. End on the replay choices without starting a second call. | “A shared plan brought a small robot home.” |
+
+Record enough genuine play to obtain these moments, then edit to the target length. If the Gallery does not produce a useful recovery, use a real Cargo or Dock recovery from the same run. Do not invent an error, successful action, or spoken response for the script. Identify time jumps with a brief “Later in this mission” or “Edited for length” caption; preserve complete meaningful exchanges and never imply edits measure Live latency.
+
+Keep raw recognition captions, including corrections. Do not replace the human voice, synthesize a playthrough, script every Pip reply, or present a planned line as an observed result. If any segment uses Practice, display **“Practice — deterministic simulation”** throughout it. Label injected fake-provider footage **“Simulated provider UI”**; it is not Live evidence. The current packaged gameplay screenshots are Practice.
+
+The [general LABLAB submission guide](https://lablab.ai/ai-articles/hackathon-guidelines), checked September 24, 2026, specifies a video within five minutes and under 300 MB. Export this shorter plan within those limits, then check the event form for its own requirements. Uploading and final submission remain owner actions.

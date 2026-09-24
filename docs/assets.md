@@ -2,6 +2,10 @@
 
 | Asset | Origin and use | License / attribution status |
 | --- | --- | --- |
+| Mission Control title landscape | Original authored SVG, `game/client/public/art/mission-control.svg` | Created for Goal 004; no external generation service, stock image, or reference robot used |
+| Favicon and app icon | Original authored `game/client/public/icon.svg`; PNG export in `submission/assets/` | Derived from the project's UNIT 04 silhouette and repair patch |
+| Goal 004 cover | `scripts/capture-identity.mjs` composes the actual title vector and Pip artwork at 1600×900 | Clearly labelled cover illustration, not gameplay; no claim of Live capture |
+| Goal 004 UI captures | `scripts/capture-release.mjs`, against the real local production service | Typed deterministic Practice; 1280×720 and 1440×900, Linux headless Chromium; see `submission/assets/README.md` |
 | Pip portrait and state drawings | Original SVG in `game/client/components/PipPortrait.tsx`, drawn for this project | No external image, icon pack, model, or generated cover used; no separate upstream license grant inferred |
 | Route map, wiring, Crescent and Kite marks | Original application SVG in `MissionDocuments.tsx` | No stock assets; visual symbols are human documentation, not current telemetry |
 | Relay Gallery atlas, room emblems, and private inference markers | Original SVG and HTML in `GalleryDocument.tsx` | Static human documentation and player-created annotations; no external icon set or hidden telemetry |

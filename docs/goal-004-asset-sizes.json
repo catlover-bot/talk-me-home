@@ -1,0 +1,56 @@
+{
+  "environment": "Node v24.20.0, linux/x64, gzip level 9; theoretical compressed sizes, not a network-speed benchmark",
+  "note": "Inline vector artwork is included in bundled JavaScript; TSX source rows are provenance/size context and must not be added again to first-load totals. Debrief is loaded only after completion. PNG submission captures are not game downloads.",
+  "entries": [
+    {
+      "path": "dist/client/assets/Debrief-CniwSaLT.js",
+      "bytes": 10775,
+      "gzipBytes": 3604
+    },
+    {
+      "path": "dist/client/assets/index-CoEmB-ZV.css",
+      "bytes": 77175,
+      "gzipBytes": 16119
+    },
+    {
+      "path": "dist/client/assets/index-DH60Hd8X.js",
+      "bytes": 319452,
+      "gzipBytes": 95211
+    },
+    {
+      "path": "game/client/public/art/mission-control.svg",
+      "bytes": 4595,
+      "gzipBytes": 1835
+    },
+    {
+      "path": "game/client/public/icon.svg",
+      "bytes": 732,
+      "gzipBytes": 358
+    },
+    {
+      "path": "game/client/components/PipPortrait.tsx",
+      "bytes": 15478,
+      "gzipBytes": 4107
+    },
+    {
+      "path": "game/client/components/MissionDocuments.tsx",
+      "bytes": 10742,
+      "gzipBytes": 3520
+    },
+    {
+      "path": "game/client/components/GalleryDocument.tsx",
+      "bytes": 9709,
+      "gzipBytes": 3400
+    },
+    {
+      "path": "game/client/components/ReturnDockDocument.tsx",
+      "bytes": 5975,
+      "gzipBytes": 2197
+    },
+    {
+      "path": "game/client/components/Homecoming.tsx",
+      "bytes": 5885,
+      "gzipBytes": 2203
+    }
+  ]
+}

@@ -1,5 +1,17 @@
 # Talk Me Home game rules
 
+## Goal 004 release candidate
+
+- Current work belongs on `work/goal-004-release-candidate`, derived from Goal 003 feature head `a212857e00c8ad75a3b630af2b8e0435c48ad899`; do not use starter-only `main` as the game base. Preserve later owner edits.
+- Current validation belongs in `docs/goal-004-validation.md`. Goal 001–003 validation files are historical evidence.
+- Automatic real-provider use remains zero. Local readiness, injected providers, and Practice must never silently contact AssemblyAI. Do not run `test:live` or republish agents.
+- `build:game` and `start:game` build/serve the production game. Original `start` and `render.yaml` remain starter entry points; the game deployment file is `render.game.yaml`.
+- Public Live requires explicit enablement, browser ownership, demo access, and a durable conservative admission allowance. Never initialize, reset, refund, or replace an owner allowance automatically. Never load owner `.env` in the release server.
+- Art remains a static reference or neutral communications portrait. Homecoming art mounts only after confirmed completion. Private annotations, hidden obstructions, and future clues never drive art or sound.
+- Feature-branch commits/push and CI verification are authorized for this goal. Public deployment, repository visibility changes, billing, submission, video uploads, PRs, and main merges remain owner actions.
+
+The following Goal 003 rules continue to apply except for the current branch and validation document above.
+
 The Rescue Mission and Training game extend the upstream starter without replacing its deployments. The game-specific rules below take precedence for `game/`, `tests/`, and `scripts/`; the original starter conventions remain below.
 
 - Use Node.js 24, React, Vite, and TypeScript for the game. Root game commands are `dev`, `typecheck`, `test`, `test:e2e`, and `build`. Preserve `start`, `publish`, `import`, and `phone` as starter commands.
