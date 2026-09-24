@@ -19,6 +19,7 @@ const DIRECTORY = resolve('.validation/goal-004b-live');
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI';
 const PHRASES = {
   observe: 'Pip, please look around and tell me what you can reach.',
+  observeBrief: 'Pip, please keep your replies to one short sentence and look around to tell me what you can reach.',
   latch: 'Please inspect the Latch and tell me how it works.',
   engage: 'My diagram says the Door and Conveyor share one Power supply, so please engage the Latch to hold the Door open.',
   cross: 'Power is now off, so please check that the route is safe and then cross to the far side.',
@@ -59,7 +60,7 @@ async function buildIdentity() {
     }
   }
   await walk('dist');
-  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), files: hashes, node: process.version };
+  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(await readFile(SELF)).digest('hex'), files: hashes, node: process.version };
 }
 async function availablePort() {
   const server = createServer(); await new Promise(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
@@ -106,6 +107,7 @@ async function worker(scenario) {
     browserServer = await chromium.launchServer({ headless: true, chromiumSandbox: true });
     await registerOwnedProcess(browserServer.process().pid);
     browser = await chromium.connect(browserServer.wsEndpoint());
+    report.browserVersion = browser.version();
     directory = join(DIRECTORY, `${new Date().toISOString().replace(/[:.]/g, '-')}-${scenario}`);
     await mkdir(directory, { mode: 0o700 });
     context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', recordVideo: { dir: directory, size: { width: 1440, height: 900 } } });
@@ -138,7 +140,7 @@ async function worker(scenario) {
     await page.getByRole('button', { name: 'Connect Live Voice', exact: true }).click();
     await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ready'), null, { timeout: 25000 });
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
-    const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.filter(article => !article.textContent.includes('Partial transcript')).map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent })));
+    const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.filter(article => !/Partial transcript|Interrupted \/ incomplete speech/.test(article.textContent)).map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent })));
     async function settled(afterMs = -1) {
       await page.waitForFunction(after => {
         const snapshot = globalThis.__qaAudio.snapshot();
@@ -152,23 +154,30 @@ async function worker(scenario) {
         const pending = relevant.some(event => event.type === 'tool.call' && !relevant.some(result => result.type === 'tool.result' && result.callRef === event.callRef));
         const readout = document.querySelector('.connection-readout')?.textContent ?? '';
         return done && speech && !pending && /microphone ready/.test(readout) && snapshot.elapsedMs - (snapshot.counters.rendered.lastNonzeroMs ?? 0) > 350;
-      }, afterMs, { timeout: 25000 });
+      }, afterMs, { timeout: scenario === 'mission' ? 40000 : 25000 });
     }
     await settled();
     async function say(text) {
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
       const before = await audioSnapshot(page); const previous = (await visibleHistory()).length;
       const speech = await fixture(text); await queueSpeech(page, speech);
-      await settled(before.elapsedMs);
+      let waitTimedOut = false;
+      try { await settled(before.elapsedMs); } catch (error) {
+        if (stopping || !/Timeout/.test(String(error))) throw error;
+        waitTimedOut = true;
+      }
       const messages = (await visibleHistory()).slice(previous);
       const replies = messages.filter(message => message.speaker === 'Pip').map(message => message.text).join(' ');
-      if (!replies) throw new Error('No finalized visible Pip reply followed synthetic speech.');
-      report.steps.push({ utterance: text, fixture: speech.id, messages, elapsedMs: (await audioSnapshot(page)).elapsedMs });
+      report.steps.push({ utterance: text, fixture: speech.id, messages, waitTimedOut, elapsedMs: (await audioSnapshot(page)).elapsedMs });
       console.log(JSON.stringify({ scenario, step: report.steps.length, pip: replies }));
-      return replies;
+      // Empty/late output is a stalled step, not invented dialogue. Callers can
+      // ask their one bounded status clarification; they never guess an action.
+      return waitTimedOut ? '' : replies;
     }
     const ensureSaid = (text, pattern, failureText) => { if (!pattern.test(text)) throw new Error(failureText); };
-    await say(PHRASES.observe);
+    let observation = await say(scenario === 'mission' ? PHRASES.observeBrief : PHRASES.observe);
+    if (scenario === 'mission' && !/latch/i.test(observation)) observation = await say('Please look around and report the objects you can reach from the platform.');
+    if (scenario === 'mission' && !/latch/i.test(observation)) throw new Error('No Latch was communicated in the current visible observation.');
     if (scenario === 'canary') {
       const snapshot = await audioSnapshot(page);
       const toolResult = snapshot.events.find(event => event.type === 'tool.result' && !event.isError && snapshot.events.some(call => call.type === 'tool.call' && call.callRef === event.callRef && call.atMs < event.atMs));

@@ -102,6 +102,12 @@ interface PendingTool {
   result?: { result: string; is_error: boolean };
 }
 
+interface InterruptedTool {
+  replyId: string;
+  replyDone: boolean;
+  waiting: boolean;
+}
+
 /** Contains no network or DOM dependencies, so protocol races can be tested. */
 export class VoiceProtocol {
   readonly transcripts = new TranscriptStore();
@@ -114,6 +120,9 @@ export class VoiceProtocol {
   private calls = new Map<string, PendingTool>();
   private seenCalls = new Set<string>();
   private completedReplies = new Set<string>();
+  private completedInterruptedReplies = new Set<string>();
+  // Only correlation metadata is retained; interrupted arguments are never run.
+  private interruptedCalls = new Map<string, InterruptedTool>();
   private cancellation: Promise<void> = Promise.resolve();
   private stopping?: Promise<void>;
   private pendingReply = false;
@@ -159,6 +168,7 @@ export class VoiceProtocol {
     if (event.type === 'input.speech.stopped') this.hooks.onInputState?.('ready');
     if (this.held && ['reply.started', 'reply.audio', 'tool.call', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
     if (event.type === 'reply.started' && typeof event.reply_id === 'string') {
+      if (event.reply_id !== this.currentReply) this.interruptedCalls.clear();
       this.currentReply = event.reply_id;
       this.rememberTranscriptContext(`robot:${event.reply_id}`, this.hooks.captureToolContext?.());
       this.pendingReply = true;
@@ -175,12 +185,16 @@ export class VoiceProtocol {
         void this.interrupt(this.held, false);
       } else if (typeof event.reply_id === 'string') {
         if (!this.interruptedReplies.has(event.reply_id)) this.completedReplies.add(event.reply_id);
+        else if (event.status === 'completed') this.completedInterruptedReplies.add(event.reply_id);
         let matchedToolReply = false;
         for (const pending of this.calls.values()) {
           if (pending.replyId === event.reply_id || `fc-${pending.call.callId}` === event.reply_id) {
             pending.replyDone = true;
             matchedToolReply = true;
           }
+        }
+        if (event.status === 'completed') for (const [id, pending] of this.interruptedCalls) {
+          if (pending.replyId === event.reply_id || `fc-${id}` === event.reply_id) pending.replyDone = true;
         }
         this.hooks.onDiagnostic?.({ event: 'reply.completed', pendingCalls: this.calls.size, matchedToolReply });
         this.flush();
@@ -241,6 +255,8 @@ export class VoiceProtocol {
     for (const pending of this.calls.values()) pending.controller.abort();
     this.calls.clear();
     this.completedReplies.clear();
+    this.interruptedCalls.clear();
+    this.completedInterruptedReplies.clear();
     // Serialize cancellation requests so an older response cannot replace a new epoch.
     this.cancellation = this.cancellation.then(() => this.hooks.cancelPending(reason)).catch(() => {
       this.stopped = true;
@@ -266,7 +282,18 @@ export class VoiceProtocol {
     }
     if (this.seenCalls.has(event.call_id)) return;
     this.seenCalls.add(event.call_id);
-    if (this.interruptedReplies.has(`fc-${event.call_id}`) || this.interruptedReplies.has(this.currentReply)) return;
+    if (this.interruptedReplies.has(`fc-${event.call_id}`) || this.interruptedReplies.has(this.currentReply)) {
+      // Real speech can split one sentence into two input turns while the
+      // provider keeps the first reply ID. A later completed tool call still
+      // needs a result, but executing that interrupted request is unsafe.
+      // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools
+      const replyId = this.interruptedReplies.has(`fc-${event.call_id}`) ? `fc-${event.call_id}` : this.currentReply;
+      if (replyId !== this.currentReply) return;
+      this.interruptedCalls.set(event.call_id, { replyId, replyDone: this.completedInterruptedReplies.has(replyId), waiting: false });
+      this.toolReplies.add(replyId);
+      this.flush();
+      return;
+    }
     const call = { callId: event.call_id, name: event.name, arguments: event.arguments };
     // Live validation also observed ordinary reply IDs for tool-call replies.
     // Bind to the active reply, retaining the documented fc-<call_id> fallback.
@@ -283,6 +310,12 @@ export class VoiceProtocol {
 
   private flush(): void {
     if (this.stopped || this.latestType !== 'reply.done') return;
+    if (!this.held && !this.closingReply) for (const [id, pending] of this.interruptedCalls) {
+      if (pending.replyDone && !pending.waiting) {
+        pending.waiting = true;
+        void this.rejectInterruptedTool(id, pending);
+      }
+    }
     for (const [id, pending] of this.calls) {
       if (!pending.replyDone) continue;
       if (pending.result) {
@@ -296,6 +329,18 @@ export class VoiceProtocol {
         void this.execute(pending);
       }
     }
+  }
+
+  private async rejectInterruptedTool(id: string, pending: InterruptedTool): Promise<void> {
+    await this.cancellation;
+    pending.waiting = false;
+    if (this.stopped || this.held || this.closingReply || this.currentReply !== pending.replyId || this.latestType !== 'reply.done' || this.interruptedCalls.get(id) !== pending) return;
+    this.interruptedCalls.delete(id);
+    this.hooks.send({ type: 'tool.result', call_id: id, is_error: true, result: JSON.stringify({
+      ok: false,
+      message: 'This request belongs to an interrupted reply and was not executed. Respond to the latest player request. If it still requires an action, use a new tool call.',
+    }) });
+    this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size + this.interruptedCalls.size });
   }
 
   private async execute(pending: PendingTool): Promise<void> {

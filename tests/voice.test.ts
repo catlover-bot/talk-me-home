@@ -135,7 +135,9 @@ test('voice tools: interruption invalidates a completed reply before its delayed
   done(h.protocol, 'stale');
   await tick();
   assert.equal(h.executed.length, 0);
-  assert.equal(h.sent.length, 0);
+  assert.equal(h.sent.length, 1);
+  assert.equal(h.sent[0]?.is_error, true);
+  assert.match(String(h.sent[0]?.result), /interrupted reply.*not executed/);
   await h.protocol.stop();
 });
 
@@ -680,6 +682,103 @@ test('observed split spoken wait: a continued utterance cannot reopen its interr
   assert.equal(h.audio.length, 0);
   assert.equal(h.executed.length, 0);
   assert.equal(h.sent.length, 0);
+  await h.protocol.stop();
+});
+
+test('observed split speech tool: reject the interrupted request once, then validate a fresh continuation', async () => {
+  let chapter = 'cargo';
+  const contexts: unknown[] = [];
+  const h = harness({ captureToolContext: () => ({ chapter }), executeTool: async (_call, _signal, context) => {
+    contexts.push(context); return { ok: true, message: 'Current action validated.' };
+  } });
+  // Sanitized 2026-09-24 second real attempt: ASR split a compound sentence,
+  // then interact_object arrived on the old reply ID with status completed.
+  h.protocol.receive({ type: 'input.speech.started' });
+  h.protocol.receive({ type: 'transcript.user', item_id: 'manual-part', text: 'My diagram says the door and conveyor share one power supply.' });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'split-reply' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
+  h.protocol.receive({ type: 'input.speech.started' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
+  h.protocol.receive({ type: 'transcript.user', item_id: 'request-part', text: 'So please engage the latch to hold the door open.' });
+  const stale = { type: 'tool.call', call_id: 'split-call', name: 'interact_object', arguments: { object: 'Latch', action: 'engage', privateSentinel: 'never-forward-this' } };
+  h.protocol.receive(stale);
+  h.protocol.receive({ type: 'reply.audio', data: 'must-stay-suppressed' });
+  h.protocol.receive({ type: 'transcript.agent', reply_id: 'split-reply', text: 'Do not display this interrupted response.' });
+  h.protocol.receive({ type: 'reply.done', reply_id: 'unrelated', status: 'completed' });
+  await tick();
+  assert.equal(h.sent.length, 0);
+  h.protocol.receive({ type: 'reply.done', reply_id: 'split-reply', status: 'completed' });
+  await tick();
+  assert.equal(contexts.length, 0);
+  assert.equal(h.audio.length, 0);
+  assert.equal(h.captions.filter(entry => entry.role === 'robot').length, 0);
+  assert.equal(h.sent.length, 1);
+  assert.equal(h.sent[0]?.call_id, 'split-call');
+  assert.equal(h.sent[0]?.is_error, true);
+  assert.deepEqual(JSON.parse(String(h.sent[0]?.result)).ok, false);
+  assert.doesNotMatch(JSON.stringify(h.sent), /never-forward-this|Latch|engage/);
+  h.protocol.receive(stale);
+  h.protocol.receive({ type: 'reply.done', reply_id: 'split-reply', status: 'completed' });
+  await tick();
+  assert.equal(h.sent.length, 1);
+  // Only a fresh provider-selected call can execute, using current app context.
+  chapter = 'gallery';
+  call(h.protocol, 'fresh-after-rejection');
+  done(h.protocol, 'fresh-after-rejection');
+  await tick();
+  assert.deepEqual(contexts, [{ chapter: 'gallery' }]);
+  assert.equal(h.sent.length, 2);
+  assert.equal(h.sent[1]?.is_error, false);
+  await h.protocol.stop();
+});
+
+test('interrupted tool rejection awaits confirmed cancellation and cannot leak into a newer turn', async () => {
+  const cancellation = deferred<void>();
+  const h = harness({ cancelPending: () => cancellation.promise });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'old-reply' });
+  void h.protocol.interrupt();
+  h.protocol.receive({ type: 'tool.call', call_id: 'late', name: 'move_to', arguments: { target: 'untrusted-target' } });
+  h.protocol.receive({ type: 'reply.done', reply_id: 'old-reply', status: 'completed' });
+  await tick();
+  assert.equal(h.sent.length, 0);
+  h.protocol.receive({ type: 'reply.started', reply_id: 'new-reply' });
+  cancellation.resolve(); await tick();
+  h.protocol.receive({ type: 'reply.done', reply_id: 'new-reply', status: 'completed' });
+  await tick();
+  assert.equal(h.sent.length, 0);
+  assert.equal(h.executed.length, 0);
+  await h.protocol.stop();
+});
+
+test('interrupted tool rejection sends only after cancellation; provider interruption and local stop still suppress it', async () => {
+  for (const mode of ['confirmed', 'provider-interrupted', 'stop', 'held'] as const) {
+    const cancellation = deferred<void>();
+    const h = harness({ cancelPending: () => cancellation.promise });
+    h.protocol.receive({ type: 'reply.started', reply_id: 'old-reply' });
+    void h.protocol.interrupt(mode === 'held');
+    h.protocol.receive({ type: 'tool.call', call_id: 'late', name: 'move_to', arguments: { target: 'untrusted-target' } });
+    h.protocol.receive({ type: 'reply.done', reply_id: 'old-reply', status: mode === 'provider-interrupted' ? 'interrupted' : 'completed' });
+    await tick();
+    assert.equal(h.sent.length, 0);
+    const stopping = mode === 'stop' ? h.protocol.stop() : undefined;
+    cancellation.resolve(); await tick();
+    assert.equal(h.sent.length, mode === 'confirmed' ? 1 : 0, mode);
+    assert.equal(h.executed.length, 0);
+    await (stopping ?? h.protocol.stop());
+  }
+});
+
+test('interrupted tool rejection cannot attach an old call arriving after a fresh reply started', async () => {
+  const h = harness();
+  h.protocol.receive({ type: 'reply.started', reply_id: 'fc-old-call' });
+  await h.protocol.interrupt();
+  h.protocol.receive({ type: 'reply.done', reply_id: 'fc-old-call', status: 'completed' });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'fresh-reply' });
+  h.protocol.receive({ type: 'tool.call', call_id: 'old-call', name: 'observe_room', arguments: {} });
+  h.protocol.receive({ type: 'reply.done', reply_id: 'fresh-reply', status: 'completed' });
+  await tick();
+  assert.equal(h.sent.length, 0);
+  assert.equal(h.executed.length, 0);
   await h.protocol.stop();
 });
 
