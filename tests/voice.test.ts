@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { LiveVoice, type VoiceCallbacks, type VoiceSocket, type VoiceStartOptions } from '../game/client/voice.ts';
+import { LiveVoice, type VoiceCallbacks, type VoiceSocket, type VoiceStartOptions, type VoiceDependencies } from '../game/client/voice.ts';
 import { TranscriptStore, VoiceProtocol, type ProtocolHooks, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus } from '../game/client/voice-protocol.ts';
 import { BrowserAudio, microphoneError, bytesToBase64, type VoiceAudio } from '../game/client/audio.ts';
 import { CAPTURE_WORKLET, PLAYBACK_WORKLET } from '../game/client/audio-worklets.ts';
@@ -306,6 +306,7 @@ class FakeAudio implements VoiceAudio {
 }
 class FakeSocket implements VoiceSocket {
   readyState = 0;
+  acknowledgeEnd = true;
   onopen: VoiceSocket['onopen'] = null;
   onmessage: VoiceSocket['onmessage'] = null;
   onclose: VoiceSocket['onclose'] = null;
@@ -314,14 +315,14 @@ class FakeSocket implements VoiceSocket {
   send(data: string): void {
     const event = JSON.parse(data) as ProviderEvent;
     this.sent.push(event);
-    if (event.type === 'session.end') queueMicrotask(() => this.emit({ type: 'session.ended' }));
+    if (event.type === 'session.end' && this.acknowledgeEnd) queueMicrotask(() => this.emit({ type: 'session.ended' }));
   }
   open(): void { this.readyState = 1; this.onopen?.(new Event('open')); }
   emit(event: ProviderEvent): void { this.onmessage?.({ data: JSON.stringify(event) } as MessageEvent); }
   close(): void { this.readyState = 3; }
-  drop(): void { this.readyState = 3; this.onclose?.({} as CloseEvent); }
+  drop(event: Partial<CloseEvent> = {}): void { this.readyState = 3; this.onclose?.(event as CloseEvent); }
 }
-function liveHarness(callbacks: Partial<VoiceCallbacks> = {}) {
+function liveHarness(callbacks: Partial<VoiceCallbacks> = {}, dependencies: Partial<VoiceDependencies> = {}) {
   const audio = new FakeAudio();
   const socket = new FakeSocket();
   const errors: string[] = [];
@@ -330,7 +331,7 @@ function liveHarness(callbacks: Partial<VoiceCallbacks> = {}) {
   let cancellations = 0;
   let sockets = 0;
   const live = new LiveVoice({ onError: (value) => errors.push(value), onStatus: (value) => statuses.push(value), onTranscript: (value) => captions.push(value), ...callbacks }, {
-    createAudio: () => audio, createSocket: () => { sockets++; return socket; }, handshakeMs: 100, endGraceMs: 5,
+    createAudio: () => audio, createSocket: () => { sockets++; return socket; }, handshakeMs: 100, endGraceMs: 5, ...dependencies,
   });
   const options: VoiceStartOptions = {
     token: 'test-temporary-token', config: sessionConfig, microphone: true,
@@ -361,6 +362,77 @@ test('live adapter fake: configure first, gate microphone on readiness, text fal
   assert.equal(h.socket.onmessage, null);
   assert.equal(h.live.sendText('late'), false);
   assert.doesNotMatch(JSON.stringify([h.errors, h.statuses, h.captions]), /do-not-display|test-temporary-token/);
+});
+
+test('observed end fallback regression: delayed acknowledgement remains receivable after audio and actions stop', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const microphone: boolean[] = [];
+  const h = liveHarness({ onMicrophone: active => microphone.push(active) }, { endGraceMs: undefined });
+  h.socket.acknowledgeEnd = false;
+  const starting = h.live.start(h.options);
+  await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
+  let settled = false;
+  const ending = h.live.end().then(() => { settled = true; });
+  await tick();
+  assert.equal(h.audio.closed, 1);
+  assert.ok(h.audio.stops > 0);
+  assert.equal(microphone.at(-1), false);
+  assert.equal(h.cancellations, 1);
+  h.audio.chunk?.('must-not-leave-after-end');
+  h.socket.emit({ type: 'transcript.agent', reply_id: 'late', text: 'Undelivered speech.' });
+  assert.equal(h.socket.sent.some(event => event.type === 'input.audio'), false);
+  assert.equal(h.captions.length, 0);
+  // The canary lost observation at about 1.67 seconds after its end request.
+  // This delayed acknowledgement would have been discarded by the old fallback.
+  t.mock.timers.tick(2000); await tick();
+  assert.equal(settled, false);
+  assert.equal(h.socket.readyState, 1);
+  assert.equal(h.live.endAcknowledged, false);
+  h.socket.emit({ type: 'session.ended', session_duration_seconds: 2.1 });
+  await ending;
+  assert.equal(h.live.endAcknowledged, true);
+  assert.equal(h.socket.readyState, 3);
+  assert.equal(h.socket.onmessage, null);
+  assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+  assert.equal(h.sockets, 1);
+  t.mock.timers.tick(10_000);
+  assert.equal(h.audio.closed, 1);
+});
+
+test('observed canary end sequence: clean socket close without session.ended is not an acknowledgement', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const h = liveHarness({}, { endGraceMs: undefined });
+  h.socket.acknowledgeEnd = false;
+  const starting = h.live.start(h.options);
+  await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
+  const ending = h.live.end();
+  t.mock.timers.tick(1668);
+  h.socket.drop({ code: 1005, wasClean: true });
+  await ending;
+  assert.equal(h.live.endAcknowledged, false);
+  assert.equal(h.audio.closed, 1);
+  assert.equal(h.socket.onmessage, null);
+  assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+  assert.equal(h.sockets, 1);
+  assert.equal(h.statuses.at(-1), 'ended');
+});
+
+test('live end fallback: missing acknowledgement has a finite deadline and never restarts capture or reconnects', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const h = liveHarness({}, { endGraceMs: undefined });
+  h.socket.acknowledgeEnd = false;
+  const starting = h.live.start(h.options);
+  await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
+  let settled = false;
+  const ending = h.live.end().then(() => { settled = true; });
+  t.mock.timers.tick(4999); await tick();
+  assert.equal(settled, false);
+  assert.equal(h.audio.closed, 1);
+  t.mock.timers.tick(1); await ending;
+  assert.equal(h.live.endAcknowledged, false);
+  assert.equal(h.socket.readyState, 3);
+  assert.equal(h.socket.onmessage, null);
+  assert.equal(h.sockets, 1);
 });
 
 test('live adapter fake: permission denial closes audio without minting a token or starting a session', async () => {
@@ -585,6 +657,29 @@ test('voice interrupted captions: local truncation preserves received words and 
   done(h.protocol, 'new-intent');
   await tick();
   assert.equal(h.executed.length, 1);
+  await h.protocol.stop();
+});
+
+test('observed split spoken wait: a continued utterance cannot reopen its interrupted reply ID', async () => {
+  const h = harness();
+  // Sanitized 2026-09-24 canary ordering. One synthetic sentence became two
+  // finalized ASR turns; the provider completed its first reply after the second.
+  h.protocol.receive({ type: 'input.speech.started' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
+  h.protocol.receive({ type: 'transcript.user', item_id: 'first-part', text: 'Please wait.' });
+  h.protocol.receive({ type: 'reply.started', reply_id: 'wait-reply' });
+  h.protocol.receive({ type: 'input.speech.started' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
+  h.protocol.receive({ type: 'transcript.user', item_id: 'continued-part', text: 'Do not move or take another action until I ask you to continue.' });
+  h.protocol.receive({ type: 'transcript.agent.delta', reply_id: 'wait-reply', delta: 'Understood. ' });
+  h.protocol.receive({ type: 'reply.audio', data: 'late-interrupted-audio' });
+  h.protocol.receive({ type: 'transcript.agent', reply_id: 'wait-reply', text: 'Understood. I will wait here and take no further action until you tell me to continue.' });
+  h.protocol.receive({ type: 'reply.done', reply_id: 'wait-reply', status: 'completed' });
+  await tick();
+  assert.deepEqual(h.captions.map(entry => entry.text), ['Please wait.', 'Do not move or take another action until I ask you to continue.']);
+  assert.equal(h.audio.length, 0);
+  assert.equal(h.executed.length, 0);
+  assert.equal(h.sent.length, 0);
   await h.protocol.stop();
 });
 

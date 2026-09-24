@@ -173,6 +173,9 @@ export class LiveVoice {
 
   end(): Promise<void> { return this.stop(); }
 
+  /** A clean WebSocket close alone does not confirm the provider ended its session. */
+  get endAcknowledged(): boolean { return this.cleanEnd; }
+
   /** Reliable local interruption; the provider connection remains billable. */
   async interrupt(): Promise<void> {
     if (!this.ready || this.ended || !this.protocol) return;
@@ -215,7 +218,10 @@ export class LiveVoice {
         let timer: ReturnType<typeof setTimeout> | undefined;
         const closed = new Promise<void>((resolve) => {
           this.resolveClosed = resolve;
-          timer = setTimeout(resolve, this.dependencies.endGraceMs ?? 1500);
+          // The real QA canary reached the old 1.5-second fallback before an
+          // acknowledgement. Keep receiving for a bounded five seconds while
+          // capture, playback, and local actions are already stopped.
+          timer = setTimeout(resolve, this.dependencies.endGraceMs ?? 5000);
         });
         try { socket.send(JSON.stringify({ type: 'session.end' })); } catch { /* Best effort after a network drop. */ }
         await closed;
