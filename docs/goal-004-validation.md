@@ -69,4 +69,8 @@ Owner steps are limited to deploying/enabling the prepared bounded demo if appro
 
 ## Pushed CI
 
-Pending final feature-branch push at document preparation. The delivery report will identify the final pushed SHA and its actual GitHub Actions result, including any later documentation-only bookkeeping commit.
+Release/package commit **`bfe54521b421be6a83ed08c3ad9b0fe7fe1bc451`** was pushed to `work/goal-004-release-candidate`. [GitHub Actions run 35981728684](https://github.com/catlover-bot/talk-me-home/actions/runs/35981728684) completed **successfully** for that exact SHA, including typecheck, all 162 unit tests, production build, and all 76 browser cases. No jobs or assertions were skipped to obtain this result.
+
+This evidence update is a documentation-only follow-up; the delivery report identifies its final pushed SHA and separately checks that head's CI too. For deployment, use the final head of the named release branch, whose application/assets are identical to the tested release commit above. Never substitute starter-only `main`.
+
+Owned production/capture servers and browser processes were closed; the local capture port was checked closed. The working tree was clean after packaging. Ignored credentials and the historical Live budget ledger were not changed or printed, and no automatic provider time was used.
