@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": false,
+    "rewriteRelativeImportExtensions": true,
+    "outDir": "dist/server",
+    "rootDir": "game",
+    "types": ["node"],
+    "sourceMap": false
+  },
+  "include": ["game/server", "game/agent", "game/shared"]
+}

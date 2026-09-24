@@ -16,7 +16,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
         timeout-minutes: 2
-      - run: npm run build
+      - run: npm run build:game
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
         timeout-minutes: 4

@@ -1,0 +1,37 @@
+# Owner-operated release manifest. The original render.yaml remains the upstream starter.
+# Creating this service/disk incurs hosting charges; no service is created by this file.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: talk-me-home-game
+    runtime: node
+    branch: work/goal-004-release-candidate
+    plan: starter
+    numInstances: 1
+    autoDeployTrigger: off
+    buildCommand: npm ci --include=dev && npm run build:game
+    startCommand: npm run start:game
+    healthCheckPath: /api/health
+    disk:
+      name: talk-me-home-admission
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.20.0
+      - key: GAME_BIND_ADDRESS
+        value: 0.0.0.0
+      - key: GAME_ORIGIN
+        sync: false
+      - key: GAME_PUBLIC_LIVE_ENABLED
+        value: '0'
+      - key: GAME_LIVE_CONCURRENT_LIMIT
+        value: '2'
+      - key: GAME_LIVE_ALLOWANCE_FILE
+        value: /var/data/talk-me-home-live-allowance.jsonl
+      - key: GAME_DEMO_ACCESS_CODE
+        sync: false
+      - key: ASSEMBLYAI_API_KEY
+        sync: false

@@ -14,10 +14,10 @@ export default defineConfig({
     { name: 'chromium-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    command: 'npm run build && node scripts/dev.mjs --preview',
+    command: 'npm run build:game && npm run start:game',
     url: 'http://127.0.0.1:5173',
     reuseExistingServer: false,
-    env: { GAME_DISABLE_LIVE: '1', ASSEMBLYAI_API_KEY: '' },
+    env: { PORT: '5173', GAME_ORIGIN: 'http://127.0.0.1:5173', GAME_BIND_ADDRESS: '127.0.0.1', GAME_DISABLE_LIVE: '1', ASSEMBLYAI_API_KEY: '' },
     gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
   },
 });

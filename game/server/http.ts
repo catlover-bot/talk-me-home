@@ -2,6 +2,9 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import { sessionConfig } from '../agent/config.js'
 import { exactObject } from './state.js'
 import { GameError, SessionStore } from './sessions.js'
+import { BrowserAccess } from './browser-access.js'
+import { LiveAdmission } from './admission.js'
+import { serveGame } from './static.js'
 
 interface ServerOptions {
   store?: SessionStore
@@ -11,6 +14,13 @@ interface ServerOptions {
   maxVoiceSessionSeconds?: number
   /** Offline tests may exercise an explicitly injected provider while Live is disabled. */
   allowTestProvider?: boolean
+  production?: boolean
+  staticDirectory?: string
+  publicLiveEnabled?: boolean
+  demoAccessCode?: string
+  admission?: LiveAdmission
+  /** HTTP-only localhost production smoke tests; deployed cookies stay Secure. */
+  secureCookies?: boolean
 }
 
 function reply(response: ServerResponse, status: number, body: unknown): void {
@@ -52,24 +62,56 @@ export function createGameServer(options: ServerOptions = {}) {
   const apiKey = options.apiKey ?? process.env.ASSEMBLYAI_API_KEY
   const allowedOrigins = options.allowedOrigins ?? ['http://localhost:5173', 'http://127.0.0.1:5173']
   const maxVoiceSessionSeconds = options.maxVoiceSessionSeconds ?? 600
+  const production = options.production ?? false
+  if (production && (!options.allowedOrigins?.length || options.allowedOrigins.some(origin => {
+    try { const parsed = new URL(origin); return parsed.origin !== origin || !['http:', 'https:'].includes(parsed.protocol) }
+    catch { return true }
+  }))) throw new Error('Production requires explicit game origins.')
+  const browserAccess = new BrowserAccess(options.demoAccessCode, options.secureCookies ?? true)
+  const liveEnabled = () => Boolean(apiKey && (process.env.GAME_DISABLE_LIVE !== '1' || options.allowTestProvider) && (!production || options.publicLiveEnabled && options.demoAccessCode && options.demoAccessCode.length >= 16 && options.admission))
+  const accessStatus = (request: IncomingMessage, justAuthorized = false) => {
+    const enabled = liveEnabled()
+    const status = production && enabled ? options.admission!.status() : undefined
+    return {
+      liveEnabled: enabled,
+      authorized: !production || justAuthorized || browserAccess.authorized(request),
+      available: enabled && (status?.available ?? true),
+      message: !enabled ? 'Live is unavailable for this demo. Practice is available without a connection.' : status?.message ?? 'Live is available. Connect only when you are ready.',
+    }
+  }
   if (!Number.isInteger(maxVoiceSessionSeconds) || maxVoiceSessionSeconds < 60 || maxVoiceSessionSeconds > 600) throw new Error('Voice session duration must be between 60 and 600 seconds.')
   return createServer(async (request, response) => {
     try {
-      checkLocalRequest(request, allowedOrigins)
       const requestUrl = new URL(request.url ?? '/', 'http://localhost')
       const path = requestUrl.pathname
+      if (/%2f|%5c/i.test(path)) throw new GameError(400, 'This game address is invalid.')
+      const apiRequest = path === '/api' || path.startsWith('/api/')
+      if (production) {
+        if (!allowedOrigins.some(origin => new URL(origin).host === request.headers.host)) throw new GameError(403, 'This game address is not allowed.')
+        if (apiRequest && (request.headers['sec-fetch-site'] === 'cross-site' || request.headers.origin && !allowedOrigins.includes(request.headers.origin) || !['GET', 'HEAD'].includes(request.method ?? '') && !request.headers.origin)) throw new GameError(403, 'This browser origin is not allowed to use the game server.')
+      } else { checkLocalRequest(request, allowedOrigins) }
+      if (!apiRequest && options.staticDirectory) return await serveGame(request, response, options.staticDirectory)
       if (request.method === 'GET' && path === '/api/health') return reply(response, 200, { ok: true })
+      if (path === '/api/access' && request.method === 'GET') return reply(response, 200, accessStatus(request))
+      if (path === '/api/access' && request.method === 'POST') {
+        if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
+        const input = await jsonBody(request)
+        if (production) browserAccess.exchange(request, response, input)
+        return reply(response, 200, accessStatus(request, true))
+      }
       if (request.method === 'POST' && path === '/api/sessions') {
         const setup = await jsonBody(request)
-        if (exactObject(setup, [])) return reply(response, 201, store.create())
-        if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind))
+        const owner = production ? browserAccess.owner(request, response) : undefined
+        if (exactObject(setup, [])) return reply(response, 201, store.create('classic', 'training', owner))
+        if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner))
         if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
-        return reply(response, 201, store.create(setup.scenario))
+        return reply(response, 201, store.create(setup.scenario, 'training', owner))
       }
       const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
       if (!route) throw new GameError(404, 'This game endpoint does not exist.')
       const id = route[1]!
       const action = route[2]
+      if (production) store.assertOwner(id, browserAccess.owner(request))
       if (request.method === 'GET' && !action) return reply(response, 200, store.get(id))
       if (request.method === 'GET' && (action === 'record' || action === 'recap')) {
         const roundId = requestUrl.searchParams.get('roundId') ?? ''
@@ -87,9 +129,14 @@ export function createGameServer(options: ServerOptions = {}) {
       if (action === 'hint') return reply(response, 200, await store.hint(id, body))
       if (action === 'record' || action === 'recap') throw new GameError(405, 'Read this mission record with a GET request.')
       if (action === 'voice-token') {
+        if (production) {
+          if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
+          if (!browserAccess.authorized(request)) throw new GameError(403, 'Enter the demo access code before connecting Live, or choose Practice.')
+        }
         const view = store.reserveToken(id, body)
         if (process.env.GAME_DISABLE_LIVE === '1' && !options.allowTestProvider) throw new GameError(503, 'Live AssemblyAI is disabled for this server. Mock / Simulation remains available.')
         if (!apiKey) throw new GameError(503, 'Live AssemblyAI is unavailable: set ASSEMBLYAI_API_KEY in the root .env file, then restart the game server. Mock / Simulation remains available.')
+        if (production) options.admission!.reserve()
         // Official browser integration: token redemption and session duration are separate limits.
         // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration
         const url = new URL('https://agents.assemblyai.com/v1/token')
@@ -104,7 +151,7 @@ export function createGameServer(options: ServerOptions = {}) {
           if (typeof token !== 'string' || token.length === 0) throw new Error('Invalid token response')
         } catch {
           // Never forward provider diagnostics: they can contain credentials or authorization data.
-          throw new GameError(502, 'Live AssemblyAI could not issue a voice token. Check the server credential and network connection, then try again.')
+          throw new GameError(502, production ? 'Live could not connect. Wait a few minutes before trying again, or choose Practice.' : 'Live AssemblyAI could not issue a voice token. Check the server credential and network connection, then try again.')
         }
         const current = store.get(id)
         if (current.roundId !== view.roundId || current.actionEpoch !== view.actionEpoch || current.status !== 'active') throw new GameError(409, 'The mission changed while connecting. Connect again from the current round.')

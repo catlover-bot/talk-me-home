@@ -12,6 +12,7 @@ interface CachedRequest {
 }
 
 interface Session {
+  owner?: string
   state: GameState
   touchedAt: number
   requests: Map<string, CachedRequest>
@@ -67,14 +68,14 @@ export class SessionStore {
   private readonly now: () => number
   constructor(private readonly options: StoreOptions = {}) { this.now = options.now ?? Date.now }
 
-  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training'): HumanView {
+  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string): HumanView {
     if (!scenario(selectedScenario) || !missionKind(kind) || (kind === 'rescue' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission or Classic/Maintenance Training.')
     for (const [id, session] of this.sessions) {
       if (this.now() - session.touchedAt > (this.options.idleMilliseconds ?? 7_200_000)) this.sessions.delete(id)
     }
     if (this.sessions.size >= (this.options.maxSessions ?? 100)) throw new GameError(429, 'The local server has reached its session limit. Try again later or restart it.')
     const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration)
-    this.sessions.set(state.sessionId, { state, touchedAt: this.now(), requests: new Map(), safetyRequests: new Map(), lastTokenAt: -Infinity, records: new RoundRecords(state.roundId, selectedScenario, this.now) })
+    this.sessions.set(state.sessionId, { owner, state, touchedAt: this.now(), requests: new Map(), safetyRequests: new Map(), lastTokenAt: -Infinity, records: new RoundRecords(state.roundId, selectedScenario, this.now) })
     return humanView(state)
   }
 
@@ -90,6 +91,11 @@ export class SessionStore {
   }
 
   get(id: string): HumanView { return humanView(this.session(id).state) }
+
+  assertOwner(id: string, owner: string | undefined): void {
+    // Check ownership before touching expiry or disclosing whether a session exists.
+    if (!owner || this.sessions.get(id)?.owner !== owner) throw new GameError(404, 'This mission session is unavailable in this browser. Start a new mission.')
+  }
 
   private once<T>(session: Session, key: string, payload: unknown, operation: () => T | Promise<T>, safety = false): Promise<T> {
     const fingerprint = canonical(payload)
