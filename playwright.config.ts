@@ -1,5 +1,8 @@
 import { defineConfig } from '@playwright/test';
 
+const browserChannel = process.env.GAME_QA_BROWSER_CHANNEL;
+if (browserChannel && browserChannel !== 'chrome') throw new Error('The optional QA browser channel must be chrome.');
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -8,7 +11,7 @@ export default defineConfig({
   globalTimeout: 180_000,
   workers: process.env.CI ? 2 : 4,
   reporter: 'list',
-  use: { baseURL: 'http://127.0.0.1:5173', trace: 'off', screenshot: 'only-on-failure', launchOptions: { chromiumSandbox: true } },
+  use: { baseURL: 'http://127.0.0.1:5173', channel: browserChannel, trace: 'off', screenshot: 'only-on-failure', launchOptions: { chromiumSandbox: true } },
   projects: [
     { name: 'chromium-1280', use: { browserName: 'chromium', viewport: { width: 1280, height: 720 } } },
     { name: 'chromium-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },

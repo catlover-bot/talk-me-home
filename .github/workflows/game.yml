@@ -2,10 +2,13 @@ name: Game checks
 on: [push, pull_request]
 jobs:
   game:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       GAME_DISABLE_LIVE: '1'
+      # Ubuntu's AppArmor profile permits the runner's installed Chrome sandbox.
+      # Downloaded Chromium headless-shell is not covered by that profile.
+      GAME_QA_BROWSER_CHANNEL: chrome
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,6 +20,10 @@ jobs:
       - run: npm test
         timeout-minutes: 2
       - run: npm run build:game
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install-deps chromium
+      - name: Verify the installed sandbox-compatible browser
+        run: |
+          test -x /opt/google/chrome/chrome
+          /opt/google/chrome/chrome --version
       - run: npm run test:e2e
         timeout-minutes: 4
