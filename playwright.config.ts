@@ -8,7 +8,7 @@ export default defineConfig({
   globalTimeout: 180_000,
   workers: process.env.CI ? 2 : 4,
   reporter: 'list',
-  use: { baseURL: 'http://127.0.0.1:5173', trace: 'off', screenshot: 'only-on-failure' },
+  use: { baseURL: 'http://127.0.0.1:5173', trace: 'off', screenshot: 'only-on-failure', launchOptions: { chromiumSandbox: true } },
   projects: [
     { name: 'chromium-1280', use: { browserName: 'chromium', viewport: { width: 1280, height: 720 } } },
     { name: 'chromium-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },

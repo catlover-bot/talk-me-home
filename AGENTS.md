@@ -1,5 +1,7 @@
 # Talk Me Home game rules
 
+Goal 004B autonomous QA runs on `work/goal-004b-autonomous-qa`, based on the Goal 004 release candidate. Its explicit owner authorization permits one separately named campaign of at most three token attempts, each durably reserving 670 seconds, under `.validation/goal-004b-live/`. Use the independent supervisor and existing production admission together. Never reset/replenish either ledger. Default QA and CI remain offline; real calls require the explicit `qa:live -- --live --scenario ...` path. Synthetic speech is not human speech or physical speaker evidence. New evidence belongs in `docs/goal-004b-autonomous-qa.md`; preserve earlier reports as history. No public deployment, PR, main merge, visibility, or billing change is authorized.
+
 ## Goal 004 release candidate
 
 - Current work belongs on `work/goal-004-release-candidate`, derived from Goal 003 feature head `a212857e00c8ad75a3b630af2b8e0435c48ad899`; do not use starter-only `main` as the game base. Preserve later owner edits.

@@ -21,7 +21,10 @@
     "start:game": "node dist/server/server/production.js",
     "game:allowance": "node scripts/initialize-allowance.mjs",
     "game": "tsx game/server/index.ts",
-    "test:live": "tsx scripts/live-check.ts"
+    "test:live": "tsx scripts/live-check.ts",
+    "qa:release": "node scripts/qa-release.mjs",
+    "qa:speech": "node scripts/qa-speech-fixtures.mjs",
+    "qa:live": "node scripts/qa-live-browser.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
