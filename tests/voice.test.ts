@@ -622,6 +622,19 @@ test('Pip prompt: bounded initiative, communicated intent, historical provenance
   assert.doesNotMatch(JSON.stringify(sessionConfig), /gallery\.g|return\.contact|confirm_return|charge.*store|\b(obstruction|Beacon|Harbor|Sail|Leaf|Fork|Ring)\b|chapterEpoch|Configuration [AB]/i);
 });
 
+test('Pip prompt contract: cancellation is not physical fault evidence or permission to replay old intent', () => {
+  // This validates the shipped instruction contract, not model compliance.
+  // The real QA conversation misreported cancellation as equipment/sensor failure.
+  const prompt = sessionConfig.system_prompt;
+  assert.doesNotMatch(prompt, /Explain rejection as a local obstacle/);
+  assert.match(prompt, /Describe only the rejection cause actually reported/);
+  assert.match(prompt, /canceled or unexecuted request does not prove equipment or sensor failure/);
+  assert.match(prompt, /latest clear request with a fresh tool call only if that action is still requested; otherwise wait/);
+  assert.match(prompt, /Execute a clear request without asking permission again/);
+  assert.match(prompt, /Do not initiate another action after the player asks you to wait/);
+  assert.match(prompt, /Completed actions remain completed/);
+});
+
 test('voice playback state: received bytes and transcripts never assert actual playback', async () => {
   const states: VoiceStatus[] = [];
   const playing: boolean[] = [];
