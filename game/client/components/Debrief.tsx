@@ -45,11 +45,9 @@ export function Debrief({
         <span className="arrival-stamp">
           <span aria-hidden="true">✓</span>Arrival confirmed
         </span>
-        <PipPortrait state="success" />
-        {rescue && view.completed && <Homecoming chaptersCleared={view.chaptersCleared} />}
+        {rescue && view.completed ? <Homecoming chaptersCleared={view.chaptersCleared} /> : <PipPortrait state="success" />}
         <p>
-          A safe arrival.
-          <br />A shared effort.
+          {rescue ? 'One small robot. Two good partners.' : 'A safe crossing. A shared effort.'}
         </p>
         <span className="debrief-connection" role="status">
           {practice ? 'Practice complete · no provider connection' : connectionEnded
@@ -66,7 +64,7 @@ export function Debrief({
           You brought the documents and remote controls. Pip brought local eyes and
           hands. This is what you did together.
         </p>
-        <div className="contribution-strip">
+        <div className="contribution-strip" aria-label="Retained collaboration record counts">
           <span>
             <strong>{record?.debrief ? humanActions : '—'}</strong>acknowledged remote{" "}
             {humanActions === 1 ? "command" : "commands"}
@@ -81,7 +79,7 @@ export function Debrief({
           </span>
         </div>
         <h2>{rescue ? 'Your journey together' : 'Your collaboration'}</h2>
-        {rescue ? <><p className="journey-source">Excerpts from the last recorded local action in each chapter.</p><ol className="journey-summary">{(['cargo', 'gallery', 'return_dock'] as const).map((chapter, index) => {
+        {rescue ? <><p className="journey-source">From this mission’s retained record. Your controls and Pip’s actions made the journey possible.</p><ol className="journey-summary">{(['cargo', 'gallery', 'return_dock'] as const).map((chapter, index) => {
           const last = timeline.findLast(entry => entry.chapter === chapter && entry.actor === 'robot' && entry.kind === 'action');
           const sentence = last?.text.replace(/^You\b/, 'Pip').split(/(?<=[.!?])\s+/)[0];
           return <li key={chapter}><span className="journey-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><div><h3>{chapterNames[chapter]}</h3><p>{sentence ?? (record?.debrief ? 'No local action is retained in this chapter’s record.' : 'Loading the confirmed record…')}</p></div></li>;
@@ -98,6 +96,7 @@ export function Debrief({
             {rescue ? 'Start another rescue' : `Play ${scenario === "classic" ? "Classic" : "Maintenance"} again`}
             <span aria-hidden="true">↗</span>
           </button>
+          {rescue && <button className="secondary-button" onClick={onMaintenance} disabled={busy}>Try Training</button>}
           {!rescue && scenario === "classic" && (
             <button
               className="secondary-button"
@@ -107,9 +106,7 @@ export function Debrief({
               Try Maintenance
             </button>
           )}
-          <button className="text-button" onClick={onBriefing} disabled={busy}>
-            Return to briefing
-          </button>
+          <button className="text-button" onClick={onBriefing} disabled={busy}>Return to briefing</button>
         </div>
         <p className="replay-note">
           Choose how to connect before the next mission. No Live call starts

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="780" viewBox="0 0 1600 780" fill="none">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#263b3b"/><stop offset=".66" stop-color="#788b7d"/><stop offset="1" stop-color="#b9ac86"/></linearGradient>
+ <linearGradient id="shade"><stop stop-color="#172a28"/><stop offset=".4" stop-color="#172a28" stop-opacity=".94"/><stop offset=".7" stop-color="#172a28" stop-opacity="0"/></linearGradient>
+ <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#c5bba0"/><stop offset="1" stop-color="#746f59"/></linearGradient>
+</defs>
+<!-- Original title illustration. Distant architecture is atmosphere, not a playable route map. -->
+<path fill="url(#sky)" d="M0 0h1600v780H0z"/>
+<circle cx="1205" cy="161" r="72" fill="#e3d9b6" opacity=".82"/>
+<path d="M1185 95a72 72 0 0 0 0 133 72 72 0 0 1 0-133" fill="#c1c4a8"/>
+<g fill="#e5dbc1" opacity=".6"><circle cx="877" cy="94" r="2"/><circle cx="994" cy="47" r="1.5"/><circle cx="1340" cy="86" r="2"/><circle cx="1482" cy="214" r="1.4"/><circle cx="1060" cy="201" r="1.4"/><circle cx="767" cy="177" r="1.4"/><circle cx="1400" cy="155" r="1.5"/></g>
+<path d="M0 445 196 310 280 371 384 302 471 351 617 272 772 367 917 327 1070 396 1226 337 1350 402 1495 316 1600 363V780H0Z" fill="#6d7f70"/>
+<path d="m434 524 211-152 61 44 66-27 152 92 165-49 152 65 162-61 197 63v281H434Z" fill="#4f695d"/>
+<path d="M750 622 909 498 1045 559 1180 494 1346 561 1510 488 1600 515V780H750Z" fill="#354f45"/>
+<!-- Station shell and service tower. -->
+<g stroke="#344b42" stroke-width="3">
+ <path d="M1015 350v-94h86v94" fill="#829082"/><path d="M1025 256v-33h66v33" fill="#bcc2a3"/>
+ <path d="M1033 223v-73m35 73v-43" stroke="#d3c9a4" stroke-width="5"/><path d="M1012 192h46m-34-20h29" stroke="#ccbea0"/>
+ <path d="m946 352 44-41h239l59 43v153H946Z" fill="url(#metal)"/>
+ <path d="m946 352 62 19h217l63-17-59-43H990Z" fill="#cac4a7"/>
+ <path d="M1008 371v132m217-132v125" stroke="#e0d2af" stroke-width="6"/>
+ <path d="M967 395h235v78H967Z" fill="#263f37"/>
+ <path d="M981 409h51v31h-51zm65 0h52v31h-52zm66 0h75v31h-75z" fill="#dcad66"/>
+ <path d="M982 444h203m-152-47v73m66-73v73" stroke="#788370"/>
+ <path d="M1238 379h26v75h-26z" fill="#627665"/>
+ <path d="M967 477v44h263v-42" fill="#6e7b66"/>
+ <path d="M990 518v110m217-110v112m-184-110-28 84m182-84 28 85" stroke="#344b42" stroke-width="10"/>
+ <path d="M930 508h376v16H930z" fill="#8d9078"/>
+ <path d="M1305 508v-78h93v75" fill="#748b79"/><path d="m1292 430 24-32h67l29 32z" fill="#a0ac91"/>
+ <path d="M1332 457h43v28h-43z" fill="#c6b17d"/>
+ <path d="M1165 307v-20h42v20" fill="#8a9b83"/>
+</g>
+<!-- A distant approach, deliberately unrelated to the mission atlas. -->
+<path d="M1188 521c-53 77-15 123 105 141 41 6 76 23 127 79" stroke="#263e34" stroke-width="38"/>
+<path d="M1188 521c-53 77-15 123 105 141 41 6 76 23 127 79" stroke="#8a9272" stroke-width="25"/>
+<path d="M1188 521c-53 77-15 123 105 141 41 6 76 23 127 79" stroke="#c9b888" stroke-width="2" stroke-dasharray="9 18"/>
+<path d="m802 651 88-26 19 34 61-22 78 38 68-18 40 51 89 20 68 52H689Z" fill="#244136"/>
+<path d="m1365 638 65-27 30 49 72-13 68 40v93h-254Z" fill="#28473c"/>
+<!-- Observatory window, work surface, radio and a folded note. -->
+<path d="M0 0h1600v36H0zM1516 0h84v780h-84z" fill="#142925"/>
+<path d="m1450 0 66 0v660h-21Z" fill="#294139"/><path d="M1499 24v592" stroke="#697560" stroke-width="3"/>
+<path d="M0 590 1600 662v118H0Z" fill="#152c28"/><path d="m0 583 1600 71v19L0 610Z" fill="#637260"/>
+<path d="m0 615 1600 72v35L0 649Z" fill="#304a40"/>
+<path d="M0 0h1600v780H0z" fill="url(#shade)"/>
+<g transform="translate(1008 640) rotate(3)">
+ <path d="M0 0h259l42 93H-37Z" fill="#64715b" stroke="#162c26" stroke-width="7"/>
+ <path d="M22 15h99v41H8z" fill="#233d32" stroke="#b0af89" stroke-width="3"/>
+ <path d="M27 41h15l8-15 10 24 10-13h34" stroke="#c3caa3" stroke-width="2"/>
+ <g fill="#dabf84"><circle cx="157" cy="32" r="7"/><circle cx="186" cy="32" r="7"/><circle cx="215" cy="32" r="7"/></g>
+ <path d="M143 61h92" stroke="#172e25" stroke-width="6"/><path d="M144 73h38m18 0h40" stroke="#344f3a" stroke-width="4"/>
+</g>
+<g transform="translate(815 655) rotate(-8)"><path d="M0 0h108v63H0z" fill="#bdb69a"/><path d="M13 15h70M13 25h46M13 38h82M13 48h76" stroke="#6a7760" stroke-width="2"/><path d="m72-6 21 6-5 11-21-5Z" fill="#97794d"/></g>
+<path d="M30 18h1534M1566 18v731" stroke="#6c7560" stroke-opacity=".5" stroke-width="2"/>
+<g fill="#81917a"><circle cx="28" cy="24" r="4"/><circle cx="1575" cy="25" r="4"/><circle cx="1575" cy="750" r="4"/></g>
+</svg>

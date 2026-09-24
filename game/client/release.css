@@ -1,0 +1,146 @@
+/* Artwork never receives local room state. The desk and radio share one hierarchy. */
+.app-shell { max-width: 1640px; padding-inline: 28px; }
+.topbar { min-height: 64px; }
+.wordmark { font-size: 22px; letter-spacing: -.7px; }
+.brand-symbol { border: 0; border-radius: 0; padding: 0; width: 38px; height: 38px; }
+.brand-symbol img { width: 38px; height: 38px; }
+.topbar-tools { display: flex; align-items: center; gap: 16px; }
+.topbar .shell-panel { color: #344831; position: relative; }
+.topbar .shell-panel[open] > summary { color: #f4efdd; }
+.topbar .shell-panel-content { position: absolute; right: 0; top: 47px; width: min(470px, calc(100vw - 32px)); z-index: 12; max-height: 70vh; overflow: auto; box-shadow: 0 10px 25px #25332b40; }
+.topbar .mission-bar { font-size: 13px; }
+.release-briefing { display: block; margin-top: 18px; border-radius: 4px; border-color: #a6ad98; box-shadow: 0 5px 0 #c4c7b5; }
+.title-scene { position: relative; height: clamp(280px, 36vh, 390px); overflow: hidden; background: #172a28; color: #f4efdd; }
+.title-landscape { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: right center; }
+.title-copy { position: relative; z-index: 1; padding: clamp(22px, 3vw, 42px); max-width: 65%; }
+.title-eyebrow { color: #d9d8bc; font-size: 13px; letter-spacing: .5px; }
+.release-briefing h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(34px, 3.7vw, 58px); font-weight: 400; line-height: 1.04; letter-spacing: -1.7px; margin: 15px 0 16px; }
+.release-briefing h1 em { color: #ead3a2; font-weight: 400; }
+.release-briefing .briefing-premise { color: #f0e8d2; font-size: 17px; line-height: 1.5; }
+.title-frequency { display: flex; align-items: center; gap: 8px; margin-top: 24px; color: #ccd4ba; font-size: 12px; }
+.title-frequency > span { width: 7px; height: 7px; background: #c1c995; border-radius: 50%; }
+.title-pip { position: absolute; right: 1.5%; bottom: 2px; width: 190px; text-align: center; }
+.title-pip .pip-art { height: 215px; }
+.title-pip figcaption { display: none; }
+.title-pip > span { position: relative; top: -13px; font-size: 10px; letter-spacing: 2px; color: #e8ddba; }
+.illustration-label { position: absolute; bottom: 12px; right: 16px; color: #e0decc; font-size: 10px; background: #172a28; padding: 3px 6px; }
+.release-briefing .briefing-paper { padding: 23px 28px 20px; }
+.setup-columns { display: grid; grid-template-columns: 1fr 1.12fr; gap: 32px; }
+.release-briefing .setup-fieldset + .setup-fieldset { margin: 0; border-left: 1px solid #c0c5af; padding-left: 30px; }
+.release-briefing .setup-fieldset legend { margin-bottom: 10px; font-size: 13px; color: #56624a; }
+.release-briefing .scenario-choice, .release-briefing .mode-choice { min-height: 66px; padding: 10px; border-radius: 3px; }
+.release-briefing .scenario-choice strong { font-size: 15px; }
+.release-briefing .scenario-choice small { color: #58634e; }
+.release-briefing .mode-choice small { font-size: 12px; }
+.release-briefing .briefing-journey { margin: 12px 0 0; }
+.release-briefing .connection-explanation { min-height: 0; margin: 10px 0 0; font-size: 12px; }
+.launch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 17px; padding-top: 17px; border-top: 1px solid #c0c5af; }
+.release-briefing .briefing-action { gap: 10px; }
+.release-briefing .primary-button { font-size: 15px; padding: 13px 20px; min-width: 180px; }
+.launch-note { font-size: 12px; color: #59634f; line-height: 1.5; }
+.release-briefing .quick-guide { margin: 0 0 0 auto; padding: 0; border: 0; }
+.release-briefing .quick-guide summary { min-height: 44px; padding-block: 12px; }
+.release-briefing .quick-guide[open] { flex-basis: 100%; margin: 0; border-top: 1px solid #b7c1a9; padding-top: 12px; }
+.release-briefing .quick-guide ol { margin-bottom: 0; }
+.chapter-header { padding-top: 14px; gap: 20px; }
+.chapter-objective h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: 400; }
+.chapter-objective > p:last-child { font-size: 14px; }
+.chapter-progress li { font-size: 13px; }
+.chapter-progress li small { font-size: 12px; }
+.mission-layout { gap: 22px; grid-template-columns: minmax(0, 1.55fr) minmax(390px, 1fr); margin-top: 14px; }
+.mission-desk { gap: 12px; }
+.companion-console { border-radius: 5px; box-shadow: 0 4px 0 #9ba48c; position: sticky; top: 12px; padding: 16px 19px; }
+.human-controls { order: -1; border-radius: 4px; background: #d9ddc9; border-color: #a1af90; box-shadow: 0 2px 0 #b1b99f; padding: 13px 18px; }
+.human-controls h2 { font-size: 18px; }
+.human-controls .control-kicker { font-size: 11px; margin-bottom: 3px; color: #4d5b43; }
+.human-controls button:disabled { color: #4d5a43; }
+.human-controls .dock-buttons button:disabled { color: #4d5a43; }
+.human-controls button[aria-pressed=true]:disabled { color: #fff9ed; }
+.human-controls p, .power-explanation { font-size: 13px; }
+.power-buttons button { font-size: 14px; border-radius: 3px; }
+.power-buttons button[aria-pressed=true] { box-shadow: inset 0 2px 3px #21332380; }
+.human-controls[aria-busy=true] { border-style: dashed; }
+.control-ack { display: inline-block; animation: control-accepted 350ms ease-out both; }
+@keyframes control-accepted { from { opacity: .5; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+.desk-extras { border-top: 1px solid #b9c0aa; }
+.desk-extras > summary { font-size: 14px; font-weight: 600; min-height: 44px; cursor: pointer; padding: 12px 4px; }
+.desk-extras > summary > span { float: right; color: #56624a; font-size: 12px; font-weight: 400; }
+.desk-extras .notebook { border: 0; border-radius: 0; box-shadow: none; padding: 10px 15px; background: #edeadd; }
+.hint-panel { border-radius: 3px; }
+.dock-controls { padding: 12px 17px; }
+.dock-instruments { margin-block: 10px; }
+.dock-instruments dt { font-size: 12px; }
+.dock-instruments dd { font-size: 17px; }
+.dock-control-reason { font-size: 13px; line-height: 1.4; margin-top: 8px; }
+.pip-compact .pip-art { height: 230px; }
+.pip-state-label, .connection-readout { font-size: 13px; }
+.caption-text { font-size: 17px; }
+.app-footer { font-size: 12px; padding-top: 17px; }
+.topbar-actions button { font-size: 13px; }
+.app-shell[data-reduced-motion=true] *, .app-shell[data-reduced-motion=true] *::before, .app-shell[data-reduced-motion=true] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+@media (max-height: 790px) and (min-width: 1000px) {
+ .app-shell { padding-inline: 24px; }
+ .topbar { min-height: 56px; }
+ .title-scene { height: 263px; }
+ .title-copy { padding: 24px 30px; }
+ .release-briefing h1 { font-size: 45px; margin-block: 13px; }
+ .title-frequency { margin-top: 17px; }
+ .release-briefing .briefing-paper { padding: 18px 24px; }
+ .release-briefing .scenario-choice, .release-briefing .mode-choice { min-height: 62px; }
+ .launch-row { margin-top: 14px; padding-top: 13px; }
+ .chapter-header { padding-top: 10px; }
+ .chapter-objective h1 { font-size: 27px; }
+ .chapter-objective > p:last-child { font-size: 13px; }
+ .mission-layout { margin-top: 10px; gap: 18px; }
+ .pip-compact .pip-art { height: 148px; }
+ .companion-console { padding: 12px 16px; }
+ .human-controls { padding: 10px 15px; }
+ .human-controls .control-kicker { font-size: 10px; }
+ .human-controls p, .power-explanation { font-size: 12px; }
+ .caption-text { font-size: 16px; max-height: 68px; }
+ .dock-instruments dd { font-size: 15px; }
+ .presentation-mode .pip-compact .pip-art { height: 140px; }
+}
+@media (min-width: 1600px) { .title-scene { height: 400px; } .title-copy { padding: 45px; } .title-pip { width: 270px; } .title-pip .pip-art { height: 280px; } .pip-compact .pip-art { height: 290px; } }
+@container (max-width: 900px) {
+ .setup-columns { grid-template-columns: 1fr; gap: 18px; }
+ .release-briefing .setup-fieldset + .setup-fieldset { padding: 0; border: 0; }
+ .mission-layout .companion-console { position: static; }
+ .title-copy { max-width: 78%; }
+ .title-pip { right: 1%; width: 150px; }
+ .title-pip .pip-art { height: 175px; }
+}
+@media (max-width: 620px) {
+ .app-shell { padding: 0 12px 16px; }
+ .topbar { gap: 8px; flex-wrap: wrap; padding-block: 10px; }
+ .topbar-tools { gap: 12px; }
+ .topbar .mission-bar { display: none; }
+ .wordmark { font-size: 20px; }
+ .title-scene { height: 375px; }
+ .title-landscape { object-position: 62% 50%; opacity: .28; }
+ .title-copy { padding: 24px 20px; max-width: 100%; }
+ .title-eyebrow { font-size: 12px; max-width: 220px; line-height: 1.5; }
+ .release-briefing h1 { font-size: 37px; }
+ .release-briefing .briefing-premise { font-size: 15px; }
+ .title-frequency { margin-top: 16px; max-width: 165px; line-height: 1.5; }
+ .title-pip { bottom: -4px; right: 0; width: 150px; }
+ .title-pip .pip-art { height: 150px; }
+ .illustration-label { bottom: 8px; left: 20px; right: auto; }
+ .release-briefing .briefing-paper { padding: 20px 15px; }
+ .scenario-choices { grid-template-columns: 1fr; }
+ .release-briefing .mode-choices { grid-template-columns: 1fr; }
+ .release-briefing .mode-choice { align-items: center; min-height: 54px; }
+ .release-briefing .mode-choice small { display: inline; margin-left: 8px; }
+ .release-briefing .mode-choice strong { display: inline; }
+ .release-briefing .briefing-action { width: 100%; flex-wrap: wrap; }
+ .release-briefing .briefing-action button { flex: 1; min-width: 130px; }
+ .release-briefing .quick-guide { margin: 0; }
+ .chapter-progress li, .chapter-progress li small { font-size: 11px; }
+ .chapter-header { gap: 12px; }
+ .mission-layout { gap: 16px; }
+ .human-controls { position: static; }
+ .pip-compact .pip-art { height: 220px; }
+ .app-footer { line-height: 1.5; }
+ .desk-extras > summary > span { float: none; display: block; margin-top: 5px; }
+}
+@media (prefers-reduced-motion: reduce) { .control-ack { animation: none; } }

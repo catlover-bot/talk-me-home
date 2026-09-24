@@ -94,15 +94,17 @@ test('faithful raw captions, source history and keyboard entry remain available'
   await expect(page.getByRole('region', { name: 'Conversation history', exact: true })).toContainText(message);
   await expect(page.getByRole('region', { name: 'Conversation history', exact: true })).toContainText('Practice · Typed');
 });
-test('missing Live token stays Live and never silently becomes simulation', async ({ page }) => {
+test('unavailable Live stays an explicit choice and offers deliberate Practice before any token', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('radio', { name: /Live Text/ }).check();
   await page.getByRole('button', { name: 'Start with Text' }).click();
-  await expect(page.getByRole('alert')).toBeVisible();
-  await expect(page.getByLabel('Type a message')).toBeDisabled();
-  await page.getByText('Connection & sound', { exact: true }).click();
-  await expect(page.getByLabel('Next connection')).toHaveValue('live_text');
-  await expect(page.getByTestId('caption')).not.toContainText('can you hear me');
+  const check = page.getByRole('dialog', { name: 'Check your connection' });
+  await expect(check).toBeVisible();
+  await expect(check.getByRole('button', { name: 'Connect Live Text', exact: true })).toBeDisabled();
+  await expect(check.getByRole('region', { name: 'Demo access' })).toContainText(/unavailable|disabled|Practice/i);
+  await expect(page.getByTestId('caption')).toHaveCount(0);
+  await check.getByRole('button', { name: 'Close connection check', exact: true }).click();
+  await expect(page.getByRole('radio', { name: /Live Text/ })).toBeChecked();
 });
 test('Pause preserves Power and explicit keyboard resume marks earlier knowledge historical', async ({ page }, info) => {
   await start(page); await say(page, 'Look around');
@@ -154,6 +156,7 @@ test('Maintenance exchanges a real report and manual setting; wrong selector is 
   expect(quote).toMatch(/Crescent|Kite/);
   await page.getByRole('button', { name: 'Pin report', exact: true }).click();
   await expect(page.locator('.notebook-list')).toContainText(quote);
+  await page.locator('.desk-extras > summary').click();
   await page.getByLabel('My note', { exact: true }).fill('My private plan stays here.');
   await page.getByRole('button', { name: 'Add note' }).click();
   await expect(page.locator('.notebook-list')).toContainText('Private. Not sent to Pip.');
@@ -174,6 +177,7 @@ test('hints and notes are API-free and never auto-discover a local plate', async
   await expect(page.locator('.hint-copy')).not.toBeEmpty();
   await page.getByRole('button', { name: 'Hint 2', exact: true }).click();
   await expect(page.locator('.hint-copy')).not.toBeEmpty();
+  await page.locator('.desk-extras > summary').click();
   await page.getByLabel('My note', { exact: true }).fill('The plate is a private guess.');
   await page.getByRole('button', { name: 'Add note' }).click();
   expect(toolCount).toBe(0);

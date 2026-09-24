@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 export type PipState =
   | "offline"
@@ -36,18 +36,33 @@ export function PipPortrait({
   mini?: boolean;
 }) {
   const id = useId().replace(/:/g, "");
+  const portrait = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const element = portrait.current;
+    if (!element) return;
+    let intersecting = true;
+    const update = () => setVisible(intersecting && !document.hidden);
+    const observer = new IntersectionObserver(([entry]) => { intersecting = entry.isIntersecting; update(); });
+    observer.observe(element);
+    document.addEventListener('visibilitychange', update);
+    update();
+    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', update); };
+  }, []);
   const resting = state === "offline" || state === "paused";
   const surprised = state === "interrupted" || state === "error";
   const busy = state === "checking" || state === "considering";
   return (
     <figure
+      ref={portrait}
       className={`pip-portrait ${compact ? "pip-compact" : ""} ${mini ? 'pip-mini' : ''}`}
       data-state={state}
+      data-visible={visible}
       aria-label={`Pip, UNIT 04. ${pipStateLabels[state]}.`}
     >
       <svg
         className="pip-art"
-        viewBox={mini ? '90 18 215 195' : '0 0 400 350'}
+        viewBox={mini ? '90 18 215 195' : compact ? '72 20 260 277' : '0 0 400 350'}
         role="img"
         aria-labelledby={`${id}-title`}
       >
@@ -70,6 +85,9 @@ export function PipPortrait({
             <stop stopColor="#263b39" />
             <stop offset="1" stopColor="#142422" />
           </linearGradient>
+          <linearGradient id={`${id}-metal`} x1="0" y1="0" x2="1" y2="0">
+            <stop stopColor="#46544c" /><stop offset=".45" stopColor="#939c83" /><stop offset=".65" stopColor="#b5b8a0" /><stop offset="1" stopColor="#526054" />
+          </linearGradient>
           <clipPath id={`${id}-visor`}>
             <rect x="125" y="96" width="150" height="86" rx="29" />
           </clipPath>
@@ -82,21 +100,13 @@ export function PipPortrait({
           fill="#0c1514"
           opacity=".32"
         />
-        <path
-          className="pip-orbit"
-          d="M 68 218 C 23 128 77 50 136 31 M 288 55 C 352 83 371 145 350 196"
-          fill="none"
-          stroke="#737c6c"
-          strokeWidth="1"
-          opacity=".28"
-        />
-        <path
-          d="M 57 226 v 7 m-3-3h6 M 343 47v7m-3-3h6"
-          stroke="#9eaa95"
-          strokeWidth="1.5"
-          opacity=".48"
-        />
+        <g className="portrait-registration" fill="none" stroke="#9eaa95" opacity=".24" strokeWidth="1">
+          <path d="M 60 87 V 70 H 78 M 322 70 H 340 V 87 M 60 268 V 285 H 78 M 322 285 H 340 V 268" />
+          <path d="M 45 177 H 56 M 344 177 H 355" />
+        </g>
         <g className="pip-body">
+          <path d="M 174 184 H 229 V 219 H 174Z" fill={`url(#${id}-metal)`} stroke="#38483d" strokeWidth="3" />
+          <path d="M 176 191 H 226 M 177 197 H 227 M 177 203 H 227" stroke="#34483d" strokeWidth="2" />
           <path
             d="M 154 282 L 149 314 Q 161 326 181 315 L 188 284"
             fill="#918671"
@@ -122,12 +132,15 @@ export function PipPortrait({
             strokeWidth="3"
           />
           <g className="pip-left-arm">
+            <circle cx="140" cy="224" r="18" fill={`url(#${id}-metal)`} stroke="#38483d" strokeWidth="3" />
             <path
               d="M 140 212 Q 111 209 107 230 L 95 270 Q 90 287 107 292 Q 118 294 124 280 L 139 243"
               fill={`url(#${id}-body)`}
               stroke="#6b6c58"
               strokeWidth="3"
             />
+            <circle cx="110" cy="265" r="10" fill={`url(#${id}-metal)`} stroke="#3d4e43" strokeWidth="3" />
+            <circle cx="110" cy="265" r="3" fill="#d6caaa" />
             <path
               d="M 93 273 L 112 281 M 96 267 L 115 275"
               stroke="#596253"
@@ -142,12 +155,15 @@ export function PipPortrait({
             />
           </g>
           <g className="pip-right-arm">
+            <circle cx="267" cy="224" r="18" fill={`url(#${id}-metal)`} stroke="#38483d" strokeWidth="3" />
             <path
               d="M 263 211 Q 288 206 294 229 L 306 267 Q 312 284 296 290 Q 281 294 276 278 L 262 244"
               fill={`url(#${id}-body)`}
               stroke="#6b6c58"
               strokeWidth="3"
             />
+            <circle cx="293" cy="265" r="10" fill={`url(#${id}-metal)`} stroke="#3d4e43" strokeWidth="3" />
+            <circle cx="293" cy="265" r="3" fill="#d6caaa" />
             <path
               d="M 286 279 L 306 271 M 284 273 L 303 265"
               stroke="#596253"
@@ -168,6 +184,7 @@ export function PipPortrait({
             strokeWidth="3"
           />
           <path d="M 143 249 H 264 L 267 270 H 137 Z" fill="#3e5146" />
+          <path d="M 151 207 143 239 M 260 236 252 208 M 145 280 157 293 H 179" fill="none" stroke="#f4e6ce" strokeWidth="2" opacity=".6" />
           <rect
             x="185"
             y="252"
@@ -185,6 +202,7 @@ export function PipPortrait({
             strokeLinecap="round"
           />
           <rect x="154" y="229" width="27" height="10" rx="3" fill="#787f67" />
+          <path d="M 158 232 V 236 M 164 232 V 236 M 170 232 V 236 M 176 232 V 236" stroke="#3b4b3e" strokeWidth="2" />
           <circle
             className="pip-chest-light"
             cx="244"
@@ -221,6 +239,7 @@ export function PipPortrait({
             strokeWidth="1.5"
           />
           <path d="m 239 201-2 22m19-18-2 21" fill="none" stroke="#704635" strokeWidth="1.4" strokeDasharray="2 3" />
+          <g fill="#716d59" stroke="#ece0c4" strokeWidth=".8"><circle cx="156" cy="212" r="2.5" /><circle cx="158" cy="283" r="2.5" /><circle cx="247" cy="283" r="2.5" /></g>
         </g>
         <g className="pip-head">
           <path
@@ -250,6 +269,7 @@ export function PipPortrait({
             stroke="#465546"
             strokeWidth="3"
           />
+          <path d="M 103 126 V 150 M 296 126 V 149" fill="none" stroke="#c7c7a9" strokeWidth="2" />
           <path
             d="M 127 69 Q 195 52 266 68 Q 286 74 290 96 L 293 171 Q 291 192 268 200 Q 201 217 131 202 Q 108 195 108 173 L 110 101 Q 112 78 127 69Z"
             fill={`url(#${id}-shell)`}
@@ -264,6 +284,7 @@ export function PipPortrait({
             opacity=".86"
           />
           <path d="m 278 83-5 8m10-1-4 7 M 118 168l4 7" stroke="#a39882" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M 116 103 Q 113 176 123 186 M 279 111 281 175" fill="none" stroke="#a69f89" strokeWidth="1.5" />
           <rect x="122" y="92" width="155" height="91" rx="30" fill="#455145" />
           <rect
             x="125"
@@ -384,7 +405,7 @@ export function PipPortrait({
             <circle cx="348" cy="66" r="6" />
           </g>
         )}
-        {state === 'checking' && <g className="pip-checking" fill="none" stroke="#d5c49a" strokeWidth="2.5" strokeLinecap="round"><path d="M 318 71 V 61 H 328 M 344 61 H 354 V 71 M 354 88 V 98 H 344 M 328 98 H 318 V 88" /><path d="m 325 80 7 7 14-16" /></g>}
+        {state === 'checking' && <g className="pip-checking" fill="none" stroke="#d5c49a" strokeWidth="2.5" strokeLinecap="round"><circle cx="333" cy="79" r="14" /><path d="M 333 70 V 79 L 339 83" /></g>}
         {state === "paused" && (
           <g fill="#b8baa4">
             <rect x="317" y="88" width="7" height="24" rx="2" />

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { originLabel, type Caption, type useMission } from '../useMission';
 import type { TransportOrigin } from '../../shared/contracts';
 import { chapterNames } from './ChapterHeader';
-import { PipPortrait, type PipState } from './PipPortrait';
 
 type Mission = ReturnType<typeof useMission>;
 export function MessageQuote({ item, onPin, historical = false }: { item: Caption; onPin(id: string): void; historical?: boolean }) {
@@ -75,16 +74,22 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         <button ref={historyTrigger} className="text-button" onClick={() => setHistoryOpen(!historyOpen)} aria-expanded={historyOpen} aria-controls="conversation-history" aria-label="Open transcript history">History ({m.captions.length})</button>
       </div>
     </div>
-    <form className="message-form" onSubmit={send}>
-      <label htmlFor="message">Type a message</label>
-      <div className="input-row"><input id="message" value={text} maxLength={2000} onChange={event => setText(event.target.value)} disabled={!canSend} placeholder="Talk it through with Pip…" autoComplete="off" />
-        <button type="submit" aria-label="Send message" disabled={!canSend || !text.trim()}>Send</button></div>
-    </form>
     <div className="communication-actions">
       {m.connected || m.busy ? <><button onClick={() => { void m.interrupt(); }} disabled={!m.connected}>Interrupt</button>
         <button className="secondary-button" onClick={() => { void m.stop(); }}>{live ? 'Pause / End call' : 'Pause mission'}</button></>
         : <button className="primary-button" onClick={m.start} disabled={m.busy || m.view?.completed}>Resume {originLabel[m.mode]}</button>}
     </div>
+    {historyOpen && <section id="conversation-history" className="history-panel" aria-labelledby="history-title">
+      <div className="dialog-heading"><div className="history-partner"><div><h2 id="history-title">Conversation history</h2><span>{historyOverflow ? 'Scroll entries for earlier reports' : 'Original conversation record'}</span></div></div><button onClick={closeHistory}>Close history</button></div>
+      <p>A report is a claim, not a current reading. The latest 200 caption entries are shown.</p>
+      <div ref={historyList} className="history-list" tabIndex={0} aria-label="Conversation history entries. Scroll for earlier reports.">{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical={!m.connected || item.segmentId !== m.segment?.id} />)}</div>
+      <p className="history-help">Escape closes history. Your map and call controls remain available.</p>
+    </section>}
+    <form className="message-form" onSubmit={send}>
+      <label htmlFor="message">Type a message</label>
+      <div className="input-row"><input id="message" value={text} maxLength={2000} onChange={event => setText(event.target.value)} disabled={!canSend} placeholder="Talk it through with Pip…" autoComplete="off" />
+        <button type="submit" aria-label="Send message" disabled={!canSend || !text.trim()}>Send</button></div>
+    </form>
     {m.interrupted && <p className="notice">{live && m.connected ? 'Interrupted. The call is still connected and uses provider time. Pause / End call to disconnect.' : 'Pip is waiting. Completed actions remain completed.'}</p>}
     {m.recapNotice && <p className="recap-notice">{m.recapNotice}</p>}
     <details className="call-settings"><summary>Connection & sound</summary>
@@ -100,11 +105,5 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       {m.voiceVolume === 0 && <p className="notice">Voice output is muted. Captions remain available. Muting does not end the call.</p>}
       <p className="muted">{m.mode === 'practice' ? 'Practice uses deterministic text matching, with no AI or microphone.' : 'Live Voice and Live Text both use AssemblyAI. No raw microphone audio is recorded by this app.'}</p>
     </details>
-    {historyOpen && <section id="conversation-history" className="history-panel" aria-labelledby="history-title">
-      <div className="dialog-heading"><div className="history-partner"><PipPortrait state={m.pipState as PipState} mini /><div><h2 id="history-title">Conversation history</h2><span>{historyOverflow ? 'Pip · Scroll entries ↕' : 'Pip · UNIT 04'}</span></div></div><button onClick={closeHistory}>Close history</button></div>
-      <p>Original transcripts, grouped by source. A report is a claim, not a current reading.</p>
-      <div ref={historyList} className="history-list" tabIndex={0} aria-label="Conversation history entries. Scroll for earlier reports.">{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical={!m.connected || item.segmentId !== m.segment?.id} />)}</div>
-      <p className="history-help">Escape closes history. Your map and call controls remain available.</p>
-    </section>}
   </section>;
 }

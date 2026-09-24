@@ -3,205 +3,50 @@ import type { Chapter, GalleryAnnotation, Scenario } from "../../shared/contract
 import { GalleryDocument, type AnnotationChange } from './GalleryDocument';
 import { ReturnDockDocument } from './ReturnDockDocument';
 
+/** Drafted geometry is fixed documentation, independent of current equipment state. */
 function CargoMap() {
-  return (
-    <svg
-      className="cargo-map"
-      viewBox="0 0 720 270"
-      role="img"
-      aria-labelledby="cargo-map-title cargo-map-description"
-    >
-      <title id="cargo-map-title">Cargo bay route map</title>
-      <desc id="cargo-map-description">
-        A static document. The route crosses the Conveyor from the cargo
-        platform, passes through the Door, and reaches the far side. Equipment
-        symbols do not display live conditions.
-      </desc>
-      <defs>
-        <pattern
-          id="document-grid"
-          width="20"
-          height="20"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 20 0 H 0 V 20"
-            fill="none"
-            stroke="#8e9486"
-            strokeWidth=".65"
-            opacity=".22"
-          />
-        </pattern>
-        <pattern
-          id="belt-lines"
-          width="14"
-          height="14"
-          patternUnits="userSpaceOnUse"
-        >
-          <path d="M 2 0 V 14" stroke="#8d9585" strokeWidth="1" opacity=".6" />
-        </pattern>
-      </defs>
-      <rect width="720" height="270" fill="url(#document-grid)" />
-      <g fill="none" stroke="#a0a596" strokeWidth="1">
-        <path d="M 71 37 H 648 M 71 31 V 43 M 648 31 V 43" />
-        <path d="M 675 60 V 34 m-5 7 5-7 5 7" />
-      </g>
-      <text x="359" y="27" textAnchor="middle" className="map-meta">
-        Cargo transit · Deck 04
-      </text>
-      <text x="675" y="24" textAnchor="middle" className="map-meta">
-        N
-      </text>
-      <path d="M 70 65 H 648 V 213 H 70Z" fill="#f9f6ec" />
-      <path
-        d="M 549 65 H 70 V 213 H 549 M 556 65 H 648 V 213 H 556 M 552 65 V 107 M 552 169 V 213"
-        fill="none"
-        stroke="#465a50"
-        strokeWidth="5"
-      />
-      <rect
-        x="300"
-        y="81"
-        width="197"
-        height="116"
-        rx="4"
-        fill="#e4e6d8"
-        stroke="#9aa28f"
-      />
-      <rect x="305" y="85" width="187" height="108" fill="url(#belt-lines)" />
-      <path
-        d="M 303 94 H 494 M 303 184 H 494"
-        stroke="#7d8b76"
-        strokeWidth="2"
-      />
-      <path
-        d="M 166 139 H 602"
-        stroke="#a56a40"
-        strokeWidth="2.5"
-        strokeDasharray="7 6"
-      />
-      <circle
-        cx="166"
-        cy="139"
-        r="6"
-        fill="#f9f6ec"
-        stroke="#a56a40"
-        strokeWidth="2"
-      />
-      <circle
-        cx="603"
-        cy="139"
-        r="13"
-        fill="#f9f6ec"
-        stroke="#708879"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M 545 110 V 168 M 559 110 V 168 M 540 110 H 564 M 540 168 H 564"
-        stroke="#465a50"
-        strokeWidth="2"
-      />
-      <path
-        d="m 584 133 7 6-7 6"
-        fill="none"
-        stroke="#a56a40"
-        strokeWidth="2"
-      />
-      <g className="map-equipment-label">
-        <text x="169" y="107" textAnchor="middle">
-          Cargo platform
-        </text>
-        <text x="397" y="121" textAnchor="middle">
-          Conveyor
-        </text>
-        <text x="601" y="100" textAnchor="middle">
-          Far side
-        </text>
-        <text x="552" y="253" textAnchor="middle">
-          Door
-        </text>
-      </g>
-      <g className="map-secondary-label">
-        <text x="166" y="185" textAnchor="middle">
-          Near side
-        </text>
-        <text x="399" y="173" textAnchor="middle">
-          Transit route
-        </text>
-        <text x="602" y="185" textAnchor="middle">
-          Exit
-        </text>
-      </g>
-      <path d="M 552 220 V 234" stroke="#879480" />
-      <path
-        d="M 34 242 V 248 H 84 V 242 M 59 244 V 248"
-        fill="none"
-        stroke="#879480"
-      />
-    </svg>
-  );
+  return <svg className="cargo-map" viewBox="0 0 720 290" role="img" aria-labelledby="cargo-map-title cargo-map-description">
+    <title id="cargo-map-title">Cargo bay route map</title>
+    <desc id="cargo-map-description">A static document. The route crosses the Conveyor from the cargo platform, passes through the Door, and reaches the far side. Equipment symbols do not display live conditions.</desc>
+    <defs>
+      <pattern id="document-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#66786d" strokeWidth=".6" opacity=".16" /></pattern>
+      <pattern id="cargo-hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="m0 7 7-7" stroke="#52675c" strokeWidth=".8" opacity=".4" /></pattern>
+      <pattern id="belt-lines" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M2 0V15" stroke="#6d8174" strokeWidth="2" /><path d="M5 0V15" stroke="#dce3d6" strokeWidth="1" /></pattern>
+      <linearGradient id="belt-surface" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#c8d0be" /><stop offset=".5" stopColor="#e6e9da" /><stop offset="1" stopColor="#c2cdbb" /></linearGradient>
+    </defs>
+    <rect width="720" height="290" fill="#f4f1e6" /><rect width="720" height="290" fill="url(#document-grid)" />
+    <g className="draft-register" stroke="#7b897a" strokeWidth="1" fill="none"><path d="M18 39V18H40 M680 18H702V39 M18 251V272H40 M680 272H702V251" /><path d="M60 42H660 M60 37V47 M660 37V47" /><path d="M38 75V225 M33 75H43 M33 225H43" /></g>
+    <text x="60" y="29" className="map-meta">CARGO TRANSIT / DECK 04</text><text x="660" y="29" textAnchor="end" className="map-meta">PLAN · NOT TO SCALE</text>
+    <path d="M60 65H660V237H60Z" fill="#e0e4d8" stroke="#667769" strokeWidth="1.5" /><path d="M60 65H660V237H60Z" fill="url(#cargo-hatch)" />
+    <path d="M74 79H645V222H74Z" fill="#f9f6eb" stroke="#52675b" strokeWidth="2.5" />
+    <g fill="none" stroke="#9aab96" strokeWidth="1"><path d="M80 84H260V216H80Z M584 84H639V216H584Z" /><path d="M83 197H260 M94 204H249" /></g>
+    <g fill="#ced7c5" stroke="#52675b" strokeWidth="1.5"><rect x="104" y="97" width="32" height="22" rx="1" /><rect x="141" y="97" width="49" height="22" rx="1" /><path d="M109 98V118 M131 98V118 M147 98V118 M184 98V118" /></g>
+    <g className="cargo-conveyor">
+      <rect x="284" y="92" width="218" height="111" rx="15" fill="#bbc8b6" stroke="#485f50" strokeWidth="2" />
+      <rect x="290" y="99" width="206" height="97" rx="11" fill="url(#belt-surface)" stroke="#526b57" strokeWidth="2" />
+      <rect x="298" y="101" width="190" height="93" fill="url(#belt-lines)" />
+      <path d="M297 97H489 M297 198H489" stroke="#415b4b" strokeWidth="3" />
+      <path d="M309 93V88H329V93 M457 93V88H477V93 M309 203V208H329V203 M457 203V208H477V203" stroke="#52675b" fill="none" strokeWidth="2" />
+      <circle cx="291" cy="106" r="3" fill="#526b57" /><circle cx="495" cy="190" r="3" fill="#526b57" />
+    </g>
+    <g stroke="#394f45" fill="none"><path d="M548 79V121 M548 177V222" strokeWidth="9" /><path d="M541 116H556V182H541Z" strokeWidth="2" /><path d="M547 120V178 M553 120V178" strokeWidth="1.5" /><path d="M532 79H565V95H532Z M532 204H565V220H532Z" fill="#d3dacb" strokeWidth="1.5" /><path d="M539 82V92 M546 82V92 M553 82V92 M560 82V92" strokeWidth="1" /></g>
+    <path d="M152 151H614" stroke="#9a542f" strokeWidth="2.5" strokeDasharray="7 6" /><circle cx="152" cy="151" r="5" fill="#f9f6eb" stroke="#9a542f" strokeWidth="2" /><path d="m607 145 8 6-8 6" fill="none" stroke="#9a542f" strokeWidth="2.5" />
+    <g className="map-equipment-label" textAnchor="middle"><text x="167" y="185">Cargo platform</text><text x="393" y="135" className="draft-backed-label">Conveyor</text><text x="610" y="121">Far side</text><text x="548" y="270">Door</text></g>
+    <g className="map-secondary-label"><text x="90" y="257">01 / NEAR SIDE</text><text x="382" y="181" textAnchor="middle" className="draft-backed-label">Transit route</text><text x="610" y="183" textAnchor="middle">Exit</text></g>
+    <path d="M548 235V250" stroke="#6c7b69" /><path d="M645 250V269 M641 255 645 250 649 255" fill="none" stroke="#5a6c59" strokeWidth="1.5" /><text x="662" y="266" className="map-meta">N</text>
+  </svg>;
 }
 
 function WiringNote() {
-  return (
-    <div className="wiring-note">
-      <svg
-        viewBox="0 0 315 74"
-        role="img"
-        aria-label="One Power supply branches to the Door and the Conveyor"
-      >
-        <path
-          d="M 95 37 H 124 M 124 17 V 57 M 124 17 H 152 M 124 57 H 152"
-          fill="none"
-          stroke="#71816b"
-          strokeWidth="2"
-        />
-        <circle cx="124" cy="37" r="3" fill="#71816b" />
-        <rect
-          x="3"
-          y="19"
-          width="92"
-          height="35"
-          rx="3"
-          fill="#ede8d8"
-          stroke="#9fa793"
-        />
-        <rect
-          x="152"
-          y="1"
-          width="150"
-          height="32"
-          rx="3"
-          fill="#f8f5eb"
-          stroke="#9fa793"
-        />
-        <rect
-          x="152"
-          y="41"
-          width="150"
-          height="32"
-          rx="3"
-          fill="#f8f5eb"
-          stroke="#9fa793"
-        />
-        <g fill="#33483e" fontSize="16" fontFamily="inherit">
-          <text x="49" y="42" textAnchor="middle">
-            Power
-          </text>
-          <text x="227" y="23" textAnchor="middle">
-            Door
-          </text>
-          <text x="227" y="63" textAnchor="middle">
-            Conveyor
-          </text>
-        </g>
-      </svg>
-      <p>
-        <strong>One shared supply.</strong> The Door and Conveyor use the same
-        Power. Pip cannot see this diagram.
-      </p>
-    </div>
-  );
+  return <div className="wiring-note">
+    <svg viewBox="0 0 340 88" role="img" aria-label="One Power supply branches to the Door and the Conveyor">
+      <path d="M98 44H129V23H165 M129 44V68H165" fill="none" stroke="#526b57" strokeWidth="2.5" /><circle cx="129" cy="44" r="4" fill="#526b57" />
+      <rect x="4" y="24" width="94" height="40" rx="2" fill="#e4ddc7" stroke="#63725b" strokeWidth="1.5" /><path d="M10 30H18 M10 58H18 M85 30H92 M85 58H92" stroke="#9c8d6e" />
+      <rect x="165" y="5" width="168" height="36" rx="2" fill="#faf5e7" stroke="#63725b" /><rect x="165" y="50" width="168" height="36" rx="2" fill="#faf5e7" stroke="#63725b" />
+      <g fill="#344b3d" fontSize="18" fontFamily="inherit" fontWeight="600" textAnchor="middle"><text x="51" y="50">Power</text><text x="249" y="29">Door</text><text x="249" y="74">Conveyor</text></g>
+    </svg>
+    <p><strong>One shared supply.</strong> The Door and Conveyor use the same Power. Pip cannot see this diagram.</p>
+  </div>;
 }
 
 function ModuleMark({ shape }: { shape: "crescent" | "kite" }) {
@@ -294,7 +139,7 @@ export function MissionDocuments({ scenario, chapter = 'cargo', annotation, onAn
         aria-labelledby="map-tab"
         hidden={tab !== "map"}
       >
-        <CargoMap />
+        <div className="cargo-drawing-scroll" role="region" aria-label="Cargo route drawing. Scroll horizontally on a narrow screen." tabIndex={0}><CargoMap /></div>
         <div className="document-caption">
           <span>
             <i className="route-swatch" aria-hidden="true" />

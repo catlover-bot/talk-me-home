@@ -6,6 +6,7 @@ import { TranscriptStore, VoiceProtocol, type ProtocolHooks, type ProviderEvent,
 import { BrowserAudio, microphoneError, bytesToBase64, type VoiceAudio } from '../game/client/audio.ts';
 import { CAPTURE_WORKLET, PLAYBACK_WORKLET } from '../game/client/audio-worklets.ts';
 import { sessionConfig, robotTools } from '../game/agent/config.ts';
+import { MissionServiceError } from '../game/client/api.ts';
 
 const tick = () => new Promise<void>((resolve) => setImmediate(resolve));
 function deferred<T>() {
@@ -377,10 +378,18 @@ test('live adapter fake: permission denial closes audio without minting a token 
 test('live adapter fake: token failure closes audio and never exposes the upstream error', async () => {
   const h = liveHarness();
   h.options.token = async () => { throw new Error('Authorization: private-test-fixture'); };
-  await assert.rejects(h.live.start(h.options), /Live voice is unavailable/);
+  await assert.rejects(h.live.start(h.options), /Live is unavailable/);
   assert.equal(h.audio.closed, 1);
   assert.equal(h.sockets, 0);
   assert.doesNotMatch(h.errors.join(' '), /Authorization|private-test-fixture/);
+});
+
+test('live adapter fake: public demo admission error remains actionable and releases audio', async () => {
+  const h = liveHarness();
+  h.options.token = async () => { throw new MissionServiceError('The Live demo is busy. Try again later or choose Practice.'); };
+  await assert.rejects(h.live.start(h.options), /Live demo is busy.*Practice/);
+  assert.equal(h.audio.closed, 1);
+  assert.equal(h.sockets, 0);
 });
 
 test('live adapter fake: microphone-off connection is real text transport and network drop stops pending actions', async () => {

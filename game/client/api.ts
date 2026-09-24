@@ -1,5 +1,8 @@
 import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, GalleryAnnotation, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
 
+/** A public, user-facing response from the game service. */
+export class MissionServiceError extends Error {}
+
 async function request<T>(
   path: string,
   body?: unknown,
@@ -29,7 +32,7 @@ async function request<T>(
   }
   const data = await response.json().catch(() => ({}));
   if (!response.ok)
-    throw new Error(
+    throw new MissionServiceError(
       typeof data.error === "string"
         ? data.error
         : "The request could not be completed. Please try again.",
@@ -38,6 +41,9 @@ async function request<T>(
 }
 
 export const requestId = () => crypto.randomUUID();
+export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string }
+export const demoAccess = (signal?: AbortSignal) => request<DemoAccess>('/access', undefined, signal);
+export const unlockDemo = (code: string) => request<DemoAccess>('/access', { code });
 export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training') => request<HumanView>("/sessions", { scenario, missionKind });
 export const getSession = (sessionId: string) =>
   request<HumanView>(`/sessions/${encodeURIComponent(sessionId)}`);

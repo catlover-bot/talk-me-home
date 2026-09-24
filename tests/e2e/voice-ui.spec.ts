@@ -1,11 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
-import { fakeProvider, fixtureScreenshot } from './fake-provider';
+import { fakeProvider, fixtureScreenshot, confirmLocalReadiness } from './fake-provider';
 
 async function startLive(page: Page, kind: 'Voice' | 'Text' = 'Text') {
   await page.goto('/');
   await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: new RegExp(`Live ${kind}`) }).check();
   await page.getByRole('button', { name: `Start with ${kind}` }).click();
+  await confirmLocalReadiness(page, kind);
   await expect(page.getByLabel('Type a message')).toBeEnabled();
 }
 function reply(provider: Awaited<ReturnType<typeof fakeProvider>>, id: string, text: string) {
@@ -22,9 +23,12 @@ test('simulated Live Voice: one capture path, honest playback state, local mute,
   await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: /Live Voice/ }).check();
   await page.getByRole('button', { name: 'Start with Voice' }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
+  expect(provider.tokenRequests).toBe(0);
+  await confirmLocalReadiness(page, 'Voice');
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   expect(provider.connections).toBe(1);
-  expect((await provider.audioState()).captures).toBe(1);
+  expect((await provider.audioState()).captures).toBe(2);
+  expect((await provider.audioState()).activeTracks).toBe(1);
   provider.emit({ type: 'input.speech.started' });
   provider.emit({ type: 'transcript.user.delta', item_id: 'human-one', text: 'Could you look' });
   provider.emit({ type: 'transcript.user.delta', item_id: 'human-one', text: 'Could you look around?' });
@@ -72,6 +76,7 @@ test('simulated Live Voice to Practice to Live Text: provenance and private note
   await expect(page.getByRole('button', { name: 'Pin report', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: 'Pin report', exact: true }).click();
   await expect(page.locator('.notebook-list')).toContainText('Robot report');
+  await page.locator('.desk-extras > summary').click();
   await page.getByLabel('My note', { exact: true }).fill('Private notebook marker. Do not communicate this.');
   await page.getByRole('button', { name: 'Add note', exact: true }).click();
   await page.getByLabel('Type a message').fill('The manual says these machines share Power.');
@@ -109,6 +114,7 @@ test('simulated Live Voice to Practice to Live Text: provenance and private note
   await expect(page.getByRole('button', { name: 'Resume Practice' })).toBeEnabled();
   await page.getByLabel('Next connection').selectOption('live_text');
   await page.getByRole('button', { name: 'Resume Live Text' }).click();
+  await confirmLocalReadiness(page);
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   expect(provider.connections).toBe(2);
   const recap = provider.sent.find(event => event.type === 'conversation.message' && String(event.content).startsWith('Historical mission record'));
@@ -189,6 +195,7 @@ test('simulated permission failure: no token or connection is minted and the rec
   await page.getByRole('radio', { name: /Training/ }).check();
   await page.getByRole('radio', { name: /Live Voice/ }).check();
   await page.getByRole('button', { name: 'Start with Voice' }).click();
+  await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Microphone access was denied');
   expect(provider.tokenRequests).toBe(0);
   expect(provider.connections).toBe(0);
@@ -202,8 +209,8 @@ test('simulated rejection: sanitizes diagnostics, shows connection error, and re
   await startLive(page, 'Voice');
   const voiceContexts = (await provider.audioState()).contexts;
   await page.getByText('Connection & sound', { exact: true }).click();
-  await page.getByLabel('Effects volume').focus();
-  await page.getByLabel('Effects volume').press('ArrowRight');
+  await page.locator('.call-settings').getByLabel('Effects volume').focus();
+  await page.locator('.call-settings').getByLabel('Effects volume').press('ArrowRight');
   await expect.poll(async () => (await provider.audioState()).contexts).toBe(voiceContexts + 1);
   provider.emit({ type: 'session.error', code: 'invalid_config', message: 'private-provider-diagnostic' });
   await expect(page.getByRole('alert')).toBeVisible();

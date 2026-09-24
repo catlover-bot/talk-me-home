@@ -1,0 +1,217 @@
+/* Original mechanical drawings and character staging. All in-play scenes are static references. */
+.mission-documents { border-radius: 3px 9px 3px 3px; position: relative; box-shadow: 0 3px 0 #c4c3af, 0 9px 24px #263a2910; }
+.mission-documents::before { content: ''; display: block; height: 5px; background: repeating-linear-gradient(90deg, #8a5938 0 32px, #d2cbb4 32px 36px); }
+.document-heading { position: relative; padding: 14px 22px 12px; }
+.document-heading .section-kicker { font-size: 12px; color: #62664f; }
+.document-heading h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 27px; letter-spacing: -.5px; font-weight: 500; margin-top: 3px; }
+.document-reference { border: 1px solid #adb19a; padding: 7px 9px; font: 12px ui-monospace, monospace; letter-spacing: .8px; color: #56634d; }
+.document-tabs { padding-inline: 13px; gap: 2px; }
+.document-tabs button { font-size: 14px; }
+.document-caption { font-size: 12px; line-height: 1.4; color: #57664d; padding: 10px 18px; }
+.document-caption > span:first-child { white-space: normal; }
+.cargo-drawing-scroll, .atlas-scroll, .return-drawing-scroll { max-width: 100%; overflow-x: auto; scrollbar-color: #899776 #e4e7d7; scrollbar-width: thin; }
+.cargo-drawing-scroll:focus-visible, .atlas-scroll:focus-visible, .return-drawing-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.cargo-map { width: 100%; height: auto; min-height: 0; background: #f4f1e6; }
+.map-meta { font: 11px ui-monospace, monospace; letter-spacing: .7px; fill: #546450; }
+.map-equipment-label { font-size: 19px; fill: #314c3c; }
+.map-secondary-label { font-size: 13px; fill: #4f654f; }
+.draft-backed-label { paint-order: stroke; stroke: #e2e7d7; stroke-width: 7px; stroke-linejoin: round; }
+.wiring-note { padding: 12px 19px; gap: 18px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); background: #eee9d8; }
+.wiring-note svg { max-height: 82px; }
+.wiring-note p { font-size: 14px; color: #4e6047; line-height: 1.5; }
+.wiring-note p strong { display: block; margin-bottom: 2px; }
+.manual-intro, .manual-footnote { font-size: 14px; }
+.module-table td { font-family: Georgia, 'Times New Roman', serif; font-size: 24px; }
+.module-table tbody th { font-size: 19px; }
+.module-mark { width: 47px; height: 47px; }
+
+.gallery-document { background: #edf0df; }
+.gallery-document::before { background: repeating-linear-gradient(90deg, #456651 0 32px, #b7c3a7 32px 36px); }
+.gallery-document .document-reference { border-color: #99af8e; color: #3d5c43; }
+.atlas-key { color: #405d43; padding: 10px 20px; font-size: 13px; background: #e2e7d3; border-top: 1px solid #c4cbb5; border-bottom: 1px solid #c4cbb5; }
+.atlas-key > span { display: flex; align-items: center; gap: 7px; }
+.beacon-swatch, .harbor-swatch { width: 23px; flex-shrink: 0; border-color: #4a7051; }
+.atlas-surface { position: relative; }
+.gallery-map { display: block; width: 100%; height: auto; min-height: 0; background: #edf0df; }
+.atlas-imprint { fill: #50664e; font: 10px ui-monospace, monospace; letter-spacing: 1px; }
+.atlas-compass { color: #50664e; fill: #50664e; font: 11px ui-monospace, monospace; }
+.atlas-track-bed { stroke: #cbd6ba; stroke-width: 12px; fill: none; }
+.atlas-gate .atlas-track { stroke: #456a4b; stroke-width: 3px; fill: none; }
+.atlas-gate.harbor .atlas-track { stroke-dasharray: 8 5; }
+.atlas-gate.beacon .atlas-track { stroke-dasharray: none; }
+.atlas-gate rect { fill: #f5f5e8; stroke: #7b936c; stroke-width: 1.4px; }
+.atlas-gate text { fill: #304f37; font-size: 18px; font-weight: 650; }
+.room-mount { fill: #d4dec4; stroke: #688460; stroke-width: 1.5px; }
+.room-disc { fill: #f0f1df; stroke: #52714e; stroke-width: 2px; }
+.room-inner-ring { fill: none; stroke: #a8b794; stroke-width: 1px; }
+.room-emblem { fill: #3a6143; stroke: #3a6143; }
+.room-name { font-size: 20px; fill: #2f5239; font-weight: 650; stroke: #edf0df; stroke-width: 6px; }
+.atlas-route-note { fill: #53664c; font-size: 12px; }
+.private-location-mark { stroke: #955127; stroke-width: 3px; stroke-dasharray: 5 4; }
+.private-marker-label { fill: #82461f; font-size: 10px; font-weight: 750; stroke: #edf0df; stroke-width: 5px; }
+.private-path-mark circle { fill: #f6e3bc; stroke: #915323; stroke-width: 2px; }
+.private-path-mark path { stroke: #82461f; stroke-width: 2.5px; }
+.atlas-direct-marks { position: absolute; inset: 0; pointer-events: none; }
+.atlas-direct-marks button { position: absolute; pointer-events: auto; transform: translate(-50%, -50%); border: 2px dashed transparent; border-radius: 5px; background: transparent; min-width: 44px; min-height: 44px; color: #78401e; padding: 0; }
+.atlas-direct-marks button:hover:not(:disabled), .atlas-direct-marks button:focus-visible { border-color: #914b20; background: #f4d9a244; filter: none; }
+.atlas-direct-marks button:active:not(:disabled) { transform: translate(-50%, -50%); }
+.atlas-direct-marks button[aria-pressed=true] { border-color: #955127; }
+.atlas-room-mark { width: 10%; height: 27%; }
+.atlas-gate-mark { width: 12%; height: 14%; }
+.atlas-direct-marks button span { position: absolute; top: -4px; right: -4px; min-width: 19px; height: 19px; border-radius: 50%; background: #f7e7c5; border: 1px solid #a5733b; font: 700 13px ui-monospace, monospace; }
+.atlas-surface[data-editing=true] { box-shadow: inset 0 0 0 2px #a6743b; }
+.private-map-notes { background: #e9e7d3; }
+.private-map-notes summary { font-size: 14px; }
+.private-map-notes > p { font-size: 13px; color: #515e44; }
+.private-map-notes .source-label { font-size: 11px; }
+.blocked-gate-choices label { font-size: 13px; }
+.blocked-gate-choices small { font-size: 11px; color: #556349; }
+.atlas-route-reference table { font-size: 14px; }
+
+.return-document { background: #f5eedb; }
+.return-document::before { background: repeating-linear-gradient(90deg, #967348 0 32px, #d4c5a3 32px 36px); }
+.return-document .document-heading { background: #eee4cb; border-bottom-color: #cabc9c; }
+.return-document .document-reference { color: #705333; border-color: #ad9774; }
+.procedure-sheet { padding: 13px 18px 15px; }
+.procedure-intro { gap: 14px; }
+.procedure-intro > p { font-size: 14px; color: #545a44; line-height: 1.45; }
+.procedure-stamp { flex-shrink: 0; font-size: 10px; color: #7f5732; border: 2px double #a48960; padding: 7px 9px; letter-spacing: .5px; }
+.return-schematic { display: block; width: 100%; height: auto; max-height: none; margin: 12px 0; }
+.procedure-main-label { fill: #3f503a; font-size: 19px; font-weight: 650; }
+.procedure-small-label { fill: #586044; font-size: 12px; }
+.procedure-notes { gap: 16px; }
+.procedure-notes li { padding-top: 10px; border-top: 2px solid #a78659; }
+.procedure-notes li > span { font: 12px ui-monospace, monospace; color: #7e5933; margin-bottom: 7px; }
+.procedure-notes h3 { font-size: 15px; color: #394c35; margin-bottom: 5px; }
+.procedure-notes p { font-size: 13px; line-height: 1.5; color: #525e43; }
+.procedure-footer { font-size: 12px; color: #586047; margin-top: 13px; padding-top: 10px; }
+.procedure-footer strong { font-weight: 650; }
+
+/* Neutral communications frame: no chapter scenery or local equipment state. */
+.pip-portrait { isolation: isolate; }
+.pip-art { filter: drop-shadow(0 8px 8px #0a171d25); }
+.pip-compact .pip-art { overflow: hidden; }
+.pip-body { transform-origin: 201px 307px; transition: transform 250ms ease; }
+.pip-left-arm { transform-origin: 138px 222px; transition: transform 250ms ease; }
+.pip-right-arm { transform-origin: 267px 224px; }
+.pip-portrait[data-state=ready] .pip-body { transform: rotate(1deg); }
+.pip-portrait[data-state=listening] .pip-body { transform: rotate(-2deg); }
+.pip-portrait[data-state=listening] .pip-right-arm { transform: rotate(-12deg); }
+.pip-portrait[data-state=considering] .pip-left-arm { transform: rotate(13deg); }
+.pip-portrait[data-state=checking] .pip-right-arm { transform: rotate(-18deg); }
+.pip-portrait[data-state=success] .pip-left-arm { transform: rotate(9deg); }
+.pip-portrait[data-state=success] .pip-right-arm { transform: rotate(-42deg); }
+.pip-portrait[data-state=paused] .pip-body { transform: translateY(3px); }
+.pip-portrait[data-visible=false] *, [hidden] .pip-portrait * { animation-play-state: paused !important; }
+.pip-state-label { font-size: 13px; }
+.pip-celebration { display: none; }
+.pip-mini .portrait-registration { display: none; }
+
+.rescue-debrief .debrief-companion { padding: 21px 23px 22px; overflow: hidden; }
+.rescue-debrief .debrief-companion > p { font-family: Georgia, 'Times New Roman', serif; font-size: 20px; line-height: 1.4; margin: 18px 0 13px; }
+.homecoming { width: 100%; margin-top: 19px; }
+.homecoming-scene { position: relative; border: 1px solid #74856a; border-radius: 130px 130px 4px 4px; overflow: hidden; background: #263e32; }
+.rescue-debrief .homecoming .homecoming-art { display: block; width: 100%; height: auto; max-height: none; }
+.homecoming-pip { position: absolute; width: 49%; bottom: 14%; right: 2%; }
+.rescue-debrief .homecoming-pip .pip-portrait { margin: 0; }
+.rescue-debrief .homecoming-pip .pip-art { width: 100%; height: auto; max-height: none; overflow: visible; filter: drop-shadow(0 8px 8px #0b231c50); }
+.homecoming-pip .pip-portrait figcaption, .homecoming-pip .portrait-registration { display: none; }
+.homecoming-welcome { position: absolute; bottom: 3.5%; left: 0; right: 0; text-align: center; color: #eee1bf; }
+.homecoming-welcome span { display: block; margin-bottom: 4px; font: 10px ui-monospace, monospace; letter-spacing: 2px; color: #c6cbb0; }
+.homecoming-welcome strong { font: 500 clamp(23px, 2.5vw, 34px) Georgia, serif; letter-spacing: -.6px; }
+.homecoming figcaption { padding-top: 12px; gap: 11px; }
+.homecoming-source { font-size: 11px; color: #ccd1b7; }
+.homecoming-checkpoints { gap: 8px 12px; }
+.homecoming-checkpoints li { font-size: 12px; color: #e1e4cc; }
+.homecoming-capsule { animation: homecoming-reveal 900ms ease-out both; }
+.homecoming-pip { animation: homecoming-reveal 700ms 160ms ease-out both; }
+@keyframes homecoming-reveal { from { opacity: 0; translate: 0 7px; } to { opacity: 1; translate: 0 0; } }
+.journey-source { font-size: 12px; color: #58634e; }
+.journey-summary h3 { font-size: 15px; }
+.journey-summary p { font-size: 14px; }
+.journey-summary li { gap: 13px; padding-block: 12px; }
+.journey-index { border-radius: 2px; width: 30px; height: 33px; font: 12px ui-monospace, monospace; }
+.journey-summary li:nth-child(2) .journey-index { background: #d9e1ca; border-color: #99ae89; }
+.journey-summary li:nth-child(3) .journey-index { background: #e9dec3; border-color: #bca67f; }
+.rescue-debrief .contribution-strip { padding: 12px 0; margin: 16px 0; }
+.rescue-debrief .contribution-strip strong { font-size: 24px; }
+.rescue-debrief .contribution-strip > span { font-size: 12px; }
+
+@media (min-width: 1000px) {
+  .private-map-notes[open] { max-height: 230px; overflow: auto; scrollbar-color: #8d9a76 #e9e7d3; }
+}
+@media (max-height: 790px) and (min-width: 1000px) {
+  .document-heading { padding: 10px 18px 9px; }
+  .document-heading h2 { font-size: 23px; }
+  .document-heading .section-kicker { font-size: 11px; }
+  .document-tabs button { min-height: 41px; padding-block: 8px; }
+  .cargo-map { height: 205px; }
+  .wiring-note { padding: 8px 16px; gap: 13px; }
+  .wiring-note svg { max-height: 61px; }
+  .wiring-note p { font-size: 13px; line-height: 1.4; }
+  .document-caption { font-size: 11px; padding: 8px 16px; }
+  .atlas-key { padding: 9px 17px; font-size: 12px; }
+  .gallery-map { height: auto; }
+  .procedure-sheet { padding: 10px 15px; }
+  .procedure-intro > p { font-size: 13px; }
+  .procedure-stamp { padding: 5px 7px; font-size: 9px; }
+  .return-schematic { height: auto; margin: 9px 0; }
+  .procedure-notes { gap: 12px; }
+  .procedure-notes h3 { font-size: 13px; }
+  .procedure-notes p { font-size: 12px; }
+  .procedure-notes li > span { font-size: 10px; margin-bottom: 6px; }
+  .procedure-footer { font-size: 11px; margin-top: 9px; padding-top: 8px; }
+  .rescue-debrief .debrief-companion { padding: 17px 19px; }
+  .rescue-debrief .debrief-companion > p { font-size: 18px; margin-top: 13px; }
+  .rescue-debrief .journey-summary p { font-size: 13px; }
+  .rescue-debrief .journey-summary h3 { font-size: 14px; }
+  .rescue-debrief .journey-source { font-size: 11px; }
+  .rescue-debrief .journey-summary li { padding-block: 9px; }
+  .rescue-debrief .contribution-strip strong { font-size: 22px; }
+}
+@media (max-width: 900px) {
+  .homecoming { max-width: 490px; margin-inline: auto; }
+  .homecoming-welcome strong { font-size: 32px; }
+  .rescue-debrief .debrief-companion > p { text-align: center; }
+}
+@media (max-width: 620px) {
+  .document-heading { padding: 13px 15px 11px; gap: 10px; }
+  .document-heading h2 { font-size: 25px; }
+  .document-reference { padding: 6px; font-size: 11px; }
+  .document-heading .section-kicker { font-size: 11px; }
+  .cargo-map { min-height: 0; }
+  .cargo-drawing-scroll .cargo-map { min-width: 590px; }
+  .map-equipment-label { font-size: 23px; }
+  .map-secondary-label { font-size: 15px; }
+  .map-meta { font-size: 13px; }
+  .wiring-note { grid-template-columns: 1fr; gap: 8px; padding: 12px 15px; }
+  .wiring-note svg { max-width: 320px; max-height: 83px; margin: auto; }
+  .wiring-note p { font-size: 14px; }
+  .document-caption { flex-direction: column; gap: 4px; font-size: 12px; }
+  .atlas-key { font-size: 12px; gap: 9px 14px; padding-inline: 14px; }
+  .gallery-map { min-height: 0; }
+  .atlas-surface { min-width: 590px; }
+  .room-name { font-size: 25px; }
+  .atlas-imprint { font-size: 11px; }
+  .atlas-route-note { font-size: 15px; }
+  .private-marker-label { font-size: 12px; }
+  .atlas-gate .gate-short-name { font-size: 24px; }
+  .atlas-direct-marks button span { font-size: 12px; }
+  .private-map-notes summary { font-size: 14px; }
+  .private-map-notes summary .source-label { font-size: 10px; margin-left: 4px; }
+  .procedure-sheet { padding: 13px 14px; }
+  .procedure-intro > p { font-size: 14px; }
+  .return-schematic { height: auto; min-width: 0; }
+  .return-drawing-scroll .return-schematic { min-width: 625px; }
+  .procedure-main-label { font-size: 23px; }
+  .procedure-small-label { font-size: 15px; }
+  .procedure-notes { grid-template-columns: 1fr; gap: 13px; }
+  .procedure-notes h3 { font-size: 16px; }
+  .procedure-notes p { font-size: 14px; }
+  .procedure-footer { font-size: 13px; }
+  .rescue-debrief .debrief-companion { padding-inline: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pip-portrait *, .homecoming-pip, .homecoming-capsule { animation: none !important; transition: none !important; }
+}
+.reduced-motion .pip-portrait *, .reduced-motion .homecoming-pip, .reduced-motion .homecoming-capsule { animation: none !important; transition: none !important; }

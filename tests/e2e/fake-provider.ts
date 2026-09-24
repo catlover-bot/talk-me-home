@@ -30,6 +30,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
       async close() { if (this.state !== 'closed') closedContexts++; this.state = 'closed'; }
       createGain() { return { gain: { value: 1, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
       createMediaStreamSource() { return { connect() {}, disconnect() {} }; }
+      createAnalyser() { return { fftSize: 256, getFloatTimeDomainData(samples: Float32Array) { samples.fill(0.04); }, disconnect() {} }; }
       createOscillator() { return { type: 'sine', frequency: { value: 0 }, onended: null as (() => void) | null, connect() {}, disconnect() {}, start() {}, stop() { this.onended?.(); } }; }
     }
     class FakeWorklet {
@@ -70,6 +71,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
   let ended = 0;
   const sockets: WebSocketRoute[] = [];
   const sent: FixtureEvent[] = [];
+  await page.route('**/api/access', route => route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, message: 'Offline fixture access. No provider is contacted.' } }));
   await page.route('**/api/sessions/*/voice-token', async route => {
     tokenRequests++;
     await route.fulfill({ json: { token: 'offline-fixture-only', sessionConfig, maxSessionSeconds: 600 } });
@@ -113,6 +115,17 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
     async render() { await page.evaluate(() => window.__testAudio.render()); },
     async drain() { await page.evaluate(() => window.__testAudio.drain()); },
   };
+}
+
+/** Explicitly complete the same local readiness step as a player, using fake devices. */
+export async function confirmLocalReadiness(page: Page, kind: 'Voice' | 'Text' = 'Text') {
+  await expect(page.getByRole('dialog', { name: 'Check your connection' })).toBeVisible();
+  if (kind === 'Voice') {
+    await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
+    await expect(page.getByRole('meter', { name: 'Local microphone level' })).toHaveAttribute('aria-valuenow', '20');
+  }
+  await page.getByRole('button', { name: 'Play test tone', exact: true }).click();
+  await page.getByRole('button', { name: `Connect Live ${kind}`, exact: true }).click();
 }
 
 export async function fixtureScreenshot(page: Page, path: string) {

@@ -1,4 +1,5 @@
 import { BrowserAudio, microphoneError, type VoiceAudio } from './audio.ts';
+import { MissionServiceError } from './api.ts';
 import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion, type CancellationReason } from './voice-protocol.ts';
 export type { ToolCall, TranscriptEntry, VoiceStatus, VoiceInputState, ReplyCompletion, CancellationReason } from './voice-protocol.ts';
 
@@ -143,7 +144,7 @@ export class LiveVoice {
     } catch (error) {
       if (this.ended) { await this.stop(); throw new Error('The voice connection did not start.'); }
       const message = stage === 'audio' ? microphoneError(error)
-        : stage === 'token' ? 'Live voice is unavailable. Check the server API key and network connection, then reconnect.'
+        : stage === 'token' ? error instanceof MissionServiceError ? error.message : 'Live is unavailable. Try again, or choose Practice to play without a provider connection.'
           : 'The voice connection could not start. Check your network and configuration.';
       this.fail(message);
       await this.stop();

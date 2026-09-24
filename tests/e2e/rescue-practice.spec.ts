@@ -97,6 +97,7 @@ test('Practice Rescue A: cooperative full mission, private references, recoverab
   await expect(page.getByTestId('caption')).toContainText('Fork emblem');
   await expect(page.getByLabel('Where I think Pip is')).toHaveValue('sail');
   await page.getByRole('button', { name: 'Pin report', exact: true }).click();
+  await page.locator('.desk-extras > summary').click();
   await page.getByLabel('My note', { exact: true }).fill('Private route guess stays at this desk.');
   await page.getByRole('button', { name: 'Add note', exact: true }).click();
   await expect(page.locator('.notebook-list')).toContainText('Private route guess');
@@ -136,6 +137,10 @@ test('Practice Rescue A: cooperative full mission, private references, recoverab
   expect(rescueServer.store.get(initial.sessionId).completed).toBe(true);
   expect(rescueServer.store.record(initial.sessionId, initial.roundId).debrief?.timeline.filter(entry => entry.kind === 'checkpoint')).toHaveLength(2);
   await screenshot(page, 'homecoming', info);
+  await page.getByRole('button', { name: 'Start another rescue', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Start Practice', exact: true })).toBeEnabled();
+  await expect(page.getByRole('radio', { name: /Rescue Mission/ })).toBeChecked();
+  await expect(page.getByLabel('Type a message')).toHaveCount(0);
 });
 
 test.describe('Authored Gallery B', () => {
@@ -159,6 +164,9 @@ test.describe('Authored Gallery B', () => {
     await say(page, 'Inspect the southeast gate'); await relay(page, 'Beacon'); await say(page, 'Go through the southeast gate');
     await dock(page); await control(page, 'Authorize return'); await say(page, 'Confirm return');
     await expect(page.getByRole('heading', { name: 'You brought Pip home.' })).toBeVisible();
+    await page.getByRole('button', { name: 'Try Training', exact: true }).click();
+    await expect(page.getByRole('radio', { name: /Training/ })).toBeChecked();
+    await expect(page.getByRole('button', { name: 'Start Practice', exact: true })).toBeEnabled();
   });
 });
 

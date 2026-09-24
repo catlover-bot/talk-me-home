@@ -52,6 +52,7 @@ async function restart(page: Page) {
 }
 
 async function addNote(page: Page, text: string) {
+  if (!await page.getByLabel('My note', { exact: true }).isVisible()) await page.locator('.desk-extras > summary').click();
   await page.getByLabel('My note', { exact: true }).fill(text);
   await page.getByRole('button', { name: 'Add note', exact: true }).click();
 }

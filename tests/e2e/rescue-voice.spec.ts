@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from './rescue-fixture';
-import { fakeProvider, fixtureScreenshot } from './fake-provider';
+import { fakeProvider, fixtureScreenshot, confirmLocalReadiness } from './fake-provider';
 
 type Provider = Awaited<ReturnType<typeof fakeProvider>>;
 
@@ -9,6 +9,7 @@ async function startRescue(page: Page, provider: Provider) {
   await expect(page.getByRole('radio', { name: /Rescue Mission/ })).toBeChecked();
   await page.getByRole('radio', { name: /Live Text/ }).check();
   await page.getByRole('button', { name: 'Start with Text' }).click();
+  await confirmLocalReadiness(page);
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   expect(provider.connections).toBe(1);
 }
@@ -191,6 +192,7 @@ test('simulated Rescue continuity: pause after boarding revokes grant, fresh con
   await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
   await expect(page.getByTestId('dock-authorization')).toHaveText('Not granted');
   await page.getByRole('button', { name: 'Resume Live Text', exact: true }).click();
+  await confirmLocalReadiness(page);
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   expect(provider.connections).toBe(2);
   const recap = provider.sent.filter(event => event.type === 'conversation.message' && String(event.content).startsWith('Historical mission record')).at(-1);

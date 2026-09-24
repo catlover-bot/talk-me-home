@@ -55,6 +55,8 @@ export function useMission() {
   const [hint, setHint] = useState('');
   const [voiceVolume, setVoiceVolume] = useState(1);
   const [effectsVolume, setEffectsVolume] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [readinessMode, setReadinessMode] = useState<'live_voice' | 'live_text' | null>(null);
   const effects = useRef(new LocalEffects());
   const voice = useRef<LiveVoice | null>(null);
   const stopping = useRef<Promise<void> | null>(null);
@@ -201,13 +203,13 @@ export function useMission() {
     return { ok: result.ok, message: result.message };
   };
 
-  const start = () => {
+  const start = (connectionMode: TransportOrigin = mode) => {
     if (busyRef.current || connectedRef.current || voice.current) return;
     setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0);
     // Both audio paths begin in this user gesture; no capture happens on page load.
     if (effectsVolume > 0) void effects.current.unlock();
     const expected = ++generation.current;
-    const source: Segment = { id: api.requestId(), origin: mode };
+    const source: Segment = { id: api.requestId(), origin: connectionMode };
     segmentRef.current = source; setSegment(source);
     const prepareMission = async () => {
       let current = viewRef.current;
@@ -229,7 +231,7 @@ export function useMission() {
       await refreshRecord(current!);
       return { current: current!, recap: recap.entries.length ? JSON.stringify(recap) : undefined, retained };
     };
-    if (mode === 'practice') {
+    if (connectionMode === 'practice') {
       void prepareMission().then(({ retained }) => {
         if (expected !== generation.current) return;
         setConnectedNow(true); setStatus('listening'); effects.current.play('connect');
@@ -261,12 +263,12 @@ export function useMission() {
       onError: message => { if (expected === generation.current) setError(message); },
       onWarning: message => { if (expected === generation.current) setWarning(message); },
       onSessionLimit: () => { if (expected === generation.current) void stop(); },
-      onMicrophone: value => { if (expected === generation.current) setMicrophone(value); },
+      onMicrophone: value => { if (expected === generation.current) { setMicrophone(value); effects.current.setVoiceActive(value || playingRef.current); } },
       onInputState: value => { if (expected === generation.current) { setInputState(value); if (value === 'receiving') setInterrupted(false); } },
       onToolState: value => { if (expected === generation.current) setToolPending(value); },
       onPlayback: value => {
         if (expected !== generation.current) return;
-        setPlaying(value); playingRef.current = value; effects.current.setVoiceActive(value);
+        setPlaying(value); playingRef.current = value; effects.current.setVoiceActive(value || source.origin === 'live_voice');
         if (!value && closingReplyDone.current && viewRef.current?.completed) void stop();
       },
       onReplyDone: reply => {
@@ -280,7 +282,7 @@ export function useMission() {
     connection.setVolume(voiceVolume);
     voice.current = connection;
     void connection.start({
-      microphone: mode === 'live_voice',
+      microphone: connectionMode === 'live_voice',
       token: async () => {
         const { current, recap } = await prepareMission();
         const token = await api.voiceToken(current);
@@ -439,6 +441,26 @@ export function useMission() {
   const changeVoiceVolume = (value: number) => { setVoiceVolume(value); voice.current?.setVolume(value); };
   const changeEffectsVolume = (value: number) => { setEffectsVolume(value); effects.current.setVolume(value); if (value > 0) void effects.current.unlock(); else void effects.current.close(); };
 
+  const requestStart = (next: TransportOrigin = mode) => {
+    if (busyRef.current || connectedRef.current || voice.current) return;
+    chooseMode(next);
+    if (next === 'practice') start(next);
+    else setReadinessMode(next);
+  };
+  const confirmReady = () => {
+    if (!readinessMode) return;
+    const ready = readinessMode;
+    setReadinessMode(null);
+    start(ready);
+  };
+  const cancelReadiness = () => setReadinessMode(null);
+  const readinessText = () => { chooseMode('live_text'); setReadinessMode('live_text'); };
+  const readinessPractice = () => { setReadinessMode(null); requestStart('practice'); };
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = String(reducedMotion);
+    return () => { delete document.documentElement.dataset.reducedMotion; };
+  }, [reducedMotion]);
+
   useEffect(() => {
     if (!connected || segment?.origin === 'practice') return;
     const timer = setInterval(() => setSeconds(Math.floor((Date.now() - liveStarted.current) / 1000)), 1000);
@@ -467,7 +489,8 @@ export function useMission() {
   return {
     stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
-    error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, pipState,
-    start, stop, interrupt, send, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
+    error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, reducedMotion, pipState,
+    requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
+    start: () => requestStart(), stop, interrupt, send, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
   };
 }

@@ -12,9 +12,9 @@ export interface VoiceAudio {
 
 export function microphoneError(error: unknown): string {
   const name = error && typeof error === 'object' && 'name' in error ? error.name : '';
-  if (name === 'NotAllowedError' || name === 'SecurityError') return 'Microphone access was denied. Allow it in your browser, or connect with the microphone off and type a message.';
-  if (name === 'NotFoundError' || name === 'DevicesNotFoundError') return 'No microphone was found. Connect a microphone, or connect with the microphone off and type a message.';
-  if (name === 'NotReadableError') return 'The microphone is unavailable or in use. Check your input device, or connect with the microphone off.';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return 'Microphone access was denied. Allow it in your browser and retry, or choose Live Text or Practice.';
+  if (name === 'NotFoundError' || name === 'DevicesNotFoundError') return 'No microphone was found. Connect a microphone and retry, or choose Live Text or Practice.';
+  if (name === 'NotReadableError') return 'The microphone is unavailable or in use. Check your input device, or choose Live Text or Practice.';
   return 'Audio could not start. Check browser audio permissions and your input device.';
 }
 
@@ -23,6 +23,65 @@ export function bytesToBase64(buffer: ArrayBuffer): string {
   let binary = '';
   for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(binary);
+}
+
+/** A local check only: no recording, encoding, transport, or provider token. */
+export class LocalAudioCheck {
+  private context?: AudioContext;
+  private stream?: MediaStream;
+  private source?: MediaStreamAudioSourceNode;
+  private analyser?: AnalyserNode;
+  private meter?: ReturnType<typeof setInterval>;
+  private closed = false;
+
+  async microphone(onLevel: (level: number) => void): Promise<void> {
+    if (this.closed) return;
+    this.context ??= new AudioContext();
+    await this.context.resume();
+    if (this.closed) return;
+    if (!navigator.mediaDevices?.getUserMedia) throw new DOMException('Unavailable', 'NotFoundError');
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true } });
+    if (this.closed) { stream.getTracks().forEach(track => track.stop()); return; }
+    this.stream = stream;
+    this.source = this.context.createMediaStreamSource(stream);
+    this.analyser = this.context.createAnalyser();
+    this.analyser.fftSize = 256;
+    this.source.connect(this.analyser);
+    const samples = new Float32Array(this.analyser.fftSize);
+    this.meter = setInterval(() => {
+      if (this.closed) return;
+      this.analyser!.getFloatTimeDomainData(samples);
+      const rms = Math.sqrt(samples.reduce((sum, sample) => sum + sample * sample, 0) / samples.length);
+      onLevel(Math.min(1, rms * 5));
+    }, 100);
+  }
+
+  async output(volume: number): Promise<void> {
+    if (this.closed) return;
+    this.context ??= new AudioContext();
+    await this.context.resume();
+    if (this.closed) return;
+    if (this.context.state !== 'running') throw new Error('Audio output is unavailable. Check browser audio permissions, or continue with captions.');
+    const oscillator = this.context.createOscillator();
+    const gain = this.context.createGain();
+    const now = this.context.currentTime;
+    oscillator.frequency.value = 440;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(Math.max(0, Math.min(1, volume)) * 0.1, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+    oscillator.connect(gain); gain.connect(this.context.destination);
+    oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    oscillator.start(now); oscillator.stop(now + 0.27);
+  }
+
+  close(): void {
+    if (this.closed) return;
+    this.closed = true;
+    clearInterval(this.meter);
+    this.stream?.getTracks().forEach(track => track.stop());
+    this.source?.disconnect(); this.analyser?.disconnect();
+    if (this.context && this.context.state !== 'closed') void this.context.close().catch(() => {});
+  }
 }
 
 export class BrowserAudio implements VoiceAudio {
