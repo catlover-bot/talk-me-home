@@ -12,6 +12,7 @@ import { initializeCampaign, inspectCampaign } from './qa-budget.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
 import { installAudioInstrumentation, queueSpeech, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
+import { communicatedEmblem, communicatedPassability } from './qa-player-policy.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const DIRECTORY = resolve('.validation/goal-004b-live');
@@ -29,6 +30,10 @@ const PHRASES = {
   home: 'The return authorization is granted, so please confirm the return and come home.',
   wait: 'Please wait. Do not move or take another action until I ask you to continue.',
   correction: 'Sorry, I meant the Latch, not the Door. Please inspect the Latch.',
+  confirmLatch: 'Please confirm whether the Latch is engaged now.',
+  retryLatch: 'Please engage the Latch now and report when that is done.',
+  confirmContact: 'Are you holding the contact steady right now?',
+  retryContact: 'Please hold the contact now and tell me when you are holding it.',
 };
 
 async function fixture(text) {
@@ -40,6 +45,8 @@ async function prepareFixtures() {
   for (const direction of ['east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']) {
     await fixture(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
     await fixture(`Please go through the ${direction} gate, then look around and report the emblem where you arrive.`);
+    await fixture(`Is the opening of the ${direction} gate physically clear or blocked?`);
+    await fixture(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
   }
 }
 async function buildIdentity() {
@@ -136,10 +143,15 @@ async function worker(scenario) {
       await page.waitForFunction(after => {
         const snapshot = globalThis.__qaAudio.snapshot();
         const relevant = snapshot.events.filter(event => event.atMs > after);
-        const done = relevant.some(event => event.type === 'reply.done');
-        const speech = relevant.some(event => event.type === 'transcript.agent' && event.final);
+        const user = relevant.findLast(event => event.type === 'transcript.user');
+        if (after >= 0 && !user) return false;
+        const lastTool = relevant.findLast(event => event.type === 'tool.result');
+        const boundary = Math.max(user?.atMs ?? after, lastTool?.atMs ?? after);
+        const speech = relevant.findLast(event => event.type === 'transcript.agent' && event.final && event.atMs > boundary);
+        const done = speech && relevant.some(event => event.type === 'reply.done' && event.replyRef === speech.reference && event.status === 'completed');
+        const pending = relevant.some(event => event.type === 'tool.call' && !relevant.some(result => result.type === 'tool.result' && result.callRef === event.callRef));
         const readout = document.querySelector('.connection-readout')?.textContent ?? '';
-        return done && speech && /microphone ready/.test(readout) && snapshot.elapsedMs - (snapshot.counters.rendered.lastNonzeroMs ?? 0) > 350;
+        return done && speech && !pending && /microphone ready/.test(readout) && snapshot.elapsedMs - (snapshot.counters.rendered.lastNonzeroMs ?? 0) > 350;
       }, afterMs, { timeout: 25000 });
     }
     await settled();
@@ -177,8 +189,11 @@ async function worker(scenario) {
       const power = page.getByTestId('acknowledged-power');
       if ((await power.innerText()) !== 'ON') await page.getByRole('button', { name: 'Power ON', exact: true }).click();
       await expect(power).toHaveText('ON');
-      const engaged = await say(PHRASES.engage);
-      ensureSaid(engaged, /engaged|latched|holding|holds|secured|locked|set/i, 'Pip did not confirm engaging the Latch.');
+      const latchConfirmed = text => !/not engaged|not latched|not secured|cannot engage|can't engage/i.test(text) && /\bI (?:have )?(?:engaged|latched|secured)|\bI've (?:engaged|latched|secured)|\blatch (?:is|has been) (?:now )?(?:engaged|latched|secured|set)|\b(?:engaged|latched|secured) the latch/i.test(text);
+      let engaged = await say(PHRASES.engage);
+      if (!latchConfirmed(engaged)) engaged = await say('Please confirm whether the Latch is engaged now.');
+      if (!latchConfirmed(engaged)) engaged = await say('Please engage the Latch now and report when that is done.');
+      if (!latchConfirmed(engaged)) throw new Error('Pip did not confirm engaging the Latch after bounded clarification.');
       await page.getByRole('button', { name: 'Power OFF', exact: true }).click(); await expect(power).toHaveText('OFF');
       await say(PHRASES.cross);
       await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
@@ -187,15 +202,14 @@ async function worker(scenario) {
       // Read the rendered static atlas, including its visible positions, never internal map/state.
       const atlas = await page.locator('.gallery-document').evaluate(root => {
         const rooms = [...root.querySelectorAll('.atlas-room')].map(room => ({ name: room.querySelector('.room-name').textContent.toLowerCase(), position: room.getAttribute('transform').match(/[\d.]+/g).map(Number) }));
-        const gates = [...root.querySelectorAll('.atlas-route-reference tbody tr')].map(row => ({ rooms: row.querySelector('th').textContent.toLowerCase().split(' – '), circuit: row.querySelector('td').textContent }));
+        const gates = [...root.querySelectorAll('.atlas-gate')].map(gate => {
+          const [x1, y1, x2, y2] = gate.querySelector('.atlas-track').getAttribute('d').match(/[\d.]+/g).map(Number);
+          return { rooms: [[x1, y1], [x2, y2]].map(([x, y]) => rooms.find(room => room.position[0] === x && room.position[1] === y).name), circuit: gate.querySelector('.gate-full-name').textContent };
+        });
         return { rooms, gates };
       });
       report.atlas = atlas;
-      const roomFrom = text => {
-        const names = atlas.rooms.map(room => room.name);
-        const matches = names.filter(name => new RegExp(`(?:^${name}[.!]?$|${name}(?:[- ]shaped)? (?:emblem|symbol|mark)|(?:at|by|reached|in) (?:the |a )?${name}(?: emblem|[., ]|$))`, 'i').test(text.trim()));
-        return matches.length === 1 ? matches[0] : null;
-      };
+      const roomFrom = text => communicatedEmblem(text, atlas.rooms.map(room => room.name));
       async function communicatedRoom(text) {
         const room = roomFrom(text); if (room) return room;
         const clarified = await say(PHRASES.clarify); const result = roomFrom(clarified);
@@ -220,9 +234,18 @@ async function worker(scenario) {
         const button = page.getByRole('button', { name: `Relay ${gate.circuit}`, exact: true });
         if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
         await expect(page.getByTestId('acknowledged-relay')).toHaveText(gate.circuit);
-        const inspection = await say(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
-        if (/(?:cargo|debris).{0,25}block|blocked by|obstructed|obstruction|blocked with/i.test(inspection) && !/no obstruction|not obstructed|not blocked|unobstructed/i.test(inspection)) { blocked.add(gate.rooms.join('/')); report.steps.at(-1).reportedBlocked = gate.rooms; continue; }
-        ensureSaid(inspection, /clear|open|no (?:cargo|obstruction)|unblocked|not blocked|unobstructed|nothing (?:is )?block/i, 'Gate inspection did not clearly communicate passability.');
+        let inspection = await say(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
+        let passability = communicatedPassability(inspection);
+        if (!passability) {
+          inspection = await say(`Is the opening of the ${direction} gate physically clear or blocked?`);
+          passability = communicatedPassability(inspection);
+        }
+        if (!passability) {
+          inspection = await say(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
+          passability = communicatedPassability(inspection);
+        }
+        if (passability === 'blocked') { blocked.add(gate.rooms.join('/')); report.steps.at(-1).reportedBlocked = gate.rooms; continue; }
+        if (passability !== 'clear') throw new Error('Gate inspection remained ambiguous after one clarification and one rephrased retry.');
         const arrived = await say(`Please go through the ${direction} gate, then look around and report the emblem where you arrive.`);
         if (await page.getByRole('heading', { name: 'Return Dock', exact: true }).isVisible()) current = 'dock';
         else current = await communicatedRoom(arrived);
@@ -232,7 +255,11 @@ async function worker(scenario) {
       await screenshot('dock');
       report.dockManual = await page.locator('.return-document').innerText();
       await say(PHRASES.dock);
-      const held = await say(PHRASES.contact); ensureSaid(held, /holding|held|steady|contact.*engaged/i, 'Pip did not confirm holding the contact.');
+      const contactConfirmed = text => !/not holding|not held|cannot hold|can't hold/i.test(text) && /\bI (?:am holding|have (?:gripped|held))|\bI'm holding|\bI've (?:gripped|held)|\bcontact (?:is|has been) (?:now )?(?:held|secured)|^holding (?:the )?contact/i.test(text);
+      let held = await say(PHRASES.contact);
+      if (!contactConfirmed(held)) held = await say('Are you holding the contact steady right now?');
+      if (!contactConfirmed(held)) held = await say('Please hold the contact now and tell me when you are holding it.');
+      if (!contactConfirmed(held)) throw new Error('Pip did not confirm holding the contact after bounded clarification.');
       await page.getByRole('button', { name: 'Charge', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Primed');
       await page.getByRole('button', { name: 'Store', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Stored');
       await say(PHRASES.board); await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
