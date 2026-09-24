@@ -1,0 +1,16 @@
+{
+  "runId": 36003833985,
+  "url": "https://github.com/catlover-bot/talk-me-home/actions/runs/36003833985",
+  "headSha": "fdc27eb96be4c6025277e03186df8b93698f652a",
+  "branch": "work/goal-004b-autonomous-qa",
+  "conclusion": "failure",
+  "classification": "CI environment: browser sandbox startup",
+  "observed": "All 78 Playwright cases failed before page creation. Browser logs reported Chromium sandboxing failed and No usable sandbox, with the Ubuntu AppArmor user namespace restriction diagnostic.",
+  "repair": "Use the Ubuntu 24.04 runner's already-installed Chrome channel, covered by the distribution AppArmor profile, while retaining chromiumSandbox=true. No host security policy change or skipped assertion.",
+  "localValidation": "Typecheck and git diff --check passed. Existing local sandboxed Chromium browser tests had passed. Installed Chrome is not present in local WSL; the next pushed CI run must verify this environment repair.",
+  "sources": [
+    "https://raw.githubusercontent.com/chromium/chromium/main/docs/security/apparmor-userns-restrictions.md",
+    "https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md",
+    "https://playwright.dev/docs/browsers#google-chrome--microsoft-edge"
+  ]
+}

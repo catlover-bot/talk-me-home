@@ -33,3 +33,13 @@ export function communicatedPassability(text) {
   if (clear === blocked) return null;
   return clear ? 'clear' : 'blocked';
 }
+
+/** Recover the observed canceled Cargo scan using public checkpoint checks only. */
+export async function crossCargoWithRecovery({ say, atGallery }) {
+  await say('Power is now off, so please check that the route is safe and then cross to the far side.');
+  if (await atGallery()) return true;
+  await say('Please look around and tell me whether the Door is held open and the Conveyor has stopped.');
+  if (await atGallery()) return true;
+  await say('Please cross to the far side now if the route is clear.');
+  return Boolean(await atGallery());
+}

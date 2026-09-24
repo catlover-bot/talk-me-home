@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 import { basename, join, resolve, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inspectCampaign } from './qa-budget.mjs'
+import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
 const round = value => Number.isFinite(value) ? Math.round(value * 10) / 10 : null
@@ -18,7 +19,39 @@ const text = value => {
   return value.replace(/(?:https?|wss?):\/\/\S+/g, '[URL omitted]').slice(0, 12_000)
 }
 
-export function summarizeAttempt(report, evidence) {
+export function durationBounds(report, evidence, reservation) {
+  const open = evidence.events.find(event => event.type === 'socket.open')
+  const end = evidence.events.find(event => event.type === 'session.end')
+  const close = evidence.events.find(event => event.type === 'socket.close')
+  const acknowledged = evidence.events.some(event => event.type === 'session.ended')
+  const origin = report.audioTimeOriginWallMs
+  const exactLocalSeconds = open && close ? (close.atMs - open.atMs) / 1000 : null
+  const throughEndRequest = open && end ? (end.atMs - open.atMs) / 1000 : null
+  const cleanupUpper = open && Number.isFinite(origin) && Number.isSafeInteger(reservation?.closedAt) ? (reservation.closedAt - origin - open.atMs) / 1000 : null
+  const localUpper = exactLocalSeconds ?? cleanupUpper
+  return {
+    observedSocketOpenToEndSentLowerBoundSeconds: round(throughEndRequest),
+    observedSocketOpenToCloseSeconds: round(exactLocalSeconds),
+    socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds: round(cleanupUpper),
+    localConnectionUpperBoundSeconds: round(localUpper),
+    documentedDisconnectGraceSeconds: acknowledged ? 0 : 30,
+    remoteSecondsWithDocumentedGraceUpperEstimate: Number.isFinite(localUpper) ? round(localUpper + (acknowledged ? 0 : 30)) : null,
+    supervisorClosedAt: iso(reservation?.closedAt),
+    accountingBoundary: 'Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation.',
+  }
+}
+
+export function approximateVideoAlignment(report) {
+  const start = report.videoPageCreationStartedAt
+  const created = report.videoPageCreatedAt
+  const origin = report.audioTimeOriginWallMs
+  if (![start, created, origin].every(Number.isFinite) || created < start || origin < start) return null
+  const offsetMs = origin - (start + created) / 2
+  if (offsetMs < 0 || offsetMs > 30_000) return null
+  return { offsetMs: round(offsetMs), creationIntervalHalfWidthMs: round((created - start) / 2), source: 'Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate.' }
+}
+
+export function summarizeAttempt(report, evidence, reservation) {
   if (report.label !== LABEL || evidence.label !== LABEL || !Array.isArray(evidence.events)) throw new Error('Only explicitly labelled real-provider synthetic QA evidence is accepted.')
   const events = evidence.events
   const endSent = events.find(event => event.type === 'session.end')
@@ -49,13 +82,19 @@ export function summarizeAttempt(report, evidence) {
     const counter = evidence.counters?.[kind] ?? {}
     return [kind, { chunks: count(counter.chunks), samples: count(counter.samples), nonzeroSamples: count(counter.nonzeroSamples), energy: round(counter.energy), lastNonzeroMarkerAtMs: round(counter.lastNonzeroMs) }]
   }))
-  const visible = (report.visibleHistory ?? []).map(item => ({ source: 'Visible application history', speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text) }))
+  const visible = (report.visibleHistory ?? []).map(item => ({ source: 'Visible application history snapshot; final/interrupted status may be unavailable', speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), final: typeof item.final === 'boolean' ? item.final : null, interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null }))
   return {
     label: LABEL, scenario: text(report.scenario), commit: /^[0-9a-f]{40}$/.test(report.identity?.commit) ? report.identity.commit : null,
     runtimeSha256: /^[0-9a-f]{64}$/.test(report.identity?.runtimeSha256) ? report.identity.runtimeSha256 : null,
+    harnessSha256: /^[0-9a-f]{64}$/.test(report.identity?.harnessSha256) ? report.identity.harnessSha256 : null,
+    nodeVersion: /^v\d+\.\d+\.\d+$/.test(report.identity?.node) ? report.identity.node : null,
+    browserVersion: /^\d+(?:\.\d+){1,4}$/.test(report.browserVersion) ? report.browserVersion : null,
     inputMode: text(report.inputMode), completion: report.completion === true, route: (report.route ?? []).map(text), failure: text(report.failure), tokenRequests: count(report.tokenRequests),
     ending: { explicitEndSent: Boolean(endSent), endAcknowledged: Boolean(ended), endSentAtMs: round(endSent?.atMs), endAcknowledgedAtMs: round(ended?.atMs), endAcknowledgementDelayMs: ended && endSent ? round(ended.atMs - endSent.atMs) : null, socketCloseCode: socketClose?.code ?? null, socketCloseWasClean: socketClose?.clean ?? null, localConnectedSeconds: socketOpen && (ended || socketClose) ? round(((ended ?? socketClose).atMs - socketOpen.atMs) / 1000) : null, providerSessionSeconds: Number.isFinite(report.providerDurationSeconds) ? report.providerDurationSeconds : null },
+    durationBounds: durationBounds(report, evidence, reservation),
+    checkpoints: (report.checkpoints ?? []).filter(checkpoint => ['Cargo Bay', 'Relay Gallery', 'Return Dock', 'You brought Pip home.', 'Home'].includes(checkpoint.title) && Number.isFinite(checkpoint.observedAtMs)).map(checkpoint => ({ title: checkpoint.title, observedAtMs: round(checkpoint.observedAtMs), source: 'Human-visible chapter/completion heading observed by the browser driver' })),
     audio, utterances, tools, finalTranscripts, visibleHistory: visible,
+    visibleHistoryBoundary: 'These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.',
     cleanup: { activeTracks: count(report.cleanup?.activeTracks), activeSources: count(report.cleanup?.activeSources), openApplicationContexts: count(report.cleanup?.openApplicationContexts) },
     timingNotes: [
       'Measurements describe this small synthetic sample, not a production SLA or human latency study.',
@@ -63,7 +102,7 @@ export function summarizeAttempt(report, evidence) {
       'Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.',
       'Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.',
       'Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.',
-      'Chapter route is the player-observed report. Chapter-change timing is unavailable unless a separate checkpoint was recorded.',
+      'Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.',
       'A clean WebSocket close without session.ended does not confirm remote termination.',
     ],
     boundary: 'Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.',
@@ -87,7 +126,7 @@ export async function probeMedia(path) {
   return { file: basename(path), durationSeconds: Number.isFinite(Number(result.format?.duration)) ? Number(result.format.duration) : null, streams: (result.streams ?? []).map(stream => ({ type: stream.codec_type, codec: stream.codec_name, ...(stream.codec_type === 'audio' ? { sampleRate: Number(stream.sample_rate), channels: stream.channels } : {}), ...(stream.codec_type === 'video' ? { width: stream.width, height: stream.height } : {}) })) }
 }
 
-async function prepareLocalMedia(directory, { mux, videoOffsetMs }) {
+async function prepareLocalMedia(directory, { mux, alignment }) {
   const names = (await readdir(directory)).filter(name => /\.(wav|webm|mp4)$/i.test(name) && !name.startsWith('qa-combined'))
   const probes = []
   for (const name of names) {
@@ -105,17 +144,19 @@ async function prepareLocalMedia(directory, { mux, videoOffsetMs }) {
   result.combinedDigitalAudio = await probeMedia(combined)
   result.mux = 'Original synthetic input and actual rendered output combined on their shared recorded QA timeline, at half gain each. No generated or replaced Pip answer.'
   if (!video) return result
+  const videoOffsetMs = alignment?.offsetMs
   if (!Number.isFinite(videoOffsetMs)) return { ...result, mux: `${result.mux} Video alignment was not measured; video remains silent rather than inventing synchronization.` }
   if (videoOffsetMs < 0 || videoOffsetMs > 30_000) throw new Error('Video alignment must be a measured 0–30000 ms offset from video start to the QA audio origin.')
   const muxed = join(directory, 'qa-combined-video.mp4')
   if (!await exists(muxed)) await run('ffmpeg', ['-nostdin', '-n', '-v', 'error', '-i', join(directory, video.file), '-itsoffset', String(videoOffsetMs / 1000), '-i', combined, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', muxed], 60_000)
   result.muxedVideo = await probeMedia(muxed)
-  result.videoOffsetMs = videoOffsetMs
+  result.videoAlignment = alignment
+  result.mux += ' Video synchronization is approximate from the reported page-creation interval; it is not sample accurate.'
   return result
 }
 
 function conversationMarkdown(attempt) {
-  const lines = [`# ${LABEL}`, '', `Scenario: ${attempt.scenario}. Runtime SHA-256: \`${attempt.runtimeSha256}\`.`, '', 'Provider final transcripts are preserved separately from the application’s visible history. An interrupted provider transcript is not relabelled as a visible or fully played reply.', '', '## Real provider final transcripts', '']
+  const lines = [`# ${LABEL}`, '', `Scenario: ${attempt.scenario}. Runtime SHA-256: \`${attempt.runtimeSha256}\`.`, '', 'Provider final transcripts are preserved separately from the application’s visible history. An interrupted provider transcript is not relabelled as a visible or fully played reply.', '', attempt.visibleHistoryBoundary, '', '## Real provider final transcripts', '']
   for (const row of attempt.finalTranscripts) lines.push(`- ${row.atMs} ms — **${row.source}**: ${row.text}`, '')
   lines.push('## Visible application history', '')
   for (const row of attempt.visibleHistory) lines.push(`- **${row.speaker}**: ${row.text}`, '')
@@ -123,7 +164,7 @@ function conversationMarkdown(attempt) {
   return lines.join('\n')
 }
 
-export async function exportCampaign({ directory = resolve('.validation/goal-004b-live'), output = resolve('artifacts/goal-004b/live'), mux = false, videoOffsetMs } = {}) {
+export async function exportCampaign({ directory = resolve('.validation/goal-004b-live'), output = resolve('artifacts/goal-004b/live'), mux = false, videoOffsetMs, fixtureDirectory = resolve('.validation/goal-004b-media') } = {}) {
   directory = resolve(directory); output = resolve(output)
   const state = inspectCampaign(directory)
   if (mux) {
@@ -131,20 +172,39 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     if (!location || location === '..' || location.startsWith(`..${sep}`) || resolve('.validation', location) !== directory) throw new Error('Large processed media must remain within the ignored .validation directory.')
   }
   const attempts = []
+  const usedFixtureIds = new Set()
+  const linkedReservations = new Set()
   await mkdir(output, { recursive: true })
   for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
     if (!entry.isDirectory() || !/^\d{4}-\d{2}-\d{2}T[\d-]+Z-(canary|mission)$/.test(entry.name)) continue
     const path = join(directory, entry.name)
     if (!await exists(join(path, 'report.json')) || !await exists(join(path, 'audio-evidence.json'))) continue
     const reportBytes = await readFile(join(path, 'report.json')); const evidenceBytes = await readFile(join(path, 'audio-evidence.json'))
-    const attempt = summarizeAttempt(JSON.parse(reportBytes), JSON.parse(evidenceBytes))
+    const report = JSON.parse(reportBytes); const evidence = JSON.parse(evidenceBytes)
+    const opened = evidence.events.find(event => event.type === 'socket.open')
+    const socketWallTime = Number.isFinite(report.audioTimeOriginWallMs) && opened ? report.audioTimeOriginWallMs + opened.atMs : null
+    const reservation = [...state.attempts].reverse().find(row => !linkedReservations.has(row.attempt) && Number.isFinite(socketWallTime) && row.reservedAt <= socketWallTime && socketWallTime <= row.hardAt)
+      ?? state.attempts.find(row => !linkedReservations.has(row.attempt) && row.name === report.scenario)
+    if (reservation) linkedReservations.add(reservation.attempt)
+    const attempt = summarizeAttempt(report, evidence, reservation)
+    attempt.accountingAttempt = reservation?.attempt ?? null
+    for (const utterance of attempt.utterances) if (/^speech-[a-f0-9]{16}$/.test(utterance.fixture)) usedFixtureIds.add(utterance.fixture)
     attempt.evidenceDirectory = entry.name
     attempt.sourceHashes = { report: sha256(reportBytes), audioEvidence: sha256(evidenceBytes) }
-    attempt.media = await prepareLocalMedia(path, { mux, videoOffsetMs })
+    const alignment = Number.isFinite(videoOffsetMs) ? { offsetMs: videoOffsetMs, source: 'Explicit operator-supplied offset; synchronization is approximate unless independently established.' } : approximateVideoAlignment(report)
+    attempt.media = await prepareLocalMedia(path, { mux, alignment })
     await writeFile(join(output, `${entry.name}-metrics.json`), `${JSON.stringify(attempt, null, 2)}\n`)
     await writeFile(join(output, `${entry.name}-conversation.md`), conversationMarkdown(attempt))
     attempts.push({ evidenceDirectory: entry.name, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged })
   }
+  const fixtures = []
+  for (const id of [...usedFixtureIds].sort()) {
+    const metadata = JSON.parse(await readFile(join(fixtureDirectory, `${id}.json`), 'utf8'))
+    const validation = validateSpeechWav(await readFile(join(fixtureDirectory, `${id}.wav`)))
+    if (metadata.id !== id || metadata.sha256 !== validation.sha256) throw new Error('A used speech fixture no longer matches its original manifest.')
+    fixtures.push({ id, text: text(metadata.text), source: text(metadata.source), voice: text(metadata.voice), file: `${id}.wav`, ...validation })
+  }
+  await writeFile(join(output, 'used-speech-fixtures.json'), `${JSON.stringify({ label: LABEL, boundary: 'Generic installed offline voice. Synthetic player input only; no cloned or human-recorded voice. Large WAV files remain local and ignored.', fixtures }, null, 2)}\n`)
   const last = state.attempts.at(-1)
   const remainingAttempts = state.header.maxAttempts - state.attempts.length
   const nextPermittedAt = remainingAttempts > 0 && last && !(last.result?.endAcknowledged && last.closedAt !== null) ? last.leaseUntil : null

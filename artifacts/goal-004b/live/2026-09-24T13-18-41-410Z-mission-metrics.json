@@ -1,0 +1,571 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
+  "scenario": "mission",
+  "commit": "dda1a5dadfcdad6508725f11d2e1a258401e7213",
+  "runtimeSha256": "5fea041c5173b090a471f5291b3e24b8681ef94059512553baf6816a8143053b",
+  "harnessSha256": "b71f79c3cfa8f8b61594b20cf52e57806196fab776e1365bc2f40230b357cd15",
+  "nodeVersion": "v24.20.0",
+  "browserVersion": "153.0.8010.12",
+  "inputMode": "synthetic microphone only",
+  "completion": false,
+  "route": [],
+  "failure": "expect(locator).toBeVisible() failed",
+  "tokenRequests": 1,
+  "ending": {
+    "explicitEndSent": true,
+    "endAcknowledged": false,
+    "endSentAtMs": 189319.8,
+    "endAcknowledgedAtMs": null,
+    "endAcknowledgementDelayMs": null,
+    "socketCloseCode": null,
+    "socketCloseWasClean": null,
+    "localConnectedSeconds": null,
+    "providerSessionSeconds": null
+  },
+  "durationBounds": {
+    "observedSocketOpenToEndSentLowerBoundSeconds": 187.8,
+    "observedSocketOpenToCloseSeconds": null,
+    "socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds": 197.7,
+    "localConnectionUpperBoundSeconds": 197.7,
+    "documentedDisconnectGraceSeconds": 30,
+    "remoteSecondsWithDocumentedGraceUpperEstimate": 227.7,
+    "supervisorClosedAt": "2026-09-24T13:22:00.725Z",
+    "accountingBoundary": "Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation."
+  },
+  "checkpoints": [
+    {
+      "title": "Cargo Bay",
+      "observedAtMs": 556.3,
+      "source": "Human-visible chapter/completion heading observed by the browser driver"
+    }
+  ],
+  "audio": {
+    "input": {
+      "chunks": 35102,
+      "samples": 4493056,
+      "nonzeroSamples": 560874,
+      "energy": 6608.1,
+      "lastNonzeroMarkerAtMs": 158308.3
+    },
+    "provider": {
+      "chunks": 4612,
+      "samples": 1106880,
+      "nonzeroSamples": 1005780,
+      "energy": 12539.8,
+      "lastNonzeroMarkerAtMs": 183186.6
+    },
+    "rendered": {
+      "chunks": 1888,
+      "samples": 4531200,
+      "nonzeroSamples": 992884,
+      "energy": 12206.6,
+      "lastNonzeroMarkerAtMs": 183819.9
+    },
+    "postVolume": {
+      "chunks": 2212,
+      "samples": 4530176,
+      "nonzeroSamples": 992533,
+      "energy": 12201.1,
+      "lastNonzeroMarkerAtMs": 184018.7
+    }
+  },
+  "utterances": [
+    {
+      "fixture": "speech-61f5c3639dbea7b6",
+      "syntheticText": "Pip, please keep your replies to one short sentence and look around to tell me what you can reach.",
+      "startedAtMs": 11023.5,
+      "endedAtMs": 17703.4,
+      "durationSeconds": 6.7,
+      "asrFinals": [
+        {
+          "text": "Pip, please keep your",
+          "atMs": 21199.7,
+          "waveformEndToAsrFinalMs": 3496.3
+        },
+        {
+          "text": "Keep your replies to one short sentence and look around to tell me what you can reach.",
+          "atMs": 27032.4,
+          "waveformEndToAsrFinalMs": 9329
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 4192.7,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 4398.6,
+      "firstSubsequentRenderedChunkStartAtMs": 22019.9
+    },
+    {
+      "fixture": "speech-1b0b028b7fd11e51",
+      "syntheticText": "Please inspect the Latch and tell me how it works.",
+      "startedAtMs": 46040.8,
+      "endedAtMs": 49970.5,
+      "durationSeconds": 3.9,
+      "asrFinals": [
+        {
+          "text": "Please inspect the latch and tell me how it works.",
+          "atMs": 56694.6,
+          "waveformEndToAsrFinalMs": 6724.1
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 17034.7,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 17238.3,
+      "firstSubsequentRenderedChunkStartAtMs": 67119.9
+    },
+    {
+      "fixture": "speech-e6f422a403694609",
+      "syntheticText": "My diagram says the Door and Conveyor share one Power supply, so please engage the Latch to hold the Door open.",
+      "startedAtMs": 74355.9,
+      "endedAtMs": 82267.6,
+      "durationSeconds": 7.9,
+      "asrFinals": [
+        {
+          "text": "My diagram says the door and conveyor share one power supply.",
+          "atMs": 85995.6,
+          "waveformEndToAsrFinalMs": 3728
+        },
+        {
+          "text": "So please engage the latch to hold the door open.",
+          "atMs": 88995.9,
+          "waveformEndToAsrFinalMs": 6728.3
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 15056.6,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 15237,
+      "firstSubsequentRenderedChunkStartAtMs": 97419.9
+    },
+    {
+      "fixture": "speech-6c85ff778802607a",
+      "syntheticText": "Please confirm whether the Latch is engaged now.",
+      "startedAtMs": 101814.6,
+      "endedAtMs": 105545.9,
+      "durationSeconds": 3.7,
+      "asrFinals": [
+        {
+          "text": "Please confirm whether the latch is engaged now.",
+          "atMs": 112293.7,
+          "waveformEndToAsrFinalMs": 6747.8
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 15047.4,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 15164.8,
+      "firstSubsequentRenderedChunkStartAtMs": 120619.9
+    },
+    {
+      "fixture": "speech-816ae7fac2955eea",
+      "syntheticText": "Please engage the Latch now and report when that is done.",
+      "startedAtMs": 125912.8,
+      "endedAtMs": 130067,
+      "durationSeconds": 4.2,
+      "asrFinals": [
+        {
+          "text": "Please engage the latch now and report when that is done.",
+          "atMs": 136913.1,
+          "waveformEndToAsrFinalMs": 6846.1
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 14977.9,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 15145.8,
+      "firstSubsequentRenderedChunkStartAtMs": 145119.9
+    },
+    {
+      "fixture": "speech-aaa3fa60a71ebe0d",
+      "syntheticText": "Power is now off, so please check that the route is safe and then cross to the far side.",
+      "startedAtMs": 153103.1,
+      "endedAtMs": 159378.1,
+      "durationSeconds": 6.3,
+      "asrFinals": [
+        {
+          "text": "Power is now off.",
+          "atMs": 162296.6,
+          "waveformEndToAsrFinalMs": 2918.5
+        },
+        {
+          "text": "So please check that the route is safe and then cross to the far side.",
+          "atMs": 166002.2,
+          "waveformEndToAsrFinalMs": 6624.1
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 15003,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 15126,
+      "firstSubsequentRenderedChunkStartAtMs": 174419.9
+    }
+  ],
+  "tools": [
+    {
+      "name": "observe_room",
+      "callAtMs": 27336.5,
+      "resultAtMs": 27604.9,
+      "callToResultMs": 268.4,
+      "succeeded": true
+    },
+    {
+      "name": "inspect_object",
+      "callAtMs": 59648.1,
+      "resultAtMs": 59903.6,
+      "callToResultMs": 255.5,
+      "succeeded": true
+    },
+    {
+      "name": "interact_object",
+      "callAtMs": 89953.9,
+      "resultAtMs": 90218.2,
+      "callToResultMs": 264.3,
+      "succeeded": false
+    },
+    {
+      "name": "inspect_object",
+      "callAtMs": 113247,
+      "resultAtMs": 113472.2,
+      "callToResultMs": 225.2,
+      "succeeded": true
+    },
+    {
+      "name": "interact_object",
+      "callAtMs": 137709.4,
+      "resultAtMs": 137897.8,
+      "callToResultMs": 188.4,
+      "succeeded": true
+    },
+    {
+      "name": "observe_room",
+      "callAtMs": 167046.2,
+      "resultAtMs": 167253.3,
+      "callToResultMs": 207.1,
+      "succeeded": false
+    }
+  ],
+  "finalTranscripts": [
+    {
+      "atMs": 9131.8,
+      "source": "Real provider agent transcript",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "reference": 1
+    },
+    {
+      "atMs": 21199.7,
+      "source": "Real provider ASR",
+      "text": "Pip, please keep your",
+      "reference": 2
+    },
+    {
+      "atMs": 27030.2,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry. I will stay",
+      "reference": 3
+    },
+    {
+      "atMs": 27032.4,
+      "source": "Real provider ASR",
+      "text": "Keep your replies to one short sentence and look around to tell me what you can reach.",
+      "reference": 4
+    },
+    {
+      "atMs": 42342,
+      "source": "Real provider agent transcript",
+      "text": "I see an open door, a running conveyor, and a latch lever within reach. Should I inspect the lever first?",
+      "reference": 7
+    },
+    {
+      "atMs": 56694.6,
+      "source": "Real provider ASR",
+      "text": "Please inspect the latch and tell me how it works.",
+      "reference": 8
+    },
+    {
+      "atMs": 73737,
+      "source": "Real provider agent transcript",
+      "text": "The lever is currently not engaged and can be used to lock the open door in place. Should I engage the latch now?",
+      "reference": 11
+    },
+    {
+      "atMs": 85995.6,
+      "source": "Real provider ASR",
+      "text": "My diagram says the door and conveyor share one power supply.",
+      "reference": 12
+    },
+    {
+      "atMs": 88995.9,
+      "source": "Real provider ASR",
+      "text": "So please engage the latch to hold the door open.",
+      "reference": 14
+    },
+    {
+      "atMs": 101225.9,
+      "source": "Real provider agent transcript",
+      "text": "The latch lever failed to engage. Should I try to pull it again?",
+      "reference": 16
+    },
+    {
+      "atMs": 112293.7,
+      "source": "Real provider ASR",
+      "text": "Please confirm whether the latch is engaged now.",
+      "reference": 17
+    },
+    {
+      "atMs": 125312.6,
+      "source": "Real provider agent transcript",
+      "text": "The latch is still not engaged. I will try to engage it again now.",
+      "reference": 20
+    },
+    {
+      "atMs": 136913.1,
+      "source": "Real provider ASR",
+      "text": "Please engage the latch now and report when that is done.",
+      "reference": 21
+    },
+    {
+      "atMs": 152268.4,
+      "source": "Real provider agent transcript",
+      "text": "The latch is engaged and the door is now being held open. Should I try moving to the far side platform next?",
+      "reference": 24
+    },
+    {
+      "atMs": 162296.6,
+      "source": "Real provider ASR",
+      "text": "Power is now off.",
+      "reference": 25
+    },
+    {
+      "atMs": 166002.2,
+      "source": "Real provider ASR",
+      "text": "So please check that the route is safe and then cross to the far side.",
+      "reference": 27
+    },
+    {
+      "atMs": 183185.6,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry, my sensors failed to scan the room just now. Should I try to observe the area again?",
+      "reference": 29
+    }
+  ],
+  "visibleHistory": [
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Pip, please keep your",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry. I will stay",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Keep your replies to one short sentence and look around to tell me what you can reach.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I see an open door, a running conveyor, and a latch lever within reach. Should I inspect the lever first?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the latch and tell me how it works.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The lever is currently not engaged and can be used to lock the open door in place. Should I engage the latch now?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "My diagram says the door and conveyor share one power supply.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "So please engage the latch to hold the door open.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch lever failed to engage. Should I try to pull it again?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please confirm whether the latch is engaged now.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is still not engaged. I will try to engage it again now.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please engage the latch now and report when that is done.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is engaged and the door is now being held open. Should I try moving to the far side platform next?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Power is now off.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "So please check that the route is safe and then cross to the far side.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry, my sensors failed to scan the room just now. Should I try to observe the area again?",
+      "final": null,
+      "interrupted": null
+    }
+  ],
+  "visibleHistoryBoundary": "These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "timingNotes": [
+    "Measurements describe this small synthetic sample, not a production SLA or human latency study.",
+    "Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.",
+    "Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.",
+    "Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.",
+    "Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.",
+    "Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.",
+    "A clean WebSocket close without session.ended does not confirm remote termination."
+  ],
+  "boundary": "Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.",
+  "accountingAttempt": 3,
+  "evidenceDirectory": "2026-09-24T13-18-41-410Z-mission",
+  "sourceHashes": {
+    "report": "eb1d458d51c0c4d204409618dfbf28676f6c3114c8042912fa991b5fb6ac7912",
+    "audioEvidence": "ba4bd45a89b8b5f62b3987a247fa4b610b2bb4daa159235125f4509ea7b53c4e"
+  },
+  "media": {
+    "files": [
+      {
+        "file": "browser-silent.webm",
+        "durationSeconds": 198.72,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "vp8",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      },
+      {
+        "file": "input-digital.wav",
+        "durationSeconds": 195.837125,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 195.837125,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 195.837125,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      }
+    ],
+    "videoStatus": "Source video is silent; separate captured digital WAV files retain the test audio.",
+    "mux": "Original synthetic input and actual rendered output combined on their shared recorded QA timeline, at half gain each. No generated or replaced Pip answer. Video synchronization is approximate from the reported page-creation interval; it is not sample accurate.",
+    "combinedDigitalAudio": {
+      "file": "qa-combined-digital.wav",
+      "durationSeconds": 195.837125,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "muxedVideo": {
+      "file": "qa-combined-video.mp4",
+      "durationSeconds": 198.72,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "videoAlignment": {
+      "offsetMs": 43,
+      "creationIntervalHalfWidthMs": 18.5,
+      "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate."
+    }
+  }
+}

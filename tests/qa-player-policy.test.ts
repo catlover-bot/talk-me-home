@@ -1,8 +1,22 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { communicatedEmblem, communicatedPassability } from '../scripts/qa-player-policy.mjs';
+import { communicatedEmblem, communicatedPassability, crossCargoWithRecovery } from '../scripts/qa-player-policy.mjs';
 
 const visibleMapLabels = ['Ring', 'Fork', 'Sail', 'Leaf', 'Dock'];
+
+test('observed canceled Cargo scan allows a bounded clarification and retry, never a repeated crossing after a checkpoint', async () => {
+  for (const successAt of [1, 2, 3, Infinity]) {
+    const spoken: string[] = [];
+    const result = await crossCargoWithRecovery({
+      say: async text => { spoken.push(text); return 'Should I try to observe the area again?'; },
+      atGallery: async () => spoken.length >= successAt,
+    });
+    assert.equal(result, successAt !== Infinity);
+    assert.equal(spoken.length, Math.min(successAt, 3));
+    if (spoken.length > 1) assert.match(spoken[1]!, /look around/);
+    if (spoken.length > 2) assert.match(spoken[2]!, /if the route is clear/);
+  }
+});
 
 test('QA player recognizes communicated current emblems, including a short clarification', () => {
   for (const [text, room] of [

@@ -10,6 +10,8 @@ A browser game for one human at Mission Control and Pip, UNIT 04. Guide a strand
 
 **Rescue Mission** is the recommended complete game. Its Gallery has two authored obstruction configurations, so a route may require backtracking and a new decision. **Training** preserves the short Classic and Maintenance cargo exercises. Content choice is separate from **Practice / Live Voice / Live Text**. There are no accounts, database, or public deployment. The 6–8 minute first-clear target is a pacing hypothesis awaiting human testing.
 
+**Goal 004B autonomous QA:** the separate `work/goal-004b-autonomous-qa` branch adds bounded synthetic-microphone testing and fixes observed ending/cancellation behavior. The three authorized real attempts are consumed. Real speech, validated tools and digital playback were exercised; a full real Rescue clear was **not achieved**. The final prompt repair is offline-verified only. See [the current QA report](docs/goal-004b-autonomous-qa.md) and [sanitized evidence](artifacts/goal-004b/README.md). No public deployment or human enjoyment result is claimed.
+
 ## Run the game
 
 Use Node.js 24 (tested with 24.20.0 and npm 11.19.0). On Windows, open an Ubuntu WSL terminal:

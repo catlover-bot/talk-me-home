@@ -1,0 +1,78 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-24T13:27:03.971Z",
+  "finishedAt": "2026-09-24T13:28:31.976Z",
+  "commit": "dda1a5dadfcdad6508725f11d2e1a258401e7213",
+  "branch": "work/goal-004b-autonomous-qa",
+  "dirty": true,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 402,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 13866,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 195
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 982,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 69249,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 78
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 5,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    ".validation/goal-004b-offline/screenshots/title.png",
+    ".validation/goal-004b-offline/screenshots/gallery.png",
+    ".validation/goal-004b-offline/screenshots/gallery-narrow.png",
+    ".validation/goal-004b-offline/screenshots/gallery-zoom-200.png",
+    ".validation/goal-004b-offline/screenshots/dock.png",
+    ".validation/goal-004b-offline/screenshots/home.png"
+  ],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "localBuildSha256": "d34eef6257ace3225ae2a2f094ea57c6de7234939b10ff3337eacaba68bb7176",
+  "runtimeBuildSha256": "d34eef6257ace3225ae2a2f094ea57c6de7234939b10ff3337eacaba68bb7176",
+  "access": {
+    "liveEnabled": false,
+    "authorized": false,
+    "available": false
+  },
+  "route": "Fork to lower platform; obstruction reported; backtracked through Fork and upper platform.",
+  "status": "passed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened.",
+  "sourceReportSha256": "a93313e31cbec05a4989da76b2e86870c612171afc50fa733d97502cc8efe4dc",
+  "applicationSourceCommit": "b0849b77b8ee20f5e03a7030195e55f22b462d00",
+  "sourceBoundary": "Final prompt was already present when the offline run began, then committed during that run. No application source changed afterward. This runtime was not tested with the real provider."
+}

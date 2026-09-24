@@ -1,0 +1,267 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
+  "scenario": "canary",
+  "commit": "99bec1634eb3a1e49a2707a6c72f5b775785d12e",
+  "runtimeSha256": "89a3f77269393a169d0808f8ef7106cd7154d85ef8fde78b8b105a9731a9de47",
+  "harnessSha256": null,
+  "nodeVersion": "v24.20.0",
+  "browserVersion": null,
+  "inputMode": "synthetic microphone only",
+  "completion": false,
+  "route": [],
+  "failure": "No finalized visible Pip reply followed synthetic speech.",
+  "tokenRequests": 1,
+  "ending": {
+    "explicitEndSent": true,
+    "endAcknowledged": false,
+    "endSentAtMs": 52932.7,
+    "endAcknowledgedAtMs": null,
+    "endAcknowledgementDelayMs": null,
+    "socketCloseCode": 1005,
+    "socketCloseWasClean": true,
+    "localConnectedSeconds": 52.9,
+    "providerSessionSeconds": null
+  },
+  "durationBounds": {
+    "observedSocketOpenToEndSentLowerBoundSeconds": 51.3,
+    "observedSocketOpenToCloseSeconds": 52.9,
+    "socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds": null,
+    "localConnectionUpperBoundSeconds": 52.9,
+    "documentedDisconnectGraceSeconds": 30,
+    "remoteSecondsWithDocumentedGraceUpperEstimate": 82.9,
+    "supervisorClosedAt": "2026-09-24T13:02:19.090Z",
+    "accountingBoundary": "Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation."
+  },
+  "checkpoints": [],
+  "audio": {
+    "input": {
+      "chunks": 9450,
+      "samples": 1209600,
+      "nonzeroSamples": 166071,
+      "energy": 2193.3,
+      "lastNonzeroMarkerAtMs": 43839.3
+    },
+    "provider": {
+      "chunks": 3181,
+      "samples": 763440,
+      "nonzeroSamples": 496260,
+      "energy": 6331.5,
+      "lastNonzeroMarkerAtMs": 52629.3
+    },
+    "rendered": {
+      "chunks": 524,
+      "samples": 1257600,
+      "nonzeroSamples": 379214,
+      "energy": 4883.1,
+      "lastNonzeroMarkerAtMs": 37974.7
+    },
+    "postVolume": {
+      "chunks": 614,
+      "samples": 1257472,
+      "nonzeroSamples": 379104,
+      "energy": 4883.1,
+      "lastNonzeroMarkerAtMs": 38117.4
+    }
+  },
+  "utterances": [
+    {
+      "fixture": "speech-cc8ddedbb8cc69d3",
+      "syntheticText": "Pip, please look around and tell me what you can reach.",
+      "startedAtMs": 10343.5,
+      "endedAtMs": 14785.3,
+      "durationSeconds": 4.4,
+      "asrFinals": [
+        {
+          "text": "Pip, please look around and tell me what you can reach.",
+          "atMs": 14870.8,
+          "waveformEndToAsrFinalMs": 85.5
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 133.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 172.5,
+      "firstSubsequentRenderedChunkStartAtMs": 14874.7
+    },
+    {
+      "fixture": "speech-5a2fb9887f9fbaf0",
+      "syntheticText": "Please wait. Do not move or take another action until I ask you to continue.",
+      "startedAtMs": 38487.9,
+      "endedAtMs": 44897.7,
+      "durationSeconds": 6.4,
+      "asrFinals": [
+        {
+          "text": "Please wait.",
+          "atMs": 42297.5,
+          "waveformEndToAsrFinalMs": -2600.2
+        },
+        {
+          "text": "Do not move or take another action until I ask you to continue.",
+          "atMs": 46762.9,
+          "waveformEndToAsrFinalMs": 1865.2
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 831.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": null,
+      "firstSubsequentRenderedChunkStartAtMs": null
+    }
+  ],
+  "tools": [
+    {
+      "name": "observe_room",
+      "callAtMs": 15985.7,
+      "resultAtMs": 18280.1,
+      "callToResultMs": 2294.4,
+      "succeeded": true
+    }
+  ],
+  "finalTranscripts": [
+    {
+      "atMs": 8568.9,
+      "source": "Real provider agent transcript",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "reference": 1
+    },
+    {
+      "atMs": 14870.8,
+      "source": "Real provider ASR",
+      "text": "Pip, please look around and tell me what you can reach.",
+      "reference": 2
+    },
+    {
+      "atMs": 32336.8,
+      "source": "Real provider agent transcript",
+      "text": "I am on a safe platform and can reach a latch lever and the conveyor. The door is open, but I can see a far side platform across the gap. Should I inspect the latch lever first?",
+      "reference": 5
+    },
+    {
+      "atMs": 42297.5,
+      "source": "Real provider ASR",
+      "text": "Please wait.",
+      "reference": 6
+    },
+    {
+      "atMs": 46762.9,
+      "source": "Real provider ASR",
+      "text": "Do not move or take another action until I ask you to continue.",
+      "reference": 8
+    },
+    {
+      "atMs": 52577.7,
+      "source": "Real provider agent transcript",
+      "text": "Understood. I will wait here and take no further action until you tell me to continue.",
+      "reference": 7
+    }
+  ],
+  "visibleHistory": [
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Pip, please look around and tell me what you can reach.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am on a safe platform and can reach a latch lever and the conveyor. The door is open, but I can see a far side platform across the gap. Should I inspect the latch lever first?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please wait.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Do not move or take another action until I ask you to continue.",
+      "final": null,
+      "interrupted": null
+    }
+  ],
+  "visibleHistoryBoundary": "These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "timingNotes": [
+    "Measurements describe this small synthetic sample, not a production SLA or human latency study.",
+    "Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.",
+    "Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.",
+    "Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.",
+    "Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.",
+    "Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.",
+    "A clean WebSocket close without session.ended does not confirm remote termination."
+  ],
+  "boundary": "Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.",
+  "accountingAttempt": 1,
+  "evidenceDirectory": "2026-09-24T13-01-22-218Z-canary",
+  "sourceHashes": {
+    "report": "23d40b33072f37bb6866b21e931dc0a8c318ffdbf14a96fc371ecaef1168921e",
+    "audioEvidence": "c00b6d5b82b6524b441acfe0e75fed832730bf906290f4c45f2f9bc891db7b23"
+  },
+  "media": {
+    "files": [
+      {
+        "file": "input-digital.wav",
+        "durationSeconds": 54.614917,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 54.614917,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 54.614917,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      }
+    ],
+    "videoStatus": "No source video file exists for this attempt.",
+    "mux": "Original synthetic input and actual rendered output combined on their shared recorded QA timeline, at half gain each. No generated or replaced Pip answer.",
+    "combinedDigitalAudio": {
+      "file": "qa-combined-digital.wav",
+      "durationSeconds": 54.614917,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    }
+  }
+}

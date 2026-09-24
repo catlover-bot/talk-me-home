@@ -12,7 +12,7 @@ import { initializeCampaign, inspectCampaign } from './qa-budget.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
 import { installAudioInstrumentation, queueSpeech, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
-import { communicatedEmblem, communicatedPassability } from './qa-player-policy.mjs';
+import { communicatedEmblem, communicatedPassability, crossCargoWithRecovery } from './qa-player-policy.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const DIRECTORY = resolve('.validation/goal-004b-live');
@@ -119,6 +119,16 @@ async function worker(scenario) {
         const badge = document.createElement('div'); badge.textContent = label;
         badge.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:2147483647;background:#181e19;color:white;padding:4px 12px;font:13px sans-serif;text-align:center;pointer-events:none';
         document.body.append(badge);
+        globalThis.__qaPublicCheckpoints = [];
+        const publicTitles = new Set(['Cargo Bay', 'Relay Gallery', 'Return Dock', 'You brought Pip home.']);
+        const observed = new Set();
+        new MutationObserver(() => {
+          for (const heading of document.querySelectorAll('h1,h2')) {
+            const title = heading.textContent.trim();
+            if (!publicTitles.has(title) || observed.has(title) || !heading.getClientRects().length) continue;
+            observed.add(title); globalThis.__qaPublicCheckpoints.push({ title, observedAtMs: globalThis.__qaAudio.snapshot().elapsedMs });
+          }
+        }).observe(document.body, { childList: true, subtree: true, characterData: true });
       });
     }, LABEL);
     await page.route('**/voice-token', async route => {
@@ -204,7 +214,7 @@ async function worker(scenario) {
       if (!latchConfirmed(engaged)) engaged = await say('Please engage the Latch now and report when that is done.');
       if (!latchConfirmed(engaged)) throw new Error('Pip did not confirm engaging the Latch after bounded clarification.');
       await page.getByRole('button', { name: 'Power OFF', exact: true }).click(); await expect(power).toHaveText('OFF');
-      await say(PHRASES.cross);
+      if (!await crossCargoWithRecovery({ say, atGallery: () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible() })) throw new Error('Cargo crossing did not commit after one clarification and one rephrased retry.');
       await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
       await screenshot('gallery');
       report.route.push('Cargo Bay', 'Relay Gallery');
@@ -286,6 +296,7 @@ async function worker(scenario) {
   } finally {
     await end();
     if (page && !page.isClosed()) {
+      report.checkpoints = await page.evaluate(() => globalThis.__qaPublicCheckpoints ?? []).catch(() => []);
       report.visibleHistory = await page.locator('.history-message').evaluateAll(articles => articles.map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent }))).catch(() => []);
       evidence = await collectAudioEvidence(page, directory).catch(() => undefined);
       await cleanupAudioInstrumentation(page).catch(() => {});
@@ -325,7 +336,8 @@ if (args.includes('--worker')) {
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; if (!['canary', 'mission'].includes(scenario)) throw new Error('Explicit --scenario canary or mission required.');
     const { initializeAllowance } = await import('../dist/server/server/admission.js');
-    initializeCampaign(DIRECTORY, initializeAllowance, { hourlyRate: 4.5 });
+    const campaign = initializeCampaign(DIRECTORY, initializeAllowance, { hourlyRate: 4.5 });
+    if (campaign.attempts.length >= campaign.header.maxAttempts) throw new Error('The authorized QA campaign is exhausted; no new provider attempt is permitted.');
     const result = await runSupervised({ directory: DIRECTORY, worker: SELF, args: ['--worker', '--scenario', scenario] }); process.exitCode = result.exitCode ?? 1;
   }
 }

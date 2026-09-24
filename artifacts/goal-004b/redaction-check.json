@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "credentialValuesPrinted": false,
+  "filesChecked": 20,
+  "scope": "Exact private .env credential-value comparison against compact artifacts, final validation report, README, and built browser assets. Independent narrow metadata allowlist and pattern review also completed. No raw traces exported."
+}

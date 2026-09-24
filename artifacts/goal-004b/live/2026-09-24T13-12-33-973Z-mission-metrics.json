@@ -1,0 +1,353 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
+  "scenario": "mission",
+  "commit": "fdc27eb96be4c6025277e03186df8b93698f652a",
+  "runtimeSha256": "378df0fe5961de1298769b03232b092245bafe50e9d3a4407b383da047ad05e4",
+  "harnessSha256": "9bc5bf7be42ec42eb7ca80bdebcde0c4f549073276fafb039a3ef016dbc79df8",
+  "nodeVersion": "v24.20.0",
+  "browserVersion": "153.0.8010.12",
+  "inputMode": "synthetic microphone only",
+  "completion": false,
+  "route": [],
+  "failure": "page.waitForFunction: Timeout 25000ms exceeded.",
+  "tokenRequests": 1,
+  "ending": {
+    "explicitEndSent": true,
+    "endAcknowledged": true,
+    "endSentAtMs": 73827.5,
+    "endAcknowledgedAtMs": 74115.9,
+    "endAcknowledgementDelayMs": 288.4,
+    "socketCloseCode": 1000,
+    "socketCloseWasClean": true,
+    "localConnectedSeconds": 72.5,
+    "providerSessionSeconds": 72.319293
+  },
+  "durationBounds": {
+    "observedSocketOpenToEndSentLowerBoundSeconds": 72.2,
+    "observedSocketOpenToCloseSeconds": 72.6,
+    "socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds": 75,
+    "localConnectionUpperBoundSeconds": 72.6,
+    "documentedDisconnectGraceSeconds": 0,
+    "remoteSecondsWithDocumentedGraceUpperEstimate": 72.6,
+    "supervisorClosedAt": "2026-09-24T13:13:50.712Z",
+    "accountingBoundary": "Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation."
+  },
+  "checkpoints": [],
+  "audio": {
+    "input": {
+      "chunks": 13417,
+      "samples": 1717376,
+      "nonzeroSamples": 328034,
+      "energy": 3845.6,
+      "lastNonzeroMarkerAtMs": 47655.5
+    },
+    "provider": {
+      "chunks": 3273,
+      "samples": 785520,
+      "nonzeroSamples": 445276,
+      "energy": 4678.2,
+      "lastNonzeroMarkerAtMs": 50172.1
+    },
+    "rendered": {
+      "chunks": 733,
+      "samples": 1759200,
+      "nonzeroSamples": 445269,
+      "energy": 4678.2,
+      "lastNonzeroMarkerAtMs": 40275.2
+    },
+    "postVolume": {
+      "chunks": 859,
+      "samples": 1759232,
+      "nonzeroSamples": 445141,
+      "energy": 4677,
+      "lastNonzeroMarkerAtMs": 40427.3
+    }
+  },
+  "utterances": [
+    {
+      "fixture": "speech-61f5c3639dbea7b6",
+      "syntheticText": "Pip, please keep your replies to one short sentence and look around to tell me what you can reach.",
+      "startedAtMs": 7990.7,
+      "endedAtMs": 14672.1,
+      "durationSeconds": 6.7,
+      "asrFinals": [
+        {
+          "text": "Pip, please keep your replies to one short sentence and look around to tell me what you can reach.",
+          "atMs": 14402.2,
+          "waveformEndToAsrFinalMs": -269.9
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1099.6,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 94.4,
+      "firstSubsequentRenderedChunkStartAtMs": 14675.2
+    },
+    {
+      "fixture": "speech-1b0b028b7fd11e51",
+      "syntheticText": "Please inspect the Latch and tell me how it works.",
+      "startedAtMs": 26188.6,
+      "endedAtMs": 30124,
+      "durationSeconds": 3.9,
+      "asrFinals": [
+        {
+          "text": "Please inspect the latch and tell me how it works.",
+          "atMs": 29790.6,
+          "waveformEndToAsrFinalMs": -333.4
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1476.8,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 1633.1,
+      "firstSubsequentRenderedChunkStartAtMs": 31675.2
+    },
+    {
+      "fixture": "speech-e6f422a403694609",
+      "syntheticText": "My diagram says the Door and Conveyor share one Power supply, so please engage the Latch to hold the Door open.",
+      "startedAtMs": 40801.6,
+      "endedAtMs": 48712.8,
+      "durationSeconds": 7.9,
+      "asrFinals": [
+        {
+          "text": "My diagram says the door and conveyor share one power supply.",
+          "atMs": 45490.8,
+          "waveformEndToAsrFinalMs": -3222
+        },
+        {
+          "text": "So please engage the latch to hold the door open.",
+          "atMs": 48404.4,
+          "waveformEndToAsrFinalMs": -308.4
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 439.1,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": null,
+      "firstSubsequentRenderedChunkStartAtMs": null
+    }
+  ],
+  "tools": [
+    {
+      "name": "observe_room",
+      "callAtMs": 15504.8,
+      "resultAtMs": 17809.4,
+      "callToResultMs": 2304.6,
+      "succeeded": true
+    },
+    {
+      "name": "inspect_object",
+      "callAtMs": 30707.7,
+      "resultAtMs": 32319.8,
+      "callToResultMs": 1612.1,
+      "succeeded": true
+    },
+    {
+      "name": "interact_object",
+      "callAtMs": 49422.5,
+      "resultAtMs": null,
+      "callToResultMs": null,
+      "succeeded": null
+    }
+  ],
+  "finalTranscripts": [
+    {
+      "atMs": 7370.6,
+      "source": "Real provider agent transcript",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "reference": 1
+    },
+    {
+      "atMs": 14402.2,
+      "source": "Real provider ASR",
+      "text": "Pip, please keep your replies to one short sentence and look around to tell me what you can reach.",
+      "reference": 2
+    },
+    {
+      "atMs": 25517.8,
+      "source": "Real provider agent transcript",
+      "text": "I see a running conveyor and a door, and I can reach a latch lever. Which object should I inspect first?",
+      "reference": 5
+    },
+    {
+      "atMs": 29790.6,
+      "source": "Real provider ASR",
+      "text": "Please inspect the latch and tell me how it works.",
+      "reference": 6
+    },
+    {
+      "atMs": 40102.6,
+      "source": "Real provider agent transcript",
+      "text": "The latch is not engaged and it says it holds the door open, so I can try to pull the lever. Should I engage it now?",
+      "reference": 9
+    },
+    {
+      "atMs": 45490.8,
+      "source": "Real provider ASR",
+      "text": "My diagram says the door and conveyor share one power supply.",
+      "reference": 10
+    },
+    {
+      "atMs": 48404.4,
+      "source": "Real provider ASR",
+      "text": "So please engage the latch to hold the door open.",
+      "reference": 12
+    }
+  ],
+  "visibleHistory": [
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Pip, please keep your replies to one short sentence and look around to tell me what you can reach.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I see a running conveyor and a door, and I can reach a latch lever. Which object should I inspect first?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the latch and tell me how it works.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is not engaged and it says it holds the door open, so I can try to pull the lever. Should I engage it now?",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "My diagram says the door and conveyor share one power supply.",
+      "final": null,
+      "interrupted": null
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "So please engage the latch to hold the door open.",
+      "final": null,
+      "interrupted": null
+    }
+  ],
+  "visibleHistoryBoundary": "These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "timingNotes": [
+    "Measurements describe this small synthetic sample, not a production SLA or human latency study.",
+    "Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.",
+    "Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.",
+    "Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.",
+    "Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.",
+    "Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.",
+    "A clean WebSocket close without session.ended does not confirm remote termination."
+  ],
+  "boundary": "Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.",
+  "accountingAttempt": 2,
+  "evidenceDirectory": "2026-09-24T13-12-33-973Z-mission",
+  "sourceHashes": {
+    "report": "8ab4ac3122baca30940680840c3299d54e0e3eeedd4caa7b8c94f0d3f731a52d",
+    "audioEvidence": "d52b10cd2d094ee24adefc375be126d2c70dc9ee22226454ebef5bcb032c46f4"
+  },
+  "media": {
+    "files": [
+      {
+        "file": "browser-silent.webm",
+        "durationSeconds": 75.4,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "vp8",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      },
+      {
+        "file": "input-digital.wav",
+        "durationSeconds": 74.278208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 74.278208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 74.278208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      }
+    ],
+    "videoStatus": "Source video is silent; separate captured digital WAV files retain the test audio.",
+    "mux": "Original synthetic input and actual rendered output combined on their shared recorded QA timeline, at half gain each. No generated or replaced Pip answer. Video synchronization is approximate from the reported page-creation interval; it is not sample accurate.",
+    "combinedDigitalAudio": {
+      "file": "qa-combined-digital.wav",
+      "durationSeconds": 74.278208,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "muxedVideo": {
+      "file": "qa-combined-video.mp4",
+      "durationSeconds": 75.4,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "videoAlignment": {
+      "offsetMs": 53.7,
+      "creationIntervalHalfWidthMs": 24.5,
+      "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate."
+    }
+  }
+}

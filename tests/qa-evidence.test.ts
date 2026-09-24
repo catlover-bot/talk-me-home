@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
-import { summarizeAttempt } from '../scripts/qa-evidence.mjs'
+import { approximateVideoAlignment, summarizeAttempt } from '../scripts/qa-evidence.mjs'
 
 const label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
 
@@ -31,7 +31,37 @@ test('QA evidence keeps the observed split-ASR and unacknowledged ending distinc
   assert.equal(summary.finalTranscripts.length, 3)
   assert.equal(summary.visibleHistory.length, 1)
   assert.equal(summary.visibleHistory[0].speaker, 'Mission Control')
+  assert.equal(summary.visibleHistory[0].final, null)
+  assert.equal(summary.visibleHistory[0].interrupted, null)
   assert.equal(summary.failure, report.failure)
+})
+
+test('QA missing ending remains unknown while supervisor cleanup supports explicitly derived duration bounds', () => {
+  const report = {
+    label, scenario: 'mission', identity: { harnessSha256: 'a'.repeat(64), node: 'v24.20.0' }, browserVersion: '153.0.8010.12',
+    audioTimeOriginWallMs: 1790255921480.5, videoPageCreationStartedAt: 1790255921419, videoPageCreatedAt: 1790255921456,
+    checkpoints: [{ title: 'Cargo Bay', observedAtMs: 556.3 }, { title: 'Untrusted hidden field', observedAtMs: 5 }],
+    visibleHistory: [{ speaker: 'Pip', text: 'The route is', final: false, interrupted: true }],
+  }
+  const evidence = { label, events: [{ type: 'socket.open', atMs: 1567 }, { type: 'session.end', atMs: 189319.8 }] }
+  const summary = summarizeAttempt(report, evidence, { closedAt: 1790256120725 })
+  assert.equal(summary.ending.localConnectedSeconds, null)
+  assert.equal(summary.ending.endAcknowledged, false)
+  assert.equal(summary.durationBounds.observedSocketOpenToEndSentLowerBoundSeconds, 187.8)
+  assert.equal(summary.durationBounds.localConnectionUpperBoundSeconds, 197.7)
+  assert.equal(summary.durationBounds.remoteSecondsWithDocumentedGraceUpperEstimate, 227.7)
+  assert.equal(summary.durationBounds.documentedDisconnectGraceSeconds, 30)
+  assert.equal(summary.checkpoints.length, 1)
+  assert.equal(summary.checkpoints[0].title, 'Cargo Bay')
+  assert.equal(summary.harnessSha256, 'a'.repeat(64))
+  assert.equal(summary.browserVersion, '153.0.8010.12')
+  assert.equal(summary.visibleHistory[0].final, false)
+  assert.equal(summary.visibleHistory[0].interrupted, true)
+  const alignment = approximateVideoAlignment(report)
+  assert.equal(alignment.offsetMs, 43)
+  assert.equal(alignment.creationIntervalHalfWidthMs, 18.5)
+  assert.match(alignment.source, /not sample accurate/)
+  assert.equal(approximateVideoAlignment({}), null)
 })
 
 test('QA evidence exports allowlisted tool metadata without arguments, results, configuration, or credentials', () => {
