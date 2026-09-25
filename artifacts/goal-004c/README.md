@@ -2,7 +2,9 @@
 
 This is **offline repair evidence**, not a new real-provider campaign. Goal 004B's release FAIL, exhausted accounting, missing end acknowledgements, and unverified final prompt remain historical facts.
 
-Final result: **OFFLINE_REPAIR_PASS / LIVE_RETEST_BLOCKED**, with **RELEASE_NOT_LIVE_VERIFIED** retained. [offline-summary.json](offline-summary.json) records 239 passing unit tests, 84 passing compiled-production browser cases and fresh Practice home. [final-runtime.json](final-runtime.json) identifies committed application/harness source, the unchanged tested build and every runtime/harness file hash. Exact final pushed-head CI is checked separately in the delivery handoff.
+Part A result: **OFFLINE_REPAIR_PASS / LIVE_RETEST_BLOCKED**, with **RELEASE_NOT_LIVE_VERIFIED** retained at that delivery. [offline-summary.json](offline-summary.json) records 239 passing unit tests, 84 passing compiled-production browser cases and fresh Practice home. [final-runtime.json](final-runtime.json) identifies the Part A application/harness source and build. These historical files remain unchanged.
+
+The owner subsequently approved one bounded Part B campaign on September 26 JST. [part-b-authorization.json](part-b-authorization.json) records the scope and verified USD 4.50/hour price; [part-b-activation.json](part-b-activation.json) records 27 passing focused tests and actual offline/default gate checks before spending. Real results will be recorded separately from the Part A files.
 
 ## Observed sources
 

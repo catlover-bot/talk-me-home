@@ -1,0 +1,17 @@
+{
+  "status": "ACTIVATION_CHECKS_PASS",
+  "focusedTests": 27,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "typecheck": "passed",
+  "diffCheck": "passed",
+  "defaultDryRun": "offline; no credentials loaded or allowance created",
+  "ciLiveCommand": "refused before worker/provider access",
+  "unsupervisedWorker": "refused before credential loading",
+  "campaignAttempts": 0,
+  "productionAttempts": 0,
+  "ledgersUnchangedDuringChecks": true,
+  "credentials": "Present; value not printed",
+  "realProviderCalls": 0
+}

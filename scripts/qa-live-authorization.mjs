@@ -1,8 +1,11 @@
-// Goal 004C Part A authorizes offline repair only. This proposal is not a spending grant.
+// Explicit owner approval on September 26, 2026 JST activates this one fixed campaign.
 import { createHash } from 'node:crypto'
+import { lstatSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { inspectCampaign } from './qa-budget.mjs'
 
 export const GOAL_004C_PROPOSAL = Object.freeze({
-  status: 'BLOCKED_AWAITING_BUDGET_APPROVAL',
+  status: 'AUTHORIZED_BOUNDED_CAMPAIGN',
   maxAttempts: 2,
   reservationSeconds: 670,
   capacitySeconds: 1340,
@@ -14,9 +17,36 @@ export const GOAL_004C_PROPOSAL = Object.freeze({
   ordering: Object.freeze(['live_text_rescue', 'synthetic_voice_rescue']),
 })
 
+export const GOAL_004C_AUTHORIZATION = Object.freeze({
+  approvedOnJst: '2026-09-26',
+  reviewedCommit: '35ced22e0fbba070f2533bb4e3eaeca30ea3723c',
+  campaignPath: '.validation/goal-004c-live',
+  existingBalanceOnly: true,
+  automaticReplenishment: false,
+  limits: GOAL_004C_PROPOSAL,
+})
+const campaignDirectory = fileURLToPath(new URL('../.validation/goal-004c-live', import.meta.url))
+
 /** No argument, local flag, environment value, or file constitutes owner approval. */
 export function assertGoal004CLiveAuthorized() {
-  throw new Error('BLOCKED_AWAITING_BUDGET_APPROVAL: Goal 004C currently authorizes zero new provider attempts. Explicit subsequent owner approval is required before enabling the proposed two-attempt retest.')
+  if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) {
+    throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE always prohibit this approved campaign.')
+  }
+  let campaign
+  try {
+    const directory = lstatSync(campaignDirectory)
+    if (!directory.isDirectory() || directory.isSymbolicLink()) throw new Error('Invalid directory')
+    campaign = inspectCampaign(campaignDirectory)
+  } catch {
+    throw new Error('APPROVED_CAMPAIGN_UNAVAILABLE: The fixed Goal 004C accounting must already exist and be valid; nothing was initialized.')
+  }
+  const header = campaign.header
+  if (header.maxAttempts !== 2 || header.capacitySeconds !== 1340 || header.reservationSeconds !== 670
+    || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30
+    || header.hourlyRate !== 4.5 || header.planningDollars !== 1.68) {
+    throw new Error('APPROVED_CAMPAIGN_MISMATCH: Existing accounting differs from the explicit Goal 004C approval.')
+  }
+  if (campaign.attempts.length >= 2) throw new Error('APPROVED_CAMPAIGN_EXHAUSTED: The two approved attempts remain consumed.')
 }
 
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex')

@@ -1,0 +1,35 @@
+{
+  "campaign": "goal-004c-part-b",
+  "status": "OWNER_APPROVED_SINGLE_CAMPAIGN",
+  "ownerApprovalDateJst": "2026-09-26",
+  "source": "Explicit subsequent owner message in this thread approving Goal 004C Part B, following delivered head 35ced22e0fbba070f2533bb4e3eaeca30ea3723c. This record documents that message; a local file is not independent authority.",
+  "deliveredHead": "35ced22e0fbba070f2533bb4e3eaeca30ea3723c",
+  "campaignDirectory": ".validation/goal-004c-live",
+  "maxTokenAttempts": 2,
+  "maxActiveConnections": 1,
+  "maxConnectedSecondsPerAttempt": 600,
+  "reservedSecondsPerAttempt": 670,
+  "maxReservedSeconds": 1340,
+  "maxEstimatedDollars": 1.68,
+  "funding": "Existing account credit/balance only; no purchase, Auto-pay, billing change or public deployment.",
+  "sequence": ["Full Rescue through normal Live Text UI with explicit End and ACK", "Same frozen candidate through synthetic microphone Live Voice only after the existing Text sequencing gate passes"],
+  "stopConditions": "Failed Text, unconfirmed termination, changed candidate, exhausted or invalid accounting. Preserve unused reservations; never replace, reset or replenish either campaign.",
+  "initialAudit": {
+    "partBCampaignExists": false,
+    "existingPartBAttempts": 0,
+    "historicalPartBAuthorizationFound": false,
+    "goal004BAttempts": 3,
+    "goal004BReservedSeconds": 2010,
+    "goal004BLedgerSha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe"
+  },
+  "officialPrice": {
+    "url": "https://www.assemblyai.com/pricing",
+    "retrievedDateJst": "2026-09-26",
+    "product": "Voice Agent API, standard managed stack",
+    "dollarsPerHour": 4.5,
+    "billingUnit": "Per second of connected conversation time",
+    "included": "Managed STT, Voice Agent LLM, TTS and infrastructure; no separate layer charges for the unchanged configuration.",
+    "estimatedDollarsForAllReservations": 1.675,
+    "boundary": "Conservative campaign estimate, not an invoice or account-wide cap. Unrelated account usage is outside this campaign."
+  }
+}

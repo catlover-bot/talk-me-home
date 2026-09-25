@@ -1,9 +1,75 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
-import { approximateVideoAlignment, summarizeAttempt } from '../scripts/qa-evidence.mjs'
+import { approximateVideoAlignment, summarizeAttempt, exportCampaign } from '../scripts/qa-evidence.mjs'
 
 const label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
+const textLabel = 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI'
+
+test('Text export keeps typed UI input separate from provider finals and retains interrupted provenance', () => {
+  const report = { label: textLabel, mode: 'text', scenario: 'mission', identity: {},
+    steps: [{ inputMode: 'text', utterance: 'Please look around.', elapsedMs: 500 }],
+    visibleHistory: [{ speaker: 'Mission Control', text: 'Please look around.', sourceLabel: 'Live Text · Typed', chapterLabel: 'Cargo Bay', final: true, interrupted: false }] }
+  const evidence = { label: textLabel, events: [
+    { type: 'conversation.message', role: 'human', atMs: 100 },
+    { type: 'transcript.agent', final: true, interrupted: true, text: 'I can see', atMs: 200 },
+    { type: 'transcript.agent', final: true, interrupted: false, text: 'I can see a Latch.', atMs: 400 },
+  ] }
+  const summary = summarizeAttempt(report, evidence)
+  assert.equal(summary.label, textLabel)
+  assert.equal(summary.mode, 'text')
+  assert.deepEqual(summary.typedTurns, [{ source: 'QA player UI submission record; not ASR or proof of provider delivery', text: 'Please look around.', recordedAfterTurnAtMs: 500 }])
+  assert.equal(summary.finalTranscripts.length, 2)
+  assert.equal(summary.finalTranscripts.some((row: { source: string }) => row.source === 'Real provider ASR'), false)
+  assert.equal(summary.finalTranscripts[0].interrupted, true)
+  assert.equal(summary.visibleHistory[0].sourceLabel, 'Live Text · Typed')
+  assert.equal(summary.visibleHistory[0].chapterLabel, 'Cargo Bay')
+  assert.deepEqual(summary.utterances, [])
+  assert.match(summary.boundary, /No ASR/)
+  const fallback = summarizeAttempt({ ...report, steps: [] }, evidence)
+  assert.equal(fallback.typedTurns[0].source, 'Visible Live Text typed history; not ASR')
+  assert.equal(fallback.typedTurns[0].recordedAfterTurnAtMs, null)
+  assert.throws(() => summarizeAttempt(report, { ...evidence, label }), /consistently labelled/)
+  assert.throws(() => summarizeAttempt({ ...report, steps: [{ inputMode: 'text', utterance: 'Authorization: Bearer private-fixture' }] }, evidence), /Credential-like/)
+})
+
+test('campaign export discovers Text/Voice directories and binds their explicit reservation without guessing from absent socket events', async () => {
+  // Throwaway accounting fixtures only: no campaign initializer, credentials, browser or provider.
+  const directory = await mkdtemp(join(tmpdir(), 'qa-export-offline-'))
+  const output = join(directory, 'export')
+  try {
+    const header = { type: 'campaign', version: 1, createdAt: 1000, maxAttempts: 2, reservationSeconds: 670, capacitySeconds: 1340, maxSessionSeconds: 600, planningDollars: 1.68, disconnectGraceSeconds: 30, hourlyRate: 4.5 }
+    const reservations = ['text', 'voice'].map((mode, index) => ({ type: 'reserved', attempt: index + 1, name: `${mode}-mission`, reservedAt: 2000 + index * 670000, reservedSeconds: 670, gracefulAt: 572000 + index * 670000, hardAt: 582000 + index * 670000, leaseUntil: 672000 + index * 670000 }))
+    await writeFile(join(directory, 'campaign.jsonl'), [header, ...reservations].map(row => JSON.stringify(row)).join('\n') + '\n')
+    await writeFile(join(directory, 'allowance.jsonl'), [{ version: 1, allowanceSessions: 2, maxSessionSeconds: 600 }, ...reservations.map(({ reservedAt, leaseUntil }) => ({ reservedAt, leaseUntil }))].map(row => JSON.stringify(row)).join('\n') + '\n')
+    const names = ['2026-09-26T00-00-00-000Z-text-mission', '2026-09-26T00-12-00-000Z-voice-mission']
+    for (const [index, name] of names.entries()) {
+      const mode = index === 0 ? 'text' : 'voice'; const currentLabel = mode === 'text' ? textLabel : label
+      await mkdir(join(directory, name))
+      await writeFile(join(directory, name, 'report.json'), JSON.stringify({ label: currentLabel, mode, scenario: 'mission', reservation: reservations[index], identity: {}, failure: 'Offline exporter fixture; no actual call.', completion: false, steps: mode === 'text' ? [{ inputMode: 'text', utterance: 'Please look around.', elapsedMs: 20 }] : [] }))
+      await writeFile(join(directory, name, 'audio-evidence.json'), JSON.stringify({ label: currentLabel, events: [] }))
+    }
+    const summary = await exportCampaign({ directory, output })
+    assert.equal(summary.results.length, 2)
+    assert.deepEqual(summary.results.map((row: { mode: string }) => row.mode), ['text', 'voice'])
+    assert.match(summary.label, /UI LIVE TEXT \/ SYNTHETIC VOICE/)
+    for (const [index, name] of names.entries()) {
+      const metrics = JSON.parse(await readFile(join(output, `${name}-metrics.json`), 'utf8'))
+      assert.equal(metrics.accountingAttempt, index + 1)
+    }
+    const conversation = await readFile(join(output, `${names[0]}-conversation.md`), 'utf8')
+    assert.match(conversation, /UI LIVE TEXT/)
+    assert.match(conversation, /Typed UI turns/)
+    assert.match(conversation, /not ASR or proof of provider delivery/)
+    const path = join(directory, names[0]!, 'report.json'); const invalid = JSON.parse(await readFile(path, 'utf8'))
+    invalid.reservation.reservedAt++
+    await writeFile(path, JSON.stringify(invalid))
+    await assert.rejects(exportCampaign({ directory, output }), /reservation does not match/)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
 
 test('QA evidence keeps the observed split-ASR and unacknowledged ending distinct from visible history', () => {
   // Sanitized timing pattern from the first canary; no provider or browser is invoked.

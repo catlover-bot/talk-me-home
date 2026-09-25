@@ -1,35 +1,92 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { test } from 'node:test'
 import { createHash } from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 import { initializeAllowance } from '../game/server/admission.js'
-import { assertGoal004CLiveAuthorized, assertGoal004CNextAttempt, GOAL_004C_PROPOSAL } from '../scripts/qa-live-authorization.mjs'
+import { assertGoal004CNextAttempt, GOAL_004C_AUTHORIZATION, GOAL_004C_PROPOSAL } from '../scripts/qa-live-authorization.mjs'
 // @ts-expect-error Executable accounting helpers are native Node modules.
 import { CampaignBudget, initializeCampaign, inspectCampaign } from '../scripts/qa-budget.mjs'
 // @ts-expect-error Executable accounting helpers are native Node modules.
 import { runSupervised } from '../scripts/qa-supervisor.mjs'
 
-test('Goal 004C Part A refuses every local approval claim without reading credentials or creating a campaign', () => {
+async function authorizationFixture(run: (fixture: { directory: string; campaign: string; gate: (...args: unknown[]) => void }) => void) {
   const directory = mkdtempSync(join(tmpdir(), 'tmh-approval-fixture-'))
-  const previous = process.env.GOAL_004C_APPROVED
+  const previous = Object.fromEntries(['CI', 'GAME_DISABLE_LIVE', 'GOAL_004C_APPROVED'].map(name => [name, process.env[name]]))
   try {
+    // Copy the exact modules into an isolated tree; production exposes no path,
+    // environment or argument injection that could redirect its fixed campaign.
+    mkdirSync(join(directory, 'scripts'))
+    for (const file of ['qa-live-authorization.mjs', 'qa-budget.mjs']) copyFileSync(resolve('scripts', file), join(directory, 'scripts', file))
+    const module = await import(pathToFileURL(join(directory, 'scripts/qa-live-authorization.mjs')).href)
+    delete process.env.CI
+    delete process.env.GAME_DISABLE_LIVE
+    run({ directory, campaign: join(directory, '.validation/goal-004c-live'), gate: module.assertGoal004CLiveAuthorized })
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+    rmSync(directory, { recursive: true, force: true })
+  }
+}
+
+test('compiled Goal 004C approval cannot be supplied or redirected by local flags, files or arguments', async () => {
+  await authorizationFixture(({ directory, campaign, gate }) => {
     process.env.GOAL_004C_APPROVED = '1'
     writeFileSync(join(directory, 'approval.json'), '{"approved":true,"source":"offline-negative-test"}\n')
-    const gate = assertGoal004CLiveAuthorized as (...args: unknown[]) => never
-    for (const claim of [undefined, true, '--approved', { approved: true }, { approvalFile: join(directory, 'approval.json') }]) {
-      assert.throws(() => gate(claim), /BLOCKED_AWAITING_BUDGET_APPROVAL/)
+    const other = join(directory, 'unapproved-campaign')
+    initializeCampaign(other, initializeAllowance, { profile: 'goal-004c' })
+    for (const claim of [undefined, true, '--approved', { approved: true }, { approvalFile: join(directory, 'approval.json') }, { campaignDirectory: other }]) {
+      assert.throws(() => gate(claim), /APPROVED_CAMPAIGN_UNAVAILABLE/)
     }
+    assert.equal(existsSync(campaign), false)
     assert.equal(GOAL_004C_PROPOSAL.maxAttempts, 2)
     assert.equal(GOAL_004C_PROPOSAL.capacitySeconds, 1340)
     assert.equal(GOAL_004C_PROPOSAL.estimatedReservedDollars, 1.675)
     assert.ok(Object.isFrozen(GOAL_004C_PROPOSAL))
-  } finally {
-    if (previous === undefined) delete process.env.GOAL_004C_APPROVED
-    else process.env.GOAL_004C_APPROVED = previous
-    rmSync(directory, { recursive: true, force: true })
+    assert.ok(Object.isFrozen(GOAL_004C_AUTHORIZATION))
+    assert.equal(GOAL_004C_AUTHORIZATION.reviewedCommit, '35ced22e0fbba070f2533bb4e3eaeca30ea3723c')
+  })
+})
+
+test('compiled approval accepts only existing fixed accounting and always fails closed for CI or Live-disable', async () => {
+  await authorizationFixture(({ campaign, gate }) => {
+    initializeCampaign(campaign, initializeAllowance, { profile: 'goal-004c' })
+    const original = readFileSync(join(campaign, 'campaign.jsonl'), 'utf8')
+    assert.doesNotThrow(() => gate())
+    for (const name of ['CI', 'GAME_DISABLE_LIVE']) {
+      for (const value of ['true', '1', '0', '']) {
+        process.env[name] = value
+        assert.throws(() => gate(), /LIVE_DISABLED/)
+      }
+      delete process.env[name]
+    }
+    assert.doesNotThrow(() => gate())
+    assert.equal(readFileSync(join(campaign, 'campaign.jsonl'), 'utf8'), original)
+    assert.equal(inspectCampaign(campaign).attempts.length, 0)
+  })
+})
+
+test('compiled approval refuses other profiles, rates, corrupt accounting and exhausted attempts without repair', async () => {
+  for (const kind of ['old-profile', 'rate', 'corrupt', 'missing-allowance', 'exhausted']) {
+    await authorizationFixture(({ campaign, gate }) => {
+      initializeCampaign(campaign, initializeAllowance, { profile: kind === 'old-profile' ? 'goal-004b' : 'goal-004c', hourlyRate: kind === 'rate' ? 4 : 4.5 })
+      const ledger = join(campaign, 'campaign.jsonl')
+      if (kind === 'corrupt') writeFileSync(ledger, readFileSync(ledger, 'utf8').trimEnd())
+      if (kind === 'missing-allowance') rmSync(join(campaign, 'allowance.jsonl'))
+      if (kind === 'exhausted') {
+        let now = Date.now()
+        const budget = new CampaignBudget(campaign, () => now)
+        now = budget.reserve({ name: 'text-mission' }).leaseUntil
+        budget.reserve({ name: 'voice-mission' })
+      }
+      const original = readFileSync(ledger, 'utf8')
+      assert.throws(() => gate(), /APPROVED_CAMPAIGN_(?:MISMATCH|UNAVAILABLE|EXHAUSTED)/)
+      assert.equal(readFileSync(ledger, 'utf8'), original)
+    })
   }
 })
 
@@ -54,7 +111,6 @@ test('prospective sequencing permits Text first and Voice only after the same co
   assert.doesNotThrow(() => assertGoal004CNextAttempt({ campaign: completed, mode: 'voice', identity: f.identity, reports: [f.report] }))
   assert.throws(() => assertGoal004CNextAttempt({ campaign: completed, mode: 'text', identity: f.identity }), /first and only/)
   assert.throws(() => assertGoal004CNextAttempt({ campaign: { ...completed, attempts: [f.previous, { ...f.previous, attempt: 2 }] }, mode: 'voice', identity: f.identity, reports: [f.report] }), /requires one passed/)
-  assert.throws(() => assertGoal004CLiveAuthorized(), /BLOCKED_AWAITING_BUDGET_APPROVAL/)
 })
 
 test('prospective Voice sequencing rejects failed, unacknowledged, unclosed, missing or ambiguous Text evidence', () => {

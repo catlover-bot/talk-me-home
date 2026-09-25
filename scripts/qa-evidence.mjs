@@ -8,6 +8,8 @@ import { inspectCampaign } from './qa-budget.mjs'
 import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
+const TEXT_LABEL = 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI'
+const MIXED_LABEL = 'AUTOMATED QA — UI LIVE TEXT / SYNTHETIC VOICE — REAL ASSEMBLYAI'
 const round = value => Number.isFinite(value) ? Math.round(value * 10) / 10 : null
 const count = value => Number.isSafeInteger(value) && value >= 0 ? value : null
 const exists = path => access(path).then(() => true, () => false)
@@ -52,13 +54,14 @@ export function approximateVideoAlignment(report) {
 }
 
 export function summarizeAttempt(report, evidence, reservation) {
-  if (report.label !== LABEL || evidence.label !== LABEL || !Array.isArray(evidence.events)) throw new Error('Only explicitly labelled real-provider synthetic QA evidence is accepted.')
+  if (![LABEL, TEXT_LABEL].includes(report.label) || evidence.label !== report.label || !Array.isArray(evidence.events)
+    || report.label === TEXT_LABEL && report.mode !== 'text') throw new Error('Only consistently labelled real-provider Text or synthetic Voice QA evidence is accepted.')
   const events = evidence.events
   const endSent = events.find(event => event.type === 'session.end')
   const ended = events.find(event => event.type === 'session.ended')
   const socketOpen = events.find(event => event.type === 'socket.open')
   const socketClose = events.find(event => event.type === 'socket.close')
-  const finalTranscripts = events.filter(event => ['transcript.user', 'transcript.agent'].includes(event.type) && event.final === true).map(event => ({ atMs: round(event.atMs), source: event.type === 'transcript.user' ? 'Real provider ASR' : 'Real provider agent transcript', text: text(event.text), reference: Number.isSafeInteger(event.reference) ? event.reference : null }))
+  const finalTranscripts = events.filter(event => ['transcript.user', 'transcript.agent'].includes(event.type) && event.final === true).map(event => ({ atMs: round(event.atMs), source: event.type === 'transcript.user' ? 'Real provider ASR' : 'Real provider agent transcript', text: text(event.text), reference: Number.isSafeInteger(event.reference) ? event.reference : null, interrupted: typeof event.interrupted === 'boolean' ? event.interrupted : null }))
   const utterances = events.filter(event => event.type === 'synthetic.speech.queued').map((queued, index, all) => {
     const start = events.find(event => event.type === 'synthetic.speech.started' && event.id === queued.id && event.atMs >= queued.atMs)
     const end = events.find(event => event.type === 'synthetic.speech.ended' && event.id === queued.id && event.atMs >= queued.atMs)
@@ -82,9 +85,13 @@ export function summarizeAttempt(report, evidence, reservation) {
     const counter = evidence.counters?.[kind] ?? {}
     return [kind, { chunks: count(counter.chunks), samples: count(counter.samples), nonzeroSamples: count(counter.nonzeroSamples), energy: round(counter.energy), lastNonzeroMarkerAtMs: round(counter.lastNonzeroMs) }]
   }))
-  const visible = (report.visibleHistory ?? []).map(item => ({ source: 'Visible application history snapshot; final/interrupted status may be unavailable', speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), final: typeof item.final === 'boolean' ? item.final : null, interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null }))
+  const visible = (report.visibleHistory ?? []).map(item => ({ source: 'Visible application history snapshot; final/interrupted status may be unavailable', speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), sourceLabel: text(item.sourceLabel), chapterLabel: text(item.chapterLabel), final: typeof item.final === 'boolean' ? item.final : null, interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null }))
+  const typedSteps = (report.steps ?? []).filter(step => step.inputMode === 'text' && typeof step.utterance === 'string')
+  const typedTurns = typedSteps.length
+    ? typedSteps.map(step => ({ source: 'QA player UI submission record; not ASR or proof of provider delivery', text: text(step.utterance), recordedAfterTurnAtMs: round(step.elapsedMs) }))
+    : visible.filter(item => item.speaker === 'Mission Control' && /Live Text.*Typed/.test(item.sourceLabel ?? '')).map(item => ({ source: 'Visible Live Text typed history; not ASR', text: item.text, recordedAfterTurnAtMs: null }))
   return {
-    label: LABEL, scenario: text(report.scenario), commit: /^[0-9a-f]{40}$/.test(report.identity?.commit) ? report.identity.commit : null,
+    label: report.label, mode: report.mode === 'text' ? 'text' : 'voice', scenario: text(report.scenario), commit: /^[0-9a-f]{40}$/.test(report.identity?.commit) ? report.identity.commit : null,
     runtimeSha256: /^[0-9a-f]{64}$/.test(report.identity?.runtimeSha256) ? report.identity.runtimeSha256 : null,
     harnessSha256: /^[0-9a-f]{64}$/.test(report.identity?.harnessSha256) ? report.identity.harnessSha256 : null,
     nodeVersion: /^v\d+\.\d+\.\d+$/.test(report.identity?.node) ? report.identity.node : null,
@@ -93,7 +100,7 @@ export function summarizeAttempt(report, evidence, reservation) {
     ending: { explicitEndSent: Boolean(endSent), endAcknowledged: Boolean(ended), endSentAtMs: round(endSent?.atMs), endAcknowledgedAtMs: round(ended?.atMs), endAcknowledgementDelayMs: ended && endSent ? round(ended.atMs - endSent.atMs) : null, socketCloseCode: socketClose?.code ?? null, socketCloseWasClean: socketClose?.clean ?? null, localConnectedSeconds: socketOpen && (ended || socketClose) ? round(((ended ?? socketClose).atMs - socketOpen.atMs) / 1000) : null, providerSessionSeconds: Number.isFinite(report.providerDurationSeconds) ? report.providerDurationSeconds : null },
     durationBounds: durationBounds(report, evidence, reservation),
     checkpoints: (report.checkpoints ?? []).filter(checkpoint => ['Cargo Bay', 'Relay Gallery', 'Return Dock', 'You brought Pip home.', 'Home'].includes(checkpoint.title) && Number.isFinite(checkpoint.observedAtMs)).map(checkpoint => ({ title: checkpoint.title, observedAtMs: round(checkpoint.observedAtMs), source: 'Human-visible chapter/completion heading observed by the browser driver' })),
-    audio, utterances, tools, finalTranscripts, visibleHistory: visible,
+    audio, utterances, typedTurns, tools, finalTranscripts, visibleHistory: visible,
     visibleHistoryBoundary: 'These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.',
     cleanup: { activeTracks: count(report.cleanup?.activeTracks), activeSources: count(report.cleanup?.activeSources), openApplicationContexts: count(report.cleanup?.openApplicationContexts) },
     timingNotes: [
@@ -105,7 +112,7 @@ export function summarizeAttempt(report, evidence, reservation) {
       'Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.',
       'A clean WebSocket close without session.ended does not confirm remote termination.',
     ],
-    boundary: 'Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.',
+    boundary: report.label === TEXT_LABEL ? 'Player text was submitted through the normal UI; provider replies and digital output are separate evidence. No ASR, physical microphone, loudspeaker routing, human listening, or enjoyment pass is inferred from Text.' : 'Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.',
   }
 }
 
@@ -156,10 +163,15 @@ async function prepareLocalMedia(directory, { mux, alignment }) {
 }
 
 function conversationMarkdown(attempt) {
-  const lines = [`# ${LABEL}`, '', `Scenario: ${attempt.scenario}. Runtime SHA-256: \`${attempt.runtimeSha256}\`.`, '', 'Provider final transcripts are preserved separately from the application’s visible history. An interrupted provider transcript is not relabelled as a visible or fully played reply.', '', attempt.visibleHistoryBoundary, '', '## Real provider final transcripts', '']
-  for (const row of attempt.finalTranscripts) lines.push(`- ${row.atMs} ms — **${row.source}**: ${row.text}`, '')
+  const lines = [`# ${attempt.label}`, '', `Scenario: ${attempt.scenario}. Runtime SHA-256: \`${attempt.runtimeSha256}\`.`, '', 'Provider final transcripts are preserved separately from typed UI submissions and the application’s visible history. An interrupted provider transcript is not relabelled as a visible or fully played reply.', '', attempt.visibleHistoryBoundary, '']
+  if (attempt.typedTurns.length) {
+    lines.push('## Typed UI turns', '')
+    for (const row of attempt.typedTurns) lines.push(`- **${row.source}**: ${row.text}`, '')
+  }
+  lines.push('## Real provider final transcripts', '')
+  for (const row of attempt.finalTranscripts) lines.push(`- ${row.atMs} ms — **${row.source}**${row.interrupted === true ? ' [interrupted]' : ''}: ${row.text}`, '')
   lines.push('## Visible application history', '')
-  for (const row of attempt.visibleHistory) lines.push(`- **${row.speaker}**: ${row.text}`, '')
+  for (const row of attempt.visibleHistory) lines.push(`- **${row.speaker}**${row.final === false ? ' [partial]' : ''}${row.interrupted === true ? ' [interrupted]' : ''}: ${row.text}`, '')
   lines.push(`Outcome: ${attempt.failure ? `Failed: ${attempt.failure}` : attempt.completion ? 'Mission completed.' : 'See the scoped metrics; this was not a full mission.'}`, '', `Explicit session.end: ${attempt.ending.explicitEndSent}. session.ended received: ${attempt.ending.endAcknowledged}.`, '', attempt.boundary, '')
   return lines.join('\n')
 }
@@ -176,15 +188,19 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   const linkedReservations = new Set()
   await mkdir(output, { recursive: true })
   for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
-    if (!entry.isDirectory() || !/^\d{4}-\d{2}-\d{2}T[\d-]+Z-(canary|mission)$/.test(entry.name)) continue
+    if (!entry.isDirectory() || !/^\d{4}-\d{2}-\d{2}T[\d-]+Z-(?:(?:text|voice)-)?(?:canary|mission)$/.test(entry.name)) continue
     const path = join(directory, entry.name)
     if (!await exists(join(path, 'report.json')) || !await exists(join(path, 'audio-evidence.json'))) continue
     const reportBytes = await readFile(join(path, 'report.json')); const evidenceBytes = await readFile(join(path, 'audio-evidence.json'))
     const report = JSON.parse(reportBytes); const evidence = JSON.parse(evidenceBytes)
     const opened = evidence.events.find(event => event.type === 'socket.open')
     const socketWallTime = Number.isFinite(report.audioTimeOriginWallMs) && opened ? report.audioTimeOriginWallMs + opened.atMs : null
-    const reservation = [...state.attempts].reverse().find(row => !linkedReservations.has(row.attempt) && Number.isFinite(socketWallTime) && row.reservedAt <= socketWallTime && socketWallTime <= row.hardAt)
-      ?? state.attempts.find(row => !linkedReservations.has(row.attempt) && row.name === report.scenario)
+    const reservationFields = ['attempt', 'name', 'reservedAt', 'reservedSeconds', 'gracefulAt', 'hardAt', 'leaseUntil']
+    const reservation = report.reservation
+      ? state.attempts.find(row => !linkedReservations.has(row.attempt) && reservationFields.every(field => row[field] === report.reservation[field]))
+      : [...state.attempts].reverse().find(row => !linkedReservations.has(row.attempt) && Number.isFinite(socketWallTime) && row.reservedAt <= socketWallTime && socketWallTime <= row.hardAt)
+        ?? state.attempts.find(row => !linkedReservations.has(row.attempt) && row.name === report.scenario)
+    if (report.reservation && !reservation) throw new Error('Recorded attempt reservation does not match one unused campaign reservation.')
     if (reservation) linkedReservations.add(reservation.attempt)
     const attempt = summarizeAttempt(report, evidence, reservation)
     attempt.accountingAttempt = reservation?.attempt ?? null
@@ -195,7 +211,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     attempt.media = await prepareLocalMedia(path, { mux, alignment })
     await writeFile(join(output, `${entry.name}-metrics.json`), `${JSON.stringify(attempt, null, 2)}\n`)
     await writeFile(join(output, `${entry.name}-conversation.md`), conversationMarkdown(attempt))
-    attempts.push({ evidenceDirectory: entry.name, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged })
+    attempts.push({ evidenceDirectory: entry.name, mode: attempt.mode, label: attempt.label, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged })
   }
   const fixtures = []
   for (const id of [...usedFixtureIds].sort()) {
@@ -208,11 +224,15 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   const last = state.attempts.at(-1)
   const remainingAttempts = state.header.maxAttempts - state.attempts.length
   const nextPermittedAt = remainingAttempts > 0 && last && !(last.result?.endAcknowledged && last.closedAt !== null) ? last.leaseUntil : null
+  const admissionStatus = remainingAttempts === 0 ? 'exhausted' : state.header.capacitySeconds === 1340
+    ? !last ? 'requires_explicit_supervised_text_attempt'
+      : last.name === 'text-mission' && last.result?.outcome === 'passed' && last.result.endAcknowledged && last.closedAt !== null ? 'requires_identical_candidate_voice_guard' : 'voice_blocked_by_text_result_or_cleanup'
+    : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt'
   const summary = {
-    label: LABEL, attempts: state.attempts.length, productionAttempts: state.productionAttempts, remainingAttempts,
+    label: attempts.some(attempt => attempt.mode === 'text') ? MIXED_LABEL : LABEL, attempts: state.attempts.length, productionAttempts: state.productionAttempts, remainingAttempts,
     reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars, verifiedRateDollarsPerHour: state.header.hourlyRate,
     localConnectedSeconds: state.attempts.map(attempt => attempt.result?.connectedSeconds ?? null), endAcknowledgements: state.attempts.map(attempt => attempt.result?.endAcknowledged ?? false),
-    nextPermittedAt: iso(nextPermittedAt), admissionStatus: remainingAttempts === 0 ? 'exhausted' : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt', inspectedAt: new Date().toISOString(), ledgerSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
+    nextPermittedAt: iso(nextPermittedAt), admissionStatus, inspectedAt: new Date().toISOString(), ledgerSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
     results: attempts, accountingBoundary: 'Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.',
     redaction: 'Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels.',
   }
