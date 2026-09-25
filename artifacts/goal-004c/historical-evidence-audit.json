@@ -1,0 +1,198 @@
+{
+  "inspectedAt": "2026-09-25T09:29:59.028Z",
+  "branch": "work/goal-004c-live-recovery",
+  "newProviderAttempts": 0,
+  "historicalLedger": {
+    "attempts": 3,
+    "reservedSeconds": 2010,
+    "remainingAttempts": 0,
+    "sha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe",
+    "productionAllowanceSha256": "b58817b207ddbc3862fae891099e6f96899774f9ebb7d2a3eff453fd7de535a0",
+    "unchangedDuringInspection": true
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "sourceMetrics": "../goal-004b/live/2026-09-24T13-01-22-218Z-canary-metrics.json",
+      "runtimeSha256": "89a3f77269393a169d0808f8ef7106cd7154d85ef8fde78b8b105a9731a9de47",
+      "normalizedTrace": "attempt-1-observed-metadata.json",
+      "availability": {
+        "audio-evidence.json": {
+          "present": true,
+          "bytes": 39640
+        },
+        "report.json": {
+          "present": true,
+          "bytes": 4437
+        },
+        "input-digital.wav": {
+          "present": true,
+          "bytes": 2621560
+        },
+        "rendered-digital.wav": {
+          "present": true,
+          "bytes": 2621560
+        },
+        "postVolume-digital.wav": {
+          "present": true,
+          "bytes": 2621560
+        },
+        "browser-silent.webm": {
+          "present": false
+        },
+        "qa-combined-video.mp4": {
+          "present": false
+        }
+      },
+      "completion": false,
+      "endAcknowledged": false,
+      "exactLocalConnectedSeconds": 52.92120000000298
+    },
+    {
+      "attempt": 2,
+      "sourceMetrics": "../goal-004b/live/2026-09-24T13-12-33-973Z-mission-metrics.json",
+      "runtimeSha256": "378df0fe5961de1298769b03232b092245bafe50e9d3a4407b383da047ad05e4",
+      "normalizedTrace": "attempt-2-observed-metadata.json",
+      "availability": {
+        "audio-evidence.json": {
+          "present": true,
+          "bytes": 35977
+        },
+        "report.json": {
+          "present": true,
+          "bytes": 6093
+        },
+        "input-digital.wav": {
+          "present": true,
+          "bytes": 3565398
+        },
+        "rendered-digital.wav": {
+          "present": true,
+          "bytes": 3565398
+        },
+        "postVolume-digital.wav": {
+          "present": true,
+          "bytes": 3565398
+        },
+        "browser-silent.webm": {
+          "present": true,
+          "bytes": 4795793
+        },
+        "qa-combined-video.mp4": {
+          "present": true,
+          "bytes": 3268006
+        }
+      },
+      "completion": false,
+      "endAcknowledged": true,
+      "exactLocalConnectedSeconds": 72.47469999998808
+    },
+    {
+      "attempt": 3,
+      "sourceMetrics": "../goal-004b/live/2026-09-24T13-18-41-410Z-mission-metrics.json",
+      "runtimeSha256": "5fea041c5173b090a471f5291b3e24b8681ef94059512553baf6816a8143053b",
+      "normalizedTrace": "attempt-3-observed-metadata.json",
+      "availability": {
+        "audio-evidence.json": {
+          "present": true,
+          "bytes": 73769
+        },
+        "report.json": {
+          "present": true,
+          "bytes": 9874
+        },
+        "input-digital.wav": {
+          "present": true,
+          "bytes": 9400226
+        },
+        "rendered-digital.wav": {
+          "present": true,
+          "bytes": 9400226
+        },
+        "postVolume-digital.wav": {
+          "present": true,
+          "bytes": 9400226
+        },
+        "browser-silent.webm": {
+          "present": true,
+          "bytes": 11870473
+        },
+        "qa-combined-video.mp4": {
+          "present": true,
+          "bytes": 7506219
+        }
+      },
+      "completion": false,
+      "endAcknowledged": false,
+      "exactLocalConnectedSeconds": null
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "speech-1b0b028b7fd11e51",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 3.9345,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-5a2fb9887f9fbaf0",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 6.4095,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-61f5c3639dbea7b6",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 6.6795,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-6c85ff778802607a",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 3.7345,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-816ae7fac2955eea",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 4.1595,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-aaa3fa60a71ebe0d",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 6.2795,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-cc8ddedbb8cc69d3",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 4.4495,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    },
+    {
+      "id": "speech-e6f422a403694609",
+      "wavPresent": true,
+      "metadataPresent": true,
+      "matchesCommittedHash": true,
+      "durationSeconds": 7.9145,
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech"
+    }
+  ],
+  "futureCampaignDirectoryExists": false,
+  "boundary": "This is a read-only historical inventory and sanitized metadata extraction, not a new Live or audio acceptance result. Missing private artifacts remain missing."
+}

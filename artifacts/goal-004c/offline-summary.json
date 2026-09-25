@@ -1,0 +1,84 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "status": "OFFLINE_REPAIR_PASS",
+  "liveRetest": "BLOCKED_AWAITING_BUDGET_APPROVAL",
+  "release": "RELEASE_NOT_LIVE_VERIFIED",
+  "historicalRelease": "FAIL",
+  "startedAt": "2026-09-25T09:43:44.594Z",
+  "finishedAt": "2026-09-25T09:45:19.111Z",
+  "branch": "work/goal-004c-live-recovery",
+  "testedCheckoutCommit": "0a17fc6fee0294ad2b25e5737e32188fdd17e73a",
+  "checkoutDirtyAtStart": true,
+  "dirtyBoundary": "Only uncommitted recovery report and sanitized historical evidence were present; application, harness, and test changes were committed before this run.",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 437,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 13654,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 239
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 991,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 75566,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 84
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 6,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    ".validation/goal-004c-offline/screenshots/title.png",
+    ".validation/goal-004c-offline/screenshots/gallery.png",
+    ".validation/goal-004c-offline/screenshots/gallery-narrow.png",
+    ".validation/goal-004c-offline/screenshots/gallery-zoom-200.png",
+    ".validation/goal-004c-offline/screenshots/dock.png",
+    ".validation/goal-004c-offline/screenshots/home.png"
+  ],
+  "observedPracticeRoute": "Fork to lower platform; northeast gate reported clear.",
+  "node": "v24.20.0",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "realProviderCalls": 0,
+  "newTokenAttempts": 0,
+  "newProviderSeconds": 0,
+  "historicalLedgerSha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe",
+  "oldAttemptsUsed": 3,
+  "oldAttemptsRemaining": 0,
+  "newFundedDirectoryExists": false,
+  "realText": "NOT AUTHORIZED / NOT RUN",
+  "realVoice": "NOT AUTHORIZED / NOT RUN",
+  "newRemoteEndAck": "NOT RUN",
+  "microphone": "Synthetic MediaStream through shipped capture path only; physical microphone not tested.",
+  "playback": "Fake-provider PCM rendered and measured after volume; physical audible playback not tested.",
+  "humanPlay": "Not performed.",
+  "enjoyment": "Not measured.",
+  "publicDeployment": "NOT DEPLOYED",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened."
+}

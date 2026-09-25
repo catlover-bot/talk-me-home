@@ -1,0 +1,524 @@
+{
+  "label": "HISTORICAL GOAL 004B OBSERVED METADATA — NO NEW PROVIDER CALL",
+  "source": ".validation/goal-004b-live/2026-09-24T13-18-41-410Z-mission/audio-evidence.json",
+  "sourceSha256": "ba4bd45a89b8b5f62b3987a247fa4b610b2bb4daa159235125f4509ea7b53c4e",
+  "runtimeSha256": "5fea041c5173b090a471f5291b3e24b8681ef94059512553baf6816a8143053b",
+  "provenance": "Observed chronological metadata with stable aliases and timestamps rounded to 0.1 ms. No event was invented or reordered.",
+  "missingFields": [
+    "The original sanitizer omitted raw tool.call reply association and tool arguments/result payloads.",
+    "Provider final/interrupted caption markers were not fully retained in the old visible-history export.",
+    "No unobserved end acknowledgement or close time is inferred."
+  ],
+  "reconstructionBoundary": "Tests that add arguments, tool-to-reply associations, commit outcomes, chapter transitions, or extra event orders are reconstructed or synthetic adversarial cases, not exact trace replays.",
+  "events": [
+    {
+      "atMs": 1567,
+      "type": "socket.open"
+    },
+    {
+      "atMs": 2108,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-1"
+    },
+    {
+      "atMs": 9215.3,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-1",
+      "status": "completed"
+    },
+    {
+      "atMs": 10973.5,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 11023.5,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 12389.7,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 17703.4,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 21198.3,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 21199.7,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-1"
+    },
+    {
+      "atMs": 21200.1,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-2"
+    },
+    {
+      "atMs": 27031,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 27032,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-2",
+      "status": "interrupted"
+    },
+    {
+      "atMs": 27032.4,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 27032.4,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-2"
+    },
+    {
+      "atMs": 27032.7,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-3"
+    },
+    {
+      "atMs": 27336.5,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-1",
+      "name": "observe_room"
+    },
+    {
+      "atMs": 27598,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-3",
+      "status": "completed"
+    },
+    {
+      "atMs": 27604.9,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-1",
+      "isError": false
+    },
+    {
+      "atMs": 34297.1,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-4"
+    },
+    {
+      "atMs": 42645.2,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-4",
+      "status": "completed"
+    },
+    {
+      "atMs": 45990.8,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 46040.8,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 49970.5,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 54471.4,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 56692.5,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 56694.6,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-3"
+    },
+    {
+      "atMs": 56695.4,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-5"
+    },
+    {
+      "atMs": 59648.1,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-2",
+      "name": "inspect_object"
+    },
+    {
+      "atMs": 59894.4,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-5",
+      "status": "completed"
+    },
+    {
+      "atMs": 59903.6,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-2",
+      "isError": false
+    },
+    {
+      "atMs": 66593.7,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-6"
+    },
+    {
+      "atMs": 74024.6,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-6",
+      "status": "completed"
+    },
+    {
+      "atMs": 74305.9,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 74355.9,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 82267.6,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 82591.6,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 85993.6,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 85995.6,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-4"
+    },
+    {
+      "atMs": 85996.3,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-7"
+    },
+    {
+      "atMs": 86991.4,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 88993.5,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 88995.9,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-5"
+    },
+    {
+      "atMs": 89953.9,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-3",
+      "name": "interact_object"
+    },
+    {
+      "atMs": 90217.6,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-7",
+      "status": "completed"
+    },
+    {
+      "atMs": 90218.2,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-3",
+      "isError": true
+    },
+    {
+      "atMs": 96904.9,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-8"
+    },
+    {
+      "atMs": 101524.9,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-8",
+      "status": "completed"
+    },
+    {
+      "atMs": 101764.6,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-4"
+    },
+    {
+      "atMs": 101814.6,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-4"
+    },
+    {
+      "atMs": 105545.9,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-4"
+    },
+    {
+      "atMs": 109789.8,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 112291.4,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 112293.7,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-6"
+    },
+    {
+      "atMs": 112296.3,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-9"
+    },
+    {
+      "atMs": 113247,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-4",
+      "name": "inspect_object"
+    },
+    {
+      "atMs": 113465.4,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-9",
+      "status": "completed"
+    },
+    {
+      "atMs": 113472.2,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-4",
+      "isError": false
+    },
+    {
+      "atMs": 120165.8,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-10"
+    },
+    {
+      "atMs": 125615.5,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-10",
+      "status": "completed"
+    },
+    {
+      "atMs": 125862.7,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-5"
+    },
+    {
+      "atMs": 125912.8,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-5"
+    },
+    {
+      "atMs": 130067,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-5"
+    },
+    {
+      "atMs": 133893.4,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 136913,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 136913.1,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-7"
+    },
+    {
+      "atMs": 136913.7,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-11"
+    },
+    {
+      "atMs": 137709.4,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-5",
+      "name": "interact_object"
+    },
+    {
+      "atMs": 137891,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-11",
+      "status": "completed"
+    },
+    {
+      "atMs": 137897.8,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-5",
+      "isError": false
+    },
+    {
+      "atMs": 144584.4,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-12"
+    },
+    {
+      "atMs": 152564.9,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-12",
+      "status": "completed"
+    },
+    {
+      "atMs": 153053,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-6"
+    },
+    {
+      "atMs": 153103.1,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-6"
+    },
+    {
+      "atMs": 159378.1,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-6"
+    },
+    {
+      "atMs": 161188.5,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 162293.3,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 162296.6,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-8"
+    },
+    {
+      "atMs": 162297.4,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-13"
+    },
+    {
+      "atMs": 163189.6,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 165999.7,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 166002.2,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-9"
+    },
+    {
+      "atMs": 167046.2,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-6",
+      "name": "observe_room"
+    },
+    {
+      "atMs": 167253.1,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-13",
+      "status": "completed"
+    },
+    {
+      "atMs": 167253.3,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-6",
+      "isError": true
+    },
+    {
+      "atMs": 173944.6,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-14"
+    },
+    {
+      "atMs": 183324.9,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-14",
+      "status": "completed"
+    },
+    {
+      "atMs": 189319.8,
+      "type": "session.end",
+      "direction": "sent"
+    }
+  ]
+}

@@ -2,7 +2,9 @@
 
 Deployment status: **NOT DEPLOYED**. Demo URL: **NOT PROVIDED**. Hosting, billing, repository visibility, and provider settings have not been changed.
 
-Use `catlover-bot/talk-me-home`, branch `work/goal-004-release-candidate`, based on feature commit `a212857e00c8ad75a3b630af2b8e0435c48ad899`. The release commit is the final pushed head of this branch, recorded in `docs/goal-004-validation.md`; select that exact commit when deploying. The starter-only `main`, `npm start`, and original `render.yaml` do **not** serve this game. Original starter commands and notices remain intact.
+Use `catlover-bot/talk-me-home`, current repair branch `work/goal-004c-live-recovery`, based on Goal 004B commit `00d10e1c21fa8de40a4c9bf5e49dce5126c2b04c` and the existing Goal 004 product. Candidate source/build identities are recorded in `artifacts/goal-004c/final-runtime.json`; the delivery report identifies the exact final pushed head. The starter-only `main`, `npm start`, and original `render.yaml` do **not** serve this game. Original starter commands and notices remain intact.
+
+Goal 004C Part A authorizes offline repair only. The candidate remains **RELEASE_NOT_LIVE_VERIFIED** and Part B is **BLOCKED_AWAITING_BUDGET_APPROVAL**. These deployment instructions do not authorize hosting, a public allowance, or QA spending; the next action is the separate two-attempt decision in `docs/goal-004c-live-recovery.md`.
 
 ## 1. Build and publish one Node service
 
@@ -21,7 +23,7 @@ For the existing Render deployment path, use the prepared **`render.game.yaml`**
 | Setting | Value |
 | --- | --- |
 | Runtime | Node 24 (`NODE_VERSION=24.20.0`) |
-| Branch | `work/goal-004-release-candidate`, exact final pushed commit |
+| Branch | `work/goal-004c-live-recovery`, exact final pushed commit |
 | Build | `npm ci --include=dev && npm run build:game` |
 | Start | `npm run start:game` |
 | Bind | `GAME_BIND_ADDRESS=0.0.0.0`; Render provides `PORT` |

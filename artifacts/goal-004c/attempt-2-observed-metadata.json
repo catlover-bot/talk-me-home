@@ -1,0 +1,257 @@
+{
+  "label": "HISTORICAL GOAL 004B OBSERVED METADATA — NO NEW PROVIDER CALL",
+  "source": ".validation/goal-004b-live/2026-09-24T13-12-33-973Z-mission/audio-evidence.json",
+  "sourceSha256": "d52b10cd2d094ee24adefc375be126d2c70dc9ee22226454ebef5bcb032c46f4",
+  "runtimeSha256": "378df0fe5961de1298769b03232b092245bafe50e9d3a4407b383da047ad05e4",
+  "provenance": "Observed chronological metadata with stable aliases and timestamps rounded to 0.1 ms. No event was invented or reordered.",
+  "missingFields": [
+    "The original sanitizer omitted raw tool.call reply association and tool arguments/result payloads.",
+    "Provider final/interrupted caption markers were not fully retained in the old visible-history export.",
+    "No unobserved end acknowledgement or close time is inferred."
+  ],
+  "reconstructionBoundary": "Tests that add arguments, tool-to-reply associations, commit outcomes, chapter transitions, or extra event orders are reconstructed or synthetic adversarial cases, not exact trace replays.",
+  "events": [
+    {
+      "atMs": 1641.2,
+      "type": "socket.open"
+    },
+    {
+      "atMs": 2267.7,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-1"
+    },
+    {
+      "atMs": 7741.6,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-1",
+      "status": "completed"
+    },
+    {
+      "atMs": 7940.7,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 7990.7,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 8988,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 14400.5,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 14402.2,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-1"
+    },
+    {
+      "atMs": 14404,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-2"
+    },
+    {
+      "atMs": 14672.1,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-1"
+    },
+    {
+      "atMs": 15504.8,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-1",
+      "name": "observe_room"
+    },
+    {
+      "atMs": 17801.7,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-2",
+      "status": "completed"
+    },
+    {
+      "atMs": 17809.4,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-1",
+      "isError": false
+    },
+    {
+      "atMs": 17957.8,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-3"
+    },
+    {
+      "atMs": 25865.1,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-3",
+      "status": "completed"
+    },
+    {
+      "atMs": 26138.6,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 26188.6,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 27288.3,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 29788.8,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 29790.6,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-2"
+    },
+    {
+      "atMs": 29800.9,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-4"
+    },
+    {
+      "atMs": 30124,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-2"
+    },
+    {
+      "atMs": 30707.7,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-2",
+      "name": "inspect_object"
+    },
+    {
+      "atMs": 32310.1,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-4",
+      "status": "completed"
+    },
+    {
+      "atMs": 32319.8,
+      "type": "tool.result",
+      "direction": "sent",
+      "call": "call-2",
+      "isError": false
+    },
+    {
+      "atMs": 32478,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-5"
+    },
+    {
+      "atMs": 40426.6,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-5",
+      "status": "completed"
+    },
+    {
+      "atMs": 40751.6,
+      "type": "synthetic.speech.queued",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 40801.6,
+      "type": "synthetic.speech.started",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 42088.7,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 45490.8,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-3"
+    },
+    {
+      "atMs": 45493.9,
+      "type": "reply.started",
+      "direction": "received",
+      "reply": "reply-6"
+    },
+    {
+      "atMs": 45495.2,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 46389.5,
+      "type": "input.speech.started",
+      "direction": "received"
+    },
+    {
+      "atMs": 48404.3,
+      "type": "input.speech.stopped",
+      "direction": "received"
+    },
+    {
+      "atMs": 48404.4,
+      "type": "transcript.user",
+      "direction": "received",
+      "input": "input-4"
+    },
+    {
+      "atMs": 48712.8,
+      "type": "synthetic.speech.ended",
+      "fixture": "fixture-3"
+    },
+    {
+      "atMs": 49422.5,
+      "type": "tool.call",
+      "direction": "received",
+      "call": "call-3",
+      "name": "interact_object"
+    },
+    {
+      "atMs": 50932.4,
+      "type": "reply.done",
+      "direction": "received",
+      "reply": "reply-6",
+      "status": "completed"
+    },
+    {
+      "atMs": 73827.5,
+      "type": "session.end",
+      "direction": "sent"
+    },
+    {
+      "atMs": 74115.9,
+      "type": "session.ended",
+      "direction": "received"
+    },
+    {
+      "atMs": 74261.3,
+      "type": "socket.close",
+      "code": 1000,
+      "clean": true
+    }
+  ]
+}
