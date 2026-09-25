@@ -148,6 +148,7 @@ test('simulated tool lifecycle: checking reflects a pending real server request,
   const cancellation = page.waitForResponse(response => response.url().endsWith('/cancel'));
   await page.getByRole('button', { name: 'Interrupt', exact: true }).click();
   expect((await cancellation).ok()).toBe(true);
+  expect(provider.sent.filter(event => event.type === 'tool.result' && event.call_id === 'held-action')).toHaveLength(0);
   release();
   await page.unroute('**/api/sessions/*/tools');
   await page.getByLabel('Type a message').fill('Please check the local mechanism now.');
@@ -155,7 +156,13 @@ test('simulated tool lifecycle: checking reflects a pending real server request,
   await expect.poll(() => provider.sent.filter(event => event.type === 'reply.create').length).toBe(1);
   const inspected = await provider.tool('inspect_object', { object: 'latch' }, 'verify-after-interrupt');
   expect(inspected.message).toMatch(/not engaged|not holding|disengaged/i);
-  expect(provider.sent.some(event => event.type === 'tool.result' && event.call_id === 'held-action')).toBe(false);
+  // The dispatched HTTP request was aborted before its response. Fresh-turn
+  // completion settles that original call once without inventing its outcome.
+  const canceled = provider.sent.filter(event => event.type === 'tool.result' && event.call_id === 'held-action');
+  expect(canceled).toHaveLength(1);
+  expect(canceled[0]!.is_error).toBe(true);
+  expect(JSON.parse(String(canceled[0]!.result))).toMatchObject({ ok: false, code: 'outcome_unknown' });
+  expect(JSON.parse(String(canceled[0]!.result))).not.toHaveProperty('view');
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
 });
 
