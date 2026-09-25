@@ -99,6 +99,7 @@ interface PendingTool {
   controller: AbortController;
   replyDone: boolean;
   executing: boolean;
+  started?: boolean;
   result?: { result: string; is_error: boolean };
 }
 
@@ -106,6 +107,10 @@ interface InterruptedTool {
   replyId: string;
   replyDone: boolean;
   waiting: boolean;
+  /** A call known before input may finish; its original call ID stays attached. */
+  retained?: PendingTool;
+  result?: { result: string; is_error: boolean };
+  outcomePending?: boolean;
 }
 
 /** Contains no network or DOM dependencies, so protocol races can be tested. */
@@ -121,8 +126,11 @@ export class VoiceProtocol {
   private seenCalls = new Set<string>();
   private completedReplies = new Set<string>();
   private completedInterruptedReplies = new Set<string>();
-  // Only correlation metadata is retained; interrupted arguments are never run.
+  private completedWindows = new Map<string, { replyId: string; generation: number; transition: number }>();
+  private transition = 0;
+  // Canceled call references retain identity/outcomes, never execution authority.
   private interruptedCalls = new Map<string, InterruptedTool>();
+  private recoveryTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private cancellation: Promise<void> = Promise.resolve();
   private stopping?: Promise<void>;
   private pendingReply = false;
@@ -133,15 +141,22 @@ export class VoiceProtocol {
   private closingReply?: string;
   private transcriptContexts = new Map<string, unknown>();
   private speechContext?: unknown;
+  private inputActive = false;
 
   constructor(private readonly hooks: ProtocolHooks) {}
 
   receive(event: ProviderEvent): void {
     if (this.stopped) return;
+    if (event.type === 'reply.started' || event.type === 'input.speech.started') this.transition++;
+    const currentCompletion = event.type === 'reply.done' && typeof event.reply_id === 'string'
+      && (event.reply_id === this.currentReply || [...this.calls, ...this.interruptedCalls].some(([id, pending]) =>
+        pending.replyId === this.currentReply && `fc-${id}` === event.reply_id)
+        || (!this.currentReply && [...this.calls.values()].some(pending => pending.replyId === event.reply_id)));
     // The official client-side-tools example tracks turn transitions only.
     // Delayed captions/audio do not reopen a finished turn.
     // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools
-    if (['reply.started', 'input.speech.started', 'reply.done'].includes(event.type)) this.latestType = event.type;
+    if (event.type === 'reply.started' || event.type === 'input.speech.started'
+      || currentCompletion) this.latestType = event.type;
     if (event.type === 'session.ready') {
       this.ready = true;
       this.hooks.onStatus('listening');
@@ -159,16 +174,20 @@ export class VoiceProtocol {
     }
     if (event.type === 'input.speech.started') {
       this.held = false;
+      this.inputActive = true;
       this.speechContext = this.hooks.captureToolContext?.();
       void this.beginInput();
       this.hooks.onInputState?.('receiving');
       this.hooks.onStatus('listening');
       return;
     }
-    if (event.type === 'input.speech.stopped') this.hooks.onInputState?.('ready');
-    if (this.held && ['reply.started', 'reply.audio', 'tool.call', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
+    if (event.type === 'input.speech.stopped') {
+      this.inputActive = false;
+      this.hooks.onInputState?.('ready');
+      this.flush();
+    }
+    if (this.held && ['reply.started', 'reply.audio', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
     if (event.type === 'reply.started' && typeof event.reply_id === 'string') {
-      if (event.reply_id !== this.currentReply) this.interruptedCalls.clear();
       this.currentReply = event.reply_id;
       this.rememberTranscriptContext(`robot:${event.reply_id}`, this.hooks.captureToolContext?.());
       this.pendingReply = true;
@@ -181,9 +200,17 @@ export class VoiceProtocol {
       this.queueTool(event);
     } else if (event.type === 'reply.done') {
       if (event.status === 'interrupted') {
-        if (typeof event.reply_id === 'string') this.interruptedReplies.add(event.reply_id);
-        void this.interrupt(this.held, false);
+        if (typeof event.reply_id === 'string') {
+          this.interruptedReplies.add(event.reply_id);
+          // A delayed old completion cannot invalidate a newer response's work.
+          if (currentCompletion) void this.interrupt(this.held, false);
+          this.discardReply(event.reply_id);
+        }
       } else if (typeof event.reply_id === 'string') {
+        if (event.status === 'completed') {
+          this.completedWindows.set(event.reply_id, { replyId: this.currentReply, generation: this.generation, transition: this.transition });
+          if (this.completedWindows.size > 200) this.completedWindows.delete(this.completedWindows.keys().next().value!);
+        }
         if (!this.interruptedReplies.has(event.reply_id)) this.completedReplies.add(event.reply_id);
         else if (event.status === 'completed') this.completedInterruptedReplies.add(event.reply_id);
         let matchedToolReply = false;
@@ -199,7 +226,7 @@ export class VoiceProtocol {
         this.hooks.onDiagnostic?.({ event: 'reply.completed', pendingCalls: this.calls.size, matchedToolReply });
         this.flush();
       }
-      if (event.reply_id === this.currentReply) this.pendingReply = false;
+      if (currentCompletion) this.pendingReply = false;
       if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus('listening');
       if (typeof event.reply_id === 'string') this.hooks.onReplyDone?.({ id: event.reply_id, status: String(event.status ?? ''), hasTools: this.toolReplies.has(event.reply_id) });
     }
@@ -228,8 +255,9 @@ export class VoiceProtocol {
 
   /** An ordinary new turn cancels uncertain work without revoking a ready grant. */
   beginInput(): Promise<void> {
-    const active = this.pendingReply || this.audioPlaying || this.calls.size > 0;
-    return this.interrupt(false, true, active ? 'interrupt' : 'supersede');
+    // Early playback flush is not the provider's semantic interruption signal.
+    // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/turn-detection-and-interruptions
+    return this.interrupt(false, true, 'supersede');
   }
 
   /** Preserve only the closing reply while its already queued playback drains. */
@@ -252,10 +280,23 @@ export class VoiceProtocol {
     this.hooks.onToolState?.(false);
     this.executingCount = 0;
     this.pendingReply = false;
-    for (const pending of this.calls.values()) pending.controller.abort();
+    for (const [id, pending] of this.calls) {
+      // Speech can race the HTTP response after a physical commit. Preserve its
+      // eventual outcome, not its permission to execute, until safe delivery.
+      if (reason !== 'stop') this.interruptedCalls.set(id, {
+        replyId: pending.replyId, replyDone: pending.replyDone, waiting: false,
+        retained: pending, result: pending.result,
+        outcomePending: !!pending.started && !pending.result,
+      });
+      pending.controller.abort();
+    }
     this.calls.clear();
     this.completedReplies.clear();
-    this.interruptedCalls.clear();
+    if (reason === 'stop') {
+      this.interruptedCalls.clear();
+      for (const timer of this.recoveryTimers.values()) clearTimeout(timer);
+      this.recoveryTimers.clear();
+    }
     this.completedInterruptedReplies.clear();
     // Serialize cancellation requests so an older response cannot replace a new epoch.
     this.cancellation = this.cancellation.then(() => this.hooks.cancelPending(reason)).catch(() => {
@@ -282,14 +323,28 @@ export class VoiceProtocol {
     }
     if (this.seenCalls.has(event.call_id)) return;
     this.seenCalls.add(event.call_id);
-    if (this.interruptedReplies.has(`fc-${event.call_id}`) || this.interruptedReplies.has(this.currentReply)) {
+    this.watchRecovery(event.call_id);
+    const canonical = this.completedWindows.get(`fc-${event.call_id}`);
+    const canonicalCurrent = canonical?.replyId === this.currentReply && canonical.generation === this.generation && canonical.transition === this.transition;
+    if (canonical && !canonicalCurrent) {
+      this.interruptedCalls.set(event.call_id, { replyId: canonical.replyId, replyDone: true, waiting: false });
+      return;
+    }
+    if (canonicalCurrent) {
+      // Only the arriving call proves this documented fc-ID association. A new
+      // speech/reply transition invalidates the window; never guess across it.
+      this.latestType = 'reply.done';
+      this.pendingReply = false;
+    }
+    if (this.held || this.interruptedReplies.has(`fc-${event.call_id}`) || this.interruptedReplies.has(this.currentReply)) {
       // Real speech can split one sentence into two input turns while the
       // provider keeps the first reply ID. A later completed tool call still
       // needs a result, but executing that interrupted request is unsafe.
       // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools
-      const replyId = this.interruptedReplies.has(`fc-${event.call_id}`) ? `fc-${event.call_id}` : this.currentReply;
-      if (replyId !== this.currentReply) return;
-      this.interruptedCalls.set(event.call_id, { replyId, replyDone: this.completedInterruptedReplies.has(replyId), waiting: false });
+      const replyId = this.interruptedReplies.has(`fc-${event.call_id}`) ? `fc-${event.call_id}` : this.currentReply || `fc-${event.call_id}`;
+      // If the old fc-ID arrives during a different reply, never attach it to
+      // the new response. The finite recovery deadline ends ambiguous waits.
+      this.interruptedCalls.set(event.call_id, { replyId, replyDone: this.completedInterruptedReplies.has(replyId) || canonicalCurrent, waiting: false });
       this.toolReplies.add(replyId);
       this.flush();
       return;
@@ -299,7 +354,7 @@ export class VoiceProtocol {
     // Bind to the active reply, retaining the documented fc-<call_id> fallback.
     const replyId = this.currentReply || `fc-${call.callId}`;
     this.toolReplies.add(replyId);
-    const replyDone = this.completedReplies.has(replyId) || this.completedReplies.has(`fc-${call.callId}`);
+    const replyDone = this.completedReplies.has(replyId) || canonicalCurrent;
     this.calls.set(call.callId, {
       call, context: this.hooks.captureToolContext?.(), replyId, generation: this.generation, controller: new AbortController(), replyDone, executing: false,
     });
@@ -309,9 +364,9 @@ export class VoiceProtocol {
   }
 
   private flush(): void {
-    if (this.stopped || this.latestType !== 'reply.done') return;
+    if (this.stopped || this.inputActive || this.latestType !== 'reply.done') return;
     if (!this.held && !this.closingReply) for (const [id, pending] of this.interruptedCalls) {
-      if (pending.replyDone && !pending.waiting) {
+      if (pending.replyDone && !pending.waiting && !pending.outcomePending) {
         pending.waiting = true;
         void this.rejectInterruptedTool(id, pending);
       }
@@ -321,6 +376,7 @@ export class VoiceProtocol {
       if (pending.result) {
         this.hooks.send({ type: 'tool.result', call_id: id, ...pending.result });
         this.calls.delete(id);
+        this.clearRecovery(id);
         this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size });
       } else if (!pending.executing) {
         // Local actions are atomic and sequential even if a model batches calls.
@@ -332,20 +388,24 @@ export class VoiceProtocol {
   }
 
   private async rejectInterruptedTool(id: string, pending: InterruptedTool): Promise<void> {
-    await this.cancellation;
+    const barrier = this.cancellation;
+    await barrier;
     pending.waiting = false;
-    if (this.stopped || this.held || this.closingReply || this.currentReply !== pending.replyId || this.latestType !== 'reply.done' || this.interruptedCalls.get(id) !== pending) return;
+    if (barrier !== this.cancellation) { this.flush(); return; }
+    if (this.stopped || this.inputActive || this.held || this.closingReply || (!pending.retained && this.currentReply !== pending.replyId) || this.latestType !== 'reply.done' || this.interruptedCalls.get(id) !== pending) return;
     this.interruptedCalls.delete(id);
-    this.hooks.send({ type: 'tool.result', call_id: id, is_error: true, result: JSON.stringify({
-      ok: false,
+    this.clearRecovery(id);
+    this.hooks.send({ type: 'tool.result', call_id: id, ...(pending.result ?? { is_error: true, result: JSON.stringify({
+      ok: false, code: 'cancelled_before_execution',
       message: 'This request belongs to an interrupted reply and was not executed. Respond to the latest player request. If it still requires an action, use a new tool call.',
-    }) });
+    }) }) });
     this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size + this.interruptedCalls.size });
   }
 
   private async execute(pending: PendingTool): Promise<void> {
     await this.cancellation;
     if (!this.valid(pending)) return;
+    pending.started = true;
     this.hooks.onDiagnostic?.({ event: 'tool.execute.started', pendingCalls: this.calls.size });
     this.executingCount++;
     this.hooks.onToolState?.(true);
@@ -353,16 +413,18 @@ export class VoiceProtocol {
       const result = tools.has(pending.call.name)
         ? await this.hooks.executeTool(pending.call, pending.controller.signal, pending.context)
         : { ok: false, message: 'That local tool is not available.' };
-      if (!this.valid(pending)) return;
       // Never forward HumanView or arbitrary transport diagnostics into the model.
       const safe = isRecord(result) && typeof result.ok === 'boolean' && typeof result.message === 'string'
-        ? { ok: result.ok, message: result.message }
-        : { ok: false, message: 'The local action result could not be verified. Observe again before acting.' };
-      pending.result = { result: JSON.stringify(safe), is_error: !safe.ok };
+        ? { ok: result.ok, message: result.message, ...(!result.ok ? {
+          code: result.code === 'cancelled_before_execution' || result.code === 'outcome_unknown' ? result.code : 'precondition_failed',
+        } : {}) }
+        : { ok: false, code: 'outcome_unknown', message: 'The local action result could not be verified. Observe again before acting.' };
+      this.retainOutcome(pending, { result: JSON.stringify(safe), is_error: !safe.ok });
     } catch {
-      if (!this.valid(pending)) return;
-      pending.result = { result: JSON.stringify({ ok: false, message: 'The action result could not be confirmed. Observe again before acting.' }), is_error: true };
+      this.retainOutcome(pending, { result: JSON.stringify({ ok: false, code: 'outcome_unknown', message: 'The action result could not be confirmed. It may already have committed. Observe current conditions before requesting another action.' }), is_error: true });
     }
+    // Superseded executions must not change a newer action's busy indicator.
+    if (!this.valid(pending)) { this.flush(); return; }
     this.hooks.onDiagnostic?.({ event: 'tool.execute.finished', pendingCalls: this.calls.size });
     this.executingCount = Math.max(0, this.executingCount - 1);
     this.hooks.onToolState?.(this.executingCount > 0);
@@ -371,6 +433,39 @@ export class VoiceProtocol {
 
   private valid(pending: PendingTool): boolean {
     return !this.stopped && !pending.controller.signal.aborted && pending.generation === this.generation;
+  }
+
+  private retainOutcome(pending: PendingTool, result: { result: string; is_error: boolean }): void {
+    if (this.valid(pending)) pending.result = result;
+    else {
+      const retained = this.interruptedCalls.get(pending.call.callId);
+      if (retained?.retained !== pending || this.stopped) return;
+      retained.result = result;
+      retained.outcomePending = false;
+    }
+  }
+
+  private clearRecovery(id: string): void {
+    clearTimeout(this.recoveryTimers.get(id));
+    this.recoveryTimers.delete(id);
+  }
+
+  private discardReply(replyId: string): void {
+    for (const [id, pending] of this.calls) if (pending.replyId === replyId || `fc-${id}` === replyId) {
+      pending.controller.abort(); this.calls.delete(id); this.clearRecovery(id);
+    }
+    for (const [id, pending] of this.interruptedCalls) if (pending.replyId === replyId || `fc-${id}` === replyId) {
+      this.interruptedCalls.delete(id); this.clearRecovery(id);
+    }
+  }
+
+  private watchRecovery(id: string): void {
+    this.recoveryTimers.set(id, setTimeout(() => {
+      if (this.stopped) return;
+      // Never guess correlation or send a result during a new user turn.
+      void this.stop();
+      this.hooks.onError('A pending voice action could not be safely resolved. The call has ended; reconnect explicitly to continue.');
+    }, 15_000));
   }
 
   private rememberTranscriptContext(id: string, context: unknown): void {

@@ -1,0 +1,97 @@
+{
+  "label": "HISTORICAL GOAL 004B OBSERVED SPLIT-TURN METADATA — NO NEW PROVIDER CALL",
+  "source": ".validation/goal-004b-live/2026-09-24T13-12-33-973Z-mission/audio-evidence.json",
+  "sourceSha256": "d52b10cd2d094ee24adefc375be126d2c70dc9ee22226454ebef5bcb032c46f4",
+  "runtimeSha256": "378df0fe5961de1298769b03232b092245bafe50e9d3a4407b383da047ad05e4",
+  "sourceWindowMs": [
+    40801,
+    51000
+  ],
+  "sourceFixture": "speech-e6f422a403694609",
+  "knownBaseRepair": "Goal 004B commit 9a0d901 already added safe settlement for a retained interrupted call. This observed replay does not claim that fix was newly introduced in Goal 004C.",
+  "provenance": "Only recorded events in the source window are included, in their original order. Reply, input, call, and fixture identifiers are normalized to stable aliases. ASR-final text is unchanged.",
+  "missingFields": [
+    "tool.call.arguments and explicit tool-to-reply association were not retained by the original sanitizer.",
+    "No tool.result was recorded for this call before the attempt ended."
+  ],
+  "testSubstitution": "The replay supplies synthetic rejected arguments and an initial ready adapter; those are harness setup, not newly observed source events. No physical action may execute from these substituted arguments.",
+  "events": [
+    {
+      "atMs": 40801.6,
+      "event": {
+        "type": "synthetic.speech.started",
+        "fixture": "fixture-1"
+      }
+    },
+    {
+      "atMs": 42088.7,
+      "event": {
+        "type": "input.speech.started"
+      }
+    },
+    {
+      "atMs": 45490.8,
+      "event": {
+        "type": "transcript.user",
+        "item_id": "input-1",
+        "text": "My diagram says the door and conveyor share one power supply."
+      }
+    },
+    {
+      "atMs": 45493.9,
+      "event": {
+        "type": "reply.started",
+        "reply_id": "reply-1"
+      }
+    },
+    {
+      "atMs": 45495.2,
+      "event": {
+        "type": "input.speech.stopped"
+      }
+    },
+    {
+      "atMs": 46389.5,
+      "event": {
+        "type": "input.speech.started"
+      }
+    },
+    {
+      "atMs": 48404.3,
+      "event": {
+        "type": "input.speech.stopped"
+      }
+    },
+    {
+      "atMs": 48404.4,
+      "event": {
+        "type": "transcript.user",
+        "item_id": "input-2",
+        "text": "So please engage the latch to hold the door open."
+      }
+    },
+    {
+      "atMs": 48712.8,
+      "event": {
+        "type": "synthetic.speech.ended",
+        "fixture": "fixture-1"
+      }
+    },
+    {
+      "atMs": 49422.5,
+      "event": {
+        "type": "tool.call",
+        "call_id": "call-1",
+        "name": "interact_object"
+      }
+    },
+    {
+      "atMs": 50932.4,
+      "event": {
+        "type": "reply.done",
+        "reply_id": "reply-1",
+        "status": "completed"
+      }
+    }
+  ]
+}

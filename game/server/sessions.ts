@@ -144,7 +144,7 @@ export class SessionStore {
       await this.options.beforeToolCommit?.()
       const current = this.session(id, request.roundId).state
       currentChapter(current, request.chapterEpoch)
-      if (request.actionEpoch !== current.actionEpoch) return { ok: false, message: 'This pending action was canceled before it committed. Observe again when Mission Control is ready.', view: humanView(current) }
+      if (request.actionEpoch !== current.actionEpoch) return { ok: false, code: 'cancelled_before_execution', message: 'This pending action was canceled before it committed. Observe again when Mission Control is ready.', view: humanView(current) }
       const before = current.revision
       const chapter = current.chapter, epoch = current.chapterEpoch
       const result = applyRobotTool(current, request.name, request.arguments)

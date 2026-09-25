@@ -89,7 +89,7 @@ test('voice tools: asynchronous results wait if another reply started after repl
   result.resolve({ ok: true, message: 'Done.' });
   await tick();
   assert.equal(h.sent.length, 0);
-  done(h.protocol, 'later');
+  h.protocol.receive({ type: 'reply.done', reply_id: 'later', status: 'completed' });
   assert.equal(h.sent.length, 1);
   await h.protocol.stop();
 });
@@ -180,12 +180,13 @@ test('voice tools: ordinary reply ID supports delayed calls and rejects unrelate
   await h.protocol.stop();
 });
 
-test('voice interruption: discard queued tools, stop stale audio, and never replay canceled call IDs', async () => {
+test('voice speech deferral: cancel queued tools, stop stale audio, and never replay canceled call IDs', async () => {
   const h = harness();
   call(h.protocol);
   h.protocol.receive({ type: 'reply.audio', data: 'audio-before' });
   h.protocol.receive({ type: 'input.speech.started' });
   h.protocol.receive({ type: 'reply.audio', data: 'audio-after' });
+  h.protocol.receive({ type: 'input.speech.stopped' });
   done(h.protocol);
   call(h.protocol);
   done(h.protocol);
@@ -194,7 +195,8 @@ test('voice interruption: discard queued tools, stop stale audio, and never repl
   assert.equal(h.stops, 1);
   assert.equal(h.cancellations, 1);
   assert.equal(h.executed.length, 0);
-  assert.equal(h.sent.length, 0);
+  assert.equal(h.sent.length, 1);
+  assert.equal(JSON.parse(String(h.sent[0]?.result)).code, 'cancelled_before_execution');
   await h.protocol.stop();
 });
 
@@ -669,6 +671,7 @@ test('voice interrupted captions: local truncation preserves received words and 
   assert.equal(h.executed.length, 0);
   h.protocol.receive({ type: 'input.speech.started' });
   call(h.protocol, 'new-intent');
+  h.protocol.receive({ type: 'input.speech.stopped' });
   done(h.protocol, 'new-intent');
   await tick();
   assert.equal(h.executed.length, 1);
@@ -1010,7 +1013,7 @@ test('campaign voice: normal spoken input preserves authorization; actual interr
   h.protocol.receive({ type: 'reply.started', reply_id: 'active' });
   h.protocol.receive({ type: 'input.speech.started' });
   await tick();
-  assert.equal(reasons.at(-1), 'interrupt');
+  assert.equal(reasons.at(-1), 'supersede');
   h.protocol.receive({ type: 'reply.done', reply_id: 'active', status: 'interrupted' });
   await tick();
   assert.equal(reasons.at(-1), 'interrupt');
@@ -1054,6 +1057,8 @@ test('campaign live text fake: a fresh confirmation supersedes old input without
   h.socket.emit({ type: 'reply.started', reply_id: 'active' });
   h.live.sendText('Wait. I need to change that.');
   await tick();
+  assert.equal(reasons.at(-1), 'supersede');
+  await h.live.interrupt();
   assert.equal(reasons.at(-1), 'interrupt');
   await h.live.stop();
 });

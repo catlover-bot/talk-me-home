@@ -88,7 +88,18 @@ export function useMission() {
       practiceMemory.current = { chapter: next.chapter, gates: [] };
       void refreshRecord(next).catch(showError);
     }
-    if (next.completed) setStage('debrief');
+    if (next.completed) {
+      setStage('debrief');
+      // Any authoritative response can reveal a commit whose tool delivery was
+      // interrupted. Completion and the closing deadline still happen once.
+      if (completionRound.current !== next.roundId) {
+        completionRound.current = next.roundId;
+        effects.current.play('complete');
+        void refreshRecord(next).catch(showError);
+        if (voice.current) closingTimer.current = setTimeout(() => { void stop(); }, 8000);
+        else setConnectedNow(false);
+      }
+    }
   };
   const refreshRecord = async (current = viewRef.current) => {
     if (!current || !currentRound(current.roundId)) return;
@@ -190,17 +201,13 @@ export function useMission() {
     const current = captured ?? viewRef.current;
     if (!current || expected !== generation.current || signal.aborted) throw new DOMException('Canceled', 'AbortError');
     const result = await api.executeTool(current, call, signal);
-    if (expected !== generation.current || !currentRound(result.view.roundId) || signal.aborted) throw new DOMException('Canceled', 'AbortError');
+    if (expected !== generation.current || !currentRound(result.view.roundId)) throw new DOMException('Canceled', 'AbortError');
+    // A received authoritative result remains true even if the input changed.
+    // The cancellation response owns the newer human view; do not overwrite it.
+    if (signal.aborted) return { ok: result.ok, message: result.message, code: result.code };
     applyView(result.view);
     if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
-    if (result.view.completed && completionRound.current !== result.view.roundId) {
-      completionRound.current = result.view.roundId;
-      effects.current.play('complete');
-      void refreshRecord(result.view).catch(showError);
-      if (voice.current) closingTimer.current = setTimeout(() => { void stop(); }, 8000);
-      else setConnectedNow(false);
-    }
-    return { ok: result.ok, message: result.message };
+    return { ok: result.ok, message: result.message, code: result.code };
   };
 
   const start = (connectionMode: TransportOrigin = mode) => {

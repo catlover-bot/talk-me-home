@@ -211,25 +211,26 @@ export class LiveVoice {
     this.callbacks.onToolState?.(false);
     const socket = this.socket;
     this.stopping = (async () => {
-      const cleanup = [this.protocol?.stop(), this.audio?.close()];
+      // One shared deadline bounds both the ending handshake and local cleanup.
+      // A pending server cancellation must not hold End after the socket closes.
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const deadline = new Promise<void>(resolve => {
+        timer = setTimeout(resolve, this.dependencies.endGraceMs ?? 5000);
+      });
+      const cleanup = Promise.allSettled([this.protocol?.stop(), this.audio?.close()]);
       if (socket?.readyState === 1) {
         // session.end terminates billing without the ordinary 30-second resume grace.
         // Bounded fallback is needed when the network can no longer acknowledge it.
-        let timer: ReturnType<typeof setTimeout> | undefined;
         const closed = new Promise<void>((resolve) => {
           this.resolveClosed = resolve;
-          // The real QA canary reached the old 1.5-second fallback before an
-          // acknowledgement. Keep receiving for a bounded five seconds while
-          // capture, playback, and local actions are already stopped.
-          timer = setTimeout(resolve, this.dependencies.endGraceMs ?? 5000);
         });
         try { socket.send(JSON.stringify({ type: 'session.end' })); } catch { /* Best effort after a network drop. */ }
-        await closed;
-        clearTimeout(timer);
+        await Promise.race([closed, deadline]);
       }
       try { socket?.close(); } catch { /* Already closed. */ }
       if (socket) socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null;
-      await Promise.allSettled(cleanup);
+      await Promise.race([cleanup, deadline]);
+      clearTimeout(timer);
       this.callbacks.onStatus('ended');
     })();
     return this.stopping;

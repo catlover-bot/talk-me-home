@@ -40,9 +40,10 @@ export interface ToolRequest {
 export interface ToolResult {
   ok: boolean
   message: string
+  code?: 'cancelled_before_execution' | 'precondition_failed' | 'outcome_unknown'
 }
 
-/** Forward only ok/message to the robot; view belongs to Mission Control. */
+/** Forward only ok/message and a recognized outcome code; view stays human-only. */
 export interface ToolResponse extends ToolResult {
   view: HumanView
 }
