@@ -4,7 +4,9 @@ This is **offline repair evidence**, not a new real-provider campaign. Goal 004B
 
 Part A result: **OFFLINE_REPAIR_PASS / LIVE_RETEST_BLOCKED**, with **RELEASE_NOT_LIVE_VERIFIED** retained at that delivery. [offline-summary.json](offline-summary.json) records 239 passing unit tests, 84 passing compiled-production browser cases and fresh Practice home. [final-runtime.json](final-runtime.json) identifies the Part A application/harness source and build. These historical files remain unchanged.
 
-The owner subsequently approved one bounded Part B campaign on September 26 JST. [part-b-authorization.json](part-b-authorization.json) records the scope and verified USD 4.50/hour price; [part-b-activation.json](part-b-activation.json) records 27 passing focused tests and actual offline/default gate checks before spending. Real results will be recorded separately from the Part A files.
+The owner subsequently approved one bounded Part B campaign on September 26 JST. [part-b-authorization.json](part-b-authorization.json) records the scope and verified USD 4.50/hour price; [part-b-activation.json](part-b-activation.json) records 27 passing focused tests and actual offline/default gate checks before spending.
+
+**Part B stopped after Text failure in Cargo Bay.** [part-b-outcome.json](part-b-outcome.json) records one used attempt, 670 reserved seconds, observed End/ACK and complete local cleanup. Voice was not run; the failed-Text sequencing gate preserves the remaining slot. [part-b-runtime.json](part-b-runtime.json) is the frozen real candidate. [Live metrics/conversation](live/campaign-summary.json) and [actual failure screenshot](live/text-cargo-failure.png) preserve the unsuccessful run. The release remains **RELEASE_NOT_LIVE_VERIFIED**. Large original media stays local and ignored.
 
 ## Observed sources
 
@@ -41,4 +43,4 @@ The initial six reconstructed adversarial schedules in `tests/voice-recovery.tes
 
 The prior `observed split speech tool: reject the interrupted request once, then validate a fresh continuation` regression was separately run against an isolated temporary checkout of `00d10e1`: **1 passed**, zero skipped or failed. Its local output is `.validation/goal-004c-existing-base-regression.txt`.
 
-No new funded Goal 004C allowance exists. Proposed Part B remains `BLOCKED_AWAITING_BUDGET_APPROVAL`; only an explicit subsequent owner approval can authorize its two attempts. Large/private WAVs and videos remain ignored locally. This index does not certify physical sound, a human playtest, enjoyment, public HTTPS, or a completed real Rescue.
+At Part A delivery no funded Goal 004C allowance existed and Part B remained `BLOCKED_AWAITING_BUDGET_APPROVAL`. The subsequent owner approval and actual Part B result are recorded above. Large/private WAVs and videos remain ignored locally. This index does not certify physical sound, a human playtest, enjoyment, public HTTPS, or a completed real Rescue.

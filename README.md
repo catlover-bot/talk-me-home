@@ -14,6 +14,8 @@ A browser game for one human at Mission Control and Pip, UNIT 04. Guide a strand
 
 **Goal 004C live recovery:** current work is on `work/goal-004c-live-recovery`. Part A passed with zero new provider use. The owner explicitly approved one bounded Part B campaign on September 26 JST: Text first, then Voice only after successful acknowledged Text on the same frozen candidate, at most two attempts and USD 1.68 estimated. `npm run qa:release` stays offline; ordinary `npm run qa:live` only validates local fixtures. Only explicit supervised commands can use the existing Part B allowance; nothing recreates or replenishes it. Real outcomes remain separate from offline results. See [the recovery report](docs/goal-004c-live-recovery.md) and [trace/regression evidence](artifacts/goal-004c/README.md).
 
+**Part B result:** real UI Text stopped in Cargo Bay after a Latch-confirmation oracle failure; explicit End and its ACK were observed. One attempt / 670 reserved seconds was consumed. Voice was not run because the existing sequencing gate rejects failed Text; the remaining slot is preserved. No full real Rescue pass is claimed.
+
 ## Run the game
 
 Use Node.js 24 (tested with 24.20.0 and npm 11.19.0). On Windows, open an Ubuntu WSL terminal:

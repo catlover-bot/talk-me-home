@@ -1,0 +1,146 @@
+{
+  "status": "PART_B_STOPPED_AFTER_TEXT_FAILURE",
+  "liveTextRescue": "FAIL",
+  "liveVoiceRescue": "NOT RUN: existing sequencing gate rejects failed Text",
+  "remoteEnd": "REMOTE_END_CONFIRMED",
+  "release": "RELEASE_NOT_LIVE_VERIFIED",
+  "candidateCommit": "e436e230268e3c2afaa0469a127d80987fbe611e",
+  "applicationSourceCommit": "3cf72495c2d3cfcc42cfa6be7e698d2989e95e99",
+  "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+  "harnessSha256": "d9218f8b76c22ae3df2f1157a404320d79c69187cb4a49273a3080e9e9e7a752",
+  "attemptsUsed": 1,
+  "productionAttemptsUsed": 1,
+  "attemptsRemaining": 1,
+  "reservedSeconds": 670,
+  "unconsumedReservationSeconds": 670,
+  "totalApprovedReservationSeconds": 1340,
+  "verifiedDollarsPerHour": 4.5,
+  "estimatedReservedDollars": 0.8375,
+  "fullApprovedReservationEstimateDollars": 1.675,
+  "approvedDollarCeiling": 1.68,
+  "reached": [
+    "Cargo Bay"
+  ],
+  "notReached": [
+    "Relay Gallery",
+    "Return Dock",
+    "home"
+  ],
+  "providerReportedDurationSeconds": 69.202676,
+  "socketOpenToAckSeconds": 71.08180000000074,
+  "failure": "Player oracle: Latch completion remained unconfirmed after bounded recovery.",
+  "uiTextTurns": 5,
+  "realToolCalls": 5,
+  "successfulToolResults": 4,
+  "rejectedToolResults": 1,
+  "recovery": "One Latch clarification. No retry because the clarified completion remained ambiguous. Power OFF and Cargo crossing policy were not reached.",
+  "classification": "Player-policy and model-response mismatch in Text. Prior visible Latch-success wording was not retained by the next-step oracle; the model then attempted movement and answered position instead of the explicit Latch requests. No ASR was involved. Five tool calls each returned a result; no unresolved-call stall was observed.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0,
+    "watchdogSurvivors": 0,
+    "watchdogCleanupAt": "2026-09-25T17:59:25.591Z",
+    "supervisorClosedAt": "2026-09-25T17:59:25.690Z"
+  },
+  "sequencingGateCheckedAgainstActualEvidence": "Rejected without mutating the ledger or starting a worker/provider",
+  "lifecycle": [
+    {
+      "type": "worker.started",
+      "observedAt": "2026-09-25T17:58:10.567Z",
+      "elapsedMs": 0.20138299999996434,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "socket.open",
+      "observedAt": "2026-09-25T17:58:12.877Z",
+      "elapsedMs": 2311.085179,
+      "source": "browser",
+      "browserAtMs": 1644,
+      "outcome": "observed"
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-25T17:59:22.111Z",
+      "elapsedMs": 73130.512934,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-25T17:59:22.146Z",
+      "elapsedMs": 73166.055244,
+      "source": "browser",
+      "browserAtMs": 72500.39999999851,
+      "outcome": "observed"
+    },
+    {
+      "type": "session.end",
+      "observedAt": "2026-09-25T17:59:22.151Z",
+      "elapsedMs": 73170.62712199999,
+      "source": "browser",
+      "browserAtMs": 72500.69999999925,
+      "outcome": "observed"
+    },
+    {
+      "type": "session.ended",
+      "observedAt": "2026-09-25T17:59:22.371Z",
+      "elapsedMs": 73390.890703,
+      "source": "browser",
+      "browserAtMs": 72725.80000000075,
+      "outcome": "observed",
+      "durationSeconds": 69.202676
+    },
+    {
+      "type": "socket.close",
+      "observedAt": "2026-09-25T17:59:22.520Z",
+      "elapsedMs": 73540.196664,
+      "source": "browser",
+      "browserAtMs": 72874.30000000075,
+      "outcome": "observed",
+      "code": 1000,
+      "clean": true
+    },
+    {
+      "type": "browser.close.requested",
+      "observedAt": "2026-09-25T17:59:23.990Z",
+      "elapsedMs": 75009.599435,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "browser.disconnected",
+      "observedAt": "2026-09-25T17:59:23.995Z",
+      "elapsedMs": 75015.238466,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "browser.closed",
+      "observedAt": "2026-09-25T17:59:24.024Z",
+      "elapsedMs": 75043.588695,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "server.close.requested",
+      "observedAt": "2026-09-25T17:59:24.028Z",
+      "elapsedMs": 75048.135059,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "server.closed",
+      "observedAt": "2026-09-25T17:59:24.042Z",
+      "elapsedMs": 75061.464496,
+      "source": "driver",
+      "outcome": "observed",
+      "code": 0
+    }
+  ],
+  "historicalGoal004BLedgerUnchanged": true,
+  "evidenceDirectory": ".validation/goal-004c-live/2026-09-25T17-58-10-565Z-text-mission",
+  "largeMedia": "Original silent WebM and separate digital WAVs remain local and ignored. No reconstructed success or re-edited playthrough.",
+  "scope": "Normal production UI, real provider model/tool decisions, microphone off, no Practice or direct player-side tool calls. Digital playback is not physical listening or enjoyment. No public deployment or billing-setting change."
+}

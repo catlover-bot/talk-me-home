@@ -1,0 +1,32 @@
+{
+  "label": "AUTOMATED QA — UI LIVE TEXT / SYNTHETIC VOICE — REAL ASSEMBLYAI",
+  "attempts": 1,
+  "productionAttempts": 1,
+  "remainingAttempts": 1,
+  "reservedSeconds": 670,
+  "estimatedReservedDollars": 0.8375,
+  "verifiedRateDollarsPerHour": 4.5,
+  "localConnectedSeconds": [
+    71.08180000000074
+  ],
+  "endAcknowledgements": [
+    true
+  ],
+  "nextPermittedAt": null,
+  "admissionStatus": "voice_blocked_by_text_result_or_cleanup",
+  "inspectedAt": "2026-09-25T18:00:14.755Z",
+  "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+  "results": [
+    {
+      "evidenceDirectory": "2026-09-25T17-58-10-565Z-text-mission",
+      "mode": "text",
+      "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+      "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+      "failure": "Player oracle: Latch completion remained unconfirmed after bounded recovery.",
+      "completion": false,
+      "endAcknowledged": true
+    }
+  ],
+  "accountingBoundary": "Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.",
+  "redaction": "Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels."
+}
