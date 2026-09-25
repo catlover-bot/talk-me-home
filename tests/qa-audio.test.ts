@@ -30,6 +30,12 @@ test('QA wire allowlist excludes config, result payloads, URLs, cookie values an
   const asr = 'Could you inspect the latch?';
   assert.equal(sanitizeWireEvent({ type: 'transcript.user', item_id: 'one', text: asr }, 'received')?.text, asr);
   assert.equal(sanitizeWireEvent({ type: 'transcript.user', item_id: 'one', text: asr }, 'received')?.final, true);
+  assert.equal(sanitizeWireEvent({ type: 'transcript.agent', reply_id: 'one', text: asr, interrupted: true }, 'received')?.interrupted, true);
+  assert.equal(sanitizeWireEvent({ type: 'conversation.message', role: 'user', content: secret }, 'sent')?.role, 'human');
+  assert.equal(JSON.stringify(sanitizeWireEvent({ type: 'conversation.message', role: 'user', content: secret }, 'sent')).includes(secret), false);
+  const canonical = sanitizeWireEvent({ type: 'reply.done', reply_id: `fc-${secret}`, status: 'completed' }, 'received', references);
+  assert.equal(canonical?.callRef, request?.callRef);
+  assert.equal(JSON.stringify(canonical).includes(secret), false);
 });
 
 test('QA digital recording preserves time gaps and real PCM sample values', () => {

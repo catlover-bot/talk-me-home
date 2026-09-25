@@ -2,22 +2,27 @@
 // The player policy reads rendered human documents and finalized visible Pip reports.
 import { chromium, expect } from '@playwright/test';
 import { spawn, execFileSync } from 'node:child_process';
-import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, rename } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { createHash, randomBytes } from 'node:crypto';
 import { parseEnv } from 'node:util';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initializeCampaign, inspectCampaign } from './qa-budget.mjs';
+import { inspectCampaign } from './qa-budget.mjs';
+import { assertGoal004CLiveAuthorized, assertGoal004CNextAttempt, GOAL_004C_PROPOSAL } from './qa-live-authorization.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
-import { installAudioInstrumentation, queueSpeech, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
-import { communicatedEmblem, communicatedPassability, crossCargoWithRecovery } from './qa-player-policy.mjs';
+import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
+import { communicatedEmblem, communicatedPassability, crossCargoWithRecovery, confirmedAction } from './qa-player-policy.mjs';
+import { waitForTurn, submitPlayerTurn } from './qa-turn-pacing.mjs';
+import { createLifecycleJournal } from './qa-lifecycle.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
-const DIRECTORY = resolve('.validation/goal-004b-live');
+const DIRECTORY = resolve('.validation/goal-004c-live');
+const HISTORICAL_DIRECTORY = resolve('.validation/goal-004b-live');
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI';
-const PHRASES = {
+// Keep the original multi-clause inputs for explicitly labelled offline stress replay.
+const STRESS_PHRASES = {
   observe: 'Pip, please look around and tell me what you can reach.',
   observeBrief: 'Pip, please keep your replies to one short sentence and look around to tell me what you can reach.',
   latch: 'Please inspect the Latch and tell me how it works.',
@@ -36,16 +41,38 @@ const PHRASES = {
   confirmContact: 'Are you holding the contact steady right now?',
   retryContact: 'Please hold the contact now and tell me when you are holding it.',
 };
+const PHRASES = {
+  observe: 'Pip, please look around.',
+  latch: 'Please inspect the Latch.',
+  wiring: 'My diagram says the Door and Conveyor share one Power supply.',
+  powerOff: 'Power is now off.',
+  engage: 'Please engage the Latch.',
+  confirmLatch: 'Is the Latch engaged now?',
+  retryLatch: 'Please set the Latch to hold the Door open.',
+  location: 'Please look around.',
+  clarify: 'What emblem is beside you now?',
+  dock: 'Please look around.',
+  inspectContact: 'Please inspect the contact.',
+  contact: 'Please hold the contact.',
+  confirmContact: 'Are you holding the contact now?',
+  retryContact: 'Please grip the contact steadily.',
+  release: 'Please release the contact.',
+  board: 'Please board the capsule.',
+  home: 'Please confirm the return.',
+  wait: 'Please wait.',
+};
 
 async function fixture(text) {
   const id = 'speech-' + createHash('sha256').update(text).digest('hex').slice(0, 16);
   return ensureSpeechFixture({ text, id });
 }
 async function prepareFixtures() {
-  for (const text of Object.values(PHRASES)) await fixture(text);
+  for (const text of [...Object.values(PHRASES), ...Object.values(STRESS_PHRASES)]) await fixture(text);
+  for (const text of ['Please cross to the far side.', 'Please cross to the far side now if the route is clear.', 'Please look around and report the objects you can reach from the platform.']) await fixture(text);
   for (const direction of ['east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']) {
     await fixture(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
     await fixture(`Please go through the ${direction} gate, then look around and report the emblem where you arrive.`);
+    await fixture(`Please go through the ${direction} gate.`);
     await fixture(`Is the opening of the ${direction} gate physically clear or blocked?`);
     await fixture(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
   }
@@ -60,7 +87,9 @@ async function buildIdentity() {
     }
   }
   await walk('dist');
-  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(await readFile(SELF)).digest('hex'), files: hashes, node: process.version };
+  const harnessFiles = {};
+  for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
+  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, node: process.version };
 }
 async function availablePort() {
   const server = createServer(); await new Promise(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
@@ -68,25 +97,56 @@ async function availablePort() {
 }
 const pause = ms => new Promise(resolvePause => setTimeout(resolvePause, ms));
 
-async function worker(scenario) {
+async function persistReport(directory, report) {
+  const temporary = join(directory, 'report.pending.json');
+  await writeFile(temporary, JSON.stringify(report, null, 2) + '\n', { mode: 0o600, flush: true });
+  await rename(temporary, join(directory, 'report.json'));
+}
+
+async function checkNextAttempt(mode, identity, currentDirectory) {
+  const campaign = inspectCampaign(DIRECTORY);
+  const reports = [];
+  for (const entry of await readdir(DIRECTORY, { withFileTypes: true })) {
+    if (!entry.isDirectory() || !/^\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d-\d{3}Z-(?:text|voice)-mission$/.test(entry.name)) continue;
+    const path = join(DIRECTORY, entry.name);
+    if (path === currentDirectory) continue;
+    // Missing/corrupt prior evidence refuses continuation; never guess a pass.
+    reports.push(JSON.parse(await readFile(join(path, 'report.json'), 'utf8')));
+  }
+  assertGoal004CNextAttempt({ campaign, mode, identity, reports });
+}
+
+async function worker(scenario, mode) {
+  assertGoal004CLiveAuthorized();
   if (process.env.QA_SUPERVISED_WORKER !== '1' || !process.send) throw new Error('An independently supervised worker is required.');
-  if (!['canary', 'mission'].includes(scenario)) throw new Error('Choose canary or mission.');
+  if (scenario !== 'mission' || !['voice', 'text'].includes(mode)) throw new Error('An explicit mission and text or voice input mode are required.');
   const identity = await buildIdentity();
+  await checkNextAttempt(mode, identity);
   // This private parent loader parses dotenv data; it never executes shell content.
   const envFile = parseEnv(await readFile('.env', 'utf8'));
   const key = envFile.ASSEMBLYAI_API_KEY;
   if (!key) throw new Error('The local provider credential is unavailable.');
   const port = await availablePort(); const origin = `http://127.0.0.1:${port}`;
   const accessCode = randomBytes(24).toString('base64url');
+  // A finished first session retains its conservative admission lease. Two
+  // admission slots permit the ordered second test; supervisor still allows
+  // exactly one real connection and never refunds either reservation.
   const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, 'allowance.jsonl'), GAME_LIVE_CONCURRENT_LIMIT: '2' };
   delete productionEnv.GAME_DISABLE_LIVE; delete productionEnv.NODE_OPTIONS;
   const server = spawn(process.execPath, ['dist/server/server/production.js'], { env: productionEnv, stdio: 'ignore' });
   await registerOwnedProcess(server.pid);
-  let browserServer; let browser; let context; let page; let reservation; let stopping = false; let endPromise; let failure; let evidence; let directory;
-  const report = { label: LABEL, scenario, identity, player: 'Bounded scripted expert policy; only rendered human documents, finalized visible Pip replies, and human controls steer actions.', route: [], steps: [], inputMode: 'synthetic microphone only', completion: false, tokenRequests: 0 };
+  let browserServer; let browser; let context; let page; let reservation; let stopping = false; let endPromise; let failure; let evidence;
+  const directory = join(DIRECTORY, `${new Date().toISOString().replace(/[:.]/g, '-')}-${mode}-${scenario}`);
+  await mkdir(directory, { mode: 0o700 });
+  const journal = createLifecycleJournal(join(directory, 'lifecycle.jsonl'));
+  journal.record('worker.started', { outcome: 'observed' });
+  server.once('exit', code => journal.record('server.closed', { outcome: 'observed', code }));
+  const label = mode === 'voice' ? LABEL : 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI';
+  const report = { label, scenario, mode, identity, player: 'Bounded scripted expert policy; only rendered human documents, finalized visible Pip replies, and human controls steer actions.', pacingBoundary: 'Monotonic browser fixture/capture events and numeric ASR/reply/call aliases establish observed ordering. A 450 ms event quiet window is bounded observation, not a provider guarantee against arbitrarily late events. No end-of-input/commit message is invented.', route: [], steps: [], inputMode: mode === 'voice' ? 'synthetic microphone only' : 'normal UI typed messages; microphone off', completion: false, tokenRequests: 0 };
   const end = () => {
     if (endPromise) return endPromise;
     stopping = true;
+    journal.record('end.requested', { outcome: 'requested' });
     endPromise = (async () => {
     try { if (page && !page.isClosed()) {
       const button = page.getByRole('button', { name: 'Pause / End call', exact: true });
@@ -96,7 +156,7 @@ async function worker(scenario) {
     })();
     return endPromise;
   };
-  const onMessage = message => { if (message?.type === 'qa.stop') void end(); };
+  const onMessage = message => { if (message?.type === 'qa.stop') { journal.record('watchdog.stop.requested', { outcome: 'observed' }); void end(); } };
   process.on('message', onMessage);
   try {
     for (let count = 0; count < 80; count++) {
@@ -107,13 +167,12 @@ async function worker(scenario) {
     browserServer = await chromium.launchServer({ headless: true, chromiumSandbox: true });
     await registerOwnedProcess(browserServer.process().pid);
     browser = await chromium.connect(browserServer.wsEndpoint());
+    browser.on('disconnected', () => journal.record('browser.disconnected', { outcome: 'observed' }));
     report.browserVersion = browser.version();
-    directory = join(DIRECTORY, `${new Date().toISOString().replace(/[:.]/g, '-')}-${scenario}`);
-    await mkdir(directory, { mode: 0o700 });
     context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', recordVideo: { dir: directory, size: { width: 1440, height: 900 } } });
     report.videoPageCreationStartedAt = Date.now();
     page = await context.newPage(); report.videoPageCreatedAt = Date.now(); page.setDefaultTimeout(6000);
-    await installAudioInstrumentation(page, { label: LABEL });
+    await installAudioInstrumentation(page, { label, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
     await page.addInitScript(label => {
       document.addEventListener('DOMContentLoaded', () => {
         const badge = document.createElement('div'); badge.textContent = label;
@@ -130,90 +189,74 @@ async function worker(scenario) {
           }
         }).observe(document.body, { childList: true, subtree: true, characterData: true });
       });
-    }, LABEL);
+    }, label);
     await page.route('**/voice-token', async route => {
       report.tokenRequests++;
       if (report.tokenRequests !== 1) { await route.abort(); return; }
-      try { reservation = await requestAttempt({ name: scenario, maxRunSeconds: scenario === 'canary' ? 60 : 570 }); await route.continue(); }
+      try {
+        await checkNextAttempt(mode, identity, directory);
+        reservation = await requestAttempt({ name: `${mode}-mission`, maxRunSeconds: 570 });
+        report.reservation = reservation;
+        await persistReport(directory, report);
+        await route.continue();
+      }
       catch { failure = 'Supervisor refused the token attempt.'; await route.abort(); }
     });
     const screenshot = async name => { await page.screenshot({ path: join(directory, `${name}.png`), mask: [page.locator('#demo-code')], animations: 'disabled' }); };
     await page.goto(origin);
     report.audioTimeOriginWallMs = await page.evaluate(() => Date.now() - globalThis.__qaAudio.snapshot().elapsedMs);
     await screenshot('title');
-    await page.getByRole('button', { name: 'Play with voice', exact: true }).click();
+    await page.getByRole('radio', { name: mode === 'voice' ? /Live Voice/ : /Live Text/ }).check();
+    await page.getByRole('button', { name: mode === 'voice' ? 'Start with Voice' : 'Start with Text', exact: true }).click();
     await page.getByLabel('Demo access code', { exact: true }).fill(accessCode);
     await page.getByRole('button', { name: 'Unlock Live', exact: true }).click();
-    await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
+    if (mode === 'voice') await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
     await page.getByRole('button', { name: 'Play test tone', exact: true }).click();
-    await expect(page.getByRole('button', { name: 'Connect Live Voice', exact: true })).toBeEnabled();
-    await page.getByRole('button', { name: 'Connect Live Voice', exact: true }).click();
+    await expect(page.getByRole('button', { name: mode === 'voice' ? 'Connect Live Voice' : 'Connect Live Text', exact: true })).toBeEnabled();
+    await page.getByRole('button', { name: mode === 'voice' ? 'Connect Live Voice' : 'Connect Live Text', exact: true }).click();
     await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ready'), null, { timeout: 25000 });
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
     const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.filter(article => !/Partial transcript|Interrupted \/ incomplete speech/.test(article.textContent)).map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent })));
-    async function settled(afterMs = -1) {
-      await page.waitForFunction(after => {
-        const snapshot = globalThis.__qaAudio.snapshot();
-        const relevant = snapshot.events.filter(event => event.atMs > after);
-        const user = relevant.findLast(event => event.type === 'transcript.user');
-        if (after >= 0 && !user) return false;
-        const lastTool = relevant.findLast(event => event.type === 'tool.result');
-        const boundary = Math.max(user?.atMs ?? after, lastTool?.atMs ?? after);
-        const speech = relevant.findLast(event => event.type === 'transcript.agent' && event.final && event.atMs > boundary);
-        const done = speech && relevant.some(event => event.type === 'reply.done' && event.replyRef === speech.reference && event.status === 'completed');
-        const pending = relevant.some(event => event.type === 'tool.call' && !relevant.some(result => result.type === 'tool.result' && result.callRef === event.callRef));
-        const readout = document.querySelector('.connection-readout')?.textContent ?? '';
-        return done && speech && !pending && /microphone ready/.test(readout) && snapshot.elapsedMs - (snapshot.counters.rendered.lastNonzeroMs ?? 0) > 350;
-      }, afterMs, { timeout: scenario === 'mission' ? 40000 : 25000 });
-    }
+    const settled = (afterMs = -1, requireReply = true) => waitForTurn(page, { afterMs, mode, requireReply, timeoutMs: 40_000 });
     await settled();
-    async function say(text) {
+    async function say(text, { requireReply = true, terminal = false } = {}) {
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
       const before = await audioSnapshot(page); const previous = (await visibleHistory()).length;
-      const speech = await fixture(text); await queueSpeech(page, speech);
-      let waitTimedOut = false;
-      try { await settled(before.elapsedMs); } catch (error) {
-        if (stopping || !/Timeout/.test(String(error))) throw error;
-        waitTimedOut = true;
+      const speech = mode === 'voice' ? await fixture(text) : undefined;
+      await submitPlayerTurn(page, { mode, text, fixture: speech });
+      let pacing;
+      try { if (!terminal) pacing = await settled(before.elapsedMs, requireReply); }
+      catch (error) {
+        report.steps.push({ utterance: text, fixture: speech?.id ?? null, inputMode: mode, failureLayer: 'turn_pacing', reason: String(error.message), elapsedMs: (await audioSnapshot(page)).elapsedMs });
+        // An unresolved cycle is not permission to overlap it with a clarification.
+        throw error;
       }
       const messages = (await visibleHistory()).slice(previous);
       const replies = messages.filter(message => message.speaker === 'Pip').map(message => message.text).join(' ');
-      report.steps.push({ utterance: text, fixture: speech.id, messages, waitTimedOut, elapsedMs: (await audioSnapshot(page)).elapsedMs });
-      console.log(JSON.stringify({ scenario, step: report.steps.length, pip: replies }));
-      // Empty/late output is a stalled step, not invented dialogue. Callers can
-      // ask their one bounded status clarification; they never guess an action.
-      return waitTimedOut ? '' : replies;
+      report.steps.push({ utterance: text, fixture: speech?.id ?? null, inputMode: mode, messages, pacing, elapsedMs: (await audioSnapshot(page)).elapsedMs });
+      await persistReport(directory, report);
+      console.log(JSON.stringify({ scenario, mode, step: report.steps.length, pip: replies }));
+      return replies;
     }
     const ensureSaid = (text, pattern, failureText) => { if (!pattern.test(text)) throw new Error(failureText); };
-    let observation = await say(scenario === 'mission' ? PHRASES.observeBrief : PHRASES.observe);
+    let observation = await say(PHRASES.observe);
     if (scenario === 'mission' && !/latch/i.test(observation)) observation = await say('Please look around and report the objects you can reach from the platform.');
     if (scenario === 'mission' && !/latch/i.test(observation)) throw new Error('No Latch was communicated in the current visible observation.');
-    if (scenario === 'canary') {
-      const snapshot = await audioSnapshot(page);
-      const toolResult = snapshot.events.find(event => event.type === 'tool.result' && !event.isError && snapshot.events.some(call => call.type === 'tool.call' && call.callRef === event.callRef && call.atMs < event.atMs));
-      if (!snapshot.events.some(event => event.type === 'transcript.user' && event.text?.trim()) || !toolResult || !snapshot.events.some(event => event.type === 'transcript.agent' && event.atMs > toolResult.atMs) || snapshot.counters.input.nonzeroSamples < 1000 || snapshot.counters.provider.nonzeroSamples < 1000 || snapshot.counters.rendered.nonzeroSamples < 1000) throw new Error('Canary did not establish the complete microphone/tool/render chain.');
-      if (Date.now() < reservation.gracefulAt - 18000) {
-        const beforeWait = (await audioSnapshot(page)).elapsedMs;
-        await queueSpeech(page, await fixture(PHRASES.wait));
-        await page.waitForFunction(after => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'transcript.user' && event.atMs > after && /wait/i.test(event.text)), beforeWait, { timeout: 8000 });
-        report.waitRequest = { recognized: true, replyRequired: false, explanation: 'A spoken wait may interrupt a reply; later interrupted text is not evidence of delivered speech.' };
-      }
-      await screenshot('canary');
-    } else {
+    {
       await page.getByRole('tab', { name: 'Equipment manual', exact: true }).click();
       report.cargoManual = await page.getByRole('tabpanel', { name: 'Equipment manual' }).innerText();
       ensureSaid(report.cargoManual, /Door and Conveyor use one supply/, 'Visible shared Power document was unavailable.');
-      let latch = await say(PHRASES.latch);
-      ensureSaid(latch, /latch/i, 'Pip did not communicate a Latch observation.');
+      await say(PHRASES.latch);
       const power = page.getByTestId('acknowledged-power');
       if ((await power.innerText()) !== 'ON') await page.getByRole('button', { name: 'Power ON', exact: true }).click();
       await expect(power).toHaveText('ON');
-      const latchConfirmed = text => !/not engaged|not latched|not secured|cannot engage|can't engage/i.test(text) && /\bI (?:have )?(?:engaged|latched|secured)|\bI've (?:engaged|latched|secured)|\blatch (?:is|has been) (?:now )?(?:engaged|latched|secured|set)|\b(?:engaged|latched|secured) the latch/i.test(text);
-      let engaged = await say(PHRASES.engage);
-      if (!latchConfirmed(engaged)) engaged = await say('Please confirm whether the Latch is engaged now.');
-      if (!latchConfirmed(engaged)) engaged = await say('Please engage the Latch now and report when that is done.');
-      if (!latchConfirmed(engaged)) throw new Error('Pip did not confirm engaging the Latch after bounded clarification.');
-      await page.getByRole('button', { name: 'Power OFF', exact: true }).click(); await expect(power).toHaveText('OFF');
+      await say(PHRASES.wiring);
+      if (!await confirmedAction({ say, request: PHRASES.engage, clarify: PHRASES.confirmLatch, retry: PHRASES.retryLatch, action: 'latch', checkpoint: () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible() })) throw new Error('Player oracle: Latch completion remained unconfirmed after bounded recovery.');
+      const atGallery = () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible();
+      if (!await atGallery()) {
+        await page.getByRole('button', { name: 'Power OFF', exact: true }).click(); await expect(power).toHaveText('OFF');
+        if (!await atGallery()) await say(PHRASES.powerOff);
+      }
       if (!await crossCargoWithRecovery({ say, atGallery: () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible() })) throw new Error('Cargo crossing did not commit after one clarification and one rephrased retry.');
       await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
       await screenshot('gallery');
@@ -237,7 +280,9 @@ async function worker(scenario) {
       }
       let current = await communicatedRoom(await say(PHRASES.location));
       const blocked = new Set(); report.route.push(current);
+      const atDock = () => page.getByRole('heading', { name: 'Return Dock', exact: true }).isVisible();
       for (let moves = 0; moves < 8 && current !== 'dock'; moves++) {
+        if (await atDock()) { current = 'dock'; break; }
         const queue = [[current]]; let path;
         while (queue.length) {
           const candidate = queue.shift(); const last = candidate.at(-1);
@@ -254,18 +299,21 @@ async function worker(scenario) {
         if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
         await expect(page.getByTestId('acknowledged-relay')).toHaveText(gate.circuit);
         let inspection = await say(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
+        if (await atDock()) { current = 'dock'; break; }
         let passability = communicatedPassability(inspection);
         if (!passability) {
           inspection = await say(`Is the opening of the ${direction} gate physically clear or blocked?`);
+          if (await atDock()) { current = 'dock'; break; }
           passability = communicatedPassability(inspection);
         }
         if (!passability) {
           inspection = await say(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
+          if (await atDock()) { current = 'dock'; break; }
           passability = communicatedPassability(inspection);
         }
         if (passability === 'blocked') { blocked.add(gate.rooms.join('/')); report.steps.at(-1).reportedBlocked = gate.rooms; continue; }
         if (passability !== 'clear') throw new Error('Gate inspection remained ambiguous after one clarification and one rephrased retry.');
-        const arrived = await say(`Please go through the ${direction} gate, then look around and report the emblem where you arrive.`);
+        const arrived = await say(`Please go through the ${direction} gate.`);
         if (await page.getByRole('heading', { name: 'Return Dock', exact: true }).isVisible()) current = 'dock';
         else current = await communicatedRoom(arrived);
         report.route.push(current);
@@ -274,17 +322,15 @@ async function worker(scenario) {
       await screenshot('dock');
       report.dockManual = await page.locator('.return-document').innerText();
       await say(PHRASES.dock);
-      const contactConfirmed = text => !/not holding|not held|cannot hold|can't hold/i.test(text) && /\bI (?:am holding|have (?:gripped|held))|\bI'm holding|\bI've (?:gripped|held)|\bcontact (?:is|has been) (?:now )?(?:held|secured)|^holding (?:the )?contact/i.test(text);
-      let held = await say(PHRASES.contact);
-      if (!contactConfirmed(held)) held = await say('Are you holding the contact steady right now?');
-      if (!contactConfirmed(held)) held = await say('Please hold the contact now and tell me when you are holding it.');
-      if (!contactConfirmed(held)) throw new Error('Pip did not confirm holding the contact after bounded clarification.');
+      await say(PHRASES.inspectContact);
+      if (!await confirmedAction({ say, request: PHRASES.contact, clarify: PHRASES.confirmContact, retry: PHRASES.retryContact, action: 'contact', checkpoint: async () => ['Primed', 'Stored'].includes(await page.getByTestId('dock-energy').innerText()) })) throw new Error('Player oracle: contact holding remained unconfirmed after bounded recovery.');
       await page.getByRole('button', { name: 'Charge', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Primed');
       await page.getByRole('button', { name: 'Store', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Stored');
+      await say(PHRASES.release);
       await say(PHRASES.board); await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
       await page.getByRole('button', { name: 'Authorize return', exact: true }).click(); await expect(page.getByTestId('dock-authorization')).toHaveText('Granted');
       // Final home disconnects automatically; unlike intermediate turns it need not return to listening.
-      const finalSpeech = await fixture(PHRASES.home); await queueSpeech(page, finalSpeech);
+      await say(PHRASES.home, { terminal: true });
       await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
       report.completion = true; report.route.push('home'); await screenshot('home');
       await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ended'), null, { timeout: 12000 });
@@ -297,18 +343,23 @@ async function worker(scenario) {
     await end();
     if (page && !page.isClosed()) {
       report.checkpoints = await page.evaluate(() => globalThis.__qaPublicCheckpoints ?? []).catch(() => []);
-      report.visibleHistory = await page.locator('.history-message').evaluateAll(articles => articles.map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent }))).catch(() => []);
+      report.visibleHistory = await page.locator('.history-message').evaluateAll(articles => articles.map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'rendered DOM labels; no inferred delivery status beyond these labels' }))).catch(() => []);
       evidence = await collectAudioEvidence(page, directory).catch(() => undefined);
       await cleanupAudioInstrumentation(page).catch(() => {});
       report.cleanup = await audioSnapshot(page).then(snapshot => ({ activeTracks: snapshot.activeTracks, activeSources: snapshot.activeSources, openApplicationContexts: snapshot.openApplicationContexts })).catch(() => null);
     }
-    const events = evidence?.events ?? []; const opened = events.find(event => event.type === 'socket.open'); const ended = events.find(event => event.type === 'session.ended'); const closed = events.find(event => event.type === 'socket.close');
+    // Incremental journal survives a browser disconnect that prevents a final snapshot.
+    const events = evidence?.events ?? journal.snapshot().filter(event => event.source === 'browser').map(event => ({ ...event, atMs: event.browserAtMs })); const opened = events.find(event => event.type === 'socket.open'); const ended = events.find(event => event.type === 'session.ended'); const closed = events.find(event => event.type === 'socket.close');
     report.endAcknowledged = Boolean(ended); report.explicitEndSent = events.some(event => event.type === 'session.end');
     report.providerDurationSeconds = ended?.durationSeconds ?? null;
     report.connectedSeconds = opened && (ended || closed) ? ((ended ?? closed).atMs - opened.atMs) / 1000 : null;
+    const lastReceived = events.findLast(event => event.direction === 'received');
+    report.durationEvidence = { clock: 'browser performance.now; lifecycle driver receipts have their separate monotonic clock', endObservation: ended ? 'provider ACK observed' : closed ? 'socket close observed without ACK' : 'exact remote/local socket end not observed', lastPeerEventAfterOpenSeconds: opened && lastReceived ? Math.max(0, lastReceived.atMs - opened.atMs) / 1000 : null, reservedSeconds: reservation?.reservedSeconds ?? null, boundary: 'Last peer event bounds local observation only; it is not a billing duration. Missing ACK neither proves indefinite billing nor confirms remote end.' };
     if (reservation && opened && (!report.endAcknowledged || !report.explicitEndSent)) failure ??= 'The provider ending was not explicitly sent and acknowledged.';
     report.failure = failure ?? null;
-    if (directory) await writeFile(join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+    report.lifecycle = journal.snapshot();
+    report.watchdogCleanup = 'Independent supervisor cleanup.jsonl; a local cleanup record is not a remote end ACK.';
+    if (directory) await persistReport(directory, report);
     if (reservation) await finishAttempt({ endAcknowledged: report.endAcknowledged, connectedSeconds: report.connectedSeconds, outcome: failure ? 'failed' : 'passed' }).catch(() => {});
     const video = page?.video();
     await context?.close().catch(() => {});
@@ -316,9 +367,20 @@ async function worker(scenario) {
       await video.saveAs(join(directory, 'browser-silent.webm')).then(() => { report.video = 'browser-silent.webm'; }).catch(() => { report.videoFailure = 'Browser video could not be saved.'; });
       report.videoAlignment = 'Audio uses browser QA time origin; video page creation wall-clock interval is retained for approximate alignment, not sample-accurate synchronization.';
     }
-    if (directory) await writeFile(join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+    if (directory) await persistReport(directory, report);
+    journal.record('browser.close.requested', { outcome: 'requested' });
     await browser?.close().catch(() => {}); await browserServer?.close().catch(() => {});
-    server.kill('SIGTERM'); await Promise.race([new Promise(resolveExit => server.once('exit', resolveExit)), pause(1500)]);
+    const browserProcess = browserServer?.process();
+    journal.record('browser.closed', { outcome: browserProcess && (browserProcess.exitCode !== null || browserProcess.signalCode !== null) ? 'observed' : 'not_observed' });
+    journal.record('server.close.requested', { outcome: 'requested' });
+    if (server.exitCode === null && server.signalCode === null) {
+      const exited = new Promise(resolveExit => server.once('exit', resolveExit));
+      server.kill('SIGTERM'); await Promise.race([exited, pause(1500)]);
+    }
+    if (server.exitCode === null && server.signalCode === null) journal.record('server.closed', { outcome: 'bounded_timeout' });
+    else if (!journal.snapshot().some(event => event.type === 'server.closed')) journal.record('server.closed', { outcome: 'observed', code: server.exitCode });
+    report.lifecycle = journal.snapshot();
+    await persistReport(directory, report);
     process.off('message', onMessage); if (process.connected) process.disconnect();
   }
   console.log(JSON.stringify({ scenario, directory, completion: report.completion, failure, connectedSeconds: report.connectedSeconds, endAcknowledged: report.endAcknowledged }));
@@ -326,18 +388,26 @@ async function worker(scenario) {
 }
 
 const args = process.argv.slice(2);
-if (args.includes('--worker')) {
-  try { await worker(args[args.indexOf('--scenario') + 1]); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
+// No flag, environment variable or locally generated file supplies owner approval.
+// This gate executes before fixtures, credentials, allowance reads or child processes.
+if (args.includes('--live') || args.includes('--worker')) {
+  try { assertGoal004CLiveAuthorized(); }
+  catch (error) { console.error(error.message); process.exitCode = 1; if (process.connected) process.disconnect(); }
+}
+if (process.exitCode) {
+  // Deliberately stop without touching either campaign.
+} else if (args.includes('--worker')) {
+  try { await worker(args[args.indexOf('--scenario') + 1], args[args.indexOf('--mode') + 1]); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
 } else if (args.includes('--inspect')) {
-  const state = inspectCampaign(DIRECTORY); console.log(JSON.stringify({ attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
+  const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
   await prepareFixtures();
-  if (!args.includes('--live')) console.log('DRY RUN: local speech fixtures validated; no credentials loaded, allowance created, or provider contacted. Use --live --scenario canary only for the authorized campaign.');
+  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'BLOCKED_AWAITING_BUDGET_APPROVAL', proposedNotAuthorized: GOAL_004C_PROPOSAL }));
   else {
-    const scenario = args[args.indexOf('--scenario') + 1]; if (!['canary', 'mission'].includes(scenario)) throw new Error('Explicit --scenario canary or mission required.');
-    const { initializeAllowance } = await import('../dist/server/server/admission.js');
-    const campaign = initializeCampaign(DIRECTORY, initializeAllowance, { hourlyRate: 4.5 });
-    if (campaign.attempts.length >= campaign.header.maxAttempts) throw new Error('The authorized QA campaign is exhausted; no new provider attempt is permitted.');
-    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, args: ['--worker', '--scenario', scenario] }); process.exitCode = result.exitCode ?? 1;
+    const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];
+    if (scenario !== 'mission' || !['text', 'voice'].includes(mode)) throw new Error('Explicit --scenario mission --mode text or voice required.');
+    // An approved campaign must already exist. Missing accounting never initializes one.
+    await checkNextAttempt(mode, await buildIdentity());
+    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
   }
 }

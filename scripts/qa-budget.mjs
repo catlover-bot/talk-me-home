@@ -2,6 +2,8 @@ import { closeSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync, readF
 import { join, resolve } from 'node:path'
 
 export const QA_LIMITS = Object.freeze({ maxAttempts: 3, reservationSeconds: 670, capacitySeconds: 2010, maxSessionSeconds: 600, planningDollars: 2.52, disconnectGraceSeconds: 30 })
+// A prospective accounting format only. Goal 004C's runner remains blocked pending owner approval.
+export const QA_RECOVERY_LIMITS = Object.freeze({ ...QA_LIMITS, maxAttempts: 2, capacitySeconds: 1340, planningDollars: 1.68 })
 const HEADER_KEYS = 'capacitySeconds,createdAt,disconnectGraceSeconds,hourlyRate,maxAttempts,maxSessionSeconds,planningDollars,reservationSeconds,type,version'
 const integer = value => Number.isSafeInteger(value) && value >= 0
 const keys = value => Object.keys(value).sort().join(',')
@@ -22,24 +24,28 @@ function ordinaryFile(path) {
 }
 
 /** Explicit one-time setup. The supplied initializer is the existing production allowance function. */
-export function initializeCampaign(directory, initializeAllowance, { hourlyRate = 4.5, now = Date.now } = {}) {
+export function initializeCampaign(directory, initializeAllowance, { hourlyRate = 4.5, now = Date.now, profile = 'goal-004b' } = {}) {
   directory = resolve(directory)
+  if (!['goal-004b', 'goal-004c'].includes(profile)) throw new Error('Unknown fixed QA campaign profile.')
+  const limits = profile === 'goal-004c' ? QA_RECOVERY_LIMITS : QA_LIMITS
   if (!Number.isFinite(hourlyRate) || hourlyRate <= 0) throw new Error('A verified positive hourly rate is required.')
-  const maxAttempts = Math.min(QA_LIMITS.maxAttempts, Math.floor(QA_LIMITS.planningDollars * 3600 / hourlyRate / QA_LIMITS.reservationSeconds))
+  const maxAttempts = Math.min(limits.maxAttempts, Math.floor(limits.planningDollars * 3600 / hourlyRate / limits.reservationSeconds))
   if (maxAttempts < 1) throw new Error('The verified rate exceeds the campaign planning ceiling.')
+  if (profile === 'goal-004c' && maxAttempts !== 2) throw new Error('The proposed Goal 004C envelope no longer fits; revised owner approval is required.')
   if (existsSync(directory)) {
     if (!lstatSync(directory).isDirectory() || lstatSync(directory).isSymbolicLink()) throw new Error('Invalid QA campaign directory.')
     if (existsSync(join(directory, 'campaign.jsonl')) && existsSync(join(directory, 'allowance.jsonl'))) {
       const state = inspectCampaign(directory)
+      if (state.header.capacitySeconds !== limits.capacitySeconds) throw new Error('An existing campaign cannot be replaced by another profile.')
       if (hourlyRate !== state.header.hourlyRate) throw new Error('The verified rate changed; existing campaign limits were not replaced.')
       return state
     }
     if (readdirSync(directory).length) throw new Error('Unexpected or incomplete QA campaign directory; nothing was replaced.')
   } else mkdirSync(directory, { recursive: true, mode: 0o700 })
-  const header = { type: 'campaign', version: 1, ...QA_LIMITS, maxAttempts, hourlyRate, createdAt: now() }
+  const header = { type: 'campaign', version: 1, ...limits, maxAttempts, hourlyRate, createdAt: now() }
   append(join(directory, 'campaign.jsonl'), header, true)
   // Partial initialization fails closed on every later invocation; it never creates a replacement allowance.
-  initializeAllowance(join(directory, 'allowance.jsonl'), 3)
+  initializeAllowance(join(directory, 'allowance.jsonl'), limits.maxAttempts)
   syncDirectory(directory)
   return inspectCampaign(directory)
 }
@@ -54,10 +60,12 @@ export function inspectCampaign(directory) {
   let rows
   try { rows = source.trimEnd().split('\n').map(line => JSON.parse(line)) } catch { throw new Error('Corrupt QA campaign ledger.') }
   const header = rows.shift()
+  const limits = header?.capacitySeconds === QA_RECOVERY_LIMITS.capacitySeconds ? QA_RECOVERY_LIMITS : QA_LIMITS
   if (!header || keys(header) !== HEADER_KEYS || header.type !== 'campaign' || header.version !== 1 || !integer(header.createdAt)
-    || header.reservationSeconds !== 670 || header.capacitySeconds !== 2010 || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30
-    || header.planningDollars !== 2.52 || !Number.isFinite(header.hourlyRate) || header.hourlyRate <= 0 || !integer(header.maxAttempts) || header.maxAttempts < 1 || header.maxAttempts > 3
-    || header.maxAttempts * 670 * header.hourlyRate / 3600 > 2.52) throw new Error('Invalid QA campaign limits.')
+    || header.reservationSeconds !== 670 || header.capacitySeconds !== limits.capacitySeconds || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30
+    || header.planningDollars !== limits.planningDollars || !Number.isFinite(header.hourlyRate) || header.hourlyRate <= 0 || !integer(header.maxAttempts) || header.maxAttempts < 1 || header.maxAttempts > limits.maxAttempts
+    || limits === QA_RECOVERY_LIMITS && header.maxAttempts !== 2
+    || header.maxAttempts * 670 * header.hourlyRate / 3600 > limits.planningDollars) throw new Error('Invalid QA campaign limits.')
   const attempts = []
   for (const row of rows) {
     if (!row || !integer(row.attempt)) throw new Error('Invalid QA accounting event.')
@@ -83,8 +91,8 @@ export function inspectCampaign(directory) {
   let allowanceRows
   try { allowanceRows = allowanceSource.trimEnd().split('\n').map(line => JSON.parse(line)) } catch { throw new Error('Corrupt QA production allowance.') }
   const allowance = allowanceRows.shift()
-  if (!allowance || keys(allowance) !== 'allowanceSessions,maxSessionSeconds,version' || allowance.version !== 1 || allowance.allowanceSessions !== 3 || allowance.maxSessionSeconds !== 600
-    || allowanceRows.length > 3 || allowanceRows.length > attempts.length || allowanceRows.some(row => !row || keys(row) !== 'leaseUntil,reservedAt' || !integer(row.reservedAt) || row.leaseUntil !== row.reservedAt + 670_000)) throw new Error('Invalid QA production allowance.')
+  if (!allowance || keys(allowance) !== 'allowanceSessions,maxSessionSeconds,version' || allowance.version !== 1 || allowance.allowanceSessions !== limits.maxAttempts || allowance.maxSessionSeconds !== 600
+    || allowanceRows.length > limits.maxAttempts || allowanceRows.length > attempts.length || allowanceRows.some(row => !row || keys(row) !== 'leaseUntil,reservedAt' || !integer(row.reservedAt) || row.leaseUntil !== row.reservedAt + 670_000)) throw new Error('Invalid QA production allowance.')
   return { header, attempts, productionAttempts: allowanceRows.length, reservedSeconds: attempts.length * 670, estimatedReservedDollars: attempts.length * 670 * header.hourlyRate / 3600 }
 }
 

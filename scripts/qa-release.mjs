@@ -21,9 +21,9 @@ if (target) {
   if (url.origin !== target || url.username || url.password || !['http:', 'https:'].includes(url.protocol)) throw new Error('Target must be an exact HTTP(S) origin without credentials or a path.');
   if (url.protocol !== 'https:' && !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('A remote approved target requires HTTPS.');
 }
-const directory = resolve('.validation/goal-004b-offline');
+const directory = resolve('.validation/goal-004c-offline');
 mkdirSync(join(directory, 'screenshots'), { recursive: true });
-const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };
+const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', GAME_QA_PREBUILT: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };
 const children = new Set();
 let browser;
 const report = {
@@ -107,7 +107,7 @@ async function productionSmoke(origin) {
     await page.evaluate(() => scrollTo(0, 0));
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${name}: horizontal overflow`);
     await page.screenshot({ path: join(directory, 'screenshots', `${name}.png`), animations: 'disabled', fullPage: true });
-    report.screenshots.push(`.validation/goal-004b-offline/screenshots/${name}.png`);
+    report.screenshots.push(`.validation/goal-004c-offline/screenshots/${name}.png`);
   };
   const say = async text => {
     await page.getByLabel('Type a message').fill(text);
@@ -206,7 +206,11 @@ try {
     await command('typecheck', 'npm', ['run', 'typecheck']);
     await command('unit tests', 'npm', ['test']);
     await command('production build', 'npm', ['run', 'build:game']);
+    // Browser tests and screenshots exercise this exact compiled candidate.
+    const frozen = buildHash();
+    environment.GAME_QA_PREBUILT = '1';
     await command('compiled-production browser tests', 'npm', ['run', 'test:e2e']);
+    assert.equal(buildHash(), frozen, 'Compiled candidate changed during browser tests.');
     await command('diff whitespace', 'git', ['diff', '--check']);
   }
   assert.ok(existsSync('dist/server/server/production.js'), 'Build the production game before --smoke-only.');
@@ -237,7 +241,7 @@ try {
   for (const child of children) await stop(child);
   report.finishedAt = new Date().toISOString(); report.status = successful ? 'passed' : 'failed';
   report.cleanup = 'Owned browser contexts and child process groups stopped; no provider connection opened.';
-  const output = smokeOnly ? '.validation/goal-004b-offline-smoke.json' : '.validation/goal-004b-offline.json';
+  const output = smokeOnly ? '.validation/goal-004c-offline-smoke.json' : '.validation/goal-004c-offline.json';
   writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
   console.log(`Offline QA ${report.status}. Evidence: ${output}`);
 }
