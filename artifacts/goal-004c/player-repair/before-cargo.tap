@@ -1,0 +1,39 @@
+TAP version 13
+# Subtest: synthetic Cargo continuation must retain the exact historical wiring reply before requesting an action
+not ok 1 - synthetic Cargo continuation must retain the exact historical wiring reply before requesting an action
+  ---
+  duration_ms: 2.769961
+  type: 'test'
+  location: '/home/mhirotaka/workspace/talk-me-home/.validation/before-cargo-player.test.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A communicated completion must prevent the duplicate engage request.
+    + actual - expected
+    
+      [
+        'My diagram says the Door and Conveyor share one Power supply.',
+    +   'Please engage the Latch.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'My diagram says the Door and Conveyor share one Power supply.'
+  actual:
+    0: 'My diagram says the Door and Conveyor share one Power supply.'
+    1: 'Please engage the Latch.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/mhirotaka/workspace/talk-me-home/.validation/before-cargo-player.test.mjs:19:10)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52.848913

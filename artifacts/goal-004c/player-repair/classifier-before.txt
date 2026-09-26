@@ -1,0 +1,36 @@
+✖ recorded Part B Latch report keeps its declarative claim before an unrelated movement question (3.158493ms)
+✔ observed canceled Cargo scan allows a bounded clarification and retry, never a repeated crossing after a checkpoint (1.108093ms)
+✔ canceled Cargo observations and ambiguous commit outcomes never justify guessed retries (0.154487ms)
+✔ action oracle rejects negation, future intentions, and cancellation as completion (1.116141ms)
+✔ physical steps allow one clarification and one justified retry, checking public checkpoints before repeats (0.317977ms)
+✔ QA player recognizes communicated current emblems, including a short clarification (2.612378ms)
+✔ QA player separates open gates from physically clear openings and handles explicit negation (0.358432ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 222.19114
+
+✖ failing tests:
+
+test at tests/qa-player-policy.test.ts:1:422
+✖ recorded Part B Latch report keeps its declarative claim before an unrelated movement question (3.158493ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'done'
+  
+      at TestContext.<anonymous> (/home/mhirotaka/workspace/talk-me-home/tests/qa-player-policy.test.ts:20:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'done',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

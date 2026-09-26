@@ -1,0 +1,37 @@
+{
+  "scope": "Offline bounded QA player claim parsing; no provider calls, tool payloads or physical state used.",
+  "historicalSource": "artifacts/goal-004c/live/2026-09-25T17-58-10-565Z-text-mission-metrics.json visibleHistory",
+  "historicalQuote": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?",
+  "retainedHistoricalMetadata": { "speaker": "Pip", "sourceLabel": "Live Text", "chapterLabel": "Cargo Bay", "final": true, "interrupted": false },
+  "missingHistoricalMetadata": ["source message identity", "round identity", "exact tool arguments and physical commit association"],
+  "before": {
+    "candidate": "b5ff2f0e0ad956ab3c90a49244afc44a8739ce94",
+    "code": "scripts/qa-player-policy.mjs:38-49 communicatedAction; whole-reply uncertainty regex at line 41",
+    "regression": "tests/qa-player-policy.test.ts recorded Part B Latch report",
+    "firstDeclarativeSentence": "done",
+    "fullUnmodifiedQuote": null,
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-player-policy.test.ts",
+    "passed": 6,
+    "failed": 1,
+    "output": "classifier-before.txt"
+  },
+  "after": {
+    "firstDeclarativeSentence": "reported_done",
+    "fullUnmodifiedQuote": "reported_done",
+    "movementQuestion": "No movement completion or permission inferred; physical checkpoints remain authoritative.",
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-player-policy.test.ts",
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "output": "classifier-after.txt"
+  },
+  "additionalCoverage": [
+    "Required claim table including target-specific negation, condition, question, quotation, attempted failure and explicit retraction",
+    "Independent paraphrases and negative examples, including contact release and contradictory same-subject clauses",
+    "Passage directions and ambiguity, open gate versus physical clearance, unrelated future and negative clauses",
+    "Visible emblem claims, current versus historical location, same-location contradiction and unrelated retraction",
+    "A still-running Conveyor never justifies a Cargo movement retry"
+  ],
+  "limitation": "This parser supports a bounded set of English claims. Unsupported or ambiguous phrasing remains unknown and requires clarification. It does not establish authoritative physical state or resolve the historically observed model request/action mismatch. Additional quoted inputs are synthetic evaluation examples, not historical replay."
+}

@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: evaluator never interprets a wiring information statement as movement permission
+ok 1 - evaluator never interprets a wiring information statement as movement permission
+  ---
+  duration_ms: 0.898262
+  type: 'test'
+  ...
+# Subtest: evaluator flags crossing after an engage request without declaring physical crossing
+ok 2 - evaluator flags crossing after an engage request without declaring physical crossing
+  ---
+  duration_ms: 0.287633
+  type: 'test'
+  ...
+# Subtest: a Latch status question needs a relevant answer or target-known inspection
+ok 3 - a Latch status question needs a relevant answer or target-known inspection
+  ---
+  duration_ms: 0.569891
+  type: 'test'
+  ...
+# Subtest: original compact evidence supports three drift concerns with temporal association limits retained
+ok 4 - original compact evidence supports three drift concerns with temporal association limits retained
+  ---
+  duration_ms: 1.178774
+  type: 'test'
+  ...
+# Subtest: missing target payload and unknown request do not establish compliant model behavior
+ok 5 - missing target payload and unknown request do not establish compliant model behavior
+  ---
+  duration_ms: 0.125549
+  type: 'test'
+  ...
+# Subtest: offline continuation retains historical wiring report, omits duplicate engage, and reaches next human Power decision
+ok 6 - offline continuation retains historical wiring report, omits duplicate engage, and reaches next human Power decision
+  ---
+  duration_ms: 4.738151
+  type: 'test'
+  ...
+# Subtest: earlier historical negative followed by wiring success never authorizes duplicate engage
+ok 7 - earlier historical negative followed by wiring success never authorizes duplicate engage
+  ---
+  duration_ms: 0.62602
+  type: 'test'
+  ...
+# Subtest: unrelated discussion and a question retain the independent Latch report
+ok 8 - unrelated discussion and a question retain the independent Latch report
+  ---
+  duration_ms: 0.217084
+  type: 'test'
+  ...
+# Subtest: explicit contradiction requires uncertainty or a fresh status check
+ok 9 - explicit contradiction requires uncertainty or a fresh status check
+  ---
+  duration_ms: 0.240057
+  type: 'test'
+  ...
+# Subtest: same eligible message revision is deduplicated without losing exact quote and source
+ok 10 - same eligible message revision is deduplicated without losing exact quote and source
+  ---
+  duration_ms: 0.219782
+  type: 'test'
+  ...
+# Subtest: wrong scope, human, historical, interrupted, partial and missing-eligibility reports never satisfy a current action
+ok 11 - wrong scope, human, historical, interrupted, partial and missing-eligibility reports never satisfy a current action
+  ---
+  duration_ms: 0.203104
+  type: 'test'
+  ...
+# Subtest: round and chapter changes clear current beliefs while preserving explicitly scoped evidence history
+ok 12 - round and chapter changes clear current beliefs while preserving explicitly scoped evidence history
+  ---
+  duration_ms: 0.284004
+  type: 'test'
+  ...
+# Subtest: unknown mutation outcome receives one clarification and no blind physical retry
+ok 13 - unknown mutation outcome receives one clarification and no blind physical retry
+  ---
+  duration_ms: 0.212682
+  type: 'test'
+  ...
+# Subtest: a fresh explicit negative permits one bounded retry; an advanced public checkpoint suppresses every request
+ok 14 - a fresh explicit negative permits one bounded retry; an advanced public checkpoint suppresses every request
+  ---
+  duration_ms: 0.435015
+  type: 'test'
+  ...
+# Subtest: held contact survives a separate charging discussion without treating charging as reported physical energy
+ok 15 - held contact survives a separate charging discussion without treating charging as reported physical energy
+  ---
+  duration_ms: 0.973799
+  type: 'test'
+  ...
+# Subtest: an explicitly completed contact action updates an earlier negative report without a duplicate hold request
+ok 16 - an explicitly completed contact action updates an earlier negative report without a duplicate hold request
+  ---
+  duration_ms: 0.362281
+  type: 'test'
+  ...
+# Subtest: visible target and room scope preserve east/west distinctions and never equate open with clear
+ok 17 - visible target and room scope preserve east/west distinctions and never equate open with clear
+  ---
+  duration_ms: 2.688031
+  type: 'test'
+  ...
+# Subtest: a later interruption or previous-call marker invalidates the same previously eligible source message
+ok 18 - a later interruption or previous-call marker invalidates the same previously eligible source message
+  ---
+  duration_ms: 0.193756
+  type: 'test'
+  ...
+# Subtest: a late older report does not overwrite a newer communicated observation
+ok 19 - a late older report does not overwrite a newer communicated observation
+  ---
+  duration_ms: 0.161581
+  type: 'test'
+  ...
+# Subtest: timestamp identity remains deduplicated if the visible bounded-history index changes
+ok 20 - timestamp identity remains deduplicated if the visible bounded-history index changes
+  ---
+  duration_ms: 0.207475
+  type: 'test'
+  ...
+# Subtest: a new ambiguous current-location assertion invalidates the older location until a fresh check
+ok 21 - a new ambiguous current-location assertion invalidates the older location until a fresh check
+  ---
+  duration_ms: 0.328664
+  type: 'test'
+  ...
+# Subtest: release confirmation advances only after reported release or public readiness, with one justified retry
+ok 22 - release confirmation advances only after reported release or public readiness, with one justified retry
+  ---
+  duration_ms: 0.685277
+  type: 'test'
+  ...
+# Subtest: newer visible timestamp wins over a lower index after bounded history slides
+ok 23 - newer visible timestamp wins over a lower index after bounded history slides
+  ---
+  duration_ms: 0.148595
+  type: 'test'
+  ...
+# Subtest: recorded Part B Latch report keeps its declarative claim before an unrelated movement question
+ok 24 - recorded Part B Latch report keeps its declarative claim before an unrelated movement question
+  ---
+  duration_ms: 4.46862
+  type: 'test'
+  ...
+# Subtest: observed canceled Cargo scan allows a bounded clarification and retry, never a repeated crossing after a checkpoint
+ok 25 - observed canceled Cargo scan allows a bounded clarification and retry, never a repeated crossing after a checkpoint
+  ---
+  duration_ms: 1.003996
+  type: 'test'
+  ...
+# Subtest: canceled Cargo observations and ambiguous commit outcomes never justify guessed retries
+ok 26 - canceled Cargo observations and ambiguous commit outcomes never justify guessed retries
+  ---
+  duration_ms: 0.164907
+  type: 'test'
+  ...
+# Subtest: action oracle rejects negation, future intentions, and cancellation as completion
+ok 27 - action oracle rejects negation, future intentions, and cancellation as completion
+  ---
+  duration_ms: 1.217838
+  type: 'test'
+  ...
+# Subtest: physical steps allow one clarification and one justified retry, checking public checkpoints before repeats
+ok 28 - physical steps allow one clarification and one justified retry, checking public checkpoints before repeats
+  ---
+  duration_ms: 0.383873
+  type: 'test'
+  ...
+# Subtest: QA player recognizes communicated current emblems, including a short clarification
+ok 29 - QA player recognizes communicated current emblems, including a short clarification
+  ---
+  duration_ms: 4.145236
+  type: 'test'
+  ...
+# Subtest: QA player separates open gates from physically clear openings and handles explicit negation
+ok 30 - QA player separates open gates from physically clear openings and handles explicit negation
+  ---
+  duration_ms: 0.91723
+  type: 'test'
+  ...
+# Subtest: bounded claim table keeps questions, promises, attempts and other subjects separate
+ok 31 - bounded claim table keeps questions, promises, attempts and other subjects separate
+  ---
+  duration_ms: 0.601501
+  type: 'test'
+  ...
+# Subtest: independent action paraphrases support only the relevant completed claim
+ok 32 - independent action paraphrases support only the relevant completed claim
+  ---
+  duration_ms: 0.798269
+  type: 'test'
+  ...
+# Subtest: Gallery claims bind the requested direction while location survives unrelated negatives and intentions
+ok 33 - Gallery claims bind the requested direction while location survives unrelated negatives and intentions
+  ---
+  duration_ms: 0.47362
+  type: 'test'
+  ...
+# Subtest: a still-running Conveyor is not a safe Cargo retry precondition
+ok 34 - a still-running Conveyor is not a safe Cargo retry precondition
+  ---
+  duration_ms: 0.180497
+  type: 'test'
+  ...
+# Subtest: detailed location claims distinguish fresh ambiguity from questions and future plans
+ok 35 - detailed location claims distinguish fresh ambiguity from questions and future plans
+  ---
+  duration_ms: 0.405779
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133.644786

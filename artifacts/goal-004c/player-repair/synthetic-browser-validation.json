@@ -1,0 +1,28 @@
+{
+  "label": "SYNTHETIC OFFLINE CONTINUATION — HISTORICAL QUOTE, CONSTRUCTED PEER — NO REAL PROVIDER",
+  "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/qa-mission-player.spec.ts --workers=2",
+  "scope": "Targeted development verification before the final frozen qa:release run; both compiled-browser viewports execute the imported revised QA mission player.",
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 28.3,
+  "projects": ["chromium-1280", "chromium-1440"],
+  "casesPerProject": [
+    "Gallery A: retained historical Latch quote, no duplicate engage or status request, human Power OFF, scoped ambiguous passage report, obstruction and backtracking, full Dock and confirmed home",
+    "Gallery B: retained historical Latch quote, normal alternate authored configuration, full Dock with synthetic early boarding and no duplicate planned boarding request",
+    "Stop: consumed call evidence cannot authorize another input",
+    "Restart: removed round panel cannot authorize another input",
+    "Reconnect: earlier consumed reports becoming Previous call invalidate the existing player scope"
+  ],
+  "assertedNetworkBoundary": {
+    "externalHttpRequests": 0,
+    "unexpectedWebSockets": 0,
+    "realProviderTokenIssuance": 0,
+    "realProviderConnections": 0,
+    "mockTokenEndpointRequestsPerFullMission": 1,
+    "mockTokenEndpointRequestsPerReconnectScopeCase": 2,
+    "method": "Every external HTTP route is refused; the existing fake-provider WebSocket route never calls connectToServer; the unfunded isolated fixture server has no provider credential and GAME_DISABLE_LIVE remains 1."
+  },
+  "cleanupAssertions": ["No active fake sockets", "No acquired microphone tracks", "All fake application audio contexts closed"],
+  "visuallyInspected": ["synthetic-player-a-cargo-power-off.png", "synthetic-player-b-home.png"],
+  "evidenceBoundary": "The exact historical Latch text is unmodified. All subsequent peer reports, supplied finality metadata, tool actions and successful continuations are explicitly constructed offline fixtures. These results do not establish real-model compliance, a real Rescue pass, physical microphone/speaker behavior, or human enjoyment."
+}

@@ -1,0 +1,20 @@
+✔ recorded Part B Latch report keeps its declarative claim before an unrelated movement question (4.206884ms)
+✔ observed canceled Cargo scan allows a bounded clarification and retry, never a repeated crossing after a checkpoint (1.066326ms)
+✔ canceled Cargo observations and ambiguous commit outcomes never justify guessed retries (0.214527ms)
+✔ action oracle rejects negation, future intentions, and cancellation as completion (1.108399ms)
+✔ physical steps allow one clarification and one justified retry, checking public checkpoints before repeats (0.422273ms)
+✔ QA player recognizes communicated current emblems, including a short clarification (3.271179ms)
+✔ QA player separates open gates from physically clear openings and handles explicit negation (0.938136ms)
+✔ bounded claim table keeps questions, promises, attempts and other subjects separate (0.768543ms)
+✔ independent action paraphrases support only the relevant completed claim (1.308496ms)
+✔ Gallery claims bind the requested direction while location survives unrelated negatives and intentions (0.752353ms)
+✔ a still-running Conveyor is not a safe Cargo retry precondition (0.247526ms)
+✔ detailed location claims distinguish fresh ambiguity from questions and future plans (0.494202ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 119.146833

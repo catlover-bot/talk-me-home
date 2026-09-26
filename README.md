@@ -16,6 +16,8 @@ A browser game for one human at Mission Control and Pip, UNIT 04. Guide a strand
 
 **Part B result:** real UI Text stopped in Cargo Bay after a Latch-confirmation oracle failure; explicit End and its ACK were observed. One attempt / 670 reserved seconds was consumed. Voice was not run because the existing sequencing gate rejects failed Text; the remaining slot is preserved. No full real Rescue pass is claimed.
 
+**Offline player follow-up:** the QA player now retains eligible communicated reports across all exchanges and interprets bounded subject-specific claims. Cargo, Gallery and Dock share that policy with synthetic browser regressions. Application source and authorization remain unchanged; the original failed Text evidence and unused slot remain preserved. This repair does not establish real model instruction-following or a Live Rescue pass. See the appended [repair evidence](docs/goal-004c-live-recovery.md#offline-player-follow-up-after-part-b).
+
 ## Run the game
 
 Use Node.js 24 (tested with 24.20.0 and npm 11.19.0). On Windows, open an Ubuntu WSL terminal:

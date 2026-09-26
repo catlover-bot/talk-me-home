@@ -13,7 +13,7 @@ import { assertGoal004CLiveAuthorized, assertGoal004CNextAttempt, GOAL_004C_PROP
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
 import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
-import { communicatedEmblem, communicatedPassability, crossCargoWithRecovery, confirmedAction } from './qa-player-policy.mjs';
+import { runRescuePlayer, PHRASES } from './qa-mission-player.mjs';
 import { waitForTurn, submitPlayerTurn } from './qa-turn-pacing.mjs';
 import { createLifecycleJournal } from './qa-lifecycle.mjs';
 
@@ -41,27 +41,6 @@ const STRESS_PHRASES = {
   confirmContact: 'Are you holding the contact steady right now?',
   retryContact: 'Please hold the contact now and tell me when you are holding it.',
 };
-const PHRASES = {
-  observe: 'Pip, please look around.',
-  latch: 'Please inspect the Latch.',
-  wiring: 'My diagram says the Door and Conveyor share one Power supply.',
-  powerOff: 'Power is now off.',
-  engage: 'Please engage the Latch.',
-  confirmLatch: 'Is the Latch engaged now?',
-  retryLatch: 'Please set the Latch to hold the Door open.',
-  location: 'Please look around.',
-  clarify: 'What emblem is beside you now?',
-  dock: 'Please look around.',
-  inspectContact: 'Please inspect the contact.',
-  contact: 'Please hold the contact.',
-  confirmContact: 'Are you holding the contact now?',
-  retryContact: 'Please grip the contact steadily.',
-  release: 'Please release the contact.',
-  board: 'Please board the capsule.',
-  home: 'Please confirm the return.',
-  wait: 'Please wait.',
-};
-
 async function fixture(text) {
   const id = 'speech-' + createHash('sha256').update(text).digest('hex').slice(0, 16);
   return ensureSpeechFixture({ text, id });
@@ -88,7 +67,7 @@ async function buildIdentity() {
   }
   await walk('dist');
   const harnessFiles = {};
-  for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
+  for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
   return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, node: process.version };
 }
 async function availablePort() {
@@ -238,103 +217,8 @@ async function worker(scenario, mode) {
       console.log(JSON.stringify({ scenario, mode, step: report.steps.length, pip: replies }));
       return replies;
     }
-    const ensureSaid = (text, pattern, failureText) => { if (!pattern.test(text)) throw new Error(failureText); };
-    let observation = await say(PHRASES.observe);
-    if (scenario === 'mission' && !/latch/i.test(observation)) observation = await say('Please look around and report the objects you can reach from the platform.');
-    if (scenario === 'mission' && !/latch/i.test(observation)) throw new Error('No Latch was communicated in the current visible observation.');
-    {
-      await page.getByRole('tab', { name: 'Equipment manual', exact: true }).click();
-      report.cargoManual = await page.getByRole('tabpanel', { name: 'Equipment manual' }).innerText();
-      ensureSaid(report.cargoManual, /Door and Conveyor use one supply/, 'Visible shared Power document was unavailable.');
-      await say(PHRASES.latch);
-      const power = page.getByTestId('acknowledged-power');
-      if ((await power.innerText()) !== 'ON') await page.getByRole('button', { name: 'Power ON', exact: true }).click();
-      await expect(power).toHaveText('ON');
-      await say(PHRASES.wiring);
-      if (!await confirmedAction({ say, request: PHRASES.engage, clarify: PHRASES.confirmLatch, retry: PHRASES.retryLatch, action: 'latch', checkpoint: () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible() })) throw new Error('Player oracle: Latch completion remained unconfirmed after bounded recovery.');
-      const atGallery = () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible();
-      if (!await atGallery()) {
-        await page.getByRole('button', { name: 'Power OFF', exact: true }).click(); await expect(power).toHaveText('OFF');
-        if (!await atGallery()) await say(PHRASES.powerOff);
-      }
-      if (!await crossCargoWithRecovery({ say, atGallery: () => page.getByRole('heading', { name: 'Relay Gallery', exact: true }).isVisible() })) throw new Error('Cargo crossing did not commit after one clarification and one rephrased retry.');
-      await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
-      await screenshot('gallery');
-      report.route.push('Cargo Bay', 'Relay Gallery');
-      // Read the rendered static atlas, including its visible positions, never internal map/state.
-      const atlas = await page.locator('.gallery-document').evaluate(root => {
-        const rooms = [...root.querySelectorAll('.atlas-room')].map(room => ({ name: room.querySelector('.room-name').textContent.toLowerCase(), position: room.getAttribute('transform').match(/[\d.]+/g).map(Number) }));
-        const gates = [...root.querySelectorAll('.atlas-gate')].map(gate => {
-          const [x1, y1, x2, y2] = gate.querySelector('.atlas-track').getAttribute('d').match(/[\d.]+/g).map(Number);
-          return { rooms: [[x1, y1], [x2, y2]].map(([x, y]) => rooms.find(room => room.position[0] === x && room.position[1] === y).name), circuit: gate.querySelector('.gate-full-name').textContent };
-        });
-        return { rooms, gates };
-      });
-      report.atlas = atlas;
-      const roomFrom = text => communicatedEmblem(text, atlas.rooms.map(room => room.name));
-      async function communicatedRoom(text) {
-        const room = roomFrom(text); if (room) return room;
-        const clarified = await say(PHRASES.clarify); const result = roomFrom(clarified);
-        if (!result) throw new Error('Current emblem remained ambiguous after one clarification.');
-        return result;
-      }
-      let current = await communicatedRoom(await say(PHRASES.location));
-      const blocked = new Set(); report.route.push(current);
-      const atDock = () => page.getByRole('heading', { name: 'Return Dock', exact: true }).isVisible();
-      for (let moves = 0; moves < 8 && current !== 'dock'; moves++) {
-        if (await atDock()) { current = 'dock'; break; }
-        const queue = [[current]]; let path;
-        while (queue.length) {
-          const candidate = queue.shift(); const last = candidate.at(-1);
-          if (last === 'dock') { path = candidate; break; }
-          for (const gate of atlas.gates) if (!blocked.has(gate.rooms.join('/')) && gate.rooms.includes(last)) {
-            const next = gate.rooms.find(name => name !== last); if (!candidate.includes(next)) queue.push([...candidate, next]);
-          }
-        }
-        if (!path || path.length < 2) throw new Error('No documented route remained after spoken obstruction reports.');
-        const next = path[1]; const gate = atlas.gates.find(gate => gate.rooms.includes(current) && gate.rooms.includes(next));
-        const [x1, y1] = atlas.rooms.find(room => room.name === current).position; const [x2, y2] = atlas.rooms.find(room => room.name === next).position;
-        const direction = (y2 < y1 ? 'north' : y2 > y1 ? 'south' : '') + (x2 > x1 ? 'east' : x2 < x1 ? 'west' : '');
-        const button = page.getByRole('button', { name: `Relay ${gate.circuit}`, exact: true });
-        if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
-        await expect(page.getByTestId('acknowledged-relay')).toHaveText(gate.circuit);
-        let inspection = await say(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
-        if (await atDock()) { current = 'dock'; break; }
-        let passability = communicatedPassability(inspection);
-        if (!passability) {
-          inspection = await say(`Is the opening of the ${direction} gate physically clear or blocked?`);
-          if (await atDock()) { current = 'dock'; break; }
-          passability = communicatedPassability(inspection);
-        }
-        if (!passability) {
-          inspection = await say(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
-          if (await atDock()) { current = 'dock'; break; }
-          passability = communicatedPassability(inspection);
-        }
-        if (passability === 'blocked') { blocked.add(gate.rooms.join('/')); report.steps.at(-1).reportedBlocked = gate.rooms; continue; }
-        if (passability !== 'clear') throw new Error('Gate inspection remained ambiguous after one clarification and one rephrased retry.');
-        const arrived = await say(`Please go through the ${direction} gate.`);
-        if (await page.getByRole('heading', { name: 'Return Dock', exact: true }).isVisible()) current = 'dock';
-        else current = await communicatedRoom(arrived);
-        report.route.push(current);
-      }
-      await expect(page.getByRole('heading', { name: 'Return Dock', exact: true })).toBeVisible(); report.route.push('Return Dock');
-      await screenshot('dock');
-      report.dockManual = await page.locator('.return-document').innerText();
-      await say(PHRASES.dock);
-      await say(PHRASES.inspectContact);
-      if (!await confirmedAction({ say, request: PHRASES.contact, clarify: PHRASES.confirmContact, retry: PHRASES.retryContact, action: 'contact', checkpoint: async () => ['Primed', 'Stored'].includes(await page.getByTestId('dock-energy').innerText()) })) throw new Error('Player oracle: contact holding remained unconfirmed after bounded recovery.');
-      await page.getByRole('button', { name: 'Charge', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Primed');
-      await page.getByRole('button', { name: 'Store', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Stored');
-      await say(PHRASES.release);
-      await say(PHRASES.board); await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
-      await page.getByRole('button', { name: 'Authorize return', exact: true }).click(); await expect(page.getByTestId('dock-authorization')).toHaveText('Granted');
-      // Final home disconnects automatically; unlike intermediate turns it need not return to listening.
-      await say(PHRASES.home, { terminal: true });
-      await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
-      report.completion = true; report.route.push('home'); await screenshot('home');
-      await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ended'), null, { timeout: 12000 });
-    }
+    await runRescuePlayer({ page, say, screenshot, report });
+    await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ended'), null, { timeout: 12000 });
   } catch (error) {
     // Playwright errors can contain transport URLs: retain only the first safe line.
     failure = String(error?.message ?? error).split('\n')[0].replace(/(?:https?|wss?):\/\/\S+/g, '[URL omitted]');

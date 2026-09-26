@@ -1,5 +1,7 @@
 # Goal 004C trace and regression index
 
+The subsequent **offline player follow-up** is recorded in [player-repair/](player-repair/) and [the appended report](../../docs/goal-004c-live-recovery.md#offline-player-follow-up-after-part-b). Its before regressions preserve the discarded-report and whole-reply classifier failures. Its continuations and peers are explicitly synthetic; the original failed Part B real evidence below is unchanged. No new token or real-provider connection is authorized by this follow-up.
+
 This is **offline repair evidence**, not a new real-provider campaign. Goal 004B's release FAIL, exhausted accounting, missing end acknowledgements, and unverified final prompt remain historical facts.
 
 Part A result: **OFFLINE_REPAIR_PASS / LIVE_RETEST_BLOCKED**, with **RELEASE_NOT_LIVE_VERIFIED** retained at that delivery. [offline-summary.json](offline-summary.json) records 239 passing unit tests, 84 passing compiled-production browser cases and fresh Practice home. [final-runtime.json](final-runtime.json) identifies the Part A application/harness source and build. These historical files remain unchanged.

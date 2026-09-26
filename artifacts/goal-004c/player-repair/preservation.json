@@ -1,0 +1,61 @@
+{
+  "label": "OFFLINE PLAYER REPAIR — READ-ONLY PRESERVATION AUDIT",
+  "verifiedAt": "2026-09-26T02:27:25.875Z",
+  "baselineHead": "b5ff2f0e0ad956ab3c90a49244afc44a8739ce94",
+  "protectedFilesCompared": 77,
+  "changedProtectedFiles": [],
+  "comparisonScope": "Original B/C campaign accounting, cleanup and source media; original B and C compact artifacts; prior B report and authorization modules. New repair artifacts and mutable current documentation are excluded.",
+  "applicationAndAuthorizationDiffAgainst": "b5ff2f0e0ad956ab3c90a49244afc44a8739ce94",
+  "checkedSourcePaths": [
+    "game",
+    "public",
+    "deployment",
+    "agents",
+    "lib.mjs",
+    "scripts/qa-live-authorization.mjs",
+    "scripts/qa-live-authorization.d.mts",
+    "scripts/qa-budget.mjs",
+    "scripts/qa-supervisor.mjs"
+  ],
+  "changedApplicationOrAuthorizationPaths": [],
+  "accountingHashes": [
+    {
+      "path": ".validation/goal-004b-live/allowance.jsonl",
+      "sha256": "b58817b207ddbc3862fae891099e6f96899774f9ebb7d2a3eff453fd7de535a0"
+    },
+    {
+      "path": ".validation/goal-004b-live/campaign.jsonl",
+      "sha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe"
+    },
+    {
+      "path": ".validation/goal-004c-live/allowance.jsonl",
+      "sha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24"
+    },
+    {
+      "path": ".validation/goal-004c-live/campaign.jsonl",
+      "sha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0"
+    }
+  ],
+  "goal004B": {
+    "usedAttempts": 3,
+    "productionAttempts": 3,
+    "reservedSeconds": 2010,
+    "remainingAttempts": 0
+  },
+  "goal004C": {
+    "usedAttempts": 1,
+    "productionAttempts": 1,
+    "reservedSeconds": 670,
+    "estimatedReservedDollars": 0.8375,
+    "remainingAttempts": 1,
+    "remainingReservedCapacitySeconds": 670,
+    "originalTextOutcome": "failed",
+    "originalTextEndAcknowledged": true,
+    "originalAttemptClosed": true,
+    "voiceSequencingGate": "Live Voice requires one passed, acknowledged and closed Text attempt."
+  },
+  "newRecordedCampaignAttempts": 0,
+  "auditProviderCalls": 0,
+  "limits": "This audit reads accounting and original evidence only. It does not initialize an allowance, invoke an execution authorization gate, launch a worker, load credentials, request tokens, contact a provider, or turn ledger preservation into a new approval.",
+  "validationBoundary": "This audit verifies preservation and the pure failed-Text sequencing rejection. Final full offline validation and final pushed-head CI are separate evidence; they were still pending when this audit was written."
+}

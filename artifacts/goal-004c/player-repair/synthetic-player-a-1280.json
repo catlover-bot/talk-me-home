@@ -1,0 +1,907 @@
+{
+  "label": "SYNTHETIC OFFLINE CONTINUATION — HISTORICAL QUOTE, CONSTRUCTED PEER — NO REAL PROVIDER",
+  "profile": "a",
+  "mockedTokenEndpointRequests": 1,
+  "realExternalRequests": 0,
+  "realTokenIssuance": 0,
+  "realProviderConnections": 0,
+  "report": {
+    "route": [
+      "Cargo Bay",
+      "Relay Gallery",
+      "ring",
+      "fork",
+      "sail",
+      "fork",
+      "leaf",
+      "dock",
+      "Return Dock",
+      "home"
+    ],
+    "steps": [],
+    "completion": true,
+    "communicatedEvidence": [
+      {
+        "subject": "latch",
+        "target": null,
+        "reportedValue": null,
+        "value": null,
+        "contradiction": false,
+        "quote": "You are on the near-side safe platform. The Door (door) is open. The Conveyor (conveyor) is running. A Latch lever (latch) stands within reach on your safe platform, connected to the Door by a mechanical rod. You can inspect these objects. The far-side safe platform is the destination far_side.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 1,
+        "messageOrder": 1,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Cargo Bay",
+        "sourceKey": "Live Text|2026-09-26T02:26:43.035Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "latch",
+        "target": null,
+        "reportedValue": "not_done",
+        "value": "not_done",
+        "contradiction": false,
+        "quote": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from your safe platform. The local interaction is latch_open on latch.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 2,
+        "messageOrder": 3,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Cargo Bay",
+        "sourceKey": "Live Text|2026-09-26T02:26:43.466Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "latch",
+        "target": null,
+        "reportedValue": "reported_done",
+        "value": "reported_done",
+        "contradiction": false,
+        "quote": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 3,
+        "messageOrder": 5,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Cargo Bay",
+        "sourceKey": "Live Text|2026-09-26T02:26:43.804Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "location",
+        "target": null,
+        "reportedValue": "ring",
+        "value": "ring",
+        "contradiction": false,
+        "quote": "You are in a safe room with the Ring emblem. A fixed compass mark points north. East gate (gallery.g1) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 4,
+        "messageOrder": 11,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:45.055Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "ring:east",
+        "reportedValue": "clear",
+        "value": "clear",
+        "contradiction": false,
+        "quote": "The east gate passage is clear. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 5,
+        "messageOrder": 15,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:45.842Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "location",
+        "target": null,
+        "reportedValue": "fork",
+        "value": "fork",
+        "contradiction": false,
+        "quote": "You passed through the open gate. You are in a safe room with the Fork emblem. A fixed compass mark points north. West gate (gallery.g1) is open. Northeast gate (gallery.g2) is closed. Southeast gate (gallery.g4) is open. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 6,
+        "messageOrder": 17,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:46.174Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "fork:northeast",
+        "reportedValue": "clear",
+        "value": "clear",
+        "contradiction": false,
+        "quote": "The northeast gate passage is clear. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 7,
+        "messageOrder": 19,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:46.851Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "location",
+        "target": null,
+        "reportedValue": "sail",
+        "value": "sail",
+        "contradiction": false,
+        "quote": "You passed through the open gate. You are in a safe room with the Sail emblem. A fixed compass mark points north. Southwest gate (gallery.g2) is open. Southeast gate (gallery.g3) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 8,
+        "messageOrder": 21,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:47.192Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "sail:southeast",
+        "reportedValue": "blocked",
+        "value": "blocked",
+        "contradiction": false,
+        "quote": "Cargo blocks the southeast gate passage. I have not moved.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 9,
+        "messageOrder": 23,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:47.639Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "sail:southwest",
+        "reportedValue": "clear",
+        "value": "clear",
+        "contradiction": false,
+        "quote": "The southwest gate passage is clear, but the southeast gate passage is blocked. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 10,
+        "messageOrder": 25,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:48.207Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "sail:southeast",
+        "reportedValue": "blocked",
+        "value": "blocked",
+        "contradiction": false,
+        "quote": "The southwest gate passage is clear, but the southeast gate passage is blocked. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 11,
+        "messageOrder": 25,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:48.207Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "location",
+        "target": null,
+        "reportedValue": "fork",
+        "value": "fork",
+        "contradiction": false,
+        "quote": "You passed through the open gate. You are in a safe room with the Fork emblem. A fixed compass mark points north. West gate (gallery.g1) is closed. Northeast gate (gallery.g2) is open. Southeast gate (gallery.g4) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 12,
+        "messageOrder": 27,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:48.555Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "fork:southeast",
+        "reportedValue": "clear",
+        "value": "clear",
+        "contradiction": false,
+        "quote": "The southeast gate passage is clear. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 13,
+        "messageOrder": 29,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:49.218Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "location",
+        "target": null,
+        "reportedValue": "leaf",
+        "value": "leaf",
+        "contradiction": false,
+        "quote": "You passed through the open gate. You are in a safe room with the Leaf emblem. A fixed compass mark points north. Northwest gate (gallery.g4) is open. Northeast gate (gallery.g5) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 14,
+        "messageOrder": 31,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:49.549Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "passage",
+        "target": "leaf:northeast",
+        "reportedValue": "clear",
+        "value": "clear",
+        "contradiction": false,
+        "quote": "The northeast gate passage is clear. Shall I move?",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 15,
+        "messageOrder": 33,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Relay Gallery",
+        "sourceKey": "Live Text|2026-09-26T02:26:50.106Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "contact",
+        "target": null,
+        "reportedValue": "not_done",
+        "value": "not_done",
+        "contradiction": false,
+        "quote": "You are on the Return Dock's safe platform. A spring-loaded contact (return.contact) and recovery capsule (return.capsule) are within reach. You are not holding the contact. The capsule entrance is the movement target return.aboard. Inspect the local plaques to learn the available actions.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 16,
+        "messageOrder": 37,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Return Dock",
+        "sourceKey": "Live Text|2026-09-26T02:26:50.953Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "contact",
+        "target": null,
+        "reportedValue": null,
+        "value": null,
+        "contradiction": false,
+        "quote": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained. Available interactions on return.contact are hold_contact and release_contact.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 17,
+        "messageOrder": 39,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Return Dock",
+        "sourceKey": "Live Text|2026-09-26T02:26:51.290Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "contact",
+        "target": null,
+        "reportedValue": "not_done",
+        "value": "not_done",
+        "contradiction": false,
+        "quote": "I am not holding the contact.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 18,
+        "messageOrder": 41,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Return Dock",
+        "sourceKey": "Live Text|2026-09-26T02:26:51.653Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "contact",
+        "target": null,
+        "reportedValue": "reported_done",
+        "value": "reported_done",
+        "contradiction": false,
+        "quote": "I am holding the contact. You can try charging now.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 19,
+        "messageOrder": 43,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Return Dock",
+        "sourceKey": "Live Text|2026-09-26T02:26:52.018Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      },
+      {
+        "subject": "contact",
+        "target": null,
+        "reportedValue": "not_done",
+        "value": "not_done",
+        "contradiction": false,
+        "quote": "I have released the contact. The stored energy remains available.",
+        "messageId": null,
+        "source": "rendered visible history",
+        "sourceLabel": "Live Text",
+        "order": 20,
+        "messageOrder": 47,
+        "round": "current uninterrupted QA invocation",
+        "chapter": "Return Dock",
+        "sourceKey": "Live Text|2026-09-26T02:26:52.818Z|Pip",
+        "final": true,
+        "interrupted": false,
+        "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
+      }
+    ],
+    "cargoManual": "Cargo bay\nService note\nShared Power\n\nThe Door and Conveyor use one supply. Mission Control commands this Power remotely.\n\nThis document does not show current local conditions. Ask Pip to inspect the equipment within reach.\n\nPower\nDoor\nConveyor\n\nOne shared supply.\nThe Door and Conveyor use the same Power. Pip cannot see this diagram.",
+    "atlas": {
+      "rooms": [
+        {
+          "name": "ring",
+          "position": [
+            75,
+            160
+          ]
+        },
+        {
+          "name": "fork",
+          "position": [
+            245,
+            160
+          ]
+        },
+        {
+          "name": "sail",
+          "position": [
+            425,
+            73
+          ]
+        },
+        {
+          "name": "leaf",
+          "position": [
+            425,
+            247
+          ]
+        },
+        {
+          "name": "dock",
+          "position": [
+            640,
+            160
+          ]
+        }
+      ],
+      "gates": [
+        {
+          "rooms": [
+            "ring",
+            "fork"
+          ],
+          "circuit": "Beacon"
+        },
+        {
+          "rooms": [
+            "fork",
+            "sail"
+          ],
+          "circuit": "Harbor"
+        },
+        {
+          "rooms": [
+            "sail",
+            "dock"
+          ],
+          "circuit": "Beacon"
+        },
+        {
+          "rooms": [
+            "fork",
+            "leaf"
+          ],
+          "circuit": "Beacon"
+        },
+        {
+          "rooms": [
+            "leaf",
+            "dock"
+          ],
+          "circuit": "Harbor"
+        }
+      ]
+    },
+    "dockManual": "Mission Control documents\n\nReturn capsule procedure\n03 / RD\nRETURN\nSERVICE\n\nPrepare the energy supply together. The controller is yours; the local checks and departure are Pip’s.\n\nENERGY TRANSFER / STATIC REFERENCE\nRD–04\nCharge\nTemporary\nStored\nCapsule\nHeld contact\nStore\nHuman control\nKeep contact held\nEnergy retained\nPip confirms return\n01\nCharge is temporary\n\nCharge needs the local contact held. If contact is released before storage, that energy is lost.\n\n02\nStore keeps the energy\n\nStore transfers primed energy while contact is still held. Stored energy survives disconnection.\n\n03\nAuthorize when ready\n\nThe return interlock needs stored energy and Pip aboard. Authorization lets Pip confirm departure; it does not launch the capsule.\n\nPermission and progress are separate. Pause or Interrupt clears authorization. Stored energy stays stored. Ask Pip to check readiness again when needed."
+  },
+  "events": [
+    {
+      "kind": "peer-request",
+      "request": "Pip, please look around."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "observe_room",
+      "target": "",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You are on the near-side safe platform. The Door (door) is open. The Conveyor (conveyor) is running. A Latch lever (latch) stands within reach on your safe platform, connected to the Door by a mechanical rod. You can inspect these objects. The far-side safe platform is the destination far_side."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the Latch."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "latch",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from your safe platform. The local interaction is latch_open on latch."
+    },
+    {
+      "kind": "peer-request",
+      "request": "My diagram says the Door and Conveyor share one Power supply."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "interact_object",
+      "target": "latch",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?"
+    },
+    {
+      "kind": "human-power",
+      "action": "OFF"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Power is now off."
+    },
+    {
+      "kind": "peer-report",
+      "text": "The Conveyor is now stopped. Shall I wait for your crossing request?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please cross to the far side."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "far_side",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You crossed the stopped Conveyor and passed through the open Door. The Cargo Bay checkpoint confirms your arrival at the Relay Gallery entrance. The rescue continues. Observe your new surroundings before choosing another local action."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please look around."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "observe_room",
+      "target": "",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You are in a safe room with the Ring emblem. A fixed compass mark points north. East gate (gallery.g1) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the east gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g1",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The east gate is open. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Is the opening of the east gate physically clear or blocked?"
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g1",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The east gate passage is clear. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please go through the east gate."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "gallery.g1",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You passed through the open gate. You are in a safe room with the Fork emblem. A fixed compass mark points north. West gate (gallery.g1) is open. Northeast gate (gallery.g2) is closed. Southeast gate (gallery.g4) is open. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the northeast gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g2",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g1",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g4",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The northeast gate passage is clear. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please go through the northeast gate."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "gallery.g2",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You passed through the open gate. You are in a safe room with the Sail emblem. A fixed compass mark points north. Southwest gate (gallery.g2) is open. Southeast gate (gallery.g3) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the southeast gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g3",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "Cargo blocks the southeast gate passage. I have not moved."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the southwest gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g2",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g3",
+      "ok": true
+    },
+    {
+      "kind": "scoped-opposite-passages",
+      "text": "The southwest gate passage is clear, but the southeast gate passage is blocked. Shall I move?"
+    },
+    {
+      "kind": "peer-report",
+      "text": "The southwest gate passage is clear, but the southeast gate passage is blocked. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please go through the southwest gate."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "gallery.g2",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You passed through the open gate. You are in a safe room with the Fork emblem. A fixed compass mark points north. West gate (gallery.g1) is closed. Northeast gate (gallery.g2) is open. Southeast gate (gallery.g4) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the southeast gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g4",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g1",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g2",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The southeast gate passage is clear. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please go through the southeast gate."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "gallery.g4",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You passed through the open gate. You are in a safe room with the Leaf emblem. A fixed compass mark points north. Northwest gate (gallery.g4) is open. Northeast gate (gallery.g5) is closed. Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the northeast gate and tell me whether anything blocks it."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g5",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "gallery.g4",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The northeast gate passage is clear. Shall I move?"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please go through the northeast gate."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "gallery.g5",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You passed through the open gate. The Relay Gallery checkpoint confirms arrival at the Return Dock. The rescue continues. Observe the equipment within reach before acting."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please look around."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "observe_room",
+      "target": "",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "You are on the Return Dock's safe platform. A spring-loaded contact (return.contact) and recovery capsule (return.capsule) are within reach. You are not holding the contact. The capsule entrance is the movement target return.aboard. Inspect the local plaques to learn the available actions."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please inspect the contact."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "return.contact",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained. Available interactions on return.contact are hold_contact and release_contact."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Are you holding the contact now?"
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "return.contact",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "I am not holding the contact."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please grip the contact steadily."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "interact_object",
+      "target": "return.contact",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "I am holding the contact. You can try charging now."
+    },
+    {
+      "kind": "peer-request",
+      "request": "The controller is ready to charge."
+    },
+    {
+      "kind": "peer-report",
+      "text": "The capsule is beside me. Shall I wait?"
+    },
+    {
+      "kind": "human-dock",
+      "action": "charge"
+    },
+    {
+      "kind": "human-dock",
+      "action": "store"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please release the contact."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "interact_object",
+      "target": "return.contact",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "I have released the contact. The stored energy remains available."
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please board the capsule."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "move_to",
+      "target": "return.aboard",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "I have boarded the capsule. Should I inspect its local return panel?"
+    },
+    {
+      "kind": "human-dock",
+      "action": "authorize_return"
+    },
+    {
+      "kind": "peer-request",
+      "request": "Please confirm the return."
+    },
+    {
+      "kind": "peer-tool",
+      "action": "inspect_object",
+      "target": "return.capsule",
+      "ok": true
+    },
+    {
+      "kind": "peer-tool",
+      "action": "interact_object",
+      "target": "return.capsule",
+      "ok": true
+    },
+    {
+      "kind": "peer-report",
+      "text": "The capsule brought me home."
+    }
+  ],
+  "cleanup": {
+    "captures": 0,
+    "activeTracks": 0,
+    "contexts": 2,
+    "closedContexts": 2,
+    "queuedChunks": 0
+  }
+}
