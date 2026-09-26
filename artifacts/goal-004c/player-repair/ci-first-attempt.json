@@ -1,0 +1,14 @@
+{
+  "label": "PRESERVED OFFLINE CI AGGREGATE TIMEOUT",
+  "headSha": "3fbc69ae2ade6d0071a1dc7380203f0e801b0257",
+  "run": "https://github.com/catlover-bot/talk-me-home/actions/runs/36212074476",
+  "unitPassed": 272,
+  "browserPassed": 86,
+  "browserNotRun": 8,
+  "individualBrowserAssertionFailures": 0,
+  "error": "Timed out waiting 180s for the test suite to run",
+  "teardownError": "Timed out waiting 180s for the teardown for test suite to run",
+  "directRevisedPlayerCasesPassed": 10,
+  "resolution": "Increase only aggregate Playwright deadline from 180 to 210 seconds for the expanded 94-case suite. Keep per-case deadlines, assertions, zero retries, the four-minute CI step cap and offline provider gates unchanged. Re-run final qa:release and verify the new exact pushed head.",
+  "realProviderConnections": 0
+}

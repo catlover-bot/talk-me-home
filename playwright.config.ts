@@ -8,7 +8,9 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
   timeout: 20_000,
-  globalTimeout: 180_000,
+  // The 94-case suite includes direct full-mission player and scope regressions.
+  // Keep individual deadlines unchanged and leave cleanup margin inside CI's four minutes.
+  globalTimeout: 210_000,
   workers: process.env.CI ? 2 : 4,
   reporter: 'list',
   use: { baseURL: 'http://127.0.0.1:5173', channel: browserChannel, trace: 'off', screenshot: 'only-on-failure', launchOptions: { chromiumSandbox: true } },
