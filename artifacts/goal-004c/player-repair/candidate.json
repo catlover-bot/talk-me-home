@@ -1,6 +1,6 @@
 {
   "label": "OFFLINE PLAYER REPAIR CANDIDATE — NOT LIVE VERIFIED",
-  "candidateCommit": "91cbefb5690839d118c777a2ba85b412157b7504",
+  "candidateCommit": "6b2786062edb361336d5e93f628a0570a08cdae4",
   "applicationSourceCommit": "3cf72495c2d3cfcc42cfa6be7e698d2989e95e99",
   "applicationSourceUnchangedSince": "b5ff2f0e0ad956ab3c90a49244afc44a8739ce94",
   "node": "v24.20.0",
@@ -47,6 +47,9 @@
     "qa-evidence.mjs": "0677cc03b104d122eff1e2acd6a455b0d8d9a8f9992a5e64cd44af3d61b8ea86"
   },
   "applicationRuntimeMatchesHistoricalPartB": true,
+  "validationFiles": {
+    "playwright.config.ts": "aae9fa8c3b2c036d0a2f94be51d6b98f672ddcc2b582e53cbb5b26af836f14b5"
+  },
   "protectedFilesReverified": 77,
   "realTokenRequests": 0,
   "realProviderConnections": 0,

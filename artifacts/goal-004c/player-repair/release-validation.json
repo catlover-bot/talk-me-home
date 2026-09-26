@@ -1,7 +1,7 @@
 {
   "label": "FINAL OFFLINE QA ON FROZEN PLAYER CANDIDATE",
-  "startedAt": "2026-09-26T02:29:55.944Z",
-  "commit": "91cbefb5690839d118c777a2ba85b412157b7504",
+  "startedAt": "2026-09-26T02:38:40.146Z",
+  "commit": "6b2786062edb361336d5e93f628a0570a08cdae4",
   "branch": "work/goal-004c-live-recovery",
   "dirty": false,
   "node": "v24.20.0",
@@ -10,14 +10,14 @@
     {
       "label": "typecheck",
       "status": "passed",
-      "durationMs": 483,
+      "durationMs": 475,
       "exitCode": 0,
       "timedOut": false
     },
     {
       "label": "unit tests",
       "status": "passed",
-      "durationMs": 15472,
+      "durationMs": 15434,
       "exitCode": 0,
       "timedOut": false,
       "passedCases": 272
@@ -25,14 +25,14 @@
     {
       "label": "production build",
       "status": "passed",
-      "durationMs": 1132,
+      "durationMs": 1060,
       "exitCode": 0,
       "timedOut": false
     },
     {
       "label": "compiled-production browser tests",
       "status": "passed",
-      "durationMs": 101069,
+      "durationMs": 101134,
       "exitCode": 0,
       "timedOut": false,
       "passedCases": 94
@@ -69,8 +69,8 @@
   "route": "Fork to lower platform; northeast gate reported clear.",
   "browser": "153.0.8010.12",
   "chromiumSandbox": true,
-  "origin": "http://127.0.0.1:36289",
-  "finishedAt": "2026-09-26T02:31:51.577Z",
+  "origin": "http://127.0.0.1:44207",
+  "finishedAt": "2026-09-26T02:40:35.664Z",
   "status": "passed",
   "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened.",
   "realTokenRequests": 0,
