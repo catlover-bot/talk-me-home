@@ -1,0 +1,80 @@
+{
+  "label": "FINAL OFFLINE QA ON FROZEN PLAYER CANDIDATE",
+  "startedAt": "2026-09-26T02:29:55.944Z",
+  "commit": "91cbefb5690839d118c777a2ba85b412157b7504",
+  "branch": "work/goal-004c-live-recovery",
+  "dirty": false,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 483,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 15472,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 272
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1132,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 101069,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 94
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 5,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    ".validation/goal-004c-offline/screenshots/title.png",
+    ".validation/goal-004c-offline/screenshots/gallery.png",
+    ".validation/goal-004c-offline/screenshots/gallery-narrow.png",
+    ".validation/goal-004c-offline/screenshots/gallery-zoom-200.png",
+    ".validation/goal-004c-offline/screenshots/dock.png",
+    ".validation/goal-004c-offline/screenshots/home.png"
+  ],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "localBuildSha256": "4072309d0a2716c395fc83333a25d5121e440c2005671e74aa2d905594e0106d",
+  "runtimeBuildSha256": "4072309d0a2716c395fc83333a25d5121e440c2005671e74aa2d905594e0106d",
+  "access": {
+    "liveEnabled": false,
+    "authorized": false,
+    "available": false
+  },
+  "route": "Fork to lower platform; northeast gate reported clear.",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "origin": "http://127.0.0.1:36289",
+  "finishedAt": "2026-09-26T02:31:51.577Z",
+  "status": "passed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened.",
+  "realTokenRequests": 0,
+  "realProviderConnections": 0,
+  "syntheticPlayerCoverage": "10 direct shared-player browser cases within the full suite; local fake token endpoint calls are intercepted and separately counted.",
+  "preservedOriginalFiles": 77
+}

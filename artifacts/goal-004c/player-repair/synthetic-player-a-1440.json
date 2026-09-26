@@ -35,7 +35,8 @@
         "messageOrder": 1,
         "round": "current uninterrupted QA invocation",
         "chapter": "Cargo Bay",
-        "sourceKey": "Live Text|2026-09-26T02:26:55.639Z|Pip",
+        "displayedAt": "2026-09-26T02:31:04.028Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:04.028Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -54,7 +55,8 @@
         "messageOrder": 3,
         "round": "current uninterrupted QA invocation",
         "chapter": "Cargo Bay",
-        "sourceKey": "Live Text|2026-09-26T02:26:56.072Z|Pip",
+        "displayedAt": "2026-09-26T02:31:04.428Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:04.428Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -73,7 +75,8 @@
         "messageOrder": 5,
         "round": "current uninterrupted QA invocation",
         "chapter": "Cargo Bay",
-        "sourceKey": "Live Text|2026-09-26T02:26:56.420Z|Pip",
+        "displayedAt": "2026-09-26T02:31:04.788Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:04.788Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -92,7 +95,8 @@
         "messageOrder": 11,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:56.396Z|Pip",
+        "displayedAt": "2026-09-26T02:31:06.023Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:06.023Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -111,7 +115,8 @@
         "messageOrder": 15,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:57.160Z|Pip",
+        "displayedAt": "2026-09-26T02:31:06.807Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:06.807Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -130,7 +135,8 @@
         "messageOrder": 17,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:57.491Z|Pip",
+        "displayedAt": "2026-09-26T02:31:07.154Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:07.154Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -149,7 +155,8 @@
         "messageOrder": 19,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:58.130Z|Pip",
+        "displayedAt": "2026-09-26T02:31:07.804Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:07.804Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -168,7 +175,8 @@
         "messageOrder": 21,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:58.482Z|Pip",
+        "displayedAt": "2026-09-26T02:31:08.155Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:08.155Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -187,7 +195,8 @@
         "messageOrder": 23,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:58.945Z|Pip",
+        "displayedAt": "2026-09-26T02:31:08.594Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:08.594Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -206,7 +215,8 @@
         "messageOrder": 25,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:59.514Z|Pip",
+        "displayedAt": "2026-09-26T02:31:09.143Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:09.143Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -225,7 +235,8 @@
         "messageOrder": 25,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:59.514Z|Pip",
+        "displayedAt": "2026-09-26T02:31:09.143Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:09.143Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -244,7 +255,8 @@
         "messageOrder": 27,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:26:59.858Z|Pip",
+        "displayedAt": "2026-09-26T02:31:09.492Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:09.492Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -263,7 +275,8 @@
         "messageOrder": 29,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:27:00.515Z|Pip",
+        "displayedAt": "2026-09-26T02:31:10.167Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:10.167Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -282,7 +295,8 @@
         "messageOrder": 31,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:27:00.857Z|Pip",
+        "displayedAt": "2026-09-26T02:31:10.509Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:10.509Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -301,7 +315,8 @@
         "messageOrder": 33,
         "round": "current uninterrupted QA invocation",
         "chapter": "Relay Gallery",
-        "sourceKey": "Live Text|2026-09-26T02:27:01.392Z|Pip",
+        "displayedAt": "2026-09-26T02:31:11.081Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:11.081Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -320,7 +335,8 @@
         "messageOrder": 37,
         "round": "current uninterrupted QA invocation",
         "chapter": "Return Dock",
-        "sourceKey": "Live Text|2026-09-26T02:27:02.264Z|Pip",
+        "displayedAt": "2026-09-26T02:31:11.943Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:11.943Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -339,7 +355,8 @@
         "messageOrder": 39,
         "round": "current uninterrupted QA invocation",
         "chapter": "Return Dock",
-        "sourceKey": "Live Text|2026-09-26T02:27:02.625Z|Pip",
+        "displayedAt": "2026-09-26T02:31:12.297Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:12.297Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -358,7 +375,8 @@
         "messageOrder": 41,
         "round": "current uninterrupted QA invocation",
         "chapter": "Return Dock",
-        "sourceKey": "Live Text|2026-09-26T02:27:03.007Z|Pip",
+        "displayedAt": "2026-09-26T02:31:12.664Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:12.664Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -377,7 +395,8 @@
         "messageOrder": 43,
         "round": "current uninterrupted QA invocation",
         "chapter": "Return Dock",
-        "sourceKey": "Live Text|2026-09-26T02:27:03.386Z|Pip",
+        "displayedAt": "2026-09-26T02:31:13.028Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:13.028Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -396,7 +415,8 @@
         "messageOrder": 47,
         "round": "current uninterrupted QA invocation",
         "chapter": "Return Dock",
-        "sourceKey": "Live Text|2026-09-26T02:27:04.215Z|Pip",
+        "displayedAt": "2026-09-26T02:31:13.877Z",
+        "sourceKey": "Live Text|2026-09-26T02:31:13.877Z|Pip",
         "final": true,
         "interrupted": false,
         "identityBasis": "visible timestamp, source and snapshot order; no application message ID exposed"
@@ -903,5 +923,6 @@
     "contexts": 2,
     "closedContexts": 2,
     "queuedChunks": 0
-  }
+  },
+  "candidateCommit": "91cbefb5690839d118c777a2ba85b412157b7504"
 }

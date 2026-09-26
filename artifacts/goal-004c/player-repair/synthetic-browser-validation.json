@@ -5,7 +5,10 @@
   "passed": 10,
   "failed": 0,
   "durationSeconds": 28.3,
-  "projects": ["chromium-1280", "chromium-1440"],
+  "projects": [
+    "chromium-1280",
+    "chromium-1440"
+  ],
   "casesPerProject": [
     "Gallery A: retained historical Latch quote, no duplicate engage or status request, human Power OFF, scoped ambiguous passage report, obstruction and backtracking, full Dock and confirmed home",
     "Gallery B: retained historical Latch quote, normal alternate authored configuration, full Dock with synthetic early boarding and no duplicate planned boarding request",
@@ -22,7 +25,21 @@
     "mockTokenEndpointRequestsPerReconnectScopeCase": 2,
     "method": "Every external HTTP route is refused; the existing fake-provider WebSocket route never calls connectToServer; the unfunded isolated fixture server has no provider credential and GAME_DISABLE_LIVE remains 1."
   },
-  "cleanupAssertions": ["No active fake sockets", "No acquired microphone tracks", "All fake application audio contexts closed"],
-  "visuallyInspected": ["synthetic-player-a-cargo-power-off.png", "synthetic-player-b-home.png"],
-  "evidenceBoundary": "The exact historical Latch text is unmodified. All subsequent peer reports, supplied finality metadata, tool actions and successful continuations are explicitly constructed offline fixtures. These results do not establish real-model compliance, a real Rescue pass, physical microphone/speaker behavior, or human enjoyment."
+  "cleanupAssertions": [
+    "No active fake sockets",
+    "No acquired microphone tracks",
+    "All fake application audio contexts closed"
+  ],
+  "visuallyInspected": [
+    "synthetic-player-a-cargo-power-off.png",
+    "synthetic-player-b-home.png"
+  ],
+  "evidenceBoundary": "The exact historical Latch text is unmodified. All subsequent peer reports, supplied finality metadata, tool actions and successful continuations are explicitly constructed offline fixtures. These results do not establish real-model compliance, a real Rescue pass, physical microphone/speaker behavior, or human enjoyment.",
+  "finalFrozenCandidate": {
+    "commit": "91cbefb5690839d118c777a2ba85b412157b7504",
+    "command": "GAME_DISABLE_LIVE=1 npm run qa:release",
+    "passed": 10,
+    "fullBrowserCases": 94,
+    "source": "release-validation.json; four fresh full-route transcripts from the final suite replace development captures"
+  }
 }
