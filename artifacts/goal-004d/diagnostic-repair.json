@@ -1,0 +1,30 @@
+{
+  "initialCandidate": "8c35d5d01cdb8846b67b226a2ffcb379fb478232",
+  "initialReleaseReport": "artifacts/goal-004d/initial-release-failure.json",
+  "diagnosticUnitRun": {
+    "command": "GAME_DISABLE_LIVE=1 npm test",
+    "log": ".validation/goal-004d-unit-diagnostic.log",
+    "tests": 308,
+    "passed": 304,
+    "failed": 4,
+    "findings": "Three stale prompt wording assertions plus a watchdog test that killed the supervisor before its driver received acknowledgement. The latter exited on its existing acknowledgement timeout."
+  },
+  "promptContractRepair": {
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/voice.test.ts tests/runtime-policy-config.test.ts",
+    "log": ".validation/goal-004d-prompt-contract-repair.log",
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0,
+    "change": "Restore explicit cancellation/fresh-call, sensor-failure, transcript-correction and chapter-greeting safeguards; align existing text assertions while retaining secrecy checks."
+  },
+  "watchdogFixtureRepair": {
+    "log": ".validation/goal-004d-watchdog-synchronized.log",
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "change": "Bounded wait for the worker's post-acknowledgement ready marker before killing its supervisor; existing termination deadlines, reservation and lease checks unchanged.",
+    "boundary": "Test synchronization only. Supervisor production code remains unchanged; this does not prove or repair pre-acknowledgement startup-race cleanup."
+  },
+  "realProviderConnections": 0,
+  "historicalAccountingChanged": false
+}

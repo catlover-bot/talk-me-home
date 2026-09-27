@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -185,15 +185,20 @@ test('QA independent watchdog survives supervisor death and terminates an unresp
     const worker = join(directory, 'offline-worker.mjs')
     const driverPidFile = join(directory, 'driver-pid')
     const supervisorPidFile = join(directory, 'supervisor-pid')
+    const driverReadyFile = join(directory, 'driver-ready')
     writeFileSync(worker, workerSource(`
       import { writeFileSync } from 'node:fs';
       writeFileSync(${JSON.stringify(driverPidFile)}, String(process.pid));
       writeFileSync(${JSON.stringify(supervisorPidFile)}, String(process.ppid));
       await requestAttempt({ name: 'orphan', maxRunSeconds: 2 });
+      writeFileSync(${JSON.stringify(driverReadyFile)}, 'ready');
       while (true) {}
     `))
     const running = runSupervised({ directory, worker })
-    for (let count = 0; count < 100 && inspectCampaign(directory).attempts.length === 0; count++) await new Promise(done => setTimeout(done, 20))
+    // Exercise an acknowledged, unresponsive driver. A durable reservation alone
+    // does not prove that its watchdog arm and IPC acknowledgement have completed.
+    for (let count = 0; count < 100 && !existsSync(driverReadyFile); count++) await new Promise(done => setTimeout(done, 20))
+    assert.equal(existsSync(driverReadyFile), true, 'The driver did not acknowledge its bounded reservation before the supervisor-death test.')
     process.kill(Number(readFileSync(supervisorPidFile, 'utf8')), 'SIGKILL')
     assert.equal((await running).signal, 'SIGKILL')
     const driverPid = Number(readFileSync(driverPidFile, 'utf8'))

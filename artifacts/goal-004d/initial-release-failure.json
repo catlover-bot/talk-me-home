@@ -1,0 +1,33 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-27T14:39:13.251Z",
+  "commit": "8c35d5d01cdb8846b67b226a2ffcb379fb478232",
+  "branch": "work/goal-004d-runtime-intent-fix",
+  "dirty": false,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 523,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "failed",
+      "durationMs": 14166,
+      "exitCode": 1,
+      "timedOut": false,
+      "passedCases": 305
+    }
+  ],
+  "screenshots": [],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "failure": "unit tests failed; rerun the named ordinary offline command for diagnostics.\n\n'failed' !== 'passed'\n",
+  "finishedAt": "2026-09-27T14:39:27.956Z",
+  "status": "failed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened."
+}

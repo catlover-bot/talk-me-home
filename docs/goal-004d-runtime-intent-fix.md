@@ -34,7 +34,11 @@ npm run typecheck
 git diff --check
 ```
 
-The single full `GAME_DISABLE_LIVE=1 npm run qa:release` on the clean committed implementation is **PENDING**. Its production build, unit/browser counts, Practice screenshots, cleanup and final identity will be recorded in `artifacts/goal-004d/release-validation.json` after execution. Offline Practice and injected providers cannot establish real speech, physical playback, a human playtest, enjoyment or real-model action control.
+The first `qa:release` invocation on clean commit `8c35d5d01cdb8846b67b226a2ffcb379fb478232` stopped at unit tests (305/308); it did not build or run browser checks. Its [failed receipt](../artifacts/goal-004d/initial-release-failure.json) is preserved. Diagnostic unit execution identified three stale exact-wording prompt assertions and also encountered a separate watchdog survival failure (304/308). The prompt was refined to retain explicit sensor-failure, fresh-call-after-cancellation, correction and chapter-greeting safeguards. Existing prompt assertions were updated to the corresponding policy clauses, with all secrecy assertions retained. The focused voice and actual configuration tests then passed **54/54**; see `.validation/goal-004d-prompt-contract-repair.log`.
+
+The watchdog failure left its offline driver waiting for the supervisor's acknowledgement; it later exited on the existing ten-second timeout. An isolated run passed, and a process audit found no surviving owned QA workers. The test had killed the supervisor as soon as the reservation existed, before proving that its worker had reached the intended unresponsive state. Its fixture now waits for a bounded post-acknowledgement ready marker before the kill. Termination deadlines, reservation/lease assertions and supervisor production code are unchanged. This repairs test synchronization; it does not claim to fix or prove cleanup during the earlier pre-acknowledgement race.
+
+One completed full `GAME_DISABLE_LIVE=1 npm run qa:release` on the corrected clean committed implementation is **PENDING**. Its production build, unit/browser counts, Practice screenshots, cleanup and final identity will be recorded in `artifacts/goal-004d/release-validation.json` after execution. The rerun follows an actual code/test correction, not an unchanged run to increase evidence counts. Offline Practice and injected providers cannot establish real speech, physical playback, a human playtest, enjoyment or real-model action control.
 
 ## Identity and preservation
 
