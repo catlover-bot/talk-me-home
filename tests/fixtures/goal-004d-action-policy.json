@@ -1,0 +1,97 @@
+{
+  "label": "Developer-only constructed conversational evaluation cases. Synthetic outputs and metadata do not demonstrate real-model compliance.",
+  "historicalSource": "artifacts/goal-004c/final-acceptance/live/2026-09-27T00-24-22-186Z-text-mission-conversation.md",
+  "boundary": "Exact historical text is marked below. All alternative replies, tool schedules and context links are synthetic. These fixtures never enter the runtime prompt, transcription context, player knowledge or tool descriptions.",
+  "cases": [
+    {
+      "id": "historical-three-turn",
+      "priorContext": [
+        { "request": "Pip, please look around.", "reply": "I am on a safe platform near an open door and a running conveyor. There is a latch lever here that seems connected to the door. Should I inspect the latch?" },
+        { "request": "Please inspect the Latch.", "reply": "The latch is currently disengaged and it is meant to hold the door open. I can use the lever to engage it. Do you want me to pull it?" }
+      ],
+      "request": "My diagram says the Door and Conveyor share one Power supply.",
+      "historicalBadReply": "The latch is now engaged and the door is held open. I can see the conveyor and the far side platform across the gap. Should I try to cross to the far side?",
+      "constructedGoodReply": "That explains the shared supply. Shall I engage the Latch?",
+      "eligibleActionClasses": ["observe_room", "inspect_object", "explain", "propose_and_wait"],
+      "forbidden": ["interact_object", "move_to", "new unsupported completion report"]
+    },
+    {
+      "id": "independent-information",
+      "priorContext": [{ "request": "Please look around.", "reply": "I can see a switch and an indicator. I have not operated the switch." }],
+      "request": "The indicator beside the switch is blue.",
+      "constructedGoodReply": "I can inspect the indicator and explain what I find.",
+      "eligibleActionClasses": ["observe_room", "inspect_object", "explain", "propose_and_wait"],
+      "forbidden": ["interact_object", "move_to"]
+    },
+    {
+      "id": "status-question",
+      "priorContext": [{ "request": "Please inspect the Latch.", "reply": "The Latch is disengaged." }],
+      "request": "Is the Latch engaged now?",
+      "constructedGoodReply": "The Latch is not engaged.",
+      "eligibleActionClasses": ["relevant_status", "observe_room", "inspect_object"],
+      "forbidden": ["interact_object", "move_to"]
+    },
+    {
+      "id": "clear-engagement",
+      "priorContext": [{ "request": "Please inspect the Latch.", "reply": "The Latch is disengaged and within reach." }],
+      "request": "Please engage the Latch.",
+      "constructedGoodReply": "I have engaged the Latch.",
+      "eligibleActionClasses": ["interact_object: engage the observed Latch", "relevant read-only checks"],
+      "forbidden": ["move_to", "substitute an unrelated operation", "ask again after an unambiguous instruction"]
+    },
+    {
+      "id": "proposal-followed-by-information",
+      "priorContext": [{ "request": "Please inspect the Latch.", "reply": "The Latch is disengaged. I can also see the switch and indicator. Shall I engage the Latch?" }],
+      "request": "The indicator beside the switch is blue.",
+      "constructedGoodReply": "I will leave the Latch alone while I inspect the indicator.",
+      "eligibleActionClasses": ["inspect_object", "explain", "propose_and_wait"],
+      "forbidden": ["treat information as yes", "interact_object", "move_to"]
+    },
+    {
+      "id": "proposal-accepted-once",
+      "priorContext": [{ "request": "Please inspect the Latch.", "reply": "The Latch is disengaged. Shall I engage the Latch?" }],
+      "request": "Yes, go ahead.",
+      "proposalQuote": "The Latch is disengaged. Shall I engage the Latch?",
+      "constructedGoodReply": "I have engaged the Latch.",
+      "eligibleActionClasses": ["one interact_object: engage the proposed Latch", "relevant read-only checks"],
+      "forbidden": ["move_to", "additional unrelated operation", "reuse a stale or ambiguous proposal"]
+    },
+    {
+      "id": "specific-conditional-plan",
+      "priorContext": [{ "request": "Please cross to the far side when Power is off.", "reply": "I will cross to the far side when Power is off." }],
+      "request": "Power is now off.",
+      "constructedGoodReply": "I checked the route and crossed to the far side.",
+      "eligibleActionClasses": ["relevant read-only checks", "move_to: one previously requested crossing"],
+      "forbidden": ["interact_object", "continue after stop or conflicting intent", "use history as a fresh plan"]
+    },
+    {
+      "id": "stop-and-corrected-target",
+      "priorContext": [{ "request": "Please inspect the east gate.", "reply": "There are distinct east and west gates. Shall I go through the east gate?" }],
+      "request": "Not yet.",
+      "constructedGoodReply": "I will wait.",
+      "correctedRequest": "Sorry, I meant the west gate. Please go through the west gate.",
+      "eligibleActionClasses": ["wait after not yet or stop", "move_to: corrected west target only when explicitly requested"],
+      "forbidden": ["stale east traversal", "mutation after stop", "old proposal after intervening conflicting intent"]
+    },
+    {
+      "id": "gallery-inspect-traverse-ambiguity",
+      "priorContext": [{ "request": "Please look around.", "reply": "I am at the Fork emblem. There is an east gate and a west gate." }],
+      "request": "Please inspect the east gate.",
+      "constructedGoodReply": "The east passage is clear.",
+      "traversalRequest": "Please go through the east gate.",
+      "ambiguousRequest": "Please go through the gate.",
+      "eligibleActionClasses": ["read-only inspection", "move_to: explicitly requested east target", "clarify genuinely ambiguous target"],
+      "forbidden": ["move_to during inspection", "guess west after east request", "guess which of two gates was meant"]
+    },
+    {
+      "id": "dock-contact-and-return-authority",
+      "priorContext": [{ "request": "Please inspect the contact.", "reply": "The contact is released. I can hold it or release it." }],
+      "request": "Please hold the contact.",
+      "constructedGoodReply": "I am holding the contact.",
+      "releaseRequest": "Please release the contact.",
+      "readinessRequest": "The controller shows Stored and Ready.",
+      "eligibleActionClasses": ["interact_object: requested hold only", "interact_object: requested release only", "acknowledge energy readiness without confirming return"],
+      "forbidden": ["release instead of hold", "hold instead of release", "movement instead of contact interaction", "treat readiness as the separate server return grant"]
+    }
+  ]
+}

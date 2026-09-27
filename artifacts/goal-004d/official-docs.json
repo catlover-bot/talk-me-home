@@ -1,0 +1,28 @@
+{
+  "purpose": "Primary documentation reviewed before changing shipped prompt and tool descriptions; no provider connection or account API used.",
+  "reviewedOnJst": "2026-09-27",
+  "index": "https://www.assemblyai.com/docs/llms.txt",
+  "sources": [
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/prompting-guide",
+      "applied": "Place the central behavioral rule early, use brief contrasting examples and remove redundant prose. Treat prompt iteration as empirical behavior work, not deterministic enforcement. Private game facts stay outside runtime examples."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/overview",
+      "applied": "Precise descriptions and explicit conditions for not calling a tool address overly broad triggers. Only descriptions change; schemas, available tool names and execution remain unchanged."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration",
+      "applied": "The first session.update carries inline system_prompt, greeting, tools, input and output. Inline fields are mutually exclusive with agent_id. Preserve anna and all non-policy settings."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference",
+      "applied": "Verify session.update serialization without changing events or transport. tool.call arguments are an object; tool.result carries the matching call_id and serialized result. session.ended remains distinct from socket close."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools",
+      "applied": "Function tools remain declared inline and executed by the existing browser/server path. Preserve the established reply.done correlation and result scheduling; the observed failure was not a transport deadlock."
+    }
+  ],
+  "boundary": "Documentation supports the configuration and design choices; it does not establish model compliance with this game's revised policy."
+}

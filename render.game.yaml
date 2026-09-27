@@ -5,7 +5,7 @@ services:
   - type: web
     name: talk-me-home-game
     runtime: node
-    branch: work/goal-004-release-candidate
+    branch: work/goal-004d-runtime-intent-fix
     plan: starter
     numInstances: 1
     autoDeployTrigger: off

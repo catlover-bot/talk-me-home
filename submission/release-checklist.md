@@ -2,7 +2,9 @@
 
 Prepared September 24, 2026. This checklist describes the release candidate and remaining owner actions; it is not a submitted entry.
 
-September 27 status update: use `work/goal-004c-live-recovery` and the final pushed head identified in `docs/goal-004c-live-recovery.md`. The frozen acceptance candidate `6f1ee799a14dc24686459f40ab0cbf7238e2df92` preserves the finished game but failed its real Text retest in Cargo Bay on an instruction/action-control mismatch. Ending ACK and cleanup succeeded; Voice was not run. **RELEASE_NOT_LIVE_VERIFIED** remains the current verdict. The September 24 preparation rows below are historical package status, not claims that later Live testing was absent or passed. Deployment/access, real demo URL, video, finished deck and submission remain incomplete.
+Current Goal 004D branch: `work/goal-004d-runtime-intent-fix`. See [release status](../docs/goal-004d-release-status.md) and [runtime validation](../docs/goal-004d-runtime-intent-fix.md) for the final repaired candidate and exact checks. Live remains **LIVE_PENDING_AUTHORIZATION / RELEASE_NOT_LIVE_VERIFIED**; this runtime repair is offline only without a separate spending grant.
+
+Historical September 27 Goal 004C acceptance: the frozen candidate `6f1ee799a14dc24686459f40ab0cbf7238e2df92` failed its real Text retest in Cargo Bay on an instruction/action-control mismatch. Ending ACK and cleanup succeeded; Voice was not run. See `docs/goal-004c-live-recovery.md` for the delivered history. The September 24 preparation rows below are historical package status, not claims that later Live testing was absent or passed. Deployment/access, real demo URL, video, finished deck and submission remain incomplete.
 
 | Item | Honest status and next action |
 | --- | --- |

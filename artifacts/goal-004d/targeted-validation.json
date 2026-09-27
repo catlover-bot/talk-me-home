@@ -1,0 +1,17 @@
+{
+  "label": "OFFLINE INJECTED-PROVIDER AND CONSTRUCTED-CONVERSATION CHECKS",
+  "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/runtime-policy-config.test.ts tests/qa-action-policy-cases.test.ts tests/qa-acceptance-behavior.test.ts tests/qa-player-policy.test.ts tests/qa-player-memory.test.ts tests/qa-player-drift.test.ts tests/voice-authority.test.ts tests/rescue-http.test.ts",
+  "privateLog": ".validation/goal-004d-targeted.log",
+  "tests": 65,
+  "passed": 65,
+  "failed": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "durationMs": 429.211592,
+  "additionalChecks": {
+    "npm run typecheck": "passed",
+    "git diff --check": "passed"
+  },
+  "realProviderConnections": 0,
+  "boundary": "Controlled fake transport verifies actual token-route to browser session.update configuration delivery. Constructed conversations verify bounded evaluator behavior. Neither establishes real-model compliance, real audio, human speech, or a Live Rescue pass."
+}

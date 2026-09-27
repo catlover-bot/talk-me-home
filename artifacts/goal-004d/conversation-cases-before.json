@@ -1,0 +1,23 @@
+{
+  "label": "Offline evaluator baseline, not a real-model behavior test",
+  "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-action-policy-cases.test.ts",
+  "runBeforeEvaluatorChanges": true,
+  "tests": 10,
+  "passed": 2,
+  "failed": 8,
+  "skipped": 0,
+  "cancelled": 0,
+  "passedCaseNumbers": [3, 7],
+  "failedCaseNumbers": [1, 2, 4, 5, 6, 8, 9, 10],
+  "centralFailure": {
+    "case": 1,
+    "input": "My diagram says the Door and Conveyor share one Power supply.",
+    "priorReport": "The latch is currently disengaged and it is meant to hold the door open. I can use the lever to engage it. Do you want me to pull it?",
+    "newReport": "The latch is now engaged and the door is held open. I can see the conveyor and the far side platform across the gap. Should I try to cross to the far side?",
+    "constructedToolEvents": [],
+    "expected": "blocked",
+    "actual": "pass",
+    "scope": "A constructed no-tool success-claim variant using exact retained historical text. The actual historical attempt did contain a successful interact_object call; this fixture does not rewrite that fact."
+  },
+  "otherFailures": "Independent factual context, polite commands, explicit acceptance of one proposal, not-yet/correction, ambiguous gate direction and Dock context were unsupported or over-permitted by the bounded evaluator. These failures describe evaluator coverage, not observations of the new runtime model."
+}

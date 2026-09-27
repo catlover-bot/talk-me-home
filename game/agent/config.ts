@@ -16,12 +16,12 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'inspect_object',
-    description: 'Inspect one observed, reachable local object. Check relevant details without unnecessary permission questions. Learn its current state, labels, and available interactions. Do not guess an ambiguous object.',
+    description: 'Inspect one observed, reachable local object without changing it. Relevant read-only checks need no extra permission. State, labels and available interactions describe capabilities, not authorization to operate. Clarify an ambiguous object.',
     parameters: { type: 'object', properties: { object: objectParameter }, required: ['object'], additionalProperties: false },
   },
   {
     type: 'function', name: 'interact_object',
-    description: 'Attempt one inspected local action following clear player intent or an agreed plan. Do not ask permission twice or guess an uncertain setting. Act sequentially and await a valid result. This cannot operate remote Mission Control controls.',
+    description: 'Perform one inspected local operation matching an explicit current player request or a specific, still-valid player-agreed plan. A polite clear request or unambiguous acceptance of one outstanding proposal permits that operation without repeated confirmation. Information, status questions, explanations, thanks, silence and available actions alone supply no permission; an existing valid agreed plan may still apply. Otherwise propose and wait. Engage does not permit moving; holding does not permit releasing. If already done, report the state instead of substituting another action. Respect stop, corrections and chapter changes; check fresh preconditions and await the result. Energy readiness does not replace the separate current server return grant. Cannot operate remote Mission Control controls.',
     parameters: { type: 'object', properties: {
       object: objectParameter,
       action: { type: 'string', description: 'One exact available action identifier returned by inspect_object.' },
@@ -29,7 +29,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'move_to',
-    description: 'Attempt one move through a currently observed passage or to an observed destination, following the player\'s intent. Clarify ambiguous directions. The server checks current traversal conditions. A successful move can reach a new area without completing the mission; observe there before another move.',
+    description: 'Move once through a currently observed passage or to an observed destination only for an explicit current movement request or a specific, still-valid player-agreed plan. Clear polite requests, acceptance of one identifiable proposal, and concrete conditional crossing instructions qualify; check fresh traversal conditions without asking twice. Information, status updates, thanks, silence, inspection or engagement requests, and tool-listed possibilities alone do not authorize movement; an existing valid agreed plan may still apply. Clarify ambiguous directions; do not substitute movement for an operation already done. Stop, corrections and chapter changes invalidate stale permission. After a valid move, observe the reached area; only server-confirmed final completion means home.',
     parameters: { type: 'object', properties: {
       target: { type: 'string', description: 'One exact reachable passage or destination identifier returned by the latest local observation or inspection.' },
     }, required: ['target'], additionalProperties: false },

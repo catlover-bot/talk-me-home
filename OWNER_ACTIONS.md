@@ -2,9 +2,9 @@
 
 Deployment status: **NOT DEPLOYED**. Demo URL: **NOT PROVIDED**. Hosting, billing, repository visibility, and provider settings have not been changed.
 
-Use `catlover-bot/talk-me-home`, current repair branch `work/goal-004c-live-recovery`, based on Goal 004B commit `00d10e1c21fa8de40a4c9bf5e49dce5126c2b04c` and the existing Goal 004 product. Current candidate source/build identities are recorded in `artifacts/goal-004c/part-b-runtime.json` (the unchanged Part A bundle is also preserved in `final-runtime.json`); the delivery report identifies the exact final pushed head. The starter-only `main`, `npm start`, and original `render.yaml` do **not** serve this game. Original starter commands and notices remain intact.
+Use `catlover-bot/talk-me-home`, current repair branch `work/goal-004d-runtime-intent-fix`, continued from delivered Goal 004C head `6521bc0a761e35c36d5deb56538eb77f1f8ebae7`. [Current release status](docs/goal-004d-release-status.md) distinguishes the runtime repair, deployment preparation and remaining external work. The final 004D candidate identities and exact pushed-head CI are pending verification in the [runtime validation report](docs/goal-004d-runtime-intent-fix.md); use that recorded final delivery for a future approved release. The starter-only `main`, `npm start`, and original `render.yaml` do **not** serve this game. Original starter commands and notices remain intact.
 
-Current September 27 acceptance candidate: `6f1ee799a14dc24686459f40ab0cbf7238e2df92`; exact runtime/harness/fixture identities are in `artifacts/goal-004c/final-acceptance/candidate.json`. Its one new real Text retest stopped in Cargo Bay for a material instruction/action-control mismatch. Ending ACK and cleanup passed; conditional Voice was not run. The unused conditional slot is blocked, not a retry allowance. See `docs/goal-004c-live-recovery.md` for evidence and preserved history. The candidate remains **RELEASE_NOT_LIVE_VERIFIED**. These local test approvals do not authorize hosting, public judges' allowance, credit purchases or billing changes.
+Historical September 27 acceptance candidate: `6f1ee799a14dc24686459f40ab0cbf7238e2df92`; its identities and failed Text result remain in `artifacts/goal-004c/final-acceptance/`. It stopped in Cargo Bay for a material instruction/action-control mismatch. Ending ACK and cleanup passed; conditional Voice was not run. Both Goal 004C Text attempts remain consumed, and the unused conditional Voice slot remains blocked. Goal 004D is offline only without a separate explicit grant: **LIVE_PENDING_AUTHORIZATION / RELEASE_NOT_LIVE_VERIFIED**. See `docs/goal-004c-live-recovery.md` for preserved history. These tasks do not authorize hosting, a public judges' allowance, credit purchases or billing changes.
 
 ## 1. Build and publish one Node service
 
@@ -18,12 +18,12 @@ GAME_DISABLE_LIVE=1 npm run start:game
 
 Open `http://127.0.0.1:3001`. This runs compiled Node server code and the built React game from one origin. `PORT` overrides 3001; `GAME_BIND_ADDRESS` defaults to loopback. `GAME_ORIGIN` defaults to the matching loopback origin. Use the exact chosen hostname; `localhost` and `127.0.0.1` are different origins.
 
-For the existing Render deployment path, use the prepared **`render.game.yaml`**, or apply its settings to an already approved service. Creating a paid service or disk needs your decision; nothing has been purchased. Render's current [web-service instructions](https://render.com/docs/web-services) require binding to `0.0.0.0` and using `PORT`. Its [persistent-disk instructions](https://render.com/docs/disks) require a paid service, preserve only the mount path, and limit the disk to one instance. Use one service/process; no replicas or process cluster.
+For the existing Render deployment path, use the prepared **`render.game.yaml`**, or apply its settings to an already approved service. It selects the 004D feature branch with automatic deploy disabled; verify the exact approved commit before any deployment. Creating a paid service or disk needs your decision; nothing has been purchased. Render's current [web-service instructions](https://render.com/docs/web-services) require binding to `0.0.0.0` and using `PORT`. Its [persistent-disk instructions](https://render.com/docs/disks) require a paid service, preserve only the mount path, and limit the disk to one instance. Use one service/process; no replicas or process cluster.
 
 | Setting | Value |
 | --- | --- |
 | Runtime | Node 24 (`NODE_VERSION=24.20.0`) |
-| Branch | `work/goal-004c-live-recovery`, exact final pushed commit |
+| Branch | `work/goal-004d-runtime-intent-fix`, exact final verified and approved pushed commit |
 | Build | `npm ci --include=dev && npm run build:game` |
 | Start | `npm run start:game` |
 | Bind | `GAME_BIND_ADDRESS=0.0.0.0`; Render provides `PORT` |
@@ -52,7 +52,7 @@ Every issued/attempted token consumes one full 600-second reservation before the
 
 These are application admission limits, **not a verified AssemblyAI account billing cap**. Other applications using the same key remain outside this allowance. The durable file stores reservation times only; it contains no transcripts or credentials. Browser ownership covers all session routes through HttpOnly cookies. The access grant expires after 30 minutes; browser ownership expires after two hours. This is a small demo access gate, not an account system or complete anti-cheat protection.
 
-Give judges the actual HTTPS URL and access code in the submission's appropriate private access field. Suggested instruction: “Choose Play with voice, check your microphone locally, and enter the supplied demo access code. Live Text also uses the provider. If Live is busy, wait a few minutes or choose the clearly labelled offline Practice mode.” Verify one owner Live connection after enabling it; automated work spent zero provider seconds. Check microphone capture, audible output, and immediate End on your actual browser/device.
+Give judges the actual HTTPS URL and access code in the submission's appropriate private access field. Suggested instruction: “Choose Play with voice, check your microphone locally, and enter the supplied demo access code. Live Text also uses the provider. If Live is busy, wait a few minutes or choose the clearly labelled offline Practice mode.” A future authorized deployment needs its own browser/device check of microphone capture, audible output and immediate End. Historical automated provider attempts do not establish those physical checks or verify the changed Goal 004D runtime policy.
 
 ## Memory and submission
 

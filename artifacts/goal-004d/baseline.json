@@ -1,0 +1,84 @@
+{
+  "capturedAt": "2026-09-27T14:31:00.535Z",
+  "baselineHead": "6521bc0a761e35c36d5deb56538eb77f1f8ebae7",
+  "baselineBranch": "work/goal-004d-runtime-intent-fix",
+  "status": "OFFLINE_BASELINE_CAPTURED_NO_NEW_LIVE_AUTHORIZATION",
+  "privateBaseline": {
+    "path": ".validation/goal-004d-preservation-baseline.json",
+    "sha256": "c12fb3798b88989f04ed7e7deb86c3c5acb1742dbf0c28adfd91158d4a79f5ef",
+    "historicalFileCount": 451,
+    "immutableFileCount": 65
+  },
+  "oldPolicy": {
+    "sourcePromptFile": "game/agent/prompt.ts",
+    "sourcePromptSha256": "e1046e777b74d087bcbf82939043692c38fd8445ab410b94d12958e2f4782e36",
+    "sourceConfigFile": "game/agent/config.ts",
+    "sourceConfigSha256": "7f33bfb1d957d398256e046d3eaf334fe9ed0abd14386baf8b9d11c6ec57d6c6",
+    "compiledPromptFile": "dist/server/agent/prompt.js",
+    "compiledPromptSha256": "d8ced51fad0b0e48fb054dd22354258145cd72d4b22a7882ba82c6a231a1be7e",
+    "compiledConfigFile": "dist/server/agent/config.js",
+    "compiledConfigSha256": "94aaaaf8039b9aa345afb56458704a089c778296b2d110b1c9418c1554fd6d86",
+    "promptTextSha256": "91fab9ffdf310da7b33aea7f0e09e6c53114d30ebc173162332b7fe23f0ebe2a",
+    "serializedConfigSha256": "bbe17ef3fb2bdc8af2ef59ceb52fba4b174d462643b6131734fd62f5ccbebeea",
+    "serializedSessionUpdateSha256": "9ca2e2f3b165527added459ada79bec0d28155e1ac0c9b4262c42eca647d12a2",
+    "sourceAndCompiledConfigSerializationEqual": true,
+    "serializationAlgorithm": "SHA-256 of UTF-8 JSON.stringify(sessionConfig), preserving authored property insertion order; session.update identity wraps exactly {type:\"session.update\",session:sessionConfig}. Prompt text hashes exact UTF-8 system_prompt, without JSON quoting.",
+    "transportAndGreetingSha256": "543788394cf464d7fc043d45e614a5a627afa997275f0c54bbed253ee0494cf9",
+    "explicitVoice": "anna",
+    "explicitModelConfigurationPresent": false,
+    "providerCalls": 0
+  },
+  "oldRuntime": {
+    "candidateCommit": "6f1ee799a14dc24686459f40ab0cbf7238e2df92",
+    "sourceCommit": "3cf72495c2d3cfcc42cfa6be7e698d2989e95e99",
+    "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+    "fileCount": 21,
+    "manifestReference": "artifacts/goal-004c/final-acceptance/candidate.json",
+    "algorithm": "SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON"
+  },
+  "historicalCI": {
+    "receiptPath": ".validation/final-acceptance-final-ci.json",
+    "receiptSha256": "7b7b183e6184004e6f865378c665b93cfd2755d9115f821794d31ed11a37d379",
+    "headSha": "6521bc0a761e35c36d5deb56538eb77f1f8ebae7",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/catlover-bot/talk-me-home/actions/runs/36282563580",
+    "remoteReadReconfirmedAt": "2026-09-27T14:31:00.535Z"
+  },
+  "accounting": {
+    "goal004B": {
+      "attempts": 3,
+      "productionAttempts": 3,
+      "reservedSeconds": 2010
+    },
+    "goal004C": {
+      "attempts": 2,
+      "productionAttempts": 2,
+      "reservedSeconds": 1340,
+      "outcomes": [
+        {
+          "attempt": 1,
+          "outcome": "failed",
+          "endAcknowledged": true,
+          "closedAt": 1790359165690
+        },
+        {
+          "attempt": 2,
+          "outcome": "failed",
+          "endAcknowledged": true,
+          "closedAt": 1790468710967
+        }
+      ],
+      "unusedConditionalSlots": 1,
+      "eligibleNewAttempts": 0,
+      "reason": "Both Text attempts failed. The remaining conditional Voice slot is blocked and cannot fund Goal 004D."
+    },
+    "goal004D": {
+      "authorizedTokenAttempts": 0,
+      "authorizedProviderSeconds": 0,
+      "fundedCampaignCreated": false,
+      "newAllowanceCreated": false
+    }
+  },
+  "scope": "This records the unchanged failing shipped policy before the Goal 004D intervention. Offline serialization does not establish model compliance. Existing standard model stack, anna voice, transport, gameplay, private-information boundaries, and all historical failures remain the baseline."
+}

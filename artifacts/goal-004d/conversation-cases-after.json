@@ -1,0 +1,27 @@
+{
+  "label": "Offline constructed conversational/evaluator validation, not a real-model behavior pass",
+  "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-action-policy-cases.test.ts tests/qa-acceptance-behavior.test.ts",
+  "tests": 19,
+  "passed": 19,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "requiredNewCases": 10,
+  "preservedExistingCases": 9,
+  "fixtures": "tests/fixtures/goal-004d-action-policy.json",
+  "testFile": "tests/qa-action-policy-cases.test.ts",
+  "changes": [
+    "Detect a newly reported completion after information when the last eligible report was negative, or the reply explicitly claims a completed action, without requiring a mutation event.",
+    "Retain legitimate unchanged completed-state recaps; do not treat every engaged word as a new action.",
+    "Allow one matching explicit acceptance of one exact eligible prior proposal, with stale, ambiguous and changed-chapter links rejected.",
+    "Recognize the bounded polite-command, not-yet, corrected-target, independent-information and ambiguous-gate cases.",
+    "Preserve the existing specific conditional-plan evaluation and reject it after stop or a chapter change."
+  ],
+  "unchanged": [
+    "The exact historical three-turn player input, including the information-only wiring statement",
+    "The repaired shared player, player policy and report memory",
+    "All nine existing acceptance evaluator tests and assertions",
+    "Production decision-making never imports this evaluator or its QA parser"
+  ],
+  "boundary": "Synthetic schedules and alternative replies exercise bounded evaluator classifications. Exact retained historical text remains explicitly marked. Unsupported language remains uncertainty. These results neither prove real-model instruction-following nor authorize provider requests."
+}

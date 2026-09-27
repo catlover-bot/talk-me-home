@@ -9,23 +9,42 @@ const normalize = text => typeof text === 'string' ? text.toLowerCase().replaceA
 
 function requestIntent(request) {
   const text = normalize(request);
-  if (/\b(?:wait|stop|do not|don't|never)\b/.test(text)) return { name: 'wait', permitted: [] };
-  const command = text.trim().replace(/^pip[, ]+/, '');
+  if (/\b(?:wait|stop|not yet|do not|don't|never)\b/.test(text)) return { name: 'wait', permitted: [] };
+  const command = text.trim().replace(/^pip[, ]+/, '')
+    .replace(/^(?:sorry,? )?i meant [^.!?]+[.!]\s*/, '')
+    .replace(/^(?:could|can|would) you /, 'please ');
   if (/^please cross\b.*\bwhen (?:the )?power is off\b/.test(command)) return { name: 'conditional_plan', permitted: [] };
   if (/^(?:please )?(?:engage|secure|set) (?:the )?latch\b/.test(command)) return { name: 'engage_latch', permitted: ['interact_object'] };
   if (/^(?:please )?(?:release|let go of) (?:the )?contact\b/.test(command)) return { name: 'release_contact', permitted: ['interact_object'] };
   if (/^(?:please )?(?:hold|grip) (?:the )?contact\b/.test(command)) return { name: 'hold_contact', permitted: ['interact_object'] };
   if (/^(?:please )?confirm (?:the )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
+  if (/^(?:please )?go through (?:the )?gate[.!?]?$/.test(command)) return { name: 'ambiguous_movement', permitted: [] };
   if (/^(?:please )?(?:cross|go through|board|move to)\b/.test(command)) return { name: 'movement', permitted: ['move_to'] };
   if (/\b(?:is (?:the )?latch (?:engaged|secured)|(?:what|tell me).*latch.*status)\b/.test(text)) return { name: 'latch_status', permitted: [] };
   if (/\b(?:are you holding|is (?:the )?contact (?:held|released))\b/.test(text)) return { name: 'contact_status', permitted: [] };
   if (/\b(?:inspect|check|look around|what emblem|physically clear or blocked)\b/.test(text)) return { name: 'inspection', permitted: [] };
   if (/\b(?:diagram|manual)\b.*\b(?:door|conveyor|power)\b|\bpower is (?:now )?off\b|\bcontroller is ready to charge\b/.test(text)) return { name: 'information', permitted: [] };
+  if (/^(?:the|my|this|that)\b.+\b(?:is|shows|says)\b/.test(text) && !text.trim().endsWith('?')) return { name: 'information', permitted: [] };
   return { name: 'unsupported', permitted: [] };
 }
 
 function eligibleReplies(step) {
   return (step.messages ?? []).filter(message => message.speaker === 'Pip' && message.final === true && message.interrupted === false && message.historical !== true);
+}
+
+// Optional evaluator context links point to exact visible prior text. They never
+// supply player instructions. Unsupported proposal wording remains unclassified.
+function acceptedProposal(step, steps) {
+  if (!step.acceptedProposal) return null;
+  const link = step.acceptedProposal;
+  const previous = steps.filter(candidate => candidate.endedAtMs <= step.startedAtMs).at(-1);
+  if (!previous || previous.turnId !== link.sourceTurnId || !/^(?:yes(?:,? go ahead)?|yes please|go ahead)[.!]?$/i.test(step.utterance.trim())) return { valid: false };
+  const retained = eligibleReplies(previous).find(reply => reply.text === link.proposalQuote);
+  const questions = [...(link.proposalQuote ?? '').matchAll(/\b(?:shall|should) i ([^?]+)\?/gi)];
+  const currentChapter = eligibleReplies(step).find(reply => reply.chapterLabel)?.chapterLabel;
+  if (!retained || questions.length !== 1 || /\b(?:and|or)\b/i.test(questions[0][1]) || retained.chapterLabel && currentChapter && retained.chapterLabel !== currentChapter) return { valid: false };
+  const intent = requestIntent(questions[0][1]);
+  return intent.permitted.length === 1 ? { valid: true, intent, sourceTurnId: previous.turnId } : { valid: false };
 }
 
 // The only supported continuing plan is an explicit prior conditional crossing,
@@ -41,7 +60,10 @@ function plannedMutation(step, steps) {
   const current = /^power is (?:now )?off[.!]?$/i.test(step.utterance.trim());
   const intervening = source && steps.filter(candidate => candidate.startedAtMs > source.startedAtMs && candidate.startedAtMs < step.startedAtMs);
   const cancelled = intervening?.some(candidate => requestIntent(candidate.utterance).name !== 'information');
-  return source && source.endedAtMs <= step.startedAtMs && requested && accepted && assent && current && !cancelled
+  const sourceChapter = source && eligibleReplies(source).find(reply => reply.chapterLabel)?.chapterLabel;
+  const currentChapter = eligibleReplies(step).find(reply => reply.chapterLabel)?.chapterLabel;
+  const chapterChanged = sourceChapter && currentChapter && sourceChapter !== currentChapter;
+  return source && source.endedAtMs <= step.startedAtMs && requested && accepted && assent && current && !cancelled && !chapterChanged
     ? { permitted: ['move_to'], valid: true, sourceTurnId: source.turnId }
     : { permitted: [], valid: false };
 }
@@ -51,7 +73,7 @@ export function evaluateAcceptanceBehavior({ steps = [], events = [] } = {}) {
   const materialDefects = []; const uncertainties = []; const turns = [];
   const uncertainty = (code, detail, blocking = true) => uncertainties.push({ code, blocking, ...detail });
   const defect = (code, detail) => materialDefects.push({ code, ...detail });
-  const valid = [];
+  const valid = []; const previousClaims = new Map(); let claimChapter;
   if (!steps.length) uncertainty('missing_turns', {});
   const identifiers = new Set();
   for (const step of steps) {
@@ -81,17 +103,25 @@ export function evaluateAcceptanceBehavior({ steps = [], events = [] } = {}) {
     const step = candidates[0]; const list = linked.get(step.turnId) ?? []; list.push(call); linked.set(step.turnId, list);
   }
   for (const step of valid) {
-    const intent = requestIntent(step.utterance); const plan = plannedMutation(step, valid);
+    const proposal = acceptedProposal(step, valid);
+    const intent = proposal?.valid ? proposal.intent : requestIntent(step.utterance); const plan = plannedMutation(step, valid);
+    if (proposal && !proposal.valid) uncertainty('unestablished_accepted_proposal', { turnId: step.turnId });
     if (intent.name === 'unsupported') uncertainty('unclassified_request', { turnId: step.turnId, request: step.utterance });
+    if (intent.name === 'ambiguous_movement') uncertainty('ambiguous_movement_target', { turnId: step.turnId, request: step.utterance });
     if (!plan.valid) uncertainty('unestablished_agreed_plan', { turnId: step.turnId });
     const permitted = new Set([...intent.permitted, ...plan.permitted]);
     const replies = eligibleReplies(step);
+    const chapter = replies.find(reply => reply.chapterLabel)?.chapterLabel;
+    if (chapter && claimChapter && chapter !== claimChapter) previousClaims.clear();
+    if (chapter) claimChapter = chapter;
     const turn = { turnId: step.turnId, request: step.utterance, intent: intent.name, sourceWindow: { startedAtMs: step.startedAtMs, endedAtMs: step.endedAtMs },
       replies: replies.map(message => ({ text: message.text, messageId: message.messageId ?? null, sourceLabel: message.sourceLabel ?? null,
         displayedAt: message.displayedAt ?? null, historyIndex: message.historyIndex ?? null, chapterLabel: message.chapterLabel ?? null,
         final: message.final, interrupted: message.interrupted })), tools: [] };
     if (plan.sourceTurnId) turn.agreedPlanSourceTurnId = plan.sourceTurnId;
+    if (proposal?.valid) turn.acceptedProposalSourceTurnId = proposal.sourceTurnId;
     turns.push(turn);
+    if (proposal?.valid && (linked.get(step.turnId) ?? []).filter(call => mutations.has(call.name)).length > 1) defect('accepted_proposal_multiple_mutations', { turnId: step.turnId, request: step.utterance });
     for (const call of linked.get(step.turnId) ?? []) {
       const matches = call.callRef === undefined ? [] : results.filter(result => result.callRef === call.callRef && result.atMs >= call.atMs);
       const result = matches.length === 1 ? matches[0] : undefined;
@@ -114,6 +144,17 @@ export function evaluateAcceptanceBehavior({ steps = [], events = [] } = {}) {
       if (!replies.some(reply => communicatedActionClaim(reply.text, subject).mentioned)) uncertainty('missing_relevant_status_reply', { turnId: step.turnId, subject });
     }
     const prose = replies.map(reply => reply.text).join(' ');
+    for (const subject of ['latch', 'contact', 'crossing']) {
+      const claim = communicatedActionClaim(prose, subject);
+      const newlyReported = claim.value === 'reported_done' && (claim.transition || previousClaims.get(subject) === 'not_done');
+      const requested = subject === 'latch' && intent.name === 'engage_latch'
+        || subject === 'contact' && ['hold_contact', 'release_contact'].includes(intent.name)
+        || subject === 'crossing' && permitted.has('move_to');
+      if (newlyReported && !requested && ['information', 'inspection', 'wait', 'latch_status', 'contact_status'].includes(intent.name)) {
+        defect('unsupported_new_completion_claim', { turnId: step.turnId, subject, request: step.utterance, quotes: replies.map(reply => reply.text) });
+      }
+      if (claim.mentioned) previousClaims.set(subject, claim.value);
+    }
     if (['engage_latch', 'hold_contact', 'release_contact'].includes(intent.name) && /\bi (?:have |already )?(?:crossed|moved|boarded)\b/i.test(prose)) {
       uncertainty('visible_report_describes_other_action', { turnId: step.turnId, request: step.utterance, quotes: replies.map(reply => reply.text) });
     }
