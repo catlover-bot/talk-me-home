@@ -4,7 +4,7 @@ Deployment status: **NOT DEPLOYED**. Demo URL: **NOT PROVIDED**. Hosting, billin
 
 Use `catlover-bot/talk-me-home`, current repair branch `work/goal-004c-live-recovery`, based on Goal 004B commit `00d10e1c21fa8de40a4c9bf5e49dce5126c2b04c` and the existing Goal 004 product. Current candidate source/build identities are recorded in `artifacts/goal-004c/part-b-runtime.json` (the unchanged Part A bundle is also preserved in `final-runtime.json`); the delivery report identifies the exact final pushed head. The starter-only `main`, `npm start`, and original `render.yaml` do **not** serve this game. Original starter commands and notices remain intact.
 
-Goal 004C Part A completed offline. The owner separately approved one bounded local Part B campaign on September 26 JST; see `docs/goal-004c-live-recovery.md` for its actual outcome and remaining limits. That approval does not authorize hosting, a public judges' allowance, credit purchases or billing changes. The candidate remains **RELEASE_NOT_LIVE_VERIFIED** until the required real tests actually pass.
+Current September 27 acceptance candidate: `6f1ee799a14dc24686459f40ab0cbf7238e2df92`; exact runtime/harness/fixture identities are in `artifacts/goal-004c/final-acceptance/candidate.json`. Its one new real Text retest stopped in Cargo Bay for a material instruction/action-control mismatch. Ending ACK and cleanup passed; conditional Voice was not run. The unused conditional slot is blocked, not a retry allowance. See `docs/goal-004c-live-recovery.md` for evidence and preserved history. The candidate remains **RELEASE_NOT_LIVE_VERIFIED**. These local test approvals do not authorize hosting, public judges' allowance, credit purchases or billing changes.
 
 ## 1. Build and publish one Node service
 

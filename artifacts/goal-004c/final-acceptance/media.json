@@ -1,0 +1,168 @@
+{
+  "label": "UI LIVE TEXT - REAL ASSEMBLYAI - LOCAL DERIVED MEDIA",
+  "generatedAt": "2026-09-27T00:26:49.818Z",
+  "candidateCommit": "6f1ee799a14dc24686459f40ab0cbf7238e2df92",
+  "sourceAttempt": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission",
+  "actualAttemptCompletion": false,
+  "actualAttemptFailure": "Material instruction/action-control mismatch; the attempt stopped without a repair or retry.",
+  "algorithm": "Existing qa-evidence.mjs media recipe: mix captured input and rendered PCM on their shared timeline at half gain each; H.264 CRF 20 video and AAC 128 kb/s audio, shifted by the recorded page-creation alignment. No cuts, replacement speech or generated answers.",
+  "alignment": {
+    "offsetMs": 130.7,
+    "creationIntervalHalfWidthMs": 76.5,
+    "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate."
+  },
+  "muxStatus": "Derived MP4 contains the captured rendered Pip output as nonzero decoded audio; source Text input is digital silence. The original video remains unchanged and silent.",
+  "originalSourceHashesUnchanged": true,
+  "sources": [
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/browser-silent.webm",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/browser-silent.webm",
+      "bytes": 3441361,
+      "sha256": "4e0adfbd85bcaf43dbeb89a0729e151ba79f2b2976e3146af7b699290869a88d",
+      "probe": {
+        "file": "browser-silent.webm",
+        "durationSeconds": 46.56,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "vp8",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      }
+    },
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/input-digital.wav",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/input-digital.wav",
+      "bytes": 2254620,
+      "sha256": "824eb33a6b4a243c624f024e1eced9ae3e1a7587b22620ce32b580ed30f469df",
+      "probe": {
+        "file": "input-digital.wav",
+        "durationSeconds": 46.970333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      "pcm": {
+        "samples": 1127288,
+        "nonzeroSamples": 0,
+        "samplesAbove32": 0,
+        "rms": 0
+      }
+    },
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/rendered-digital.wav",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/rendered-digital.wav",
+      "bytes": 2254620,
+      "sha256": "197f1cdd80673cb1265b6bed50255a57e702ed49d5042c25f35c7315b4c48a0d",
+      "probe": {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 46.970333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      "pcm": {
+        "samples": 1127288,
+        "nonzeroSamples": 739177,
+        "samplesAbove32": 570190,
+        "rms": 0.08500283684386668
+      }
+    },
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/postVolume-digital.wav",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/postVolume-digital.wav",
+      "bytes": 2254620,
+      "sha256": "c86ca51e417e3ae4abb726f68bf81a0d9614b6053e13585a24991858f54eedf0",
+      "probe": {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 46.970333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      "pcm": {
+        "samples": 1127288,
+        "nonzeroSamples": 709113,
+        "samplesAbove32": 547373,
+        "rms": 0.08534441685767415
+      }
+    }
+  ],
+  "derived": [
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/qa-combined-digital.wav",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/qa-combined-digital.wav",
+      "bytes": 2254654,
+      "sha256": "0f7182fc4b73fd7b233cf74eec752770dc78d817830043fc4a0966a99a5eeca5",
+      "probe": {
+        "file": "qa-combined-digital.wav",
+        "durationSeconds": 46.970333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      "pcm": {
+        "samples": 1127288,
+        "nonzeroSamples": 725059,
+        "samplesAbove32": 525091,
+        "rms": 0.04250142225152818
+      }
+    },
+    {
+      "localPath": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/qa-combined-video.mp4",
+      "relativePath": ".validation/goal-004c-live/2026-09-27T00-24-22-186Z-text-mission/qa-combined-video.mp4",
+      "bytes": 2706990,
+      "sha256": "2c0dd2fe3598012d80769ba0f173c4f7ae687eddeccc76c9ef75f31dff9461e8",
+      "probe": {
+        "file": "qa-combined-video.mp4",
+        "durationSeconds": 47.106709,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "h264",
+            "width": 1440,
+            "height": 900
+          },
+          {
+            "type": "audio",
+            "codec": "aac",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      "decodedAudioPcm": {
+        "samples": 1128448,
+        "nonzeroSamples": 739040,
+        "samplesAbove32": 525547,
+        "rms": 0.04247264699472908
+      }
+    }
+  ],
+  "textInputBoundary": "Text input capture is entirely digital silence; typed player requests are visible UI actions. No human speech, synthetic microphone input, ASR, physical microphone or loudspeaker validation is claimed.",
+  "playbackBoundary": "Nonzero media audio derives from the shipped digital playback capture. Local decoding confirms nonzero samples; no human listening, physical playback or sample-accurate audiovisual synchronization is claimed.",
+  "privacyBoundary": "All video and audio files remain local under ignored .validation. This JSON contains metadata only; no private media was committed or uploaded.",
+  "realProviderCallsDuringMediaProcessing": 0
+}
