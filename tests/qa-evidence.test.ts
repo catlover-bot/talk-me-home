@@ -3,6 +3,10 @@ import { test } from 'node:test'
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createHash } from 'node:crypto'
+import { writeGoal004CHistory } from './fixtures/goal-004c-history.ts'
+// @ts-expect-error This local accounting helper is intentionally a native Node module.
+import { initializeAmendment, AmendedCampaignBudget, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
 import { approximateVideoAlignment, summarizeAttempt, exportCampaign } from '../scripts/qa-evidence.mjs'
 
@@ -142,4 +146,87 @@ test('QA evidence exports allowlisted tool metadata without arguments, results, 
   assert.equal(summary.tools[0].succeeded, true)
   assert.doesNotMatch(JSON.stringify(summary), /fixture-only-/)
   assert.throws(() => summarizeAttempt(report, { label, events: [{ type: 'transcript.user', final: true, atMs: 10, text: 'Authorization: Bearer fixture-only-credential' }] }), /Credential-like/)
+})
+
+test('acceptance export retains exact visible timing, settled input provenance and behavioral defects without hidden payloads', () => {
+  const message = { historyIndex: 3, speaker: 'Pip', text: 'I crossed.', sourceLabel: 'Live Text', chapterLabel: 'Cargo Bay', displayedAt: '2026-09-27T00:00:00.123Z', final: true, interrupted: false, provenance: 'rendered DOM labels' }
+  const report = { label: textLabel, mode: 'text', scenario: 'mission', identity: {}, visibleHistory: [message],
+    lifecycle: [{ type: 'browser.closed', observedAt: '2026-09-27T00:00:01.123Z', elapsedMs: 60.456, outcome: 'observed', source: 'driver', raw: 'excluded-secret-world' }, { type: 'unsupported', hidden: 'excluded-secret-world' }],
+    steps: [{ inputMode: 'text', utterance: 'Please engage the Latch.', turnId: 2, startedAtMs: 10.123, endedAtMs: 40.789, settled: true, terminal: false, inputSource: 'normal UI typed message', messages: [message], elapsedMs: 41 }],
+    behavior: { status: 'blocked', materialDefects: [{ code: 'mutation_outside_requested_action', turnId: 2, request: 'Please engage the Latch.', callRef: 4, name: 'move_to', arguments: { hidden: 'excluded-secret-world' } }],
+      uncertainties: [{ code: 'response_window_is_temporal_association', blocking: false, turnId: 2, callRef: 4 }],
+      turns: [{ turnId: 2, request: 'Please engage the Latch.', intent: 'engage_latch', sourceWindow: { startedAtMs: 10.123, endedAtMs: 40.789 }, replies: [message], tools: [{ name: 'move_to', callRef: 4, replyRef: 8, atMs: 20, resultAtMs: 30, outcome: 'success', result: 'excluded-secret-world' }] }],
+      reviewedToolCalls: 1, boundary: 'Temporal evidence only.' } }
+  const evidence = { label: textLabel, events: [{ type: 'tool.call', name: 'move_to', atMs: 20, callRef: 4, replyRef: 8 }, { type: 'tool.result', atMs: 30, callRef: 4, replyRef: 9, isError: false }] }
+  const summary = summarizeAttempt(report, evidence)
+  assert.equal(summary.typedTurns[0].startedAtMs, 10.123)
+  assert.equal(summary.typedTurns[0].endedAtMs, 40.789)
+  assert.equal(summary.typedTurns[0].settled, true)
+  assert.equal(summary.inputSteps[0].messages[0].historyIndex, 3)
+  assert.equal(summary.visibleHistory[0].displayedAt, message.displayedAt)
+  assert.equal(summary.visibleHistory[0].provenance, 'rendered DOM labels')
+  assert.equal(summary.lifecycle.length, 1)
+  assert.equal(summary.lifecycle[0].observedAt, '2026-09-27T00:00:01.123Z')
+  assert.equal(summary.lifecycle[0].elapsedMs, 60.456)
+  assert.equal(summary.tools[0].callRef, 4)
+  assert.equal(summary.tools[0].replyRef, 8)
+  assert.equal(summary.tools[0].resultReplyRef, 9)
+  assert.equal(summary.tools[0].status, 'success')
+  assert.equal(summary.behavior.status, 'blocked')
+  assert.equal(summary.behavior.materialDefects[0].code, 'mutation_outside_requested_action')
+  assert.equal(summary.behavior.uncertainties[0].blocking, false)
+  assert.equal(summary.behavior.turns[0].sourceWindow.startedAtMs, 10.123)
+  assert.doesNotMatch(JSON.stringify(summary), /excluded-secret-world/)
+})
+
+test('amended export combines preserved history with failed new Text and keeps conditional Voice blocked', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'qa-amended-export-offline-'))
+  try {
+    await writeGoal004CHistory(directory)
+    const original = await readFile(join(directory, 'campaign.jsonl'))
+    const originalAllowance = await readFile(join(directory, 'allowance.jsonl'))
+    initializeAmendment(directory, { now: () => 2_000_000_000_000 })
+    const budget = new AmendedCampaignBudget(directory, () => 2_000_000_000_100)
+    const files = { 'dist/fixture.js': 'a'.repeat(64) }; const harnessFiles = { 'fixture.mjs': 'b'.repeat(64) }
+    const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+    const identity = { commit: 'c'.repeat(40), files, harnessFiles, runtimeSha256: digest(files), harnessSha256: digest(harnessFiles) }
+    const reservation = budget.reserve({ name: 'text-mission', identity })
+    const allowancePath = join(directory, QA_AMENDMENT_ALLOWANCE)
+    await writeFile(allowancePath, await readFile(allowancePath, 'utf8') + JSON.stringify({ reservedAt: reservation.reservedAt, leaseUntil: reservation.leaseUntil }) + '\n')
+    budget.finish(2, { outcome: 'failed', endAcknowledged: true, connectedSeconds: 25 })
+    budget.closed(2)
+    const name = '2033-05-18T03-33-20-100Z-text-mission'; const attemptPath = join(directory, name)
+    await mkdir(attemptPath)
+    await writeFile(join(attemptPath, 'report.json'), JSON.stringify({ label: textLabel, mode: 'text', scenario: 'mission', reservation, identity, failure: 'Concrete fixture failure.', completion: false, cleanup: { activeTracks: 0, activeSources: 0, openApplicationContexts: 0 }, behavior: { status: 'blocked', materialDefects: [{ code: 'mutation_outside_requested_action' }], uncertainties: [], turns: [] } }))
+    await writeFile(join(attemptPath, 'audio-evidence.json'), JSON.stringify({ label: textLabel, events: [{ type: 'session.end', atMs: 25_000 }, { type: 'session.ended', atMs: 25_100 }] }))
+    const summary = await exportCampaign({ directory, output: join(directory, 'export') })
+    assert.equal(summary.attempts, 2)
+    assert.equal(summary.historicalAttempts, 1)
+    assert.equal(summary.newAttempts, 1)
+    assert.equal(summary.productionAttempts, 2)
+    assert.equal(summary.reservedSeconds, 1340)
+    assert.equal(summary.newReservedSeconds, 670)
+    assert.equal(summary.remainingAttempts, 1)
+    assert.equal(summary.remainingReservedCapacitySeconds, 670)
+    assert.equal(summary.maximumAggregatePlanningDollars, 2.5125)
+    assert.equal(summary.admissionStatus, 'conditional_voice_blocked')
+    assert.equal(summary.amendedSequence.passed, false)
+    assert.match(summary.amendedSequence.reason, /new Text pass/)
+    assert.equal(summary.results[0].historical, false)
+    assert.equal(summary.results[0].behaviorStatus, 'blocked')
+    assert.equal(summary.results[0].cleanup.activeTracks, 0)
+    assert.equal(summary.originalAllowanceSha256, createHash('sha256').update(originalAllowance).digest('hex'))
+    assert.equal(summary.amendmentLedgerSha256, createHash('sha256').update(await readFile(join(directory, QA_AMENDMENT_LEDGER))).digest('hex'))
+    assert.deepEqual(await readFile(join(directory, 'campaign.jsonl')), original)
+    assert.deepEqual(await readFile(join(directory, 'allowance.jsonl')), originalAllowance)
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+test('partial or corrupt amendment evidence never falls back to an apparently available original slot', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'qa-amended-export-corrupt-'))
+  try {
+    await writeGoal004CHistory(directory)
+    await writeFile(join(directory, QA_AMENDMENT_ALLOWANCE), 'corrupt\n')
+    await assert.rejects(exportCampaign({ directory, output: join(directory, 'export') }))
+  } finally { await rm(directory, { recursive: true, force: true }) }
 })

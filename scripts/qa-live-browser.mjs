@@ -8,9 +8,12 @@ import { createHash, randomBytes } from 'node:crypto';
 import { parseEnv } from 'node:util';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { release } from 'node:os';
 import { inspectCampaign } from './qa-budget.mjs';
-import { assertGoal004CLiveAuthorized, assertGoal004CNextAttempt, GOAL_004C_PROPOSAL } from './qa-live-authorization.mjs';
-import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt } from './qa-supervisor.mjs';
+import { QA_AMENDMENT_ID, QA_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
+import { assertGoal004CLiveAuthorized, assertGoal004CReservationAuthorized, GOAL_004C_AMENDMENT, GOAL_004C_FROZEN_FILE } from './qa-live-authorization.mjs';
+import { evaluateAcceptanceBehavior } from './qa-acceptance-behavior.mjs';
+import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, assertSupervisedParent } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
 import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
 import { runRescuePlayer, PHRASES } from './qa-mission-player.mjs';
@@ -67,8 +70,10 @@ async function buildIdentity() {
   }
   await walk('dist');
   const harnessFiles = {};
-  for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
-  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, node: process.version };
+  for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
+  const fixtureFiles = {};
+  for (const file of (await readdir('.validation/goal-004b-media')).filter(name => /^speech-[a-f0-9]{16}\.(?:json|wav)$/.test(name)).sort()) fixtureFiles[file] = createHash('sha256').update(await readFile(join('.validation/goal-004b-media', file))).digest('hex');
+  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, fixtureFiles, fixtureSha256: createHash('sha256').update(JSON.stringify(fixtureFiles)).digest('hex'), browser: execFileSync(chromium.executablePath(), ['--version'], { encoding: 'utf8' }).trim(), browserExecutableSha256: createHash('sha256').update(await readFile(chromium.executablePath())).digest('hex'), node: process.version, environment: { platform: process.platform, arch: process.arch, kernel: release(), viewport: '1440x900', reducedMotion: 'reduce', chromiumSandbox: true } };
 }
 async function availablePort() {
   const server = createServer(); await new Promise(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
@@ -82,22 +87,14 @@ async function persistReport(directory, report) {
   await rename(temporary, join(directory, 'report.json'));
 }
 
-async function checkNextAttempt(mode, identity, currentDirectory) {
-  const campaign = inspectCampaign(DIRECTORY);
-  const reports = [];
-  for (const entry of await readdir(DIRECTORY, { withFileTypes: true })) {
-    if (!entry.isDirectory() || !/^\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d-\d{3}Z-(?:text|voice)-mission$/.test(entry.name)) continue;
-    const path = join(DIRECTORY, entry.name);
-    if (path === currentDirectory) continue;
-    // Missing/corrupt prior evidence refuses continuation; never guess a pass.
-    reports.push(JSON.parse(await readFile(join(path, 'report.json'), 'utf8')));
-  }
-  assertGoal004CNextAttempt({ campaign, mode, identity, reports });
+async function checkNextAttempt(mode, identity) {
+  assertGoal004CReservationAuthorized({ directory: DIRECTORY, mode, identity });
 }
 
 async function worker(scenario, mode) {
   assertGoal004CLiveAuthorized();
   if (process.env.QA_SUPERVISED_WORKER !== '1' || !process.send) throw new Error('An independently supervised worker is required.');
+  assertSupervisedParent(DIRECTORY);
   if (scenario !== 'mission' || !['voice', 'text'].includes(mode)) throw new Error('An explicit mission and text or voice input mode are required.');
   const identity = await buildIdentity();
   await checkNextAttempt(mode, identity);
@@ -110,7 +107,7 @@ async function worker(scenario, mode) {
   // A finished first session retains its conservative admission lease. Two
   // admission slots permit the ordered second test; supervisor still allows
   // exactly one real connection and never refunds either reservation.
-  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, 'allowance.jsonl'), GAME_LIVE_CONCURRENT_LIMIT: '2' };
+  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '2' };
   delete productionEnv.GAME_DISABLE_LIVE; delete productionEnv.NODE_OPTIONS;
   const server = spawn(process.execPath, ['dist/server/server/production.js'], { env: productionEnv, stdio: 'ignore' });
   await registerOwnedProcess(server.pid);
@@ -137,13 +134,14 @@ async function worker(scenario, mode) {
   };
   const onMessage = message => { if (message?.type === 'qa.stop') { journal.record('watchdog.stop.requested', { outcome: 'observed' }); void end(); } };
   process.on('message', onMessage);
+  await persistReport(directory, report);
   try {
     for (let count = 0; count < 80; count++) {
       try { if ((await fetch(`${origin}/api/health`, { signal: AbortSignal.timeout(500) })).ok) break; } catch {}
       if (count === 79) throw new Error('Owned production service did not become healthy.');
       await pause(100);
     }
-    browserServer = await chromium.launchServer({ headless: true, chromiumSandbox: true });
+    browserServer = await chromium.launchServer({ headless: true, chromiumSandbox: true, executablePath: chromium.executablePath() });
     await registerOwnedProcess(browserServer.process().pid);
     browser = await chromium.connect(browserServer.wsEndpoint());
     browser.on('disconnected', () => journal.record('browser.disconnected', { outcome: 'observed' }));
@@ -174,7 +172,7 @@ async function worker(scenario, mode) {
       if (report.tokenRequests !== 1) { await route.abort(); return; }
       try {
         await checkNextAttempt(mode, identity, directory);
-        reservation = await requestAttempt({ name: `${mode}-mission`, maxRunSeconds: 570 });
+        reservation = await requestAttempt({ name: `${mode}-mission`, maxRunSeconds: 570, identity });
         report.reservation = reservation;
         await persistReport(directory, report);
         await route.continue();
@@ -195,26 +193,40 @@ async function worker(scenario, mode) {
     await page.getByRole('button', { name: mode === 'voice' ? 'Connect Live Voice' : 'Connect Live Text', exact: true }).click();
     await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ready'), null, { timeout: 25000 });
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
-    const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.filter(article => !/Partial transcript|Interrupted \/ incomplete speech/.test(article.textContent)).map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent })));
+    const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.map((article, historyIndex) => ({ historyIndex, speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'Rendered history DOM at this snapshot; index is not a provider message identifier' })).filter(item => item.final && !item.interrupted));
     const settled = (afterMs = -1, requireReply = true) => waitForTurn(page, { afterMs, mode, requireReply, timeoutMs: 40_000 });
     await settled();
+    const captionIdentity = item => JSON.stringify([item.displayedAt, item.sourceLabel, item.chapterLabel, item.speaker, item.text]);
     async function say(text, { requireReply = true, terminal = false } = {}) {
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
-      const before = await audioSnapshot(page); const previous = (await visibleHistory()).length;
+      const before = await audioSnapshot(page); const previous = new Set((await visibleHistory()).map(captionIdentity));
+      const newMessages = async () => (await visibleHistory()).filter(item => !previous.has(captionIdentity(item)));
+      const step = { turnId: report.steps.length + 1, utterance: text, inputMode: mode, inputSource: mode === 'text' ? 'Normal UI typed submission; not ASR' : 'Offline synthetic fixture through browser microphone capture', startedAtMs: before.elapsedMs, settled: false, terminal };
       const speech = mode === 'voice' ? await fixture(text) : undefined;
       await submitPlayerTurn(page, { mode, text, fixture: speech });
       let pacing;
       try { if (!terminal) pacing = await settled(before.elapsedMs, requireReply); }
       catch (error) {
-        report.steps.push({ utterance: text, fixture: speech?.id ?? null, inputMode: mode, failureLayer: 'turn_pacing', reason: String(error.message), elapsedMs: (await audioSnapshot(page)).elapsedMs });
+        const endedAtMs = (await audioSnapshot(page)).elapsedMs;
+        report.steps.push({ ...step, fixture: speech?.id ?? null, messages: await newMessages(), failureLayer: 'turn_pacing', reason: String(error.message), endedAtMs, elapsedMs: endedAtMs });
         // An unresolved cycle is not permission to overlap it with a clarification.
         throw error;
       }
-      const messages = (await visibleHistory()).slice(previous);
+      const messages = await newMessages();
       const replies = messages.filter(message => message.speaker === 'Pip').map(message => message.text).join(' ');
-      report.steps.push({ utterance: text, fixture: speech?.id ?? null, inputMode: mode, messages, pacing, elapsedMs: (await audioSnapshot(page)).elapsedMs });
+      const endedAtMs = (await audioSnapshot(page)).elapsedMs;
+      report.steps.push({ ...step, fixture: speech?.id ?? null, messages, pacing, settled: !terminal, endedAtMs, elapsedMs: endedAtMs });
       await persistReport(directory, report);
       console.log(JSON.stringify({ scenario, mode, step: report.steps.length, pip: replies }));
+      // Diagnostic stop only: sanitized tool metadata never selects a player action.
+      // A known control failure is not a reason to spend the rest of the session.
+      if (!terminal) {
+        const behavior = evaluateAcceptanceBehavior({ steps: report.steps, events: (await audioSnapshot(page)).events });
+        if (behavior.materialDefects.length) {
+          report.behavior = behavior; await persistReport(directory, report);
+          throw new Error('Material instruction/action-control mismatch; the attempt stopped without a repair or retry.');
+        }
+      }
       return replies;
     }
     await runRescuePlayer({ page, say, screenshot, report });
@@ -227,7 +239,7 @@ async function worker(scenario, mode) {
     await end();
     if (page && !page.isClosed()) {
       report.checkpoints = await page.evaluate(() => globalThis.__qaPublicCheckpoints ?? []).catch(() => []);
-      report.visibleHistory = await page.locator('.history-message').evaluateAll(articles => articles.map(article => ({ speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'rendered DOM labels; no inferred delivery status beyond these labels' }))).catch(() => []);
+      report.visibleHistory = await page.locator('.history-message').evaluateAll(articles => articles.map((article, historyIndex) => ({ historyIndex, speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'rendered DOM labels; no inferred delivery status beyond these labels' }))).catch(() => []);
       evidence = await collectAudioEvidence(page, directory).catch(() => undefined);
       await cleanupAudioInstrumentation(page).catch(() => {});
       report.cleanup = await audioSnapshot(page).then(snapshot => ({ activeTracks: snapshot.activeTracks, activeSources: snapshot.activeSources, openApplicationContexts: snapshot.openApplicationContexts })).catch(() => null);
@@ -240,9 +252,27 @@ async function worker(scenario, mode) {
     const lastReceived = events.findLast(event => event.direction === 'received');
     report.durationEvidence = { clock: 'browser performance.now; lifecycle driver receipts have their separate monotonic clock', endObservation: ended ? 'provider ACK observed' : closed ? 'socket close observed without ACK' : 'exact remote/local socket end not observed', lastPeerEventAfterOpenSeconds: opened && lastReceived ? Math.max(0, lastReceived.atMs - opened.atMs) / 1000 : null, reservedSeconds: reservation?.reservedSeconds ?? null, boundary: 'Last peer event bounds local observation only; it is not a billing duration. Missing ACK neither proves indefinite billing nor confirms remote end.' };
     if (reservation && opened && (!report.endAcknowledged || !report.explicitEndSent)) failure ??= 'The provider ending was not explicitly sent and acknowledged.';
+    const terminal = report.steps.at(-1);
+    if (terminal?.terminal) {
+      terminal.endedAtMs = ended?.atMs ?? closed?.atMs ?? terminal.endedAtMs;
+      terminal.settled = report.completion === true && report.endAcknowledged;
+      terminal.messages = report.visibleHistory.filter(item => item.final && !item.interrupted && Date.parse(item.displayedAt) >= report.audioTimeOriginWallMs + terminal.startedAtMs);
+    }
+    report.behavior = evaluateAcceptanceBehavior({ steps: report.steps, events });
+    if (report.behavior.status !== 'pass') failure ??= `Behavioral acceptance ${report.behavior.status}; see separate findings.`;
+    if (mode === 'voice') {
+      report.voicePath = { syntheticMicrophoneOnly: report.steps.every(step => step.inputMode === 'voice' && step.fixture),
+        actualAsrFinalObserved: events.some(event => event.type === 'transcript.user' && event.final === true && event.role === 'human'),
+        nonzeroInput: (evidence?.counters?.input?.nonzeroSamples ?? 0) > 0,
+        nonzeroProviderAudio: (evidence?.counters?.provider?.nonzeroSamples ?? 0) > 0,
+        nonzeroRenderedAudio: (evidence?.counters?.rendered?.nonzeroSamples ?? 0) > 0,
+        nonzeroPostVolumeAudio: (evidence?.counters?.postVolume?.nonzeroSamples ?? 0) > 0 };
+      if (!Object.values(report.voicePath).every(Boolean)) failure ??= 'Voice capture, ASR or shipped nonzero playback evidence was incomplete.';
+    }
+    if (!report.completion) failure ??= 'The mission did not reach confirmed home.';
     report.failure = failure ?? null;
     report.lifecycle = journal.snapshot();
-    report.watchdogCleanup = 'Independent supervisor cleanup.jsonl; a local cleanup record is not a remote end ACK.';
+    report.watchdogCleanup = 'Independent supervisor amendment-final-acceptance-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
     if (directory) await persistReport(directory, report);
     if (reservation) await finishAttempt({ endAcknowledged: report.endAcknowledged, connectedSeconds: report.connectedSeconds, outcome: failure ? 'failed' : 'passed' }).catch(() => {});
     const video = page?.video();
@@ -282,16 +312,23 @@ if (process.exitCode) {
   // Deliberately stop without touching either campaign.
 } else if (args.includes('--worker')) {
   try { await worker(args[args.indexOf('--scenario') + 1], args[args.indexOf('--mode') + 1]); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
+} else if (args.includes('--freeze')) {
+  await prepareFixtures();
+  if (execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()) throw new Error('Commit activation and clean the worktree before freezing.');
+  const identity = await buildIdentity();
+  if (identity.runtimeSha256 !== 'e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e' || Object.keys(identity.files).length !== 21) throw new Error('Compiled runtime differs from the approved application.');
+  await writeFile(join(DIRECTORY, GOAL_004C_FROZEN_FILE), JSON.stringify({ amendmentId: QA_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
+  console.log(JSON.stringify({ status: 'OFFLINE_CANDIDATE_FROZEN', commit: identity.commit, runtimeSha256: identity.runtimeSha256, harnessSha256: identity.harnessSha256, fixtureSha256: identity.fixtureSha256 }));
 } else if (args.includes('--inspect')) {
   const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
   await prepareFixtures();
-  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Part B command only; the single existing campaign and sequencing gates still apply.', campaignLimits: GOAL_004C_PROPOSAL }));
+  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised amended Part B command only; aggregate sequencing gates apply.', campaignLimits: GOAL_004C_AMENDMENT }));
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];
     if (scenario !== 'mission' || !['text', 'voice'].includes(mode)) throw new Error('Explicit --scenario mission --mode text or voice required.');
     // An approved campaign must already exist. Missing accounting never initializes one.
     await checkNextAttempt(mode, await buildIdentity());
-    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
+    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
   }
 }

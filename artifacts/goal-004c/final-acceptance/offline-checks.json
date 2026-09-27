@@ -1,0 +1,16 @@
+{
+  "label": "OFFLINE ACTIVATION CHECKS; NO REAL PROVIDER REQUESTS",
+  "baseHead": "0f0a5acaa1cbaa10a56228390d6c1e8ec0163030",
+  "applicationSourceCommit": "3cf72495c2d3cfcc42cfa6be7e698d2989e95e99",
+  "checks": [
+    { "command": "GAME_DISABLE_LIVE=1 npm test", "passed": 296, "failed": 0, "skipped": 0, "cancelled": 0, "durationMs": 15639.936799 },
+    { "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/qa-mission-player.spec.ts", "passed": 10, "failed": 0, "durationSeconds": 16.6, "scope": "Existing compiled production build; shared repaired player, both Gallery fixtures and scope invalidation, two viewports" },
+    { "command": "npm run typecheck", "status": "passed" },
+    { "command": "git diff --check", "status": "passed" },
+    { "command": "GAME_DISABLE_LIVE=1 node scripts/qa-live-browser.mjs", "status": "DRY_RUN", "scope": "Offline installed speech fixtures validated; no accounting creation or provider request" }
+  ],
+  "preservedFilesBeforeAmendment": 86,
+  "applicationSourceDiff": "Empty against approved application source",
+  "realProviderTokenRequests": 0,
+  "boundary": "Activation/harness validation only. Real acceptance requires the separately frozen compiled candidate and supervised provider attempts. Previous original attempt remains failed."
+}

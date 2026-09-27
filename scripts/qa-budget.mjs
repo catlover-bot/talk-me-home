@@ -1,5 +1,6 @@
 import { closeSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export const QA_LIMITS = Object.freeze({ maxAttempts: 3, reservationSeconds: 670, capacitySeconds: 2010, maxSessionSeconds: 600, planningDollars: 2.52, disconnectGraceSeconds: 30 })
 // A prospective accounting format only. Goal 004C's runner remains blocked pending owner approval.
@@ -8,6 +9,13 @@ const HEADER_KEYS = 'capacitySeconds,createdAt,disconnectGraceSeconds,hourlyRate
 const integer = value => Number.isSafeInteger(value) && value >= 0
 const keys = value => Object.keys(value).sort().join(',')
 const validName = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,39}$/.test(value)
+const fixedRecoveryDirectory = fileURLToPath(new URL('../.validation/goal-004c-live', import.meta.url))
+
+function assertUnamendedWriter(directory) {
+  if (directory === fixedRecoveryDirectory || ['amendment-final-acceptance.jsonl', 'amendment-final-acceptance-allowance.jsonl'].some(file => existsSync(join(directory, file)))) {
+    throw new Error('The original campaign is preserved history; only the aggregate amendment supervisor may reserve new attempts.')
+  }
+}
 
 function syncDirectory(directory) {
   const descriptor = openSync(directory, 'r')
@@ -98,8 +106,9 @@ export function inspectCampaign(directory) {
 
 /** Only the flock-owning supervisor may instantiate this writer. */
 export class CampaignBudget {
-  constructor(directory, now = Date.now) { this.directory = resolve(directory); this.now = now; inspectCampaign(this.directory) }
+  constructor(directory, now = Date.now) { this.directory = resolve(directory); this.now = now; assertUnamendedWriter(this.directory); inspectCampaign(this.directory) }
   reserve({ name, maxRunSeconds = 570 }) {
+    assertUnamendedWriter(this.directory)
     if (!validName(name) || !Number.isSafeInteger(maxRunSeconds) || maxRunSeconds < 1 || maxRunSeconds > 590) throw new Error('Invalid bounded QA attempt.')
     const state = inspectCampaign(this.directory)
     if (state.attempts.length >= state.header.maxAttempts) throw new Error('The durable QA campaign attempt allowance is exhausted.')
@@ -111,11 +120,13 @@ export class CampaignBudget {
     return row
   }
   finish(attempt, { endAcknowledged, connectedSeconds = null, outcome }) {
+    assertUnamendedWriter(this.directory)
     const state = inspectCampaign(this.directory)
     if (attempt !== state.attempts.length || state.attempts.at(-1)?.result || typeof endAcknowledged !== 'boolean' || !(connectedSeconds === null || Number.isFinite(connectedSeconds) && connectedSeconds >= 0) || !['passed', 'failed', 'blocked'].includes(outcome)) throw new Error('Invalid or duplicate QA attempt result.')
     append(join(this.directory, 'campaign.jsonl'), { type: 'result', attempt, finishedAt: this.now(), endAcknowledged, connectedSeconds, outcome })
   }
   closed(attempt) {
+    assertUnamendedWriter(this.directory)
     const state = inspectCampaign(this.directory)
     if (attempt !== state.attempts.length || state.attempts.at(-1)?.closedAt !== null) throw new Error('Invalid or duplicate QA cleanup result.')
     append(join(this.directory, 'campaign.jsonl'), { type: 'closed', attempt, closedAt: this.now() })

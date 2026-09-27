@@ -1,0 +1,119 @@
+{
+  "label": "FINAL ACCEPTANCE PRICE AND EXISTING RUNTIME PREFLIGHT - NO LIVE REQUESTS",
+  "verifiedAt": "2026-09-27T00:14:43.770Z",
+  "observedHead": "0f0a5acaa1cbaa10a56228390d6c1e8ec0163030",
+  "sourcesRetrievedBetweenUtc": [
+    "2026-09-27T00:13:33Z",
+    "2026-09-27T00:14:11Z"
+  ],
+  "sources": [
+    {
+      "url": "https://www.assemblyai.com/pricing",
+      "finding": "Voice Agent API costs USD 4.50 per hour, billed per second of connected conversation. Managed STT, LLM, TTS and listed Voice Agent features are included; no per-layer add-ons, concurrency fees or per-agent subscriptions."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/llms.txt",
+      "finding": "Current official documentation index retrieved before linked integration references."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration",
+      "finding": "Inline session.update configures prompt, tools, input and output; agent_id is mutually exclusive."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/connect-your-own-llm",
+      "finding": "Omitting a custom llm field uses the managed conversational model; custom provider or LLM Gateway configuration is separate."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration",
+      "finding": "Temporary tokens are single-use, reconnects need fresh tokens, and max_session_duration_seconds caps the resulting session. Explicit session.end avoids the 30-second resume grace period."
+    }
+  ],
+  "configuration": {
+    "pathsInspected": [
+      "game/agent/config.ts",
+      "game/agent/prompt.ts",
+      "game/server/http.ts",
+      "game/client/api.ts",
+      "game/client/voice.ts",
+      "scripts/qa-speech-fixtures.mjs"
+    ],
+    "managedLlm": true,
+    "customLlmOrGatewayConfigured": false,
+    "storedAgentConfigured": false,
+    "toolTypes": [
+      "function"
+    ],
+    "voice": "anna",
+    "inputEncoding": "audio/pcm",
+    "outputEncoding": "audio/pcm",
+    "languageCodes": [
+      "en"
+    ],
+    "transcriptionPromptConfigured": true,
+    "syntheticInput": "Existing local Windows System.Speech fixtures; no paid TTS API.",
+    "additionalApiChargesUsd": 0,
+    "additionalApiChargesBasis": "Inference from inspected browser inline managed configuration and official pricing: no BYO LLM, LLM Gateway, remote HTTP tools or carrier path is configured; included managed STT/LLM/TTS are used. Local function tools call the authoritative local game server."
+  },
+  "planning": {
+    "currency": "USD",
+    "ratePerConnectedHour": 4.5,
+    "reserveSecondsPerAttempt": 670,
+    "estimatePerReservedAttempt": 0.8375,
+    "historicalReservedSeconds": 670,
+    "historicalReservedEstimate": 0.8375,
+    "maximumNewAttempts": 2,
+    "maximumNewReservedSeconds": 1340,
+    "maximumNewReservedEstimate": 1.675,
+    "maximumAggregateAttempts": 3,
+    "maximumAggregateReservedSeconds": 2010,
+    "maximumAggregateEstimate": 2.5125,
+    "approvedAggregatePlanningCeiling": 2.52,
+    "fitsApprovedPlanningCeiling": true,
+    "extraCapacityRelativeToOriginalSeconds": 670,
+    "extraCapacityRelativeToOriginalEstimate": 0.8375,
+    "accountBalance": "UNKNOWN - no account or billing API read",
+    "actualBilling": "UNKNOWN - reservation arithmetic is neither an invoice nor an account-wide billing cap"
+  },
+  "runtime": {
+    "inspectionOnly": true,
+    "buildPerformed": false,
+    "applicationSourceCommit": "3cf72495c2d3cfcc42cfa6be7e698d2989e95e99",
+    "node": "v24.20.0",
+    "recordedAlgorithm": "SHA-256 of JSON.stringify ordered per-file raw-byte SHA-256 manifests; recursively localeCompare-sorted runtime paths; same order as qa-live-browser buildIdentity.",
+    "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+    "expectedRuntimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+    "count": 21,
+    "matchesOriginalRuntimeDigest": true,
+    "matchesRepairedCandidatePerFileManifest": true,
+    "matchesOriginalPerFileManifest": true,
+    "applicationSourceDiff": "",
+    "applicationSourceUnchanged": true,
+    "files": {
+      "dist/client/art/mission-control.svg": "54da597091f4ad38d191b71e1b8e142a891fd4d11de6cac6c65cb609dddd88af",
+      "dist/client/assets/Debrief-3V8BMX39.js": "b7c1b402f742585c1bb827a6197c01bc37d65c132757d7303ca6b49173168014",
+      "dist/client/assets/index-CoEmB-ZV.css": "3782abce0015d8f9a7fe415d12d55ee0df51425ef720a71f471e509d0bb966c3",
+      "dist/client/assets/index-DnDCjQBz.js": "4928d85bb027afd36934601e7831a0532d8edf8415a3fc5b6adebd380527764f",
+      "dist/client/icon.svg": "6f098e496bb47fb81f972fb1d471a9bfe4c27b33d7cc55989aa3a766afbcc872",
+      "dist/client/index.html": "292b824234c4e7f34726c17ede494c2b833fd93269f2e0a2a2afa4ebf3c09721",
+      "dist/server/agent/config.js": "94aaaaf8039b9aa345afb56458704a089c778296b2d110b1c9418c1554fd6d86",
+      "dist/server/agent/prompt.js": "d8ced51fad0b0e48fb054dd22354258145cd72d4b22a7882ba82c6a231a1be7e",
+      "dist/server/server/admission.js": "f6c94bfbe72370e0e84e1116fcd06e87f2c8d7654e88756d9887e4775636ceb4",
+      "dist/server/server/browser-access.js": "10caa171ff3dc67701fa2f05317f24ca9db2854326284d4ca3b87afeeb7f4b78",
+      "dist/server/server/errors.js": "77e4d8bb0e55e0f23d56703fe065d1fc6b35f9593d3e8888902f24a6b837f850",
+      "dist/server/server/gallery.js": "b71fdedf5a38116d7c621142db25c2c93c5bd97f572c056d00fe4d89734d968a",
+      "dist/server/server/http.js": "a4b3a2a955ae8df5579dc21f8255847a1294b9cdf011981cee3b1a513d053ab6",
+      "dist/server/server/index.js": "cea0d0f2a2a3c44cd49e7ce504f1f0ee2ad28983f8ec0e3c7d793df743136b3e",
+      "dist/server/server/production.js": "6c40e74de0ad94458d4c192072f9bb64b702aa44e24e31fd4115a49bd6badc2a",
+      "dist/server/server/records.js": "3c5fffff0f3aaff26554c065dc086dda4b9455d449fe39a85a5726a0331741f2",
+      "dist/server/server/return-dock.js": "6bd7056bf9bfce20714b698a426b2adb735c642fe531efa5ffb334476bd17420",
+      "dist/server/server/sessions.js": "a0b65754a0f9de1f482857f79ca5a986168f40acb8049db1e2846d18645f8f57",
+      "dist/server/server/state.js": "7f99f73d4c1310c4332468aa93d7890667a598b2f09c18dcd34613df1c95e23a",
+      "dist/server/server/static.js": "1fa9dca25221866297de2646b12cd52bd26332d4d24a690a770589a0aabea196",
+      "dist/server/shared/contracts.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    }
+  },
+  "realTokenRequests": 0,
+  "realProviderConnections": 0,
+  "accountOrBillingApiCalls": 0,
+  "limitation": "Read-only preflight of the existing build. Root must freeze the activation commit and newly built application/harness before any paid attempt."
+}

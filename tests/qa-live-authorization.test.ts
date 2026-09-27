@@ -6,7 +6,10 @@ import { test } from 'node:test'
 import { createHash } from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 import { initializeAllowance } from '../game/server/admission.js'
-import { assertGoal004CNextAttempt, GOAL_004C_AUTHORIZATION, GOAL_004C_PROPOSAL } from '../scripts/qa-live-authorization.mjs'
+import { assertGoal004CNextAttempt, assertGoal004CAmendedNextAttempt, GOAL_004C_AUTHORIZATION, GOAL_004C_PROPOSAL, GOAL_004C_AMENDMENT } from '../scripts/qa-live-authorization.mjs'
+import { writeGoal004CHistory } from './fixtures/goal-004c-history.js'
+// @ts-expect-error Executable accounting helpers are native Node modules.
+import { initializeAmendment } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error Executable accounting helpers are native Node modules.
 import { CampaignBudget, initializeCampaign, inspectCampaign } from '../scripts/qa-budget.mjs'
 // @ts-expect-error Executable accounting helpers are native Node modules.
@@ -19,7 +22,7 @@ async function authorizationFixture(run: (fixture: { directory: string; campaign
     // Copy the exact modules into an isolated tree; production exposes no path,
     // environment or argument injection that could redirect its fixed campaign.
     mkdirSync(join(directory, 'scripts'))
-    for (const file of ['qa-live-authorization.mjs', 'qa-budget.mjs']) copyFileSync(resolve('scripts', file), join(directory, 'scripts', file))
+    for (const file of ['qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-amended-budget.mjs']) copyFileSync(resolve('scripts', file), join(directory, 'scripts', file))
     const module = await import(pathToFileURL(join(directory, 'scripts/qa-live-authorization.mjs')).href)
     delete process.env.CI
     delete process.env.GAME_DISABLE_LIVE
@@ -54,7 +57,8 @@ test('compiled Goal 004C approval cannot be supplied or redirected by local flag
 
 test('compiled approval accepts only existing fixed accounting and always fails closed for CI or Live-disable', async () => {
   await authorizationFixture(({ campaign, gate }) => {
-    initializeCampaign(campaign, initializeAllowance, { profile: 'goal-004c' })
+    writeGoal004CHistory(campaign)
+    initializeAmendment(campaign)
     const original = readFileSync(join(campaign, 'campaign.jsonl'), 'utf8')
     assert.doesNotThrow(() => gate())
     for (const name of ['CI', 'GAME_DISABLE_LIVE']) {
@@ -66,8 +70,36 @@ test('compiled approval accepts only existing fixed accounting and always fails 
     }
     assert.doesNotThrow(() => gate())
     assert.equal(readFileSync(join(campaign, 'campaign.jsonl'), 'utf8'), original)
-    assert.equal(inspectCampaign(campaign).attempts.length, 0)
+    assert.equal(inspectCampaign(campaign).attempts.length, 1)
+    assert.equal(GOAL_004C_AMENDMENT.maxAttempts, 3)
   })
+})
+
+test('amended Voice requires new full-clear behavior, ACK, cleanup and identical candidate while retaining old failure', () => {
+  const f = prospectiveSequenceFixture()
+  const identitySha256 = f.hash(f.identity)
+  const historical = { ...f.previous, result: { ...f.previous.result, outcome: 'failed' } }
+  const header = { ...f.header, maxAttempts: 3, capacitySeconds: 2010, planningDollars: 2.52, hourlyRate: 4.5 }
+  const onlyHistory = { header, attempts: [historical], productionAttempts: 1 }
+  assert.doesNotThrow(() => assertGoal004CAmendedNextAttempt({ campaign: onlyHistory, mode: 'text', identity: f.identity }))
+  assert.throws(() => assertGoal004CAmendedNextAttempt({ campaign: onlyHistory, mode: 'voice', identity: f.identity }))
+  const previous = { ...f.previous, attempt: 2, identitySha256 }
+  const campaign = { header, attempts: [historical, previous], productionAttempts: 2 }
+  const report = { ...f.report, reservation: { ...f.reservation, attempt: 2, identitySha256 }, behavior: { status: 'pass', materialDefects: [], uncertainties: [] }, cleanup: { activeTracks: 0, activeSources: 0, openApplicationContexts: 0 }, lifecycle: [{ type: 'browser.closed', outcome: 'observed' }, { type: 'server.closed', outcome: 'observed' }] }
+  const guard = (evidence: unknown = report, state: unknown = campaign, identity: unknown = f.identity) => assertGoal004CAmendedNextAttempt({ campaign: state, mode: 'voice', identity, reports: [evidence] })
+  assert.doesNotThrow(() => guard())
+  assert.throws(() => assertGoal004CAmendedNextAttempt({ campaign, mode: 'text', identity: f.identity }))
+  for (const change of [
+    { completion: false }, { failure: 'Player failure' }, { endAcknowledged: false }, { explicitEndSent: false },
+    { behavior: { status: 'blocked', materialDefects: [{ code: 'unsupported_mutation' }] } },
+    { behavior: { status: 'review_required', materialDefects: [] } },
+    { behavior: { status: 'pass', materialDefects: [], uncertainties: [{ blocking: true }] } },
+    { cleanup: { ...report.cleanup, activeTracks: 1 } }, { lifecycle: [] }, { tokenRequests: 2 },
+  ]) assert.throws(() => guard({ ...report, ...change }))
+  assert.throws(() => guard(report, { ...campaign, attempts: [historical, { ...previous, closedAt: null }] }))
+  assert.throws(() => guard(report, { ...campaign, attempts: [historical, { ...previous, result: { ...previous.result, outcome: 'failed' } }] }))
+  assert.throws(() => guard(report, campaign, { ...f.identity, commit: 'd'.repeat(40) }))
+  assert.equal(historical.result.outcome, 'failed')
 })
 
 test('compiled approval refuses other profiles, rates, corrupt accounting and exhausted attempts without repair', async () => {

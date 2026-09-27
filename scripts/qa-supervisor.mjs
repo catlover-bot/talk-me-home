@@ -1,11 +1,14 @@
 import { fork, spawn } from 'node:child_process'
-import { closeSync, existsSync, fsyncSync, lstatSync, openSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { closeSync, existsSync, fsyncSync, lstatSync, openSync, readFileSync, readdirSync, readlinkSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { randomUUID } from 'node:crypto'
-import { CampaignBudget, inspectCampaign } from './qa-budget.mjs'
+import { CampaignBudget } from './qa-budget.mjs'
+import { AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 const SELF = fileURLToPath(import.meta.url)
+const FIXED_DIRECTORY = fileURLToPath(new URL('../.validation/goal-004c-live', import.meta.url))
+const FIXED_WORKER = fileURLToPath(new URL('./qa-live-browser.mjs', import.meta.url))
 const sleep = milliseconds => new Promise(resolveSleep => setTimeout(resolveSleep, milliseconds))
 const safeEnv = source => {
   const env = { ...source }
@@ -37,15 +40,15 @@ function descendantOf(pid, ancestor) {
 }
 
 /** Linux/WSL uses a kernel flock, released by the OS on crash; reservations remain durable. */
-export async function runSupervised({ directory, worker, args = [], env = process.env, preparationSeconds = 120 }) {
+export async function runSupervised({ directory, worker, args = [], env = process.env, preparationSeconds = 120, amendmentId }) {
   if (process.platform !== 'linux') throw new Error('Bounded QA supervision requires Linux/WSL process ownership checks.')
   directory = resolve(directory); worker = resolve(worker)
-  inspectCampaign(directory)
+  validateCampaignRoute(directory, worker, amendmentId)
   if (!Number.isInteger(preparationSeconds) || preparationSeconds < 1 || preparationSeconds > 300) throw new Error('Invalid QA preparation deadline.')
   const lock = join(directory, 'campaign.lock')
   if (existsSync(lock) && (!lstatSync(lock).isFile() || lstatSync(lock).isSymbolicLink())) throw new Error('Unexpected QA campaign lock.')
   const descriptor = openSync(lock, 'a', 0o600); closeSync(descriptor)
-  const child = spawn('flock', ['--nonblock', '--no-fork', '--conflict-exit-code', '75', lock, process.execPath, SELF, '--supervise', directory, worker, String(preparationSeconds), ...args], {
+  const child = spawn('flock', ['--nonblock', '--no-fork', '--conflict-exit-code', '75', lock, process.execPath, SELF, amendmentId ? '--supervise-amendment' : '--supervise', directory, worker, String(preparationSeconds), ...args], {
     stdio: ['ignore', 'inherit', 'inherit'], env: safeEnv(env),
   })
   return await new Promise((resolveRun, reject) => {
@@ -55,6 +58,51 @@ export async function runSupervised({ directory, worker, args = [], env = proces
       else resolveRun({ exitCode: code, signal })
     })
   })
+}
+
+function validateCampaignRoute(directory, worker, amendmentId) {
+  if (amendmentId !== undefined) {
+    if (amendmentId !== QA_AMENDMENT_ID || directory !== FIXED_DIRECTORY || worker !== FIXED_WORKER) throw new Error('Only the fixed Goal 004C amendment and compiled Live worker may use the aggregate campaign.')
+    inspectAmendedCampaign(directory)
+  } else {
+    if (directory === FIXED_DIRECTORY) throw new Error('The original Goal 004C runner is disabled; its remaining slot is governed by the fixed aggregate amendment.')
+    new CampaignBudget(directory)
+  }
+}
+
+/** The internal CLI is not authorization: the supervisor must own the kernel lock. */
+export function assertOwnsCampaignLock(directory) {
+  assertProcessOwnsCampaignLock(directory, process.pid)
+}
+
+function assertProcessOwnsCampaignLock(directory, pid) {
+  const lock = join(resolve(directory), 'campaign.lock')
+  for (const descriptor of readdirSync(`/proc/${pid}/fd`)) {
+    try {
+      if (readlinkSync(`/proc/${pid}/fd/${descriptor}`) !== lock) continue
+      const info = readFileSync(`/proc/${pid}/fdinfo/${descriptor}`, 'utf8')
+      if (new RegExp(`^lock:\\s+\\d+: FLOCK\\s+ADVISORY\\s+WRITE\\s+${pid}\\s`, 'm').test(info)) return
+    } catch {}
+  }
+  throw new Error('The independent supervisor does not own the original campaign kernel lock.')
+}
+
+/** A flag and an IPC channel alone cannot impersonate the compiled supervisor. */
+export function assertSupervisedParent(directory) {
+  directory = resolve(directory)
+  if (directory !== FIXED_DIRECTORY || !process.send || process.env.QA_SUPERVISED_WORKER !== '1'
+    || process.env.QA_CAMPAIGN_DIRECTORY !== directory || process.env.QA_CAMPAIGN_AMENDMENT !== QA_AMENDMENT_ID) {
+    throw new Error('The Live worker requires its fixed, independently supervised parent.')
+  }
+  const parent = processIdentity(process.ppid)
+  if (!parent || parent.state === 'Z') throw new Error('The independent supervisor parent is unavailable.')
+  const command = readFileSync(`/proc/${parent.pid}/cmdline`, 'utf8').split('\0').filter(Boolean)
+  if (command.length !== 11 || command[0] !== process.execPath || command[1] !== SELF || command[2] !== '--supervise-amendment'
+    || command[3] !== directory || command[4] !== FIXED_WORKER || !/^\d+$/.test(command[5]) || Number(command[5]) < 1 || Number(command[5]) > 300
+    || command[6] !== '--worker' || command[7] !== '--scenario' || command[8] !== 'mission' || command[9] !== '--mode'
+    || !['text', 'voice'].includes(command[10])) throw new Error('The IPC parent is not the compiled amendment supervisor.')
+  assertProcessOwnsCampaignLock(directory, parent.pid)
+  if (processIdentity(parent.pid)?.start !== parent.start) throw new Error('The independent supervisor parent identity changed.')
 }
 
 let requestSequence = 0
@@ -80,12 +128,17 @@ export const requestAttempt = options => request('qa.reserve', { options })
 export const registerOwnedProcess = pid => request('qa.register', { pid })
 export const finishAttempt = result => request('qa.finish', { result })
 
-async function supervise(directory, worker, preparationSeconds, args) {
-  const budget = new CampaignBudget(directory)
-  const driver = fork(worker, args, { detached: true, stdio: ['ignore', 'inherit', 'inherit', 'ipc'], env: { ...safeEnv(process.env), QA_SUPERVISED_WORKER: '1', QA_CAMPAIGN_DIRECTORY: directory } })
+async function supervise(directory, worker, preparationSeconds, args, amendmentId) {
+  directory = resolve(directory); worker = resolve(worker)
+  assertOwnsCampaignLock(directory)
+  validateCampaignRoute(directory, worker, amendmentId)
+  if (!Number.isInteger(preparationSeconds) || preparationSeconds < 1 || preparationSeconds > 300) throw new Error('Invalid QA preparation deadline.')
+  const budget = amendmentId ? new AmendedCampaignBudget(directory) : new CampaignBudget(directory)
+  const reservationGuard = amendmentId ? (await import('./qa-live-authorization.mjs')).assertGoal004CReservationAuthorized : null
+  const driver = fork(worker, args, { detached: true, stdio: ['ignore', 'inherit', 'inherit', 'ipc'], env: { ...safeEnv(process.env), QA_SUPERVISED_WORKER: '1', QA_CAMPAIGN_DIRECTORY: directory, ...(amendmentId ? { QA_CAMPAIGN_AMENDMENT: amendmentId } : {}) } })
   const identity = processIdentity(driver.pid)
   if (!identity) throw new Error('QA driver ownership could not be established.')
-  const watchdog = fork(SELF, ['--watchdog', directory, String(identity.pid), identity.start, String(Date.now() + preparationSeconds * 1000)], {
+  const watchdog = fork(SELF, [amendmentId ? '--watchdog-amendment' : '--watchdog', directory, String(identity.pid), identity.start, String(Date.now() + preparationSeconds * 1000)], {
     detached: true, stdio: ['ignore', 'ignore', 'ignore', 'ipc'], env: safeEnv(process.env),
   })
   let reservation = null
@@ -129,6 +182,7 @@ async function supervise(directory, worker, preparationSeconds, args) {
         if (!watchdogReady || watchdogClosed) throw new Error('The independent watchdog is unavailable.')
         if (message.type === 'qa.reserve') {
           if (reservation) throw new Error('Only one token attempt is allowed per supervised driver.')
+          if (reservationGuard) reservationGuard({ directory, mode: message.options?.name === 'text-mission' ? 'text' : message.options?.name === 'voice-mission' ? 'voice' : null, identity: message.options?.identity })
           reservation = budget.reserve(message.options)
           // The watchdog acknowledges the durable absolute deadline before the driver can issue the request.
           const armed = await watchdogRequest({ type: 'arm', hardAt: reservation.hardAt })
@@ -169,7 +223,7 @@ async function supervise(directory, worker, preparationSeconds, args) {
   process.exitCode = exitCode
 }
 
-async function watch(directory, pid, start, initialDeadline) {
+async function watch(directory, pid, start, initialDeadline, amended = false) {
   const driver = { pid, start }
   const owned = new Map([[pid, driver]])
   let deadline = initialDeadline
@@ -199,7 +253,7 @@ async function watch(directory, pid, start, initialDeadline) {
     if (collect().length) signalOwned('SIGKILL')
     for (let count = 0; count < 20 && collect().length; count++) await sleep(100)
     const survivors = collect().length
-    const descriptor = openSync(join(directory, 'cleanup.jsonl'), 'a', 0o600)
+    const descriptor = openSync(join(directory, amended ? 'amendment-final-acceptance-cleanup.jsonl' : 'cleanup.jsonl'), 'a', 0o600)
     try { writeFileSync(descriptor, `${JSON.stringify({ time: Date.now(), driverPid: pid, survivors })}\n`); fsyncSync(descriptor) } finally { closeSync(descriptor) }
     if (process.connected) process.send({ type: 'closed', survivors })
     closed = true
@@ -226,7 +280,9 @@ if (resolve(process.argv[1] ?? '') === SELF) {
   const [mode, directory, ...args] = process.argv.slice(2)
   try {
     if (mode === '--supervise') await supervise(directory, args[0], Number(args[1]), args.slice(2))
+    else if (mode === '--supervise-amendment') await supervise(directory, args[0], Number(args[1]), args.slice(2), QA_AMENDMENT_ID)
     else if (mode === '--watchdog') await watch(directory, Number(args[0]), args[1], Number(args[2]))
+    else if (mode === '--watchdog-amendment') await watch(directory, Number(args[0]), args[1], Number(args[2]), true)
     else throw new Error('Use the QA release runner to start the supervisor.')
   } catch { console.error('Bounded QA supervision failed; reservations were preserved.'); process.exitCode = 1 }
 }

@@ -1,0 +1,16 @@
+{
+  "label": "EXPLICIT OWNER-AUTHORIZED FIXED AMENDMENT; NO PROVIDER REQUEST",
+  "initializedAt": "2026-09-27T00:22:20.949Z",
+  "amendmentId": "goal-004c-final-acceptance-2026-09-27",
+  "originalCampaignPreserved": true,
+  "protectedFiles": 86,
+  "historicalAttempts": 1,
+  "newAttempts": 0,
+  "maxAggregateAttempts": 3,
+  "maxAggregateReservedSeconds": 2010,
+  "maxNewReservedSeconds": 1340,
+  "planningDollars": 2.52,
+  "baselineHead": "0f0a5acaa1cbaa10a56228390d6c1e8ec0163030",
+  "approvalSource": "Owner deliberately submitted Final Live Acceptance on the Repaired Player as execution request on September 27 JST.",
+  "boundary": "Existing balance only. Historical failure remains consumed; new Text failure blocks Voice. No invoice or account-wide cap is claimed."
+}

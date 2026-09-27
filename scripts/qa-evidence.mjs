@@ -1,10 +1,12 @@
 // Local, read-only campaign inspection plus explicit compact evidence exports. No provider access.
-import { readFile, readdir, mkdir, writeFile, access } from 'node:fs/promises'
+import { readFile, readdir, mkdir, writeFile, access, lstat } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { basename, join, resolve, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inspectCampaign } from './qa-budget.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
+import { assertGoal004CAmendedNextAttempt } from './qa-live-authorization.mjs'
 import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
@@ -15,10 +17,53 @@ const count = value => Number.isSafeInteger(value) && value >= 0 ? value : null
 const exists = path => access(path).then(() => true, () => false)
 const iso = value => Number.isSafeInteger(value) ? new Date(value).toISOString() : null
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
+const present = path => lstat(path).then(() => true, error => { if (error.code === 'ENOENT') return false; throw error })
 const text = value => {
   if (typeof value !== 'string') return null
   if (/\b(?:Bearer\s+\S+|ASSEMBLYAI_API_KEY|GAME_DEMO_ACCESS_CODE|(?:token|resume_token|authorization|cookie)\s*[:=]\s*\S+)/i.test(value)) throw new Error('Credential-like text was excluded from the compact export; inspect the local source privately.')
   return value.replace(/(?:https?|wss?):\/\/\S+/g, '[URL omitted]').slice(0, 12_000)
+}
+const visibleMessage = item => ({
+  source: 'Visible application history snapshot; final/interrupted status may be unavailable',
+  speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), sourceLabel: text(item.sourceLabel),
+  chapterLabel: text(item.chapterLabel), final: typeof item.final === 'boolean' ? item.final : null,
+  interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null,
+  ...(item.historyIndex !== undefined ? { historyIndex: count(item.historyIndex) } : {}),
+  ...(item.displayedAt !== undefined ? { displayedAt: text(item.displayedAt) } : {}),
+  ...(item.provenance !== undefined ? { provenance: text(item.provenance) } : {}),
+})
+const turnIdentity = value => typeof value === 'string' ? text(value) : count(value)
+const stepProvenance = step => ({
+  ...(step.turnId !== undefined ? { turnId: turnIdentity(step.turnId) } : {}),
+  ...(step.startedAtMs !== undefined ? { startedAtMs: Number.isFinite(step.startedAtMs) ? step.startedAtMs : null } : {}),
+  ...(step.endedAtMs !== undefined ? { endedAtMs: Number.isFinite(step.endedAtMs) ? step.endedAtMs : null } : {}),
+  ...(step.settled !== undefined ? { settled: typeof step.settled === 'boolean' ? step.settled : null } : {}),
+  ...(step.terminal !== undefined ? { terminal: typeof step.terminal === 'boolean' ? step.terminal : null } : {}),
+  ...(step.inputSource !== undefined ? { inputSource: text(step.inputSource) } : {}),
+  ...(Array.isArray(step.messages) ? { messages: step.messages.map(visibleMessage) } : {}),
+})
+
+function summarizeBehavior(behavior) {
+  const finding = item => ({
+    ...Object.fromEntries(['code', 'layer', 'subject', 'request', 'intent', 'name', 'outcome'].filter(key => key in item).map(key => [key, text(item[key])])),
+    ...Object.fromEntries(['callRef', 'replyRef'].filter(key => key in item).map(key => [key, count(item[key])])),
+    ...Object.fromEntries(['atMs', 'resultAtMs'].filter(key => key in item).map(key => [key, Number.isFinite(item[key]) ? item[key] : null])),
+    ...('turnId' in item ? { turnId: turnIdentity(item.turnId) } : {}),
+    ...(typeof item.blocking === 'boolean' ? { blocking: item.blocking } : {}),
+    ...(Array.isArray(item.quotes) ? { quotes: item.quotes.map(text) } : {}),
+  })
+  return {
+    status: ['pass', 'blocked', 'review_required'].includes(behavior.status) ? behavior.status : 'review_required',
+    materialDefects: (behavior.materialDefects ?? []).map(finding), uncertainties: (behavior.uncertainties ?? []).map(finding),
+    turns: (behavior.turns ?? []).map(turn => ({
+      turnId: turnIdentity(turn.turnId), request: text(turn.request), intent: text(turn.intent),
+      sourceWindow: { startedAtMs: Number.isFinite(turn.sourceWindow?.startedAtMs) ? turn.sourceWindow.startedAtMs : null, endedAtMs: Number.isFinite(turn.sourceWindow?.endedAtMs) ? turn.sourceWindow.endedAtMs : null },
+      replies: (turn.replies ?? []).map(reply => ({ ...visibleMessage({ ...reply, speaker: 'Pip' }), ...(reply.messageId !== undefined ? { messageId: text(reply.messageId) } : {}) })),
+      tools: (turn.tools ?? []).map(finding),
+      ...(turn.agreedPlanSourceTurnId !== undefined ? { agreedPlanSourceTurnId: turnIdentity(turn.agreedPlanSourceTurnId) } : {}),
+    })),
+    reviewedToolCalls: count(behavior.reviewedToolCalls), boundary: text(behavior.boundary),
+  }
 }
 
 export function durationBounds(report, evidence, reservation) {
@@ -78,31 +123,48 @@ export function summarizeAttempt(report, evidence, reservation) {
     }
   })
   const tools = events.filter(event => event.type === 'tool.call').map(call => {
-    const result = events.find(event => event.type === 'tool.result' && event.callRef === call.callRef && event.atMs >= call.atMs)
-    return { name: ['observe_room', 'inspect_object', 'interact_object', 'move_to'].includes(call.name) ? call.name : 'other', callAtMs: round(call.atMs), resultAtMs: round(result?.atMs), callToResultMs: result ? round(result.atMs - call.atMs) : null, succeeded: result ? result.isError === false : null }
+    const results = Number.isSafeInteger(call.callRef) ? events.filter(event => event.type === 'tool.result' && event.callRef === call.callRef && event.atMs >= call.atMs) : []
+    const result = results.length === 1 ? results[0] : undefined
+    return { name: ['observe_room', 'inspect_object', 'interact_object', 'move_to'].includes(call.name) ? call.name : 'other', callRef: count(call.callRef), replyRef: count(call.replyRef), resultReplyRef: count(result?.replyRef), callAtMs: round(call.atMs), resultAtMs: round(result?.atMs), callToResultMs: result ? round(result.atMs - call.atMs) : null, succeeded: typeof result?.isError === 'boolean' ? !result.isError : null, status: !result ? 'missing_result' : result.isError === true ? 'error' : result.isError === false ? 'success' : 'unknown' }
   })
   const audio = Object.fromEntries(['input', 'provider', 'rendered', 'postVolume'].map(kind => {
     const counter = evidence.counters?.[kind] ?? {}
     return [kind, { chunks: count(counter.chunks), samples: count(counter.samples), nonzeroSamples: count(counter.nonzeroSamples), energy: round(counter.energy), lastNonzeroMarkerAtMs: round(counter.lastNonzeroMs) }]
   }))
-  const visible = (report.visibleHistory ?? []).map(item => ({ source: 'Visible application history snapshot; final/interrupted status may be unavailable', speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), sourceLabel: text(item.sourceLabel), chapterLabel: text(item.chapterLabel), final: typeof item.final === 'boolean' ? item.final : null, interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null }))
+  const visible = (report.visibleHistory ?? []).map(visibleMessage)
   const typedSteps = (report.steps ?? []).filter(step => step.inputMode === 'text' && typeof step.utterance === 'string')
   const typedTurns = typedSteps.length
-    ? typedSteps.map(step => ({ source: 'QA player UI submission record; not ASR or proof of provider delivery', text: text(step.utterance), recordedAfterTurnAtMs: round(step.elapsedMs) }))
+    ? typedSteps.map(step => ({ source: 'QA player UI submission record; not ASR or proof of provider delivery', text: text(step.utterance), recordedAfterTurnAtMs: round(step.elapsedMs), ...stepProvenance(step) }))
     : visible.filter(item => item.speaker === 'Mission Control' && /Live Text.*Typed/.test(item.sourceLabel ?? '')).map(item => ({ source: 'Visible Live Text typed history; not ASR', text: item.text, recordedAfterTurnAtMs: null }))
   return {
     label: report.label, mode: report.mode === 'text' ? 'text' : 'voice', scenario: text(report.scenario), commit: /^[0-9a-f]{40}$/.test(report.identity?.commit) ? report.identity.commit : null,
     runtimeSha256: /^[0-9a-f]{64}$/.test(report.identity?.runtimeSha256) ? report.identity.runtimeSha256 : null,
     harnessSha256: /^[0-9a-f]{64}$/.test(report.identity?.harnessSha256) ? report.identity.harnessSha256 : null,
+    ...(report.identity?.fixtureSha256 ? { fixtureSha256: /^[0-9a-f]{64}$/.test(report.identity.fixtureSha256) ? report.identity.fixtureSha256 : null } : {}),
     nodeVersion: /^v\d+\.\d+\.\d+$/.test(report.identity?.node) ? report.identity.node : null,
     browserVersion: /^\d+(?:\.\d+){1,4}$/.test(report.browserVersion) ? report.browserVersion : null,
     inputMode: text(report.inputMode), completion: report.completion === true, route: (report.route ?? []).map(text), failure: text(report.failure), tokenRequests: count(report.tokenRequests),
+    ...(report.voicePath ? { voicePath: Object.fromEntries(['syntheticMicrophoneOnly', 'actualAsrFinalObserved', 'nonzeroInput', 'nonzeroProviderAudio', 'nonzeroRenderedAudio', 'nonzeroPostVolumeAudio'].map(key => [key, report.voicePath[key] === true])) } : {}),
     ending: { explicitEndSent: Boolean(endSent), endAcknowledged: Boolean(ended), endSentAtMs: round(endSent?.atMs), endAcknowledgedAtMs: round(ended?.atMs), endAcknowledgementDelayMs: ended && endSent ? round(ended.atMs - endSent.atMs) : null, socketCloseCode: socketClose?.code ?? null, socketCloseWasClean: socketClose?.clean ?? null, localConnectedSeconds: socketOpen && (ended || socketClose) ? round(((ended ?? socketClose).atMs - socketOpen.atMs) / 1000) : null, providerSessionSeconds: Number.isFinite(report.providerDurationSeconds) ? report.providerDurationSeconds : null },
     durationBounds: durationBounds(report, evidence, reservation),
     checkpoints: (report.checkpoints ?? []).filter(checkpoint => ['Cargo Bay', 'Relay Gallery', 'Return Dock', 'You brought Pip home.', 'Home'].includes(checkpoint.title) && Number.isFinite(checkpoint.observedAtMs)).map(checkpoint => ({ title: checkpoint.title, observedAtMs: round(checkpoint.observedAtMs), source: 'Human-visible chapter/completion heading observed by the browser driver' })),
     audio, utterances, typedTurns, tools, finalTranscripts, visibleHistory: visible,
+    ...((report.steps ?? []).some(step => step.turnId !== undefined) ? { inputSteps: report.steps.map(step => ({
+      inputMode: ['text', 'voice'].includes(step.inputMode) ? step.inputMode : null, utterance: text(step.utterance),
+      fixture: text(step.fixture), ...stepProvenance(step), failureLayer: text(step.failureLayer), reason: text(step.reason),
+    })) } : {}),
+    ...(report.behavior ? { behavior: summarizeBehavior(report.behavior) } : {}),
     visibleHistoryBoundary: 'These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.',
     cleanup: { activeTracks: count(report.cleanup?.activeTracks), activeSources: count(report.cleanup?.activeSources), openApplicationContexts: count(report.cleanup?.openApplicationContexts) },
+    ...(Array.isArray(report.lifecycle) ? { lifecycle: report.lifecycle.filter(event => ['end.requested', 'session.end', 'session.ended', 'socket.open', 'socket.close', 'browser.close.requested', 'browser.closed', 'server.close.requested', 'server.closed'].includes(event.type)).map(event => ({
+      type: event.type, observedAt: text(event.observedAt), elapsedMs: Number.isFinite(event.elapsedMs) ? event.elapsedMs : null,
+      source: ['browser', 'driver'].includes(event.source) ? event.source : null,
+      outcome: ['observed', 'requested', 'not_observed', 'bounded_timeout'].includes(event.outcome) ? event.outcome : null,
+      ...(Number.isFinite(event.browserAtMs) ? { browserAtMs: event.browserAtMs } : {}),
+      ...(Number.isInteger(event.code) ? { code: event.code } : {}),
+      ...(typeof event.clean === 'boolean' ? { clean: event.clean } : {}),
+      ...(Number.isFinite(event.durationSeconds) ? { durationSeconds: event.durationSeconds } : {}),
+    })) } : {}),
     timingNotes: [
       'Measurements describe this small synthetic sample, not a production SLA or human latency study.',
       'Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.',
@@ -176,14 +238,20 @@ function conversationMarkdown(attempt) {
   return lines.join('\n')
 }
 
-export async function exportCampaign({ directory = resolve('.validation/goal-004b-live'), output = resolve('artifacts/goal-004b/live'), mux = false, videoOffsetMs, fixtureDirectory = resolve('.validation/goal-004b-media') } = {}) {
-  directory = resolve(directory); output = resolve(output)
-  const state = inspectCampaign(directory)
+export async function exportCampaign({ directory = resolve('.validation/goal-004b-live'), output, mux = false, videoOffsetMs, fixtureDirectory = resolve('.validation/goal-004b-media') } = {}) {
+  directory = resolve(directory)
+  // Either supplement file means amended accounting must be complete and valid.
+  // A partial/corrupt supplement must never silently fall back to the old ledger.
+  const amended = await present(join(directory, QA_AMENDMENT_LEDGER)) || await present(join(directory, QA_AMENDMENT_ALLOWANCE))
+  const state = amended ? inspectAmendedCampaign(directory) : inspectCampaign(directory)
+  output = resolve(output ?? (amended ? 'artifacts/goal-004c/final-acceptance/live' : 'artifacts/goal-004b/live'))
+  if (amended && ['artifacts/goal-004b/live', 'artifacts/goal-004c/live'].some(path => output === resolve(path))) throw new Error('Amended exports must use a new evidence directory; historical compact exports remain unchanged.')
   if (mux) {
     const location = relative(resolve('.validation'), directory)
     if (!location || location === '..' || location.startsWith(`..${sep}`) || resolve('.validation', location) !== directory) throw new Error('Large processed media must remain within the ignored .validation directory.')
   }
   const attempts = []
+  const reports = []
   const usedFixtureIds = new Set()
   const linkedReservations = new Set()
   await mkdir(output, { recursive: true })
@@ -193,9 +261,10 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     if (!await exists(join(path, 'report.json')) || !await exists(join(path, 'audio-evidence.json'))) continue
     const reportBytes = await readFile(join(path, 'report.json')); const evidenceBytes = await readFile(join(path, 'audio-evidence.json'))
     const report = JSON.parse(reportBytes); const evidence = JSON.parse(evidenceBytes)
+    reports.push(report)
     const opened = evidence.events.find(event => event.type === 'socket.open')
     const socketWallTime = Number.isFinite(report.audioTimeOriginWallMs) && opened ? report.audioTimeOriginWallMs + opened.atMs : null
-    const reservationFields = ['attempt', 'name', 'reservedAt', 'reservedSeconds', 'gracefulAt', 'hardAt', 'leaseUntil']
+    const reservationFields = ['attempt', 'name', 'reservedAt', 'reservedSeconds', 'gracefulAt', 'hardAt', 'leaseUntil', ...(report.reservation?.attempt > 1 && amended ? ['identitySha256'] : [])]
     const reservation = report.reservation
       ? state.attempts.find(row => !linkedReservations.has(row.attempt) && reservationFields.every(field => row[field] === report.reservation[field]))
       : [...state.attempts].reverse().find(row => !linkedReservations.has(row.attempt) && Number.isFinite(socketWallTime) && row.reservedAt <= socketWallTime && socketWallTime <= row.hardAt)
@@ -211,7 +280,11 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     attempt.media = await prepareLocalMedia(path, { mux, alignment })
     await writeFile(join(output, `${entry.name}-metrics.json`), `${JSON.stringify(attempt, null, 2)}\n`)
     await writeFile(join(output, `${entry.name}-conversation.md`), conversationMarkdown(attempt))
-    attempts.push({ evidenceDirectory: entry.name, mode: attempt.mode, label: attempt.label, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged })
+    attempts.push({ evidenceDirectory: entry.name, mode: attempt.mode, label: attempt.label, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged,
+      ...(amended ? { accountingAttempt: attempt.accountingAttempt, historical: attempt.accountingAttempt === 1, behaviorStatus: attempt.behavior?.status ?? null, materialDefects: attempt.behavior?.materialDefects.length ?? null, cleanup: attempt.cleanup,
+        processCleanup: { browserClosedObserved: report.lifecycle?.some(event => event.type === 'browser.closed' && event.outcome === 'observed') ?? false, serverClosedObserved: report.lifecycle?.some(event => event.type === 'server.closed' && event.outcome === 'observed') ?? false, supervisorClosedAt: iso(reservation?.closedAt) },
+      } : {}),
+    })
   }
   const fixtures = []
   for (const id of [...usedFixtureIds].sort()) {
@@ -224,15 +297,43 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   const last = state.attempts.at(-1)
   const remainingAttempts = state.header.maxAttempts - state.attempts.length
   const nextPermittedAt = remainingAttempts > 0 && last && !(last.result?.endAcknowledged && last.closedAt !== null) ? last.leaseUntil : null
-  const admissionStatus = remainingAttempts === 0 ? 'exhausted' : state.header.capacitySeconds === 1340
+  let admissionStatus = remainingAttempts === 0 ? 'exhausted' : state.header.capacitySeconds === 1340
     ? !last ? 'requires_explicit_supervised_text_attempt'
       : last.name === 'text-mission' && last.result?.outcome === 'passed' && last.result.endAcknowledged && last.closedAt !== null ? 'requires_identical_candidate_voice_guard' : 'voice_blocked_by_text_result_or_cleanup'
     : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt'
+  let amendedSequence
+  if (amended) {
+    const candidate = reports.find(report => report.reservation?.attempt === 2)?.identity
+    amendedSequence = { mode: state.newAttempts === 0 ? 'text' : 'voice', passed: false,
+      reason: remainingAttempts === 0 ? 'The aggregate campaign allowance is exhausted.' : 'No new frozen candidate report is available for a prospective sequencing check.',
+      boundary: 'Read-only pure sequencing check against recorded reports and their candidate, not spending authorization or a current-worktree identity check.' }
+    if (remainingAttempts > 0 && candidate) {
+      try {
+        assertGoal004CAmendedNextAttempt({ campaign: state, mode: amendedSequence.mode, identity: candidate, reports })
+        amendedSequence.passed = true
+        amendedSequence.reason = 'Recorded Text evidence satisfies the pure sequence guard for this recorded candidate; production admission still requires the unchanged frozen candidate and the aggregate supervisor lock.'
+      } catch (error) { amendedSequence.reason = text(error instanceof Error ? error.message : 'The amended sequence guard rejected these reports.') }
+    }
+    admissionStatus = remainingAttempts === 0 ? 'exhausted' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
+      : amendedSequence.passed ? 'requires_identical_frozen_candidate_voice_admission' : 'conditional_voice_blocked'
+  }
   const summary = {
     label: attempts.some(attempt => attempt.mode === 'text') ? MIXED_LABEL : LABEL, attempts: state.attempts.length, productionAttempts: state.productionAttempts, remainingAttempts,
     reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars, verifiedRateDollarsPerHour: state.header.hourlyRate,
     localConnectedSeconds: state.attempts.map(attempt => attempt.result?.connectedSeconds ?? null), endAcknowledgements: state.attempts.map(attempt => attempt.result?.endAcknowledged ?? false),
     nextPermittedAt: iso(nextPermittedAt), admissionStatus, inspectedAt: new Date().toISOString(), ledgerSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
+    ...(amended ? {
+      amendmentId: QA_AMENDMENT_ID, historicalAttempts: state.historicalAttempts, newAttempts: state.newAttempts,
+      historicalReservedSeconds: state.reservedSeconds - state.newReservedSeconds, newReservedSeconds: state.newReservedSeconds,
+      historicalProductionAttempts: 1, newProductionAttempts: state.productionAttempts - 1,
+      remainingReservedCapacitySeconds: state.header.capacitySeconds - state.reservedSeconds,
+      maximumAggregatePlanningDollars: state.header.capacitySeconds * state.header.hourlyRate / 3600, approvedAggregatePlanningCeiling: state.header.planningDollars,
+      originalCampaignSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
+      originalAllowanceSha256: sha256(await readFile(join(directory, 'allowance.jsonl'))),
+      amendmentLedgerSha256: sha256(await readFile(join(directory, QA_AMENDMENT_LEDGER))),
+      amendedAllowanceSha256: sha256(await readFile(join(directory, QA_AMENDMENT_ALLOWANCE))),
+      amendedSequence,
+    } : {}),
     results: attempts, accountingBoundary: 'Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.',
     redaction: 'Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels.',
   }

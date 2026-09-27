@@ -10,6 +10,10 @@ export const GOAL_004C_AUTHORIZATION: Readonly<{
   limits: typeof GOAL_004C_PROPOSAL;
 }>
 export function assertGoal004CLiveAuthorized(): void
+export const GOAL_004C_AMENDMENT: Readonly<Record<string, unknown>>
+export const GOAL_004C_FROZEN_FILE: string
+export function assertGoal004CAmendedNextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[] }): void
+export function assertGoal004CReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown }): void
 export function assertGoal004CNextAttempt(input: {
   campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[];
 }): void
