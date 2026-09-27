@@ -1,0 +1,106 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-27T14:42:58.059Z",
+  "commit": "5014a6452468897e7d30e08d95bbb6f9a36a8047",
+  "branch": "work/goal-004d-runtime-intent-fix",
+  "dirty": false,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 527,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 16017,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 308
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1158,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 102269,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 94
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 5,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    ".validation/goal-004d-offline/screenshots/title.png",
+    ".validation/goal-004d-offline/screenshots/gallery.png",
+    ".validation/goal-004d-offline/screenshots/gallery-narrow.png",
+    ".validation/goal-004d-offline/screenshots/gallery-zoom-200.png",
+    ".validation/goal-004d-offline/screenshots/dock.png",
+    ".validation/goal-004d-offline/screenshots/home.png"
+  ],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "localBuildSha256": "63c896a754d1e70fb02078d692f4683309a7a18ccbec8f201d5b582b78a0171a",
+  "runtimeBuildSha256": "63c896a754d1e70fb02078d692f4683309a7a18ccbec8f201d5b582b78a0171a",
+  "access": {
+    "liveEnabled": false,
+    "authorized": false,
+    "available": false
+  },
+  "route": "Fork to lower platform; northeast gate reported clear.",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "origin": "http://127.0.0.1:43419",
+  "finishedAt": "2026-09-27T14:44:53.776Z",
+  "status": "passed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened.",
+  "originalReport": {
+    "path": ".validation/goal-004d-offline.json",
+    "sha256": "463117f1a656da0e6d2e79c24ea01f990fbbc34e036637fd078004150fb2dbeb"
+  },
+  "frozenRuntimeSha256": "b7df05ef45f353575b4f40dc32a92e6b72c51e352480e8e66dacbb23e69d156b",
+  "copiedPracticeScreenshots": [
+    {
+      "source": ".validation/goal-004d-offline/screenshots/title.png",
+      "output": "artifacts/goal-004d/practice-title.png",
+      "sha256": "59b8c4eeaff656bf68bb4ea740c224d2c5a4052c6490d0b69cff773eb7bcbfdf",
+      "label": "AUTOMATED QA - OFFLINE PRACTICE",
+      "transformation": "None; byte-for-byte copy retaining the original visible label."
+    },
+    {
+      "source": ".validation/goal-004d-offline/screenshots/gallery.png",
+      "output": "artifacts/goal-004d/practice-gallery.png",
+      "sha256": "5c9534ea51452d0e1291f24801314da1a55535880b2ff8201192a30d6b58d843",
+      "label": "AUTOMATED QA - OFFLINE PRACTICE",
+      "transformation": "None; byte-for-byte copy retaining the original visible label."
+    },
+    {
+      "source": ".validation/goal-004d-offline/screenshots/home.png",
+      "output": "artifacts/goal-004d/practice-home.png",
+      "sha256": "28420e1e2252e03e3462a677e8264f4080c43226a39e77133c36994d64c116a2",
+      "label": "AUTOMATED QA - OFFLINE PRACTICE",
+      "transformation": "None; byte-for-byte copy retaining the original visible label."
+    }
+  ],
+  "verificationScope": "Full offline typecheck, unit tests, production build, compiled-production browser tests, whitespace check and controlled Practice smoke. Injected providers are synthetic. No actual model compliance, physical microphone/loudspeaker, human play, or enjoyment claim.",
+  "releaseStatus": "RUNTIME_POLICY_CHANGED / LIVE_PENDING_AUTHORIZATION"
+}

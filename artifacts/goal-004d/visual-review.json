@@ -1,0 +1,21 @@
+{
+  "candidateCommit": "5014a6452468897e7d30e08d95bbb6f9a36a8047",
+  "source": "The completed local compiled-production qa:release run; byte-for-byte screenshot copies identified in release-validation.json.",
+  "label": "AUTOMATED QA - OFFLINE PRACTICE",
+  "inspectedImages": [
+    {
+      "path": "artifacts/goal-004d/practice-title.png",
+      "observation": "Original title illustration, Rescue/Training choices and explicit Practice/Live modes remain readable. Practice is selected; the screen discloses local session memory."
+    },
+    {
+      "path": "artifacts/goal-004d/practice-gallery.png",
+      "observation": "The documented route atlas, acknowledged Relay selection, neutral Pip portrait, actual Practice caption, history and Pause controls remain visible. Private annotations are collapsed and marked as inference; no automatic moving location marker appears."
+    },
+    {
+      "path": "artifacts/goal-004d/practice-home.png",
+      "observation": "The validated Practice completion presents the arrival illustration, three-chapter retained-event recap, replay and Training choices. Practice and no-provider status remain explicit."
+    }
+  ],
+  "environment": "Linux/WSL headless Chromium 153.0.8010.12, sandbox enabled, 1280x720 viewport, reduced motion, full-page captures.",
+  "boundary": "Visual review confirms preserved rendering in this controlled local run. It does not demonstrate new artwork, real model compliance, Live speech, physical speakers, a human playtest, enjoyment or a public deployment."
+}

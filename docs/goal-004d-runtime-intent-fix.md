@@ -2,7 +2,7 @@
 
 Status: **RUNTIME_POLICY_CHANGED / LIVE_PENDING_AUTHORIZATION**. Release verdict: **RELEASE_NOT_LIVE_VERIFIED**. The shipped prompt and tool descriptions now distinguish information from permission. This is a behavioral intervention, not deterministic natural-language authorization or evidence that the real model follows the new policy.
 
-Work continues on `work/goal-004d-runtime-intent-fix` from delivered head `6521bc0a761e35c36d5deb56538eb77f1f8ebae7`. Implementation candidate, final compiled identity, full offline release result and exact final pushed-head CI are **PENDING VERIFICATION** in this pre-freeze report; they must be filled from actual results before delivery.
+Work continues on `work/goal-004d-runtime-intent-fix` from delivered head `6521bc0a761e35c36d5deb56538eb77f1f8ebae7`. The frozen implementation candidate is **`5014a6452468897e7d30e08d95bbb6f9a36a8047`**. Its full offline release check passed from a clean worktree; the [candidate receipt](../artifacts/goal-004d/candidate.json) records the changed compiled runtime, policy, harness, fixtures and environment. Final evidence-commit CI is reported separately after push.
 
 ## Observed failure and repair
 
@@ -20,7 +20,7 @@ Mutation descriptions reinforce both permitted requests and cases that supply no
 
 The [official documentation review](../artifacts/goal-004d/official-docs.json) records the current index, prompting, tool, inline configuration, event and client-tool references consulted before the change. Server preconditions establish action feasibility; they do not prove that the model correctly understood consent.
 
-## Offline verification before freezing
+## Offline verification
 
 The two [configuration-delivery tests](../tests/runtime-policy-config.test.ts) passed for Rescue and Training. They use the actual local `voice-token` route, client response mapper and `LiveVoice` serialization, with an injected token response and fake socket. The first message is the actual serialized `session.update`; its prompt/config hashes differ from the delivered baseline. Assertions preserve `anna`, greeting, transport fields and schemas, reject `agent_id` and private regression facts, and verify finite local cleanup. Their injected ACK is not a real provider ACK.
 
@@ -38,13 +38,25 @@ The first `qa:release` invocation on clean commit `8c35d5d01cdb8846b67b226a2ffcb
 
 The watchdog failure left its offline driver waiting for the supervisor's acknowledgement; it later exited on the existing ten-second timeout. An isolated run passed, and a process audit found no surviving owned QA workers. The test had killed the supervisor as soon as the reservation existed, before proving that its worker had reached the intended unresponsive state. Its fixture now waits for a bounded post-acknowledgement ready marker before the kill. Termination deadlines, reservation/lease assertions and supervisor production code are unchanged. This repairs test synchronization; it does not claim to fix or prove cleanup during the earlier pre-acknowledgement race.
 
-One completed full `GAME_DISABLE_LIVE=1 npm run qa:release` on the corrected clean committed implementation is **PENDING**. Its production build, unit/browser counts, Practice screenshots, cleanup and final identity will be recorded in `artifacts/goal-004d/release-validation.json` after execution. The rerun follows an actual code/test correction, not an unchanged run to increase evidence counts. Offline Practice and injected providers cannot establish real speech, physical playback, a human playtest, enjoyment or real-model action control.
+One completed full `GAME_DISABLE_LIVE=1 npm run qa:release` passed on corrected clean candidate `5014a6452468897e7d30e08d95bbb6f9a36a8047`, September 27, 2026, 14:42:58–14:44:53 UTC. The [release receipt](../artifacts/goal-004d/release-validation.json) records **308 unit tests**, **94 compiled-production browser tests**, typecheck, production build, whitespace checks and fresh-context compiled Practice through confirmed home and replay. Node was `v24.20.0`, Chromium `153.0.8010.12`, with sandbox enabled. Owned browser contexts and child process groups stopped; no provider connection opened. The [title](../artifacts/goal-004d/practice-title.png), [Gallery](../artifacts/goal-004d/practice-gallery.png) and [home](../artifacts/goal-004d/practice-home.png) captures retain their offline Practice labels.
+
+The [visual review](../artifacts/goal-004d/visual-review.json) records direct inspection of the three captured images: preserved title artwork, usable Gallery atlas/Relay/Pause controls, and the confirmed-home illustration and recap. This is one completed full run after the preserved failed invocation and actual code/test correction, not repeated unchanged runs to increase evidence counts. Offline Practice and injected providers cannot establish real speech, physical playback, a human playtest, enjoyment or real-model action control.
 
 ## Identity and preservation
 
 [baseline.json](../artifacts/goal-004d/baseline.json) records exact old source/compiled prompt and config hashes, serialized payload hashes, accounting and the successful prior-head CI. The prior application source is `3cf72495c2d3cfcc42cfa6be7e698d2989e95e99`; its 21-file compiled manifest is `e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e`. Recent QA-only repairs had not changed that runtime, and the agent had not learned from the failed attempts.
 
-Pending frozen receipts: `artifacts/goal-004d/candidate.json` will contain the exact implementation commit, old/new policy identities, ordered runtime manifest, harness/fixture manifests and environment. `artifacts/goal-004d/preservation.json` will record historical and immutable-byte checks. The runtime aggregate uses the recorded recursive `localeCompare` path order and SHA-256 of `JSON.stringify` of per-file byte hashes; the release runner's separate digest must remain distinctly labelled. The relevant compiled application bytes must change from the failed candidate before this repair is delivered.
+The [frozen candidate](../artifacts/goal-004d/candidate.json) contains exact source-file and compiled-file hashes plus the complete 21-file runtime manifest. Only **`dist/server/agent/prompt.js` and `dist/server/agent/config.js`** differ from the failed candidate. Source and compiled configuration serialize identically. The old/new SHA-256 identities are:
+
+| Identity | Failed candidate | Goal 004D candidate |
+| --- | --- | --- |
+| Exact UTF-8 prompt text | `91fab9ffdf310da7b33aea7f0e09e6c53114d30ebc173162332b7fe23f0ebe2a` | `1e746318af6645e73747fd0884caa232ffe3535ca9f05370c120a347e6277f3b` |
+| Serialized inline configuration | `bbe17ef3fb2bdc8af2ef59ceb52fba4b174d462643b6131734fd62f5ccbebeea` | `fa95d216acb9cd05a11884acb6d990b4b4ea0746edd3589ac6108c72fd545ea2` |
+| Ordered compiled-runtime manifest | `e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e` | `b7df05ef45f353575b4f40dc32a92e6b72c51e352480e8e66dacbb23e69d156b` |
+
+Configuration hashing uses UTF-8 `JSON.stringify(sessionConfig)` with authored property order. The runtime aggregate uses the recorded recursive `localeCompare` path order and SHA-256 of `JSON.stringify` of per-file byte hashes. The release runner's separate path-plus-bytes digest is `63c896a754d1e70fb02078d692f4683309a7a18ccbec8f201d5b582b78a0171a`; it is not the runtime-manifest algorithm.
+
+The [preservation audit](../artifacts/goal-004d/preservation.json) verified **451 historical files**, **65 immutable files** and **150 speech-fixture files**, with no historical or immutable changes. Original and amended accounting hashes are retained. No ledger was modified, initialized, reset, refunded or replenished.
 
 ## Live boundary and final handoff
 
@@ -52,4 +64,4 @@ Goal 004D authorizes **zero new token requests or provider connections**. No fun
 
 No separate 004D retest grant accompanied the request, so actual Text/Voice compliance on the changed runtime remains untested. Ordinary offline execution stays with this task; only a subsequent explicit spending amendment can permit the real retest. No deployment, public upload, billing change, visibility change, PR or main merge is part of this work.
 
-Final implementation commit: **PENDING**. Final pushed evidence/documentation commit and exact-head CI: **PENDING**. Worktree, owned-process cleanup and preservation audit: **PENDING FINAL CHECK**. [Release status](goal-004d-release-status.md) separately tracks prepared deployment code, missing HTTPS/demo URL, outline versus finished deck, test footage versus submission video, and the unsubmitted event entry.
+Frozen implementation commit: **`5014a6452468897e7d30e08d95bbb6f9a36a8047`**. It was clean when the full offline suite ran; local process cleanup and preservation passed as recorded above. Subsequent changes are evidence/documentation only. The final delivery message and private `.validation/goal-004d-final-ci.json` receipt identify the exact pushed evidence commit, GitHub Actions run and inspected conclusion; this report does not substitute the earlier candidate's checks for final-head CI. The delivery also records the final worktree and cleanup check. [Release status](goal-004d-release-status.md) separately tracks prepared deployment code, missing HTTPS/demo URL, outline versus finished deck, test footage versus submission video, and the unsubmitted event entry.
