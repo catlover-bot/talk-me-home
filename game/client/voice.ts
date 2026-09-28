@@ -71,6 +71,7 @@ export class LiveVoice {
   private handshakeTimer?: ReturnType<typeof setTimeout>;
   private durationTimer?: ReturnType<typeof setTimeout>;
   private warningTimer?: ReturnType<typeof setTimeout>;
+  private connectionLimitWarning = false;
   private resolveReady?: () => void;
   private rejectReady?: (error: Error) => void;
   private resolveClosed?: () => void;
@@ -141,9 +142,11 @@ export class LiveVoice {
       const requestedCap = options.maxSessionSeconds ?? 600;
       const cap = Number.isFinite(requestedCap) ? Math.max(1, Math.min(600, requestedCap)) : 600;
       this.warningTimer = setTimeout(() => {
+        this.connectionLimitWarning = true;
         this.callbacks.onWarning?.(`This Live connection will end in ${Math.min(60, Math.ceil(cap))} seconds. Your mission checkpoint will remain available; reconnect explicitly to continue.`);
       }, Math.max(0, cap - 60) * 1000);
       this.durationTimer = setTimeout(() => {
+        this.connectionLimitWarning = true;
         this.callbacks.onWarning?.('The Live connection limit was reached. Your mission checkpoint is preserved. Reconnect to continue.');
         this.callbacks.onSessionLimit?.();
         void this.stop();
@@ -198,6 +201,9 @@ export class LiveVoice {
   /** Captured at Confirm so an input racing the HTTP receipt wins over speech. */
   get inputTurn(): number { return this.playerTurn; }
 
+  /** Decision advisories must not replace the impending connection deadline. */
+  get hasConnectionLimitWarning(): boolean { return this.connectionLimitWarning; }
+
   /** Hold a short input window only while the local owner-decision request settles. */
   beginGameDecision(): { inputTurn: number; finish(): void } {
     const inputTurn = this.playerTurn;
@@ -208,7 +214,7 @@ export class LiveVoice {
       if (this.decisionInput !== pending) return;
       this.playerTurn++; this.cancelAcknowledgement();
       this.releaseDecisionInput();
-      this.callbacks.onWarning?.('The decision response is still pending. Your input is continuing; use the visible result or ask about its status.');
+      if (!this.connectionLimitWarning) this.callbacks.onWarning?.('The decision response is still pending. Your input is continuing; use the visible result or ask about its status.');
     }, this.dependencies.decisionInputGraceMs ?? 1500);
     return { inputTurn, finish: () => { if (this.decisionInput === pending) this.releaseDecisionInput(); } };
   }
@@ -259,7 +265,7 @@ export class LiveVoice {
     this.pendingAcknowledgement = retained;
     this.acknowledgementExpiry = setTimeout(() => {
       this.cancelAcknowledgement();
-      this.callbacks.onWarning?.('The decision is saved. Pip did not have a safe opportunity for a separate acknowledgement; you can ask about the recorded result.');
+      if (!this.connectionLimitWarning) this.callbacks.onWarning?.('The decision is saved. Pip did not have a safe opportunity for a separate acknowledgement; you can ask about the recorded result.');
     }, this.dependencies.acknowledgementExpiryMs ?? 4000);
     this.scheduleAcknowledgement();
     return true;

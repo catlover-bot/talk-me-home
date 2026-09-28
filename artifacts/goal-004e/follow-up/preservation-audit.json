@@ -1,0 +1,217 @@
+{
+  "label": "READ-ONLY FOLLOW-UP PRESERVATION AUDIT",
+  "checkedAt": "2026-09-28T14:14:17.257Z",
+  "baseline": {
+    "path": ".validation/goal-004e-followup-preservation-before.json",
+    "sha256": "db32d37905b48d629a12c06ab474b34d5b5c87bd13221223360fe356fc740037",
+    "baseCommit": "7139bb5b2f41e3f3730fed46a884439e829756df",
+    "capturedAt": "2026-09-28T13:57:56.6773905Z"
+  },
+  "files": {
+    "expectedCount": 467,
+    "compared": 467,
+    "matched": 466,
+    "mismatchCount": 1,
+    "mismatches": [
+      {
+        "path": "artifacts/goal-004e/followup/player-before.json",
+        "matches": false,
+        "error": "ENOENT"
+      }
+    ],
+    "authorizedRelocations": [
+      {
+        "baselinePath": "artifacts/goal-004e/followup/player-before.json",
+        "currentPath": "artifacts/goal-004e/follow-up/player-before.json",
+        "bytes": 1216,
+        "sha256": "25a2378105beb40b54c9f891bee9cf0296a3d4ee9ff27fbd2b83682647e8b970",
+        "matchesBaselineBytes": true,
+        "reason": "The coordinating agent explicitly requested moving this newly created follow-up receipt into the AGENTS-compliant follow-up/ directory. This is not historical B/C/D/E evidence."
+      }
+    ],
+    "contentMatchedIncludingRelocations": 467,
+    "unexplainedContentMismatches": 0
+  },
+  "priorArtifacts": {
+    "compared": 127,
+    "matched": 126,
+    "note": "The baseline included the newly created follow-up player-before receipt; its original path is absent after the authorized directory move. See files.authorizedRelocations."
+  },
+  "artwork": {
+    "compared": 2,
+    "matched": 2,
+    "paths": [
+      "game/client/public/art/mission-control.svg",
+      "game/client/public/icon.svg"
+    ]
+  },
+  "accounting": {
+    "source": "artifacts/goal-004e/live/campaign-summary.json",
+    "sourceSha256": "de3f39abb9ac61b7046c6b8a194830991c30f71ab322f1eab6214b49694925b6",
+    "aggregateCampaign": "Linked Goal 004C / 004D / 004E",
+    "attempts": 4,
+    "productionAttempts": 4,
+    "remainingAttempts": 0,
+    "reservedSeconds": 2680,
+    "remainingReservedCapacitySeconds": 0,
+    "planningEstimateDollars": 3.35,
+    "admissionStatus": "exhausted",
+    "allRecordedEndAcknowledgements": true,
+    "currentFileHashesOnly": [
+      {
+        "path": ".live-test-budget.json",
+        "bytes": 3118,
+        "sha256": "7287dfb11b266d2c1491d657b91037d42b57a5704850b4982747646317b2c3e1",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004b-live/allowance.jsonl",
+        "bytes": 228,
+        "sha256": "b58817b207ddbc3862fae891099e6f96899774f9ebb7d2a3eff453fd7de535a0",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004b-live/campaign.jsonl",
+        "bytes": 1300,
+        "sha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004b-live/campaign.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/allowance.jsonl",
+        "bytes": 116,
+        "sha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-confirmed-actions.jsonl",
+        "bytes": 1029,
+        "sha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-confirmed-actions-allowance.jsonl",
+        "bytes": 284,
+        "sha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-confirmed-actions-cleanup.jsonl",
+        "bytes": 110,
+        "sha256": "411308dbabe0c58a11741dd37143017965c3fc09657718b01e37d7d6a45c660e",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-final-acceptance.jsonl",
+        "bytes": 968,
+        "sha256": "8c9c0f4c94c8f8e400769fdbc62aa20a7b6c232fcf4bf5cfffc992bd28ef70d0",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-final-acceptance-allowance.jsonl",
+        "bytes": 172,
+        "sha256": "4cc324d8dc43d7bd4ff57986e43dc5f0d37ead592117b53d49fff7bf6a455152",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-final-acceptance-cleanup.jsonl",
+        "bytes": 55,
+        "sha256": "3aecb080749e467b9281fb4752b4a17e2d57f4c0461c90d3fc65d0e582314806",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-runtime-retest.jsonl",
+        "bytes": 1028,
+        "sha256": "f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-runtime-retest-allowance.jsonl",
+        "bytes": 228,
+        "sha256": "5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/amendment-runtime-retest-cleanup.jsonl",
+        "bytes": 55,
+        "sha256": "73baecd607491fd4958ea05b5ba669fa71b629425b0e69a5993dcdfff8c1a281",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/campaign.jsonl",
+        "bytes": 585,
+        "sha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+        "matches": true
+      },
+      {
+        "path": ".validation/goal-004c-live/campaign.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches": true
+      }
+    ],
+    "boundary": "Totals copied from the preserved sanitized summary. Ledger bytes were hashed and compared only; no ledger contents or credentials were exported. Conservative reservations are not an invoice or account-wide usage limit."
+  },
+  "historicalMedia": {
+    "receipt": "artifacts/goal-004e/live-media.json",
+    "outcome": "FAILED CARGO CONTINUATION — NOT A COMPLETE RESCUE",
+    "files": [
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/input-digital.wav",
+        "bytes": 4493372,
+        "sha256": "ed6f78e7b0c11c68c7ca46ba83d855f305663d3d41d5b9bafbcaf8221e18be71",
+        "matchesHistoricalReceipt": true
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/rendered-digital.wav",
+        "bytes": 4493372,
+        "sha256": "7ac1dd7223da6a44efe117c4996127254ecea96dcf9ca916a555bc9c1fd7a1af",
+        "matchesHistoricalReceipt": true
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/postVolume-digital.wav",
+        "bytes": 4493372,
+        "sha256": "bbed37956b7714523da8f8fee4ef1fda913ead31601cd883a1c362f79fdc9541",
+        "matchesHistoricalReceipt": true
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/browser-silent.webm",
+        "bytes": 6219301,
+        "sha256": "81011138b5e6cad5eda369c735cc5a36f4679628df3cb64ae458b0a3fbff6cff",
+        "matchesHistoricalReceipt": true
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-digital.wav",
+        "bytes": 4493406,
+        "sha256": "1ccb4ade31ef6fe7317c74fefd3d2b8a846e984ff8f8a595a0c3c6efdd38b1c2",
+        "matchesHistoricalReceipt": true
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-video.mp4",
+        "bytes": 4431134,
+        "sha256": "0d8a672b786ee56f16673016ba9205682a179db547722c3db6fa530f1e743dfe",
+        "matchesHistoricalReceipt": true
+      }
+    ]
+  },
+  "taskAuthority": {
+    "newRealProviderAuthorization": 0,
+    "newRealProviderTokenRequests": 0,
+    "newRealProviderConnections": 0,
+    "newAllowanceOrAccountingMutations": 0,
+    "source": "The active follow-up explicitly authorizes offline work only. This audit used filesystem reads/hashes and local process inspection only; the sole new write is this audit."
+  },
+  "processCheck": {
+    "method": "Read-only process names, narrowly matched owned test-output command markers in memory, and port 5173 listener check; no command lines or environment contents retained.",
+    "ownedTestProcessSurvivors": [],
+    "port5173Listening": true,
+    "scope": "Prior owned test sessions completed with exit code 0. This snapshot does not assert ownership of unrelated concurrent work; no processes were killed."
+  },
+  "status": "PRESERVATION_PASS_WITH_AUTHORIZED_PATH_RELOCATION",
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

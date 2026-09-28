@@ -431,7 +431,7 @@ export function useMission() {
             result: { ok: result.ok, message: result.message, ...(result.code ? { code: result.code } : {}) },
             checkpoint: { chapter: result.view.chapter, chapterEpoch: result.view.chapterEpoch, completed: result.view.completed },
           }, decisionInput?.inputTurn)) {
-            setWarning('The decision is saved, but its delivery to Pip was not confirmed. Ask Pip to check the proposal status before continuing.');
+            if (!connection.hasConnectionLimitWarning) setWarning('The decision is saved, but its delivery to Pip was not confirmed. Ask Pip to check the proposal status before continuing.');
           }
         }
       }

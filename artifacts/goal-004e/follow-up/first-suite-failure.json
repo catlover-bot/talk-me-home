@@ -1,0 +1,52 @@
+{
+    "label":  "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+    "startedAt":  "2026-09-28T14:13:01.094Z",
+    "commit":  "15db960ba4caf83efdef64bac72c34570f9e746f",
+    "branch":  "work/goal-004e-confirmed-actions",
+    "dirty":  false,
+    "node":  "v24.20.0",
+    "platform":  "linux",
+    "checks":  [
+                   {
+                       "label":  "typecheck",
+                       "status":  "passed",
+                       "durationMs":  455,
+                       "exitCode":  0,
+                       "timedOut":  false
+                   },
+                   {
+                       "label":  "unit tests",
+                       "status":  "passed",
+                       "durationMs":  13956,
+                       "exitCode":  0,
+                       "timedOut":  false,
+                       "passedCases":  357
+                   },
+                   {
+                       "label":  "production build",
+                       "status":  "passed",
+                       "durationMs":  1009,
+                       "exitCode":  0,
+                       "timedOut":  false
+                   },
+                   {
+                       "label":  "compiled-production browser tests",
+                       "status":  "failed",
+                       "durationMs":  158915,
+                       "exitCode":  1,
+                       "timedOut":  false,
+                       "passedCases":  122
+                   }
+               ],
+    "screenshots":  [
+
+                    ],
+    "realProviderCalls":  0,
+    "publicHost":  "Blocked only by absent deployment; local production exercised.",
+    "failure":  "compiled-production browser tests failed; rerun the named ordinary offline command for diagnostics.\n\n\u0027failed\u0027 !== \u0027passed\u0027\n",
+    "finishedAt":  "2026-09-28T14:15:55.454Z",
+    "status":  "failed",
+    "cleanup":  "Owned browser contexts and child process groups stopped; no provider connection opened.",
+    "diagnosis":  "Both viewport instances of the existing Rescue connection-limit case failed: the new decision-acknowledgement expiry advisory overwrote the critical 60-second session warning. 122 other browser cases passed; unit/typecheck/build passed. This is a product notification-priority regression; preserve assertions and repair source.",
+    "retainedRawEvidence":  ".validation/goal-004e-followup-first-suite-browser/"
+}

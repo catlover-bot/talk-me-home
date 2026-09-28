@@ -205,6 +205,29 @@ test('an unsafe opportunity expires once, with no polling, retry or later acknow
   assert.equal(peer.sent.filter(event => event.type === 'conversation.message').length, 1);
 });
 
+test('the connection-limit warning survives later decision advisories and the existing cap still closes once', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const peer = await connection(t, { greeting: false });
+  assert.equal(peer.live.hasConnectionLimitWarning, false);
+  t.mock.timers.tick(540_000);
+  assert.equal(peer.live.hasConnectionLimitWarning, true);
+  assert.match(peer.warnings.at(-1)!, /This Live connection will end in 60 seconds/);
+  peer.live.sendGameEvent(decisionReceipt());
+  t.mock.timers.tick(1000);
+  assert.match(peer.warnings.at(-1)!, /This Live connection will end in 60 seconds/);
+  peer.live.beginGameDecision();
+  t.mock.timers.tick(1500);
+  assert.match(peer.warnings.at(-1)!, /This Live connection will end in 60 seconds/);
+  peer.emit({ type: 'reply.started', reply_id: 'late-greeting' });
+  peer.emit({ type: 'reply.done', reply_id: 'late-greeting', status: 'completed' });
+  t.mock.timers.tick(5);
+  assert.equal(peer.acknowledgements().length, 0, 'The expired receipt stays expired despite a later safe boundary.');
+  t.mock.timers.tick(60_000 - 2505);
+  await peer.live.stop();
+  assert.match(peer.warnings.at(-1)!, /connection limit was reached/);
+  assert.equal(peer.sent.filter(event => event.type === 'session.end').length, 1);
+});
+
 test('Pause, explicit interruption and old-round replacement cancel queued speech without replaying the receipt', async t => {
   const paused = await connection(t); paused.live.sendGameEvent(decisionReceipt()); await paused.live.stop(); await pause();
   assert.equal(paused.acknowledgements().length, 0); assert.equal(paused.live.endAcknowledged, true);
