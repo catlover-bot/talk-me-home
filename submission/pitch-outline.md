@@ -36,7 +36,8 @@ This is an outline, **not a finished presentation deck**. Presentation link: **N
 
 ## 6. Current evidence and next steps
 
-- Current Goal 004E changes the action contract; its final offline candidate checks and bounded real Voice outcome are pending in `docs/goal-004e-confirmed-actions.md`. Historical C/D failed Text results remain failures. **RELEASE_NOT_LIVE_VERIFIED** remains.
+- Goal 004E passed 342 unit tests and 100 browser cases on clean candidate `bb6dfd2181503415a14c440c52dd762db88f5e3c`; see `docs/goal-004e-confirmed-actions.md`. Exact final pushed-head CI is linked in the delivery report. Historical C/D failed Text results remain failures. **RELEASE_NOT_LIVE_VERIFIED** remains.
+- The final synthetic Voice + UI confirmation attempt did not complete Cargo. The first three unconfirmed inputs caused no physical change, and one confirmed Latch proposal committed once. Pip then asked to check status instead of proposing the crossing; the strict QA player stopped without trying a human recovery. Ending ACK was received.
 - Original artwork and historical Practice captures are prepared. Synthetic voice tests, injected-provider tests, human speech, physical audio, natural play, and enjoyment are distinct evidence categories.
-- Owner next steps: review the final verified candidate, approve any public hosting/access, record a real demonstration under a separate allowance, finish this deck, and complete submission.
+- Linked C/D/E allowance is exhausted: 4/4 attempts, 2,680 reserved seconds, USD 3.35 estimated reservation cost, zero remaining. No retry or additional real call is authorized. Public deployment, finished deck/video, and submission remain incomplete.
 - Public demo, video, and presentation links: **NOT PROVIDED**. Do not replace these with hypothetical URLs.

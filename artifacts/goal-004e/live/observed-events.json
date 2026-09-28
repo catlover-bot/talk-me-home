@@ -1,0 +1,216 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+  "sourceSha256": "bf4dc54317bc3616a04903b462f02af3ad11a9a53ed1053293471f3c4155bd88",
+  "boundary": "Observed sanitized events only. Conversation role other does not establish payload content or provider ingestion. No invented tool associations, arguments, hidden state or outcomes.",
+  "events": [
+    {
+      "type": "socket.open",
+      "atMs": 3835.4000000059605
+    },
+    {
+      "type": "configuration.delivery",
+      "atMs": 3836.300000011921,
+      "direction": "sent",
+      "sequence": 1,
+      "sha256": "7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc",
+      "matchesExpected": true
+    },
+    {
+      "type": "reply.started",
+      "atMs": 4359.0999999940395,
+      "direction": "received",
+      "replyRef": 1
+    },
+    {
+      "type": "reply.done",
+      "atMs": 9612.59999999404,
+      "direction": "received",
+      "replyRef": 1,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 13084.5,
+      "direction": "received",
+      "replyRef": 4
+    },
+    {
+      "type": "tool.call",
+      "atMs": 13987.59999999404,
+      "direction": "received",
+      "callRef": 6,
+      "name": "observe_room"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 14244.40000000596,
+      "direction": "received",
+      "replyRef": 4,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 14253.09999999404,
+      "direction": "sent",
+      "callRef": 6,
+      "isError": false
+    },
+    {
+      "type": "reply.started",
+      "atMs": 14411.300000011921,
+      "direction": "received",
+      "replyRef": 7
+    },
+    {
+      "type": "reply.done",
+      "atMs": 23366,
+      "direction": "received",
+      "replyRef": 7,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 26785.59999999404,
+      "direction": "received",
+      "replyRef": 10
+    },
+    {
+      "type": "tool.call",
+      "atMs": 27699.90000000596,
+      "direction": "received",
+      "callRef": 12,
+      "name": "inspect_object"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 27955.40000000596,
+      "direction": "received",
+      "replyRef": 10,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 27974.40000000596,
+      "direction": "sent",
+      "callRef": 12,
+      "isError": false
+    },
+    {
+      "type": "reply.started",
+      "atMs": 28117.09999999404,
+      "direction": "received",
+      "replyRef": 13
+    },
+    {
+      "type": "reply.done",
+      "atMs": 35614.20000001788,
+      "direction": "received",
+      "replyRef": 13,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 41592.20000001788,
+      "direction": "received",
+      "replyRef": 16
+    },
+    {
+      "type": "reply.done",
+      "atMs": 49734.20000001788,
+      "direction": "received",
+      "replyRef": 16,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 53483.40000000596,
+      "direction": "received",
+      "replyRef": 19
+    },
+    {
+      "type": "tool.call",
+      "atMs": 54433.80000001192,
+      "direction": "received",
+      "callRef": 21,
+      "name": "propose_interaction"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 54637.59999999404,
+      "direction": "received",
+      "replyRef": 19,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 54664.90000000596,
+      "direction": "sent",
+      "callRef": 21,
+      "isError": false,
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 22
+    },
+    {
+      "type": "reply.started",
+      "atMs": 54865.70000001788,
+      "direction": "received",
+      "replyRef": 23
+    },
+    {
+      "type": "reply.done",
+      "atMs": 61112.90000000596,
+      "direction": "received",
+      "replyRef": 23,
+      "status": "completed"
+    },
+    {
+      "type": "conversation.message",
+      "atMs": 62205.70000001788,
+      "direction": "sent",
+      "role": "other"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 64885.40000000596,
+      "direction": "received",
+      "replyRef": 26
+    },
+    {
+      "type": "reply.done",
+      "atMs": 74274.30000001192,
+      "direction": "received",
+      "replyRef": 26,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 78287.40000000596,
+      "direction": "received",
+      "replyRef": 29
+    },
+    {
+      "type": "reply.done",
+      "atMs": 86822,
+      "direction": "received",
+      "replyRef": 29,
+      "status": "completed"
+    },
+    {
+      "type": "session.end",
+      "atMs": 93157.90000000596,
+      "direction": "sent"
+    },
+    {
+      "type": "session.ended",
+      "atMs": 93451.70000001788,
+      "direction": "received",
+      "durationSeconds": 89.469441
+    },
+    {
+      "type": "socket.close",
+      "atMs": 93594.70000001788,
+      "code": 1000,
+      "clean": true
+    }
+  ]
+}

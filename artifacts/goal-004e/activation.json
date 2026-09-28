@@ -1,0 +1,16 @@
+{
+  "amendmentId": "goal-004e-confirmed-actions-2026-09-28",
+  "activatedAt": "2026-09-28T10:18:02.349Z",
+  "sourceCommit": "fae42ae9d9a12e29a3fe9895d1e8f28a09063d0f",
+  "reusedExisting": false,
+  "consumedAttempts": 3,
+  "productionAttempts": 3,
+  "reservedSeconds": 2010,
+  "maximumAttempts": 4,
+  "maximumReservedSeconds": 2680,
+  "planningDollars": 3.35,
+  "newSlotCount": 0,
+  "reassignedExistingRemainingSlot": true,
+  "historicalFilesPreserved": 418,
+  "providerRequestsMade": 0
+}

@@ -1,0 +1,52 @@
+{
+  "verifiedAt": "2026-09-28T10:31:31.692Z",
+  "executionCommit": "bb6dfd2181503415a14c440c52dd762db88f5e3c",
+  "verdicts": [
+    "OFFLINE_REPAIR_PASS",
+    "LIVE_VOICE_CONFIRMATION_RESCUE_FAIL",
+    "REMOTE_END_CONFIRMED",
+    "RELEASE_NOT_LIVE_VERIFIED"
+  ],
+  "accounting": {
+    "attempts": 4,
+    "productionAttempts": 4,
+    "reservedSeconds": 2680,
+    "planningDollars": 3.35,
+    "remainingAttempts": 0,
+    "newRealAttempts": 1,
+    "newReservedSeconds": 670
+  },
+  "identity": {
+    "runtimeSha256": "cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce",
+    "harnessSha256": "1b2b5bee2572c890e9e2ebf30c268a5bd992914fed6f62603e5430efb1347d16",
+    "runtimeFilesUnchanged": 22,
+    "harnessFilesUnchanged": 15,
+    "fixturesUnchanged": 150,
+    "actualSessionUpdateSha256": "7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc",
+    "actualSessionUpdateCount": 1
+  },
+  "realScope": {
+    "suppliedSyntheticTurns": 6,
+    "tokenRequests": 1,
+    "canary": "passed",
+    "unconfirmedCanaryCommits": 0,
+    "confirmedUiActions": 1,
+    "matchedRobotCommits": 1,
+    "completedRescue": false,
+    "chapterReached": "Cargo Bay",
+    "observedToolCalls": 3,
+    "correlatedSingleResults": 3,
+    "endingSent": true,
+    "endingAcknowledged": true,
+    "localConnectedSeconds": 89.61630000001192,
+    "providerSessionSeconds": 89.469441,
+    "applicationCleanup": {
+      "activeTracks": 0,
+      "activeSources": 0,
+      "openApplicationContexts": 0
+    },
+    "supervisorSurvivors": 0
+  },
+  "limitation": "Pip requested permission to check status instead of proposing movement; the strict QA player expected a pending crossing proposal and stopped before its clarification path. Human recoverability and provider ingestion of game context remain unverified. The narrow behavior pass is not mission success.",
+  "boundary": "No further source/harness change, real retry, allowance replacement, refund, billing change, public deployment or upload. Raw media remain local. Exact delivery-head CI is checked after the evidence commit."
+}

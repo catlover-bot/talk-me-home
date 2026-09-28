@@ -1,6 +1,6 @@
 # Goal 004E — confirmed actions
 
-Work branch: `work/goal-004e-confirmed-actions`, based on delivered Goal 004D head `52d8c6d4cc68d136890ffa4dfb39c4060602ffb0`. Implementation and verification are in progress. **RELEASE_NOT_LIVE_VERIFIED** remains current until the scoped final result is recorded.
+Work branch: `work/goal-004e-confirmed-actions`, based on delivered Goal 004D head `52d8c6d4cc68d136890ffa4dfb39c4060602ffb0`. The server boundary, UI and offline release verification are delivered. The one authorized real synthetic Voice + UI attempt stopped in Cargo before a crossing proposal. **OFFLINE_REPAIR_PASS / LIVE_VOICE_CONFIRMATION_RESCUE_FAIL / REMOTE_END_CONFIRMED / RELEASE_NOT_LIVE_VERIFIED**. All four linked C/D/E attempts are consumed; no retry remains authorized.
 
 ## Deliberate product contract
 
@@ -43,10 +43,44 @@ The shared QA player matches one exact visible proposal label to its current exp
 - [Compiled production observer check](../artifacts/goal-004e/production-observer-check.json): offline IPC evidence remains outside the human projection.
 - [Current pricing check](../artifacts/goal-004e/pricing-check.json): the official [pricing page](https://www.assemblyai.com/pricing) still lists USD 4.50/hour. The remaining 670-second reservation plans USD 0.8375 within the unchanged USD 3.35 linked ceiling; no balance or invoice claim is made.
 
-Targeted boundary, ownership, idempotency, ordering, private-survey, client, evidence and financial tests have passed during implementation. Complete frozen-source release results, screenshots, confirmation count and exact final-head CI will be recorded below after they run. No Goal 004E real-provider connection has run at this point.
+Targeted boundary, ownership, idempotency, ordering, private-survey, client, evidence and financial tests passed during implementation. The final clean execution candidate passed the complete existing release suite: **342 unit tests, 100 browser cases**, typecheck, production build, whitespace and fresh-browser production smoke. It used Node 24.20.0 and sandboxed Linux Chromium 153.0.8010.12; this is not a Windows physical-device measurement. The [offline receipt](../artifacts/goal-004e/offline-validation.json) records the exact candidate, checks and sizes. Final pushed-head CI is checked separately and linked in the delivery report.
 
 ### Pre-token preparation failure
 
 The first clean candidate `fae42ae9d9a12e29a3fe9895d1e8f28a09063d0f` passed the full existing release suite: 341 unit tests and 98 browser cases. Its supervised launcher then stopped during local audio-instrumentation setup because that helper did not allow the new explicit evidence label. This was a harness defect before any token request, WebSocket or reservation. The original report, silent local browser video and frozen manifest are preserved; the aggregate ledger still contains exactly three consumed attempts / 2,010 seconds, and the production allowance still contains the same three reservations. No failed request was refunded or removed.
 
 The narrow correction permits the exact synthetic-voice-plus-confirmation label and tests installation offline. The shipped runtime is unchanged. The corrected clean source must pass the full suite again before its execution manifest is frozen at `confirmed-actions-execution-candidate.json`; the earlier `confirmed-actions-candidate.json` remains unchanged as preparation evidence. This changes no slot, accounting limit or retry permission. [Preparation failure receipt](../artifacts/goal-004e/preparation-failure.json).
+
+## Final frozen execution and observed result
+
+Implementation commits are `73250f5` (server/client boundary), `fae42ae` (QA, contract and final-slot guards), and `bb6dfd2` (pre-token evidence-label correction). The actual execution candidate is **`bb6dfd2181503415a14c440c52dd762db88f5e3c`**. Its [manifest](../artifacts/goal-004e/candidate.json) pins all 22 compiled files, 15 harness files, 150 fixture files and the browser binary. Later delivery changes contain evidence and documentation only.
+
+| Identity | SHA-256 |
+| --- | --- |
+| Shipped runtime | `cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce` |
+| Executed harness | `1b2b5bee2572c890e9e2ebf30c268a5bd992914fed6f62603e5430efb1347d16` |
+| Actual single serialized `session.update` | `7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc` |
+
+At September 28 10:24 UTC, the sole real E token request reserved the final 670 seconds before issuance. The first three exact historical inputs were delivered as offline-synthesized microphone speech. Real ASR retained their meaning. The initial and third-input physical digests were identical, with zero commits and zero UI confirmations. No false completion claim was detected in those turns.
+
+The explicit fourth input, “Please engage the Latch,” produced one `propose_interaction` result marked `awaiting_confirmation`. The player matched the visible **Engage the Latch** descriptor and confirmed its exact ID. The independent final oracle contains one robot commit, matching that one UI receipt in both directions. The Game event was visibly labelled as application output. All three observed tool calls received one correlated result each; no tool request waited for a human or received a second result.
+
+Continuation then failed. After “Power is now off,” Pip said it should check the proposal status. After “Please cross to the far side,” it asked permission to check that status, but issued neither `get_action_status` nor a movement proposal. The shared player's action-request path expected a pending crossing strip, encountered the old committed Latch strip and stopped before its Cargo clarification path could run. This is a real observed continuation gap and a strict QA-player assumption. It does **not** prove that a human could not recover through further conversation, an ASR defect, an unauthorized mutation, or a pending-tool transport deadlock.
+
+Instrumentation recorded a sent non-user `conversation.message` at 62,205.7 ms, consistent with the pinned adapter's verified-decision notification. The payload and provider ingestion acknowledgement were not retained; the evidence does not establish that the provider consumed or ignored that context. The original narration, including the spoken internal action name `latch_open`, remains unedited in the [conversation](../artifacts/goal-004e/live/2026-09-28T10-24-13-651Z-voice-mission-conversation.md). The narrow behavioral evaluator passed its no-unauthorized-action checks; **the Rescue attempt still failed** and never reached Gallery, Dock or home.
+
+The final reply completed and digital playback drained before the stop. Explicit `session.end` and real `session.ended` were observed exactly once; local open-to-ACK duration was **89.6163 seconds**, provider-reported duration **89.469441 seconds**, with about 293.8 ms end-ACK delay. The socket closed cleanly with code 1000. Application tracks, sources and audio contexts were zero; browser/server closure was observed, and the independent supervisor recorded zero survivors. Acknowledged remote ending is separate from the failed gameplay result.
+
+Linked C/D/E is now **4/4 attempts, 2,680/2,680 reserved seconds, USD 3.35 conservative planning, zero remaining slots**. No seconds were refunded, no ledger reset or replenishment occurred, and the preceding three failed results remain unchanged. The pre-token preparation failure consumed no request or reservation. [Final accounting](../artifacts/goal-004e/live/campaign-summary.json).
+
+## Visual evidence, interaction cost and remaining scope
+
+The actual production Practice [pending](../artifacts/goal-004e/screenshots/action-pending.png), [declined](../artifacts/goal-004e/screenshots/action-declined.png), [committed](../artifacts/goal-004e/screenshots/action-confirmed.png) and [home](../artifacts/goal-004e/screenshots/home.png) screenshots show the delivered controls and ending. [1280 Presentation](../artifacts/goal-004e/screenshots/pending-presentation-1280.png) and [1440 Presentation](../artifacts/goal-004e/screenshots/pending-presentation-1440.png) are clearly labelled constructed offline peers. The [real Voice stop](../artifacts/goal-004e/screenshots/live-voice-cargo-stop.png) is a failed Cargo capture, never a completed Rescue image. These renders were visually inspected.
+
+The shared player used **9 confirmations** on the ordinary route and **11** with Gallery backtracking. The final production Practice smoke used 9, plus one deliberate decline. Both Gallery variants, backtracking, Classic and Maintenance Training, changed preconditions, grant revoke/regrant, cancellation races, keyboard activation and final-home-only completion passed offline. These counts disclose interaction cost, not human enjoyment or ordinary completion time.
+
+Final compressed assets are 98,243 bytes for the main JS, 16,664 bytes for CSS and 3,617 bytes for the lazy debrief JS. Existing art is unchanged. The [preservation audit](../artifacts/goal-004e/preservation-audit.json) verifies all 418 previous evidence, accounting, fixture, artwork and credential files byte-for-byte.
+
+Actual synthetic input, ASR, provider audio and shipped rendered/post-volume digital audio were nonzero. Original WAVs, silent browser video and a locally derived same-session MP4 remain under the ignored `.validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/`; [hashes and media properties](../artifacts/goal-004e/live-media.json) are committed. No response was replaced or synthesized after the run; video alignment is approximate. No physical microphone, physical speaker, human listening, human natural clear or enjoyment was established. New real Text was deliberately not required or run under the E amendment. Public HTTPS remains untested because nothing was deployed.
+
+Use `npm run build:game` and `npm run start:game` on this feature branch. Practice is offline; future public Live requires a separate deliberate owner allowance and deployment. The exhausted QA allowance is not a judges' demo allowance. [Owner steps](../OWNER_ACTIONS.md) and [submission status](../submission/release-checklist.md) retain the undeployed URL, unprovided owner video/presentation and unfinished submission honestly.

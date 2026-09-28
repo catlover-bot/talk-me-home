@@ -1,0 +1,109 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+  "outcome": "FAILED CARGO CONTINUATION — NOT A COMPLETE RESCUE",
+  "sourceDirectory": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission",
+  "alignment": {
+    "offsetMs": 99.1,
+    "creationIntervalHalfWidthMs": 53,
+    "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate."
+  },
+  "files": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/input-digital.wav",
+      "bytes": 4493372,
+      "sha256": "ed6f78e7b0c11c68c7ca46ba83d855f305663d3d41d5b9bafbcaf8221e18be71",
+      "file": "input-digital.wav",
+      "durationSeconds": 93.611,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/rendered-digital.wav",
+      "bytes": 4493372,
+      "sha256": "7ac1dd7223da6a44efe117c4996127254ecea96dcf9ca916a555bc9c1fd7a1af",
+      "file": "rendered-digital.wav",
+      "durationSeconds": 93.611,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/postVolume-digital.wav",
+      "bytes": 4493372,
+      "sha256": "bbed37956b7714523da8f8fee4ef1fda913ead31601cd883a1c362f79fdc9541",
+      "file": "postVolume-digital.wav",
+      "durationSeconds": 93.611,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/browser-silent.webm",
+      "bytes": 6219301,
+      "sha256": "81011138b5e6cad5eda369c735cc5a36f4679628df3cb64ae458b0a3fbff6cff",
+      "file": "browser-silent.webm",
+      "durationSeconds": 94.76,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "vp8",
+          "width": 1440,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-digital.wav",
+      "bytes": 4493406,
+      "sha256": "1ccb4ade31ef6fe7317c74fefd3d2b8a846e984ff8f8a595a0c3c6efdd38b1c2",
+      "file": "qa-combined-digital.wav",
+      "durationSeconds": 93.611,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-video.mp4",
+      "bytes": 4431134,
+      "sha256": "0d8a672b786ee56f16673016ba9205682a179db547722c3db6fa530f1e743dfe",
+      "file": "qa-combined-video.mp4",
+      "durationSeconds": 94.76,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    }
+  ],
+  "boundary": "Original synthetic input and actual shipped digital output are mixed at half gain on their captured common timeline. No Pip answer was generated, replaced or retimed. The MP4 is derived locally from that same silent browser recording; video alignment is approximate, not sample accurate. All WAV/WebM/MP4 remain private and ignored. No physical microphone/speaker or human listening claim."
+}

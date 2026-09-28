@@ -1,0 +1,207 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "sourceReportSha256": "a3af6d0a8c6332b386d18ec131bed2a3e59a16cd264817a4838af5e2e9d47d7a",
+  "startedAt": "2026-09-28T10:21:06.016Z",
+  "commit": "bb6dfd2181503415a14c440c52dd762db88f5e3c",
+  "branch": "work/goal-004e-confirmed-actions",
+  "dirty": false,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 516,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 14050,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 342
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1057,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 120571,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 100
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 5,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    "screenshots/action-pending.png",
+    "screenshots/action-confirmed.png",
+    "screenshots/action-declined.png",
+    "screenshots/home.png"
+  ],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "localBuildSha256": "366f09ede08de4ad993928fcfc8ae461cd7eb192fbd9f70aa610ee701994bb16",
+  "runtimeManifestSha256": "cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce",
+  "runtimeBuildSha256": "366f09ede08de4ad993928fcfc8ae461cd7eb192fbd9f70aa610ee701994bb16",
+  "confirmedActions": {
+    "confirmations": 9,
+    "confirmedHome": true,
+    "screenshots": [
+      "pending",
+      "declined",
+      "committed",
+      "home"
+    ]
+  },
+  "access": {
+    "liveEnabled": false,
+    "authorized": false,
+    "available": false
+  },
+  "confirmations": [
+    {
+      "proposalId": "681d598b-6271-424e-9779-43f304ab711f",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 927.1999999880791,
+      "confirmedAtMs": 1078.4000000059605,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "1a022c05-0d23-482d-88cc-a90b01c2df64",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1291.0999999940395,
+      "confirmedAtMs": 1440.4000000059605,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5481ad86-2d6a-4d7d-a750-b4872816c39e",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1660,
+      "confirmedAtMs": 1804.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "06f3b8b2-2132-486b-87a0-00631ca2587f",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2404.2999999821186,
+      "confirmedAtMs": 2555.0999999940395,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "bca76b62-8547-4d8f-a4a6-7809b28507b6",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2756.199999988079,
+      "confirmedAtMs": 2906.4000000059605,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "2a76a69a-77a2-4d29-9ac6-3867b22fe449",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3121.5,
+      "confirmedAtMs": 3272.9000000059605,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "87efede4-0f59-4510-aadc-8aac13cd9b58",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3455.4000000059605,
+      "confirmedAtMs": 3605.9000000059605,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "deb3bd74-e95c-47db-9f8a-cfe29c5e8b1c",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3671.7999999821186,
+      "confirmedAtMs": 3822.2999999821186,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5defc459-1eb3-4e41-beb8-2bbd448c68e7",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 4054.7999999821186,
+      "confirmedAtMs": 4459,
+      "source": "Visible action strip and normal owner confirmation button"
+    }
+  ],
+  "route": "Fork to lower platform; northeast gate reported clear.",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "origin": "http://127.0.0.1:44687",
+  "finishedAt": "2026-09-28T10:23:27.258Z",
+  "status": "passed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened.",
+  "presentationScreenshots": [
+    "screenshots/pending-presentation-1280.png",
+    "screenshots/pending-presentation-1440.png"
+  ],
+  "screenshotProvenance": "The four standard views are real local compiled-production Practice with UI confirmation. Presentation images are constructed offline provider peers, explicitly labelled in the image. No image is a real-provider pass.",
+  "confirmationCost": {
+    "ordinarySharedPlayerRoute": 9,
+    "backtrackingSharedPlayerRoute": 11,
+    "currentProductionPractice": 9,
+    "interpretation": "Observed button confirmations in deterministic offline routes, not human effort or enjoyment measurements."
+  },
+  "assets": [
+    {
+      "path": "dist/client/assets/Debrief-DApFvYcO.js",
+      "bytes": 10775,
+      "gzipBytes": 3617,
+      "sha256": "7bfb3b651a69cf829f8277f877bd2d64fbec67a1449b2075464b73d60a2a78e2"
+    },
+    {
+      "path": "dist/client/assets/index-BMWv5jcH.css",
+      "bytes": 79844,
+      "gzipBytes": 16664,
+      "sha256": "2f5c77ac771319b2fd21f6b2b4c7430c8765e5073820615acee697a5e436a4ee"
+    },
+    {
+      "path": "dist/client/assets/index-CC-r82i-.js",
+      "bytes": 328989,
+      "gzipBytes": 98243,
+      "sha256": "a36ff8bacf817a4dc3ff7c218a18e46f568a422511d4861af09474992ed6d89c"
+    }
+  ],
+  "unchangedExternalArt": {
+    "path": "dist/client/art/mission-control.svg",
+    "bytes": 4595,
+    "gzipBytes": 1835,
+    "sha256": "54da597091f4ad38d191b71e1b8e142a891fd4d11de6cac6c65cb609dddd88af"
+  },
+  "visualInspection": "Pending, declined, committed, home and Presentation renders inspected. Action buttons, current caption, remote control and Pause remain accessible at 1280x720; narrow and 200% zoom smoke passed. Existing artwork is unchanged."
+}

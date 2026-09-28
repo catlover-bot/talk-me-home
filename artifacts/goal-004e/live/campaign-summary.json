@@ -1,0 +1,141 @@
+{
+  "label": "AUTOMATED QA — UI LIVE TEXT / SYNTHETIC VOICE — REAL ASSEMBLYAI",
+  "attempts": 4,
+  "productionAttempts": 4,
+  "remainingAttempts": 0,
+  "reservedSeconds": 2680,
+  "estimatedReservedDollars": 3.35,
+  "verifiedRateDollarsPerHour": 4.5,
+  "localConnectedSeconds": [
+    71.08180000000074,
+    44.61229999999702,
+    38.00119999998808,
+    89.61630000001192
+  ],
+  "endAcknowledgements": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "nextPermittedAt": null,
+  "admissionStatus": "exhausted",
+  "inspectedAt": "2026-09-28T10:26:58.920Z",
+  "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+  "amendmentId": "goal-004e-confirmed-actions-2026-09-28",
+  "historicalAttempts": 3,
+  "newAttempts": 1,
+  "historicalReservedSeconds": 2010,
+  "newReservedSeconds": 670,
+  "historicalProductionAttempts": 3,
+  "newProductionAttempts": 1,
+  "remainingReservedCapacitySeconds": 0,
+  "maximumAggregatePlanningDollars": 3.35,
+  "approvedAggregatePlanningCeiling": 3.35,
+  "originalCampaignSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+  "originalAllowanceSha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
+  "amendmentLedgerSha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+  "amendedAllowanceSha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb",
+  "amendedSequence": {
+    "mode": "voice",
+    "passed": false,
+    "reason": "The aggregate campaign allowance is exhausted.",
+    "boundary": "Read-only pure sequencing check against recorded reports and their candidate, not spending authorization or a current-worktree identity check."
+  },
+  "results": [
+    {
+      "evidenceDirectory": "2026-09-25T17-58-10-565Z-text-mission",
+      "mode": "text",
+      "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+      "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+      "failure": "Player oracle: Latch completion remained unconfirmed after bounded recovery.",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 1,
+      "historical": true,
+      "behaviorStatus": null,
+      "materialDefects": null,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-25T17:59:25.690Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-27T00-24-22-186Z-text-mission",
+      "mode": "text",
+      "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+      "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+      "failure": "Material instruction/action-control mismatch; the attempt stopped without a repair or retry.",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 2,
+      "historical": true,
+      "behaviorStatus": "blocked",
+      "materialDefects": 1,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-27T00:25:10.967Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-28T09-14-45-833Z-text-mission",
+      "mode": "text",
+      "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+      "runtimeSha256": "b7df05ef45f353575b4f40dc32a92e6b72c51e352480e8e66dacbb23e69d156b",
+      "failure": "Material instruction/action-control mismatch; the attempt stopped without a repair or retry.",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 3,
+      "historical": true,
+      "behaviorStatus": "blocked",
+      "materialDefects": 2,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-28T09:15:29.420Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-28T10-24-13-651Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce",
+      "failure": "expect(locator).toHaveAttribute(expected) failed",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 4,
+      "historical": false,
+      "behaviorStatus": "pass",
+      "materialDefects": 0,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-28T10:25:50.737Z"
+      }
+    }
+  ],
+  "accountingBoundary": "Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.",
+  "redaction": "Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels."
+}

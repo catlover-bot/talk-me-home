@@ -1,6 +1,6 @@
 # Image provenance
 
-All files here were produced from the implemented game on September 24, 2026. No external image generation service, stock art, purchased asset, or copied robot design was used. Fonts use system fallbacks; no font file is redistributed. Upstream notices remain intact; this document grants no new license to upstream work.
+The original files here were produced from the implemented game on September 24, 2026. The two `confirmed-*` images were added September 28 from the delivered Goal 004E production Practice build. No external image generation service, stock art, purchased asset, or copied robot design was used. Fonts use system fallbacks; no font file is redistributed. Upstream notices remain intact; this document grants no new license to upstream work.
 
 | Files | Identity and source | Capture mode |
 | --- | --- | --- |
@@ -12,16 +12,18 @@ All files here were produced from the implemented game on September 24, 2026. No
 | `dock-practice-*.png` | Actual Return Dock with server-confirmed stored energy/readiness | Typed deterministic Practice |
 | `history-paused-practice-1280.png` | Actual nonmodal history alongside atlas, caption, portrait and resume control | Paused typed deterministic Practice |
 | `homecoming-practice-*.png` | Actual ending UI after a full server-validated rescue | Typed deterministic Practice; recovery bay is an ending illustration |
+| `confirmed-actions-practice-1280.png` | Current Goal 004E exact pending action strip, map and remote controls; frozen execution candidate `bb6dfd2` | Actual production Practice + deliberate UI confirmation; full-page capture at a 1280×720 viewport |
+| `confirmed-home-practice-1280.png` | Current Goal 004E server-confirmed home after nine exact confirmations | Actual production Practice + UI confirmation; full-page capture at a 1280×720 viewport |
 
-UI images are 1280×720 or 1440×900 viewport captures, not stitched marketing mockups. Environment: WSL Ubuntu 24.04, Node.js 24.20.0, Playwright headless Chromium, reduced motion, real local production server and its in-memory API. There are **no actual Live or human-speech captures** in this package. No image is evidence of speech recognition, audible output, natural human completion, or enjoyment.
+Original UI images are 1280×720 or 1440×900 viewport captures; the new confirmed-action pair retains the full scrollable page. None is a stitched marketing mockup. Environment: WSL Ubuntu 24.04, Node.js 24.20.0, Playwright headless Chromium, reduced motion, real local production server and its in-memory API. There are **no actual Live or human-speech captures in this submission asset directory**. The failed synthetic Voice capture is separate in `artifacts/goal-004e/`. No submission image establishes speech recognition, audible output, natural human completion, or enjoyment.
 
-The small screenshot set is reproducible after building and running the local production service on port 4180 with Live disabled:
+The current confirmed-action screenshots can be captured without any provider request:
 
 ```sh
-node scripts/capture-release.mjs
-node scripts/capture-identity.mjs
+npm run build:game
+GAME_DISABLE_LIVE=1 npm run qa:release -- --smoke-only
 ```
 
-Both scripts reject non-loopback origins and forbid token/provider access. The chapter script follows actual Practice observations for either authored Gallery configuration, then confirms the real ending. Neither script imports hidden state or bypasses the authoritative rules.
+The smoke driver owns its local production service, forbids external/token requests, matches each intended visible proposal before confirming and writes `.validation/goal-004e-offline/screenshots/`. The earlier `capture-release.mjs` and `capture-identity.mjs` produced the historical September 24 assets; those old UI images are not new confirmed-action evidence. Identity artwork is unchanged.
 
 Before images remain in `docs/screenshots/goal-003/`; those are historical Practice/fake-provider evidence as documented there. New captures do not overwrite the historical files.
