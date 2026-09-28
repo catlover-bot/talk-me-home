@@ -1,0 +1,60 @@
+{
+  "label": "OFFLINE REGRESSION CHECKS; REAL TEXT FAILED SEPARATELY",
+  "recordedAt": "2026-09-28T09:20:00.793Z",
+  "executionCommit": "d8ad1fb65753b551a1b622f0bf19e762df953d86",
+  "runtimeSource": "5014a6452468897e7d30e08d95bbb6f9a36a8047",
+  "node": "v24.20.0",
+  "platform": "linux",
+  "browser": "Chromium 153.0.8010.12",
+  "productionPrebuilt": true,
+  "applicationAndHarnessChangedAfterFreeze": false,
+  "checks": [
+    {
+      "command": "GAME_DISABLE_LIVE=1 npm run build:game",
+      "status": "passed",
+      "phase": "Before freeze and provider request",
+      "log": ".validation/goal-004d-retest-build.log",
+      "logSha256": "fa962c0f9bf4c21c41cc63a6c0cd89a931a3742ab7c2f36903b28a6ee41756c6",
+      "logBytes": 654,
+      "logModifiedAt": "2026-09-28T09:12:10.592Z"
+    },
+    {
+      "command": "GAME_DISABLE_LIVE=1 npm test",
+      "status": "passed",
+      "passed": 315,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 13928.598492,
+      "log": ".validation/goal-004d-retest-unit.log",
+      "logSha256": "e99b27544b914e28004de6651a03d3ee4aa169aa24df329731bd2aa9a0dcd7f8",
+      "logBytes": 35453,
+      "logModifiedAt": "2026-09-28T09:16:31.792Z"
+    },
+    {
+      "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npm run test:e2e",
+      "status": "passed",
+      "passed": 96,
+      "failed": 0,
+      "durationSeconds": 57.8,
+      "log": ".validation/goal-004d-retest-e2e.log",
+      "logSha256": "136afb7304a28940d49e5b05f64dfe1319c06b595b83d118f6a01b3f3dcc1d40",
+      "logBytes": 16712,
+      "logModifiedAt": "2026-09-28T09:17:16.243Z"
+    },
+    {
+      "command": "npm run typecheck",
+      "status": "passed",
+      "log": ".validation/goal-004d-retest-final-typecheck.log",
+      "logSha256": "7f2b44c31228841cfdc61c145ce1019e332e292f8fe8ed5235c6628158c2887b",
+      "logBytes": 55,
+      "logModifiedAt": "2026-09-28T09:19:34.539Z"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "realProviderCallsInTheseChecks": 0,
+  "boundary": "These checks cover offline fixtures, injected providers and compiled production UI. They do not establish real Text/Voice acceptance. Relevant exact final-head remote CI is recorded after push in .validation/goal-004d-retest-final-ci.json and the delivery message."
+}

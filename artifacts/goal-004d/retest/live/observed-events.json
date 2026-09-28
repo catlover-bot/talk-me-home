@@ -1,0 +1,170 @@
+{
+  "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+  "source": ".validation/goal-004c-live/2026-09-28T09-14-45-833Z-text-mission/audio-evidence.json",
+  "sourceSha256": "0e40751410b0047603e3fe58015e7d56735ee17e9554d7ba850cab92866c6d2d",
+  "boundary": "Original sanitized event ordering and numeric aliases retained; no tool arguments, result payloads, exact tool-to-reply causal link, or hidden state reconstructed.",
+  "events": [
+    {
+      "type": "socket.open",
+      "atMs": 2237.0999999940395
+    },
+    {
+      "type": "configuration.delivery",
+      "atMs": 2238.2999999821186,
+      "direction": "sent",
+      "sequence": 1,
+      "sha256": "f7715ff67a2b88960c74b55c21017cbee9a3832fa42e8dd53fcccb11efce4562",
+      "matchesExpected": true
+    },
+    {
+      "type": "reply.started",
+      "atMs": 2770.7999999821186,
+      "direction": "received",
+      "replyRef": 1
+    },
+    {
+      "type": "reply.done",
+      "atMs": 8537.199999988079,
+      "direction": "received",
+      "replyRef": 1,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 9498.09999999404,
+      "direction": "received",
+      "replyRef": 3
+    },
+    {
+      "type": "tool.call",
+      "atMs": 9783.59999999404,
+      "direction": "received",
+      "callRef": 5,
+      "name": "observe_room"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 10053.299999982119,
+      "direction": "received",
+      "replyRef": 3,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 10061.799999982119,
+      "direction": "sent",
+      "callRef": 5,
+      "isError": false
+    },
+    {
+      "type": "reply.started",
+      "atMs": 10312.199999988079,
+      "direction": "received",
+      "replyRef": 6
+    },
+    {
+      "type": "reply.done",
+      "atMs": 19205.29999998212,
+      "direction": "received",
+      "replyRef": 6,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 20588,
+      "direction": "received",
+      "replyRef": 8
+    },
+    {
+      "type": "tool.call",
+      "atMs": 20837.69999998808,
+      "direction": "received",
+      "callRef": 10,
+      "name": "inspect_object"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 21089.79999998212,
+      "direction": "received",
+      "replyRef": 8,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 21097.399999976158,
+      "direction": "sent",
+      "callRef": 10,
+      "isError": false
+    },
+    {
+      "type": "reply.started",
+      "atMs": 21243.899999976158,
+      "direction": "received",
+      "replyRef": 11
+    },
+    {
+      "type": "reply.done",
+      "atMs": 29846.399999976158,
+      "direction": "received",
+      "replyRef": 11,
+      "status": "completed"
+    },
+    {
+      "type": "reply.started",
+      "atMs": 31101.79999998212,
+      "direction": "received",
+      "replyRef": 13
+    },
+    {
+      "type": "tool.call",
+      "atMs": 31375.399999976158,
+      "direction": "received",
+      "callRef": 15,
+      "name": "interact_object"
+    },
+    {
+      "type": "reply.done",
+      "atMs": 31615.19999998808,
+      "direction": "received",
+      "replyRef": 13,
+      "status": "completed"
+    },
+    {
+      "type": "tool.result",
+      "atMs": 31624.69999998808,
+      "direction": "sent",
+      "callRef": 15,
+      "isError": false
+    },
+    {
+      "type": "reply.started",
+      "atMs": 31770.899999976158,
+      "direction": "received",
+      "replyRef": 16
+    },
+    {
+      "type": "reply.done",
+      "atMs": 38922.69999998808,
+      "direction": "received",
+      "replyRef": 16,
+      "status": "completed"
+    },
+    {
+      "type": "session.end",
+      "atMs": 39936.5,
+      "direction": "sent"
+    },
+    {
+      "type": "session.ended",
+      "atMs": 40238.29999998212,
+      "direction": "received",
+      "durationSeconds": 37.856671
+    },
+    {
+      "type": "socket.close",
+      "atMs": 40380.5,
+      "code": 1000,
+      "clean": true
+    }
+  ]
+}

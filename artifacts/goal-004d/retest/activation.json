@@ -1,0 +1,12 @@
+{
+  "amendmentId": "goal-004d-runtime-retest-2026-09-28",
+  "reusedExisting": false,
+  "consumedAttempts": 2,
+  "productionAttempts": 2,
+  "reservedSeconds": 1340,
+  "maximumAttempts": 4,
+  "maximumReservedSeconds": 2680,
+  "planningDollars": 3.35,
+  "historicalFilesPreserved": 343,
+  "providerRequestsMade": 0
+}
