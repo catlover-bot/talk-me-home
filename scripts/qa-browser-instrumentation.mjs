@@ -297,7 +297,7 @@ function browserInstrumentation(options, sanitize) {
 }
 
 export async function installAudioInstrumentation(page, { label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', onLifecycle, expectedSessionUpdateSha256 } = {}) {
-  if (!['AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI', 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO'].includes(label)) throw new Error('Use an explicit QA evidence label.');
+  if (!['AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI', 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI', 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO'].includes(label)) throw new Error('Use an explicit QA evidence label.');
   if (expectedSessionUpdateSha256 !== undefined && !/^[a-f0-9]{64}$/.test(expectedSessionUpdateSha256)) throw new Error('Expected session.update digest must be a lowercase SHA-256 value.');
   if (onLifecycle) await page.exposeBinding('__qaLifecycle', (_source, event) => onLifecycle(event));
   await page.addInitScript({ content: `(${browserInstrumentation.toString()})(${JSON.stringify({ label, lifecycle: Boolean(onLifecycle), expectedSessionUpdateSha256 })}, ${sanitizeWireEvent.toString()});` });

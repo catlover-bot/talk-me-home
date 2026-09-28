@@ -5,6 +5,56 @@ import { sessionConfig } from '../../game/agent/config';
 import { installAudioInstrumentation, queueSpeech, audioSnapshot, cleanupAudioInstrumentation, collectAudioEvidence } from '../../scripts/qa-browser-instrumentation.mjs';
 import { encodePcmWav } from '../../scripts/qa-speech-fixtures.mjs';
 
+test('offline fake provider installs the exact Goal 004E evidence label through Voice preparation', async ({ page }) => {
+  expect(process.env.GAME_DISABLE_LIVE).toBe('1');
+  // This deliberately tests the production label string. The intercepted peer
+  // and token endpoint remain synthetic; no real-provider evidence is produced.
+  const label = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI';
+  const digest = createHash('sha256').update(JSON.stringify({ type: 'session.update', session: sessionConfig })).digest('hex');
+  const externalRequests: string[] = []; const unexpectedSockets: string[] = [];
+  let tokenRequests = 0; let configurationMessages = 0;
+  await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: digest });
+  await page.route('**/*', route => {
+    const host = new URL(route.request().url()).hostname;
+    if (!['127.0.0.1', 'localhost', '[::1]'].includes(host)) { externalRequests.push(host); return route.abort(); }
+    return route.fallback();
+  });
+  await page.routeWebSocket(/.*/, peer => { unexpectedSockets.push('Unexpected non-fixture socket'); void peer.close(); });
+  await page.route('**/api/access', route => route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, message: 'Offline fixture only.' } }));
+  await page.route('**/api/sessions/*/voice-token', route => {
+    tokenRequests++;
+    return route.fulfill({ json: { token: 'offline-only', sessionConfig, maxSessionSeconds: 600 } });
+  });
+  await page.routeWebSocket('wss://agents.assemblyai.com/**', peer => {
+    // Never connectToServer(): only this local fixture answers the socket.
+    peer.onMessage(data => {
+      const event = JSON.parse(String(data));
+      if (event.type === 'session.update') { configurationMessages++; peer.send(JSON.stringify({ type: 'session.ready' })); }
+      if (event.type === 'session.end') { peer.send(JSON.stringify({ type: 'session.ended' })); void peer.close({ code: 1000 }); }
+    });
+  });
+  await page.goto('/');
+  await page.getByRole('radio', { name: /Live Voice/ }).check();
+  await page.getByRole('button', { name: 'Start with Voice' }).click();
+  await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
+  await expect(page.getByRole('meter', { name: 'Local microphone level' })).toBeVisible();
+  expect(tokenRequests).toBe(0);
+  await page.getByRole('button', { name: 'Play test tone', exact: true }).click();
+  await page.getByRole('button', { name: 'Connect Live Voice', exact: true }).click();
+  await expect(page.getByLabel('Type a message')).toBeEnabled();
+  await expect.poll(async () => (await audioSnapshot(page)).events.filter(event => event.type === 'configuration.delivery').length).toBe(1);
+  const snapshot = await audioSnapshot(page);
+  expect(snapshot.label).toBe(label);
+  expect(snapshot.events.find(event => event.type === 'configuration.delivery')).toMatchObject({ sha256: digest, matchesExpected: true, sequence: 1 });
+  expect(configurationMessages).toBe(1); expect(tokenRequests).toBe(1);
+  await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+  await expect.poll(async () => (await audioSnapshot(page)).events.some(event => event.type === 'session.ended')).toBe(true);
+  await expect.poll(async () => (await audioSnapshot(page)).activeTracks).toBe(0);
+  await expect.poll(async () => (await audioSnapshot(page)).openApplicationContexts).toBe(0);
+  await cleanupAudioInstrumentation(page);
+  expect(externalRequests).toEqual([]); expect(unexpectedSockets).toEqual([]);
+});
+
 test('offline configuration delivery hashes exact successful wire bytes without retaining payloads', async ({ page }) => {
   const privateSentinel = 'fixture-private-config-must-not-survive';
   const payload = JSON.stringify({ type: 'session.update', session: { system_prompt: privateSentinel, secret: privateSentinel } });

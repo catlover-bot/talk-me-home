@@ -1,7 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import type { Page } from '@playwright/test';
 import { encodePcmWav, parsePcmWav, validateSpeechWav } from '../scripts/qa-speech-fixtures.mjs';
-import { sanitizeWireEvent, assembleRecording } from '../scripts/qa-browser-instrumentation.mjs';
+import { sanitizeWireEvent, assembleRecording, installAudioInstrumentation } from '../scripts/qa-browser-instrumentation.mjs';
+
+test('confirmed-action evidence label installs without weakening the explicit-label guard', async () => {
+  const label = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI';
+  const scripts: Array<{ content: string }> = [];
+  const page = { addInitScript: async (script: { content: string }) => { scripts.push(script); } } as unknown as Page;
+  await installAudioInstrumentation(page, { label });
+  assert.equal(scripts.length, 1);
+  assert.ok(scripts[0]!.content.includes(JSON.stringify(label)));
+  await assert.rejects(installAudioInstrumentation(page, { label: 'LIVE VERIFIED' }), /explicit QA evidence label/);
+  assert.equal(scripts.length, 1);
+});
 
 test('QA speech validation rejects silent, unclean, wrong-rate and malformed fixtures', () => {
   const samples = new Int16Array(24000);

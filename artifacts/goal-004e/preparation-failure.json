@@ -1,0 +1,71 @@
+{
+  "label": "LOCAL PRE-TOKEN PREPARATION FAILURE — NO PROVIDER CONNECTION",
+  "source": ".validation/goal-004c-live/2026-09-28T10-18-19-547Z-voice-mission/report.json",
+  "sourceSha256": "ec645236cbdc11e0e853514dc905e0070c8239d24b38a8bca1689d15fad06a86",
+  "commit": "fae42ae9d9a12e29a3fe9895d1e8f28a09063d0f",
+  "runtimeSha256": "cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce",
+  "harnessSha256": "670db407417719df61b399c622031c38c09a463b963888b15d63a7dd02a9ad78",
+  "failure": "Use an explicit QA evidence label.",
+  "tokenRequests": 0,
+  "newReservations": 0,
+  "providerConnectionOpened": false,
+  "connectedSeconds": 0,
+  "aggregateAttempts": 3,
+  "aggregateProductionAttempts": 3,
+  "aggregateReservedSeconds": 2010,
+  "previousManifest": ".validation/goal-004c-live/confirmed-actions-candidate.json",
+  "previousManifestSha256": "5e99b7a5d96516d3dc1904ab31fcd013472dda03a01b3ade374b54134181f768",
+  "lifecycle": [
+    {
+      "type": "worker.started",
+      "observedAt": "2026-09-28T10:18:19.549Z",
+      "elapsedMs": 0.14058199999999488,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-28T10:18:20.106Z",
+      "elapsedMs": 557.3239639999999,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "browser.close.requested",
+      "observedAt": "2026-09-28T10:18:27.884Z",
+      "elapsedMs": 8335.119372,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "browser.disconnected",
+      "observedAt": "2026-09-28T10:18:27.888Z",
+      "elapsedMs": 8339.496299,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "browser.closed",
+      "observedAt": "2026-09-28T10:18:27.963Z",
+      "elapsedMs": 8414.889296,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "server.close.requested",
+      "observedAt": "2026-09-28T10:18:27.968Z",
+      "elapsedMs": 8419.135479999999,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "server.closed",
+      "observedAt": "2026-09-28T10:18:27.979Z",
+      "elapsedMs": 8430.23728,
+      "source": "driver",
+      "outcome": "observed",
+      "code": 0
+    }
+  ],
+  "boundary": "Instrumentation label validation stopped setup before browser navigation, reservation or token route continuation. No allowance was reset, refunded or replenished. The original private report, manifest and local silent video remain unchanged."
+}

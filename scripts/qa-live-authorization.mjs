@@ -61,7 +61,10 @@ export const GOAL_004E_AMENDMENT = Object.freeze({
   hourlyRate: 4.5, planningDollars: 3.35, existingBalanceOnly: true, automaticReplenishment: false,
   contract: 'synthetic_voice_plus_ui_confirmation',
 })
-export const GOAL_004E_FROZEN_FILE = 'confirmed-actions-candidate.json'
+// The first harness stopped before reservation/token issuance on its evidence
+// label check. Its original manifest remains immutable; this is the single
+// execution candidate after that offline-only harness correction.
+export const GOAL_004E_FROZEN_FILE = 'confirmed-actions-execution-candidate.json'
 export const GOAL_004E_RUNTIME_SHA256 = 'cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce'
 export const GOAL_004E_SESSION_UPDATE_SHA256 = '7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc'
 export const GOAL_004E_CANARY_INPUTS = GOAL_004D_CANARY_INPUTS

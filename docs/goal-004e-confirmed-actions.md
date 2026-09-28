@@ -44,3 +44,9 @@ The shared QA player matches one exact visible proposal label to its current exp
 - [Current pricing check](../artifacts/goal-004e/pricing-check.json): the official [pricing page](https://www.assemblyai.com/pricing) still lists USD 4.50/hour. The remaining 670-second reservation plans USD 0.8375 within the unchanged USD 3.35 linked ceiling; no balance or invoice claim is made.
 
 Targeted boundary, ownership, idempotency, ordering, private-survey, client, evidence and financial tests have passed during implementation. Complete frozen-source release results, screenshots, confirmation count and exact final-head CI will be recorded below after they run. No Goal 004E real-provider connection has run at this point.
+
+### Pre-token preparation failure
+
+The first clean candidate `fae42ae9d9a12e29a3fe9895d1e8f28a09063d0f` passed the full existing release suite: 341 unit tests and 98 browser cases. Its supervised launcher then stopped during local audio-instrumentation setup because that helper did not allow the new explicit evidence label. This was a harness defect before any token request, WebSocket or reservation. The original report, silent local browser video and frozen manifest are preserved; the aggregate ledger still contains exactly three consumed attempts / 2,010 seconds, and the production allowance still contains the same three reservations. No failed request was refunded or removed.
+
+The narrow correction permits the exact synthetic-voice-plus-confirmation label and tests installation offline. The shipped runtime is unchanged. The corrected clean source must pass the full suite again before its execution manifest is frozen at `confirmed-actions-execution-candidate.json`; the earlier `confirmed-actions-candidate.json` remains unchanged as preparation evidence. This changes no slot, accounting limit or retry permission. [Preparation failure receipt](../artifacts/goal-004e/preparation-failure.json).
