@@ -1,0 +1,67 @@
+{
+  "label": "GOAL 004D RETEST - CURRENT OFFICIAL PRICE CHECK - NO PROVIDER REQUESTS",
+  "reviewedAtUtc": "2026-09-28T09:01:21Z",
+  "reviewedOnJst": "2026-09-28",
+  "observedHead": "1e84207181a1d48dc2cc768fcc36a5a72950543e",
+  "runtimeBaseline": "5014a6452468897e7d30e08d95bbb6f9a36a8047",
+  "sources": [
+    {
+      "url": "https://www.assemblyai.com/pricing",
+      "finding": "Voice Agent API costs USD 4.50 per hour, billed per second of connected conversation. Managed STT, conversational LLM, TTS and listed Voice Agent features are included; no per-layer add-ons, concurrency fees or per-agent subscriptions."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/llms.txt",
+      "finding": "Current official documentation index retrieved for linked integration references."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/connect-your-own-llm",
+      "finding": "The default uses AssemblyAI's managed conversational model. Custom LLM endpoints and LLM Gateway require separate configuration."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration",
+      "finding": "Inline session.update carries prompt, tools, input and output configuration without a stored agent."
+    },
+    {
+      "url": "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/voices",
+      "finding": "anna remains a documented British-English stock voice, configured inline through session.output.voice. No voice audition was performed."
+    }
+  ],
+  "configuration": {
+    "source": "game/agent/config.ts",
+    "unchangedFromRuntimeBaseline": true,
+    "unchangedPathsChecked": ["game/agent", "game/client/voice.ts", "game/server/http.ts"],
+    "managedDefaultStack": true,
+    "voice": "anna",
+    "customLlmOrGatewayConfigured": false,
+    "storedAgentConfigured": false,
+    "tools": "Browser function tools through the local authoritative game server; no paid HTTP tool or telephony path.",
+    "applicableAdditionalApiChargesUsd": 0,
+    "additionalChargeBasis": "Inference from the inspected unchanged inline configuration and official inclusive Voice Agent pricing. No custom LLM, paid extra provider, voice audition or paid input-speech synthesis is part of the approved path."
+  },
+  "conservativePlanning": {
+    "currency": "USD",
+    "ratePerConnectedHour": 4.5,
+    "reservationSecondsPerAttempt": 670,
+    "reservedEstimatePerAttempt": 0.8375,
+    "historicalAttemptsInGrant": 2,
+    "historicalReservedSeconds": 1340,
+    "historicalReservedEstimate": 1.675,
+    "maximumNewAttempts": 2,
+    "maximumNewReservedSeconds": 1340,
+    "maximumNewReservedEstimate": 1.675,
+    "maximumLinkedAttempts": 4,
+    "maximumLinkedReservedSeconds": 2680,
+    "maximumLinkedReservedEstimate": 3.35,
+    "approvedLinkedPlanningCeiling": 3.35,
+    "headroomDollars": 0,
+    "withinApprovedCeiling": true,
+    "arithmetic": "2680 seconds * USD 4.50 / 3600 seconds = USD 3.35 exactly; the historical and new halves each reserve USD 1.675.",
+    "budgetProblemFound": false
+  },
+  "boundaries": [
+    "Price fits the grant exactly at the current applicable rate; a higher applicable rate or extra API charge must stop execution before spending.",
+    "Historical quantities above are the grant baseline; the execution supervisor must independently inspect and reuse actual accounting, including any already consumed amendment attempts.",
+    "Existing balance and actual billing are unknown. This is a campaign planning estimate, not an invoice or account-wide billing cap.",
+    "This review made no account, billing, token, provider-session or voice-audition request and changed no code or accounting."
+  ]
+}

@@ -1,12 +1,48 @@
 import { test, expect, type WebSocketRoute } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { sessionConfig } from '../../game/agent/config';
 import { installAudioInstrumentation, queueSpeech, audioSnapshot, cleanupAudioInstrumentation, collectAudioEvidence } from '../../scripts/qa-browser-instrumentation.mjs';
 import { encodePcmWav } from '../../scripts/qa-speech-fixtures.mjs';
 
+test('offline configuration delivery hashes exact successful wire bytes without retaining payloads', async ({ page }) => {
+  const privateSentinel = 'fixture-private-config-must-not-survive';
+  const payload = JSON.stringify({ type: 'session.update', session: { system_prompt: privateSentinel, secret: privateSentinel } });
+  const reformatted = JSON.stringify(JSON.parse(payload), null, 2);
+  const sha256 = (text: string) => createHash('sha256').update(text).digest('hex');
+  await installAudioInstrumentation(page, { label: 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO', expectedSessionUpdateSha256: sha256(payload) });
+  let sentCount = 0;
+  await page.routeWebSocket('wss://agents.assemblyai.com/**', peer => {
+    // An isolated offline peer. Never connect this route to a provider.
+    peer.onMessage(() => { sentCount++; });
+  });
+  await page.goto('/');
+  await page.evaluate(async inputs => {
+    const socket = new WebSocket('wss://agents.assemblyai.com/offline-digest-fixture');
+    await new Promise<void>(resolve => socket.addEventListener('open', () => resolve(), { once: true }));
+    for (const input of inputs) socket.send(input);
+    socket.close();
+  }, [payload, reformatted]);
+  await expect.poll(async () => (await audioSnapshot(page)).events.filter(event => event.type === 'configuration.delivery').length).toBe(2);
+  const snapshot = await audioSnapshot(page);
+  const deliveries = snapshot.events.filter(event => event.type === 'configuration.delivery').sort((a, b) => Number(a.sequence) - Number(b.sequence));
+  expect(sentCount).toBe(2);
+  expect(snapshot.configurationUpdatesSent).toBe(2);
+  expect(deliveries.map(({ sha256: digest, matchesExpected, sequence }) => ({ sha256: digest, matchesExpected, sequence }))).toEqual([
+    { sha256: sha256(payload), matchesExpected: true, sequence: 1 },
+    { sha256: sha256(reformatted), matchesExpected: false, sequence: 2 },
+  ]);
+  expect(JSON.stringify(snapshot)).not.toContain(privateSentinel);
+  expect(JSON.stringify(snapshot)).not.toContain('system_prompt');
+  expect(JSON.stringify(snapshot)).not.toContain('wss://');
+  expect(snapshot.events.some(event => event.type === 'session.update')).toBe(false);
+  await cleanupAudioInstrumentation(page);
+});
+
 test('offline fake provider: genuine microphone MediaStream, shipped DSP, rendered PCM, stop and no echo', async ({ page }, info) => {
   test.setTimeout(30_000);
-  await installAudioInstrumentation(page, { label: 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO' });
+  const expectedSessionUpdateSha256 = createHash('sha256').update(JSON.stringify({ type: 'session.update', session: sessionConfig })).digest('hex');
+  await installAudioInstrumentation(page, { label: 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO', expectedSessionUpdateSha256 });
   let socket: WebSocketRoute | undefined; let tokenRequests = 0; let inputChunks = 0;
   await page.route('**/api/access', route => route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, message: 'Offline fixture. No provider is contacted.' } }));
   await page.route('**/api/sessions/*/voice-token', route => { tokenRequests++; return route.fulfill({ json: { token: 'offline-only', sessionConfig, maxSessionSeconds: 600 } }); });
@@ -30,6 +66,10 @@ test('offline fake provider: genuine microphone MediaStream, shipped DSP, render
   await page.getByRole('button', { name: 'Connect Live Voice', exact: true }).click();
   await expect(page.getByLabel('Type a message')).toBeEnabled();
   expect(tokenRequests).toBe(1);
+  await expect.poll(async () => (await audioSnapshot(page)).events.filter(event => event.type === 'configuration.delivery').length).toBe(1);
+  const configuration = await audioSnapshot(page);
+  expect(configuration.configurationUpdatesSent).toBe(1);
+  expect(configuration.events.find(event => event.type === 'configuration.delivery')).toMatchObject({ sha256: expectedSessionUpdateSha256, matchesExpected: true, sequence: 1 });
   const samples = new Int16Array(24000);
   for (let i = 4320; i < 16000; i++) samples[i] = Math.round(Math.sin(i * 2 * Math.PI * 330 / 24000) * 8000);
   const path = info.outputPath('offline-tonal-input.wav'); await writeFile(path, encodePcmWav(samples));

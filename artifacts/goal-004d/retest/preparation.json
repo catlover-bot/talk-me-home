@@ -1,0 +1,33 @@
+{
+  "label": "OFFLINE PREPARATION FOR THE EXPLICITLY APPROVED ONE-TIME RETEST",
+  "deliveredHead": "1e84207181a1d48dc2cc768fcc36a5a72950543e",
+  "preservedRuntimeSource": "5014a6452468897e7d30e08d95bbb6f9a36a8047",
+  "runtimeSha256": "b7df05ef45f353575b4f40dc32a92e6b72c51e352480e8e66dacbb23e69d156b",
+  "serializedSessionUpdateSha256": "f7715ff67a2b88960c74b55c21017cbee9a3832fa42e8dd53fcccb11efce4562",
+  "applicationAndSharedPlayerChanged": false,
+  "changes": [
+    "A second fixed profile in the existing amendment parser/writer, linked to the exact previous failed history, with four aggregate attempts and no replenishment.",
+    "The existing independent supervisor retains the original aggregate kernel lock and independently checks the corrected Text-before-Voice gate.",
+    "The Live driver pins the repaired compiled runtime and preserves the exact three-input Text canary in the same connection; it requires a subsequent explicit Latch action request.",
+    "Digest-only instrumentation verifies actual serialized session.update delivery without retaining configuration bodies, tokens or URLs."
+  ],
+  "checks": [
+    { "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-live-authorization.test.ts tests/qa-amended-budget.test.ts tests/runtime-policy-config.test.ts tests/qa-action-policy-cases.test.ts tests/qa-acceptance-behavior.test.ts", "passed": 49, "failed": 0, "log": ".validation/goal-004d-retest-focused.log" },
+    { "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-live-authorization.test.ts", "passed": 12, "failed": 0, "reason": "Focused follow-up after linking explicit Latch acceptance evidence to its actual settled step.", "log": ".validation/goal-004d-retest-authorization-final.log" },
+    { "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-budget.test.ts", "passed": 13, "failed": 0, "scope": "Existing independent supervisor, watchdog and budget regressions; isolated local accounting." },
+    { "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/qa-audio.test.ts", "passed": 3, "failed": 0 },
+    { "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/qa-audio.spec.ts --project=chromium-1440", "passed": 2, "failed": 0, "scope": "Explicit fake provider; exact serialized digest, mismatch/duplicate detection and no raw configuration retention, plus shipped digital audio path." },
+    { "command": "npm run typecheck", "status": "passed" },
+    { "command": "git diff --check", "status": "passed" }
+  ],
+  "historicalPreservationBaseline": {
+    "path": ".validation/goal-004d-retest-preservation-before.json",
+    "sha256": "f8a03398b0b55e00a887f13344cb9c31c8b6c7d2c696499ec89d5d774242fe5d",
+    "existingFiles": 343,
+    "speechFixtureFiles": 150,
+    "runtimeAmendmentWasAbsent": true
+  },
+  "independentReview": "No material gap found in exact canary, later explicit Latch request, repaired policy delivery, unchanged DOM-only shared player, same identity, failure/ACK/cleanup gates or cumulative limits.",
+  "providerRequestsDuringPreparation": 0,
+  "boundary": "Offline checks support activation and instrumentation only. Real Text/Voice outcomes are recorded separately after the frozen supervised attempts; these checks do not establish model compliance."
+}

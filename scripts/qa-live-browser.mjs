@@ -7,11 +7,11 @@ import { createServer } from 'node:net';
 import { createHash, randomBytes } from 'node:crypto';
 import { parseEnv } from 'node:util';
 import { resolve, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { release } from 'node:os';
 import { inspectCampaign } from './qa-budget.mjs';
-import { QA_AMENDMENT_ID, QA_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
-import { assertGoal004CLiveAuthorized, assertGoal004CReservationAuthorized, GOAL_004C_AMENDMENT, GOAL_004C_FROZEN_FILE } from './qa-live-authorization.mjs';
+import { QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
+import { assertGoal004DLiveAuthorized, assertGoal004DReservationAuthorized, GOAL_004D_AMENDMENT, GOAL_004D_FROZEN_FILE, GOAL_004D_RUNTIME_SHA256, GOAL_004D_SESSION_UPDATE_SHA256, GOAL_004D_CANARY_INPUTS } from './qa-live-authorization.mjs';
 import { evaluateAcceptanceBehavior } from './qa-acceptance-behavior.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, assertSupervisedParent } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
@@ -73,7 +73,9 @@ async function buildIdentity() {
   for (const file of ['qa-live-browser.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
   const fixtureFiles = {};
   for (const file of (await readdir('.validation/goal-004b-media')).filter(name => /^speech-[a-f0-9]{16}\.(?:json|wav)$/.test(name)).sort()) fixtureFiles[file] = createHash('sha256').update(await readFile(join('.validation/goal-004b-media', file))).digest('hex');
-  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, fixtureFiles, fixtureSha256: createHash('sha256').update(JSON.stringify(fixtureFiles)).digest('hex'), browser: execFileSync(chromium.executablePath(), ['--version'], { encoding: 'utf8' }).trim(), browserExecutableSha256: createHash('sha256').update(await readFile(chromium.executablePath())).digest('hex'), node: process.version, environment: { platform: process.platform, arch: process.arch, kernel: release(), viewport: '1440x900', reducedMotion: 'reduce', chromiumSandbox: true } };
+  const { sessionConfig } = await import(pathToFileURL(resolve('dist/server/agent/config.js')).href);
+  const sessionUpdateSha256 = createHash('sha256').update(JSON.stringify({ type: 'session.update', session: sessionConfig })).digest('hex');
+  return { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), digest: 'SHA-256; aggregate hashes serialize the ordered per-file hexadecimal manifest as JSON', runtimeSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'), harnessSha256: createHash('sha256').update(JSON.stringify(harnessFiles)).digest('hex'), harnessFiles, files: hashes, fixtureFiles, fixtureSha256: createHash('sha256').update(JSON.stringify(fixtureFiles)).digest('hex'), sessionUpdateSha256, browser: execFileSync(chromium.executablePath(), ['--version'], { encoding: 'utf8' }).trim(), browserExecutableSha256: createHash('sha256').update(await readFile(chromium.executablePath())).digest('hex'), node: process.version, environment: { platform: process.platform, arch: process.arch, kernel: release(), viewport: '1440x900', reducedMotion: 'reduce', chromiumSandbox: true } };
 }
 async function availablePort() {
   const server = createServer(); await new Promise(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
@@ -88,11 +90,11 @@ async function persistReport(directory, report) {
 }
 
 async function checkNextAttempt(mode, identity) {
-  assertGoal004CReservationAuthorized({ directory: DIRECTORY, mode, identity });
+  assertGoal004DReservationAuthorized({ directory: DIRECTORY, mode, identity });
 }
 
 async function worker(scenario, mode) {
-  assertGoal004CLiveAuthorized();
+  assertGoal004DLiveAuthorized();
   if (process.env.QA_SUPERVISED_WORKER !== '1' || !process.send) throw new Error('An independently supervised worker is required.');
   assertSupervisedParent(DIRECTORY);
   if (scenario !== 'mission' || !['voice', 'text'].includes(mode)) throw new Error('An explicit mission and text or voice input mode are required.');
@@ -107,7 +109,7 @@ async function worker(scenario, mode) {
   // A finished first session retains its conservative admission lease. Two
   // admission slots permit the ordered second test; supervisor still allows
   // exactly one real connection and never refunds either reservation.
-  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '2' };
+  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_RUNTIME_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '2' };
   delete productionEnv.GAME_DISABLE_LIVE; delete productionEnv.NODE_OPTIONS;
   const server = spawn(process.execPath, ['dist/server/server/production.js'], { env: productionEnv, stdio: 'ignore' });
   await registerOwnedProcess(server.pid);
@@ -149,7 +151,7 @@ async function worker(scenario, mode) {
     context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', recordVideo: { dir: directory, size: { width: 1440, height: 900 } } });
     report.videoPageCreationStartedAt = Date.now();
     page = await context.newPage(); report.videoPageCreatedAt = Date.now(); page.setDefaultTimeout(6000);
-    await installAudioInstrumentation(page, { label, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
+    await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: GOAL_004D_SESSION_UPDATE_SHA256, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
     await page.addInitScript(label => {
       document.addEventListener('DOMContentLoaded', () => {
         const badge = document.createElement('div'); badge.textContent = label;
@@ -192,6 +194,15 @@ async function worker(scenario, mode) {
     await expect(page.getByRole('button', { name: mode === 'voice' ? 'Connect Live Voice' : 'Connect Live Text', exact: true })).toBeEnabled();
     await page.getByRole('button', { name: mode === 'voice' ? 'Connect Live Voice' : 'Connect Live Text', exact: true }).click();
     await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ready'), null, { timeout: 25000 });
+    await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'configuration.delivery'), null, { timeout: 5000 });
+    const policySnapshot = await audioSnapshot(page);
+    const deliveries = policySnapshot.events.filter(event => event.type === 'configuration.delivery');
+    report.runtimePolicyDelivery = { ...deliveries[0], messageCount: policySnapshot.configurationUpdatesSent };
+    await persistReport(directory, report);
+    if (deliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
+      || report.runtimePolicyDelivery.sha256 !== GOAL_004D_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      throw new Error('The actual serialized session.update did not match the frozen repaired runtime policy.');
+    }
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
     const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.map((article, historyIndex) => ({ historyIndex, speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'Rendered history DOM at this snapshot; index is not a provider message identifier' })).filter(item => item.final && !item.interrupted));
     const settled = (afterMs = -1, requireReply = true) => waitForTurn(page, { afterMs, mode, requireReply, timeoutMs: 40_000 });
@@ -199,6 +210,14 @@ async function worker(scenario, mode) {
     const captionIdentity = item => JSON.stringify([item.displayedAt, item.sourceLabel, item.chapterLabel, item.speaker, item.text]);
     async function say(text, { requireReply = true, terminal = false } = {}) {
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
+      if (mode === 'text') {
+        const index = report.steps.length;
+        if (index < 3 && text !== GOAL_004D_CANARY_INPUTS[index]) throw new Error('The shared player deviated from the required three-input Text canary; no alternate input was sent.');
+        if (index >= 3 && !report.regressionCanary?.explicitLatchRequest) {
+          if ([PHRASES.engage, PHRASES.retryLatch].includes(text)) report.regressionCanary.explicitLatchRequest = { turnId: index + 1, text };
+          else if (text !== PHRASES.confirmLatch) throw new Error('An explicit Latch operation must follow the passed canary before continuing.');
+        }
+      }
       const before = await audioSnapshot(page); const previous = new Set((await visibleHistory()).map(captionIdentity));
       const newMessages = async () => (await visibleHistory()).filter(item => !previous.has(captionIdentity(item)));
       const step = { turnId: report.steps.length + 1, utterance: text, inputMode: mode, inputSource: mode === 'text' ? 'Normal UI typed submission; not ASR' : 'Offline synthetic fixture through browser microphone capture', startedAtMs: before.elapsedMs, settled: false, terminal };
@@ -222,9 +241,19 @@ async function worker(scenario, mode) {
       // A known control failure is not a reason to spend the rest of the session.
       if (!terminal) {
         const behavior = evaluateAcceptanceBehavior({ steps: report.steps, events: (await audioSnapshot(page)).events });
+        if (mode === 'text' && report.steps.length === 3) {
+          report.regressionCanary = { status: behavior.status === 'pass' ? 'passed' : 'failed',
+            inputs: [...GOAL_004D_CANARY_INPUTS], informationTurnId: 3, behavior,
+            boundary: 'Same real connection; settled visible exchanges and sanitized tool metadata. No hidden state or direct robot actions were supplied by the player.' };
+          await persistReport(directory, report);
+        }
         if (behavior.materialDefects.length) {
           report.behavior = behavior; await persistReport(directory, report);
           throw new Error('Material instruction/action-control mismatch; the attempt stopped without a repair or retry.');
+        }
+        if (mode === 'text' && report.steps.length === 3) {
+          if (behavior.status !== 'pass') throw new Error('The three-input Text canary has unresolved behavioral evidence; no repair or retry is permitted.');
+          await screenshot('text-canary');
         }
       }
       return replies;
@@ -260,6 +289,15 @@ async function worker(scenario, mode) {
     }
     report.behavior = evaluateAcceptanceBehavior({ steps: report.steps, events });
     if (report.behavior.status !== 'pass') failure ??= `Behavioral acceptance ${report.behavior.status}; see separate findings.`;
+    const finalDeliveries = events.filter(event => event.type === 'configuration.delivery');
+    report.runtimePolicyDelivery = { ...finalDeliveries[0], messageCount: evidence?.configurationUpdatesSent ?? null };
+    if (finalDeliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
+      || report.runtimePolicyDelivery.sha256 !== GOAL_004D_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      failure ??= 'The actual session configuration delivery was missing, changed or repeated.';
+    }
+    if (mode === 'text' && (report.regressionCanary?.status !== 'passed' || !report.regressionCanary.explicitLatchRequest)) {
+      failure ??= 'The required Text canary and subsequent explicit Latch operation request were incomplete.';
+    }
     if (mode === 'voice') {
       report.voicePath = { syntheticMicrophoneOnly: report.steps.every(step => step.inputMode === 'voice' && step.fixture),
         actualAsrFinalObserved: events.some(event => event.type === 'transcript.user' && event.final === true && event.role === 'human'),
@@ -272,7 +310,7 @@ async function worker(scenario, mode) {
     if (!report.completion) failure ??= 'The mission did not reach confirmed home.';
     report.failure = failure ?? null;
     report.lifecycle = journal.snapshot();
-    report.watchdogCleanup = 'Independent supervisor amendment-final-acceptance-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
+    report.watchdogCleanup = 'Independent supervisor amendment-runtime-retest-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
     if (directory) await persistReport(directory, report);
     if (reservation) await finishAttempt({ endAcknowledged: report.endAcknowledged, connectedSeconds: report.connectedSeconds, outcome: failure ? 'failed' : 'passed' }).catch(() => {});
     const video = page?.video();
@@ -305,7 +343,7 @@ const args = process.argv.slice(2);
 // No flag, environment variable or locally generated file supplies owner approval.
 // This gate executes before fixtures, credentials, allowance reads or child processes.
 if (args.includes('--live') || args.includes('--worker')) {
-  try { assertGoal004CLiveAuthorized(); }
+  try { assertGoal004DLiveAuthorized(); }
   catch (error) { console.error(error.message); process.exitCode = 1; if (process.connected) process.disconnect(); }
 }
 if (process.exitCode) {
@@ -316,19 +354,24 @@ if (process.exitCode) {
   await prepareFixtures();
   if (execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()) throw new Error('Commit activation and clean the worktree before freezing.');
   const identity = await buildIdentity();
-  if (identity.runtimeSha256 !== 'e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e' || Object.keys(identity.files).length !== 21) throw new Error('Compiled runtime differs from the approved application.');
-  await writeFile(join(DIRECTORY, GOAL_004C_FROZEN_FILE), JSON.stringify({ amendmentId: QA_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
+  if (identity.runtimeSha256 !== GOAL_004D_RUNTIME_SHA256 || identity.sessionUpdateSha256 !== GOAL_004D_SESSION_UPDATE_SHA256 || Object.keys(identity.files).length !== 21) throw new Error('Compiled runtime differs from the approved repaired application.');
+  const frozenPath = join(DIRECTORY, GOAL_004D_FROZEN_FILE);
+  let existing;
+  try { existing = JSON.parse(await readFile(frozenPath, 'utf8')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (existing) {
+    if (existing.amendmentId !== QA_RUNTIME_AMENDMENT_ID || JSON.stringify(existing.identity) !== JSON.stringify(identity)) throw new Error('The one-time frozen runtime candidate already exists with a different identity.');
+  } else await writeFile(frozenPath, JSON.stringify({ amendmentId: QA_RUNTIME_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
   console.log(JSON.stringify({ status: 'OFFLINE_CANDIDATE_FROZEN', commit: identity.commit, runtimeSha256: identity.runtimeSha256, harnessSha256: identity.harnessSha256, fixtureSha256: identity.fixtureSha256 }));
 } else if (args.includes('--inspect')) {
   const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
   await prepareFixtures();
-  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised amended Part B command only; aggregate sequencing gates apply.', campaignLimits: GOAL_004C_AMENDMENT }));
+  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 004D retest only; aggregate sequencing gates apply.', campaignLimits: GOAL_004D_AMENDMENT }));
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];
     if (scenario !== 'mission' || !['text', 'voice'].includes(mode)) throw new Error('Explicit --scenario mission --mode text or voice required.');
     // An approved campaign must already exist. Missing accounting never initializes one.
     await checkNextAttempt(mode, await buildIdentity());
-    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
+    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_RUNTIME_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
   }
 }

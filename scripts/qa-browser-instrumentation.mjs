@@ -94,6 +94,7 @@ function browserInstrumentation(options, sanitize) {
 
   // The socket remains native. Its URL and handshake/config bodies are never retained.
   const observedSockets = new WeakSet();
+  let configurationUpdatesSent = 0;
   const observeSocket = socket => {
       if (observedSockets.has(socket)) return socket;
       observedSockets.add(socket);
@@ -116,6 +117,20 @@ function browserInstrumentation(options, sanitize) {
       const result = send(data);
       if (typeof data !== 'string') return result;
       let value; try { value = JSON.parse(data); } catch { return result; }
+      if (value?.type === 'session.update' && options.expectedSessionUpdateSha256) {
+        const sequence = ++configurationUpdatesSent; const sentAtMs = timestamp();
+        // Hash the exact successful send, not a reconstructed configuration. Only
+        // its digest and comparison survive; this never changes the wire payload.
+        void (async () => {
+          try {
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+            const sha256 = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+            record({ type: 'configuration.delivery', direction: 'sent', atMs: sentAtMs, sequence, sha256, matchesExpected: sha256 === options.expectedSessionUpdateSha256 });
+          } catch {
+            record({ type: 'configuration.delivery', direction: 'sent', atMs: sentAtMs, sequence, sha256: null, matchesExpected: false, failed: true });
+          }
+        })();
+      }
       if (value?.type === 'input.audio' && typeof value.audio === 'string') {
         try { const samples = decode(value.audio); acceptSamples('input', samples, 24000, timestamp() - samples.length / 24); }
         catch { record({ type: 'audio.input.invalid' }); }
@@ -263,7 +278,7 @@ function browserInstrumentation(options, sanitize) {
       } finally { queuedInput = false; }
     },
     snapshot(includeMedia = false) {
-      return { label: options.label, elapsedMs: timestamp(), counters, events: events.slice(), playbackPending: [...playbackStates.values()].some(state => state.pending), activeTracks: destinations.flatMap(destination => destination.stream.getTracks()).filter(track => track.readyState === 'live').length, activeSources: sources.size, openApplicationContexts: contexts.filter(context => context.state !== 'closed').length, ...(includeMedia ? { recordings } : {}) };
+      return { label: options.label, elapsedMs: timestamp(), counters, events: events.slice(), configurationUpdatesSent, playbackPending: [...playbackStates.values()].some(state => state.pending), activeTracks: destinations.flatMap(destination => destination.stream.getTracks()).filter(track => track.readyState === 'live').length, activeSources: sources.size, openApplicationContexts: contexts.filter(context => context.state !== 'closed').length, ...(includeMedia ? { recordings } : {}) };
     },
     async close() {
       for (const source of sources) { try { source.stop(); } catch {} }
@@ -274,10 +289,11 @@ function browserInstrumentation(options, sanitize) {
   };
 }
 
-export async function installAudioInstrumentation(page, { label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', onLifecycle } = {}) {
+export async function installAudioInstrumentation(page, { label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', onLifecycle, expectedSessionUpdateSha256 } = {}) {
   if (!['AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI', 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO'].includes(label)) throw new Error('Use an explicit QA evidence label.');
+  if (expectedSessionUpdateSha256 !== undefined && !/^[a-f0-9]{64}$/.test(expectedSessionUpdateSha256)) throw new Error('Expected session.update digest must be a lowercase SHA-256 value.');
   if (onLifecycle) await page.exposeBinding('__qaLifecycle', (_source, event) => onLifecycle(event));
-  await page.addInitScript({ content: `(${browserInstrumentation.toString()})(${JSON.stringify({ label, lifecycle: Boolean(onLifecycle) })}, ${sanitizeWireEvent.toString()});` });
+  await page.addInitScript({ content: `(${browserInstrumentation.toString()})(${JSON.stringify({ label, lifecycle: Boolean(onLifecycle), expectedSessionUpdateSha256 })}, ${sanitizeWireEvent.toString()});` });
 }
 
 export async function queueSpeech(page, fixture) {

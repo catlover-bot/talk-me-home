@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inspectAmendedCampaign, QA_AMENDMENT_ID } from './qa-amended-budget.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 export const GOAL_004C_PROPOSAL = Object.freeze({
   status: 'AUTHORIZED_BOUNDED_CAMPAIGN',
@@ -34,6 +34,44 @@ export const GOAL_004C_AMENDMENT = Object.freeze({
   planningDollars: 2.52, existingBalanceOnly: true, automaticReplenishment: false,
 })
 export const GOAL_004C_FROZEN_FILE = 'final-acceptance-candidate.json'
+
+// Separate explicit owner amendment received September 28. Earlier approvals and
+// their failed results remain history; this fixed profile never replenishes itself.
+export const GOAL_004D_AMENDMENT = Object.freeze({
+  id: QA_RUNTIME_AMENDMENT_ID, approvedOnJst: '2026-09-28', reviewedCommit: '1e84207181a1d48dc2cc768fcc36a5a72950543e',
+  runtimeSourceCommit: '5014a6452468897e7d30e08d95bbb6f9a36a8047',
+  historicalAttempts: 2, maxNewAttempts: 2, maxAttempts: 4, reservationSeconds: 670,
+  capacitySeconds: 2680, maxSessionSeconds: 600, concurrentConnections: 1,
+  hourlyRate: 4.5, planningDollars: 3.35, existingBalanceOnly: true, automaticReplenishment: false,
+})
+export const GOAL_004D_FROZEN_FILE = 'runtime-retest-candidate.json'
+export const GOAL_004D_RUNTIME_SHA256 = 'b7df05ef45f353575b4f40dc32a92e6b72c51e352480e8e66dacbb23e69d156b'
+export const GOAL_004D_SESSION_UPDATE_SHA256 = 'f7715ff67a2b88960c74b55c21017cbee9a3832fa42e8dd53fcccb11efce4562'
+export const GOAL_004D_CANARY_INPUTS = Object.freeze([
+  'Pip, please look around.', 'Please inspect the Latch.',
+  'My diagram says the Door and Conveyor share one Power supply.',
+])
+
+export function assertGoal004DLiveAuthorized() {
+  if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) {
+    throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE always prohibit this approved retest.')
+  }
+  let campaign
+  try {
+    const directory = lstatSync(campaignDirectory)
+    if (!directory.isDirectory() || directory.isSymbolicLink()) throw new Error('Invalid directory')
+    campaign = inspectAmendedCampaign(campaignDirectory, QA_RUNTIME_AMENDMENT_ID)
+  } catch {
+    throw new Error('APPROVED_CAMPAIGN_UNAVAILABLE: The fixed Goal 004D amendment must already exist and be valid; nothing was initialized.')
+  }
+  const header = campaign.header
+  if (header.maxAttempts !== 4 || header.capacitySeconds !== 2680 || header.reservationSeconds !== 670
+    || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30
+    || header.hourlyRate !== 4.5 || header.planningDollars !== 3.35) {
+    throw new Error('APPROVED_CAMPAIGN_MISMATCH: Existing accounting differs from the explicit Goal 004D approval.')
+  }
+  if (campaign.attempts.length >= 4) throw new Error('APPROVED_CAMPAIGN_EXHAUSTED: All four aggregate attempts remain consumed.')
+}
 
 /** No argument, local flag, environment value, or file constitutes owner approval. */
 export function assertGoal004CLiveAuthorized() {
@@ -160,4 +198,76 @@ export function assertGoal004CReservationAuthorized({ directory, mode, identity 
     reports.push(JSON.parse(readFileSync(path, 'utf8')))
   }
   assertGoal004CAmendedNextAttempt({ campaign: inspectAmendedCampaign(campaignDirectory), mode, identity, reports })
+}
+
+/** One corrected Text after both historical failures; Voice depends on this Text only. */
+export function assertGoal004DNextAttempt({ campaign, mode, identity, reports = [] }) {
+  const header = campaign?.header
+  const historical = campaign?.attempts?.slice(0, 2)
+  if (header?.id !== QA_RUNTIME_AMENDMENT_ID || header.maxAttempts !== 4 || header.capacitySeconds !== 2680
+    || header.reservationSeconds !== 670 || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30
+    || header.planningDollars !== 3.35 || header.hourlyRate !== 4.5 || historical?.length !== 2
+    || historical.some((attempt, index) => attempt.attempt !== index + 1 || attempt.name !== 'text-mission'
+      || attempt.result?.outcome !== 'failed' || attempt.result.endAcknowledged !== true
+      || !Number.isSafeInteger(attempt.closedAt) || attempt.closedAt < attempt.result.finishedAt)
+    || !['text', 'voice'].includes(mode) || !validIdentity(identity)) {
+    throw new Error('The runtime retest requires both unchanged failed attempts, exact aggregate limits and a verified candidate.')
+  }
+  if (mode === 'text') {
+    if (campaign.attempts.length !== 2 || campaign.productionAttempts !== 2) throw new Error('The single Goal 004D Text retest is already consumed or unavailable.')
+    return
+  }
+  const previous = campaign.attempts[2]
+  if (campaign.attempts.length !== 3 || campaign.productionAttempts !== 3 || previous?.attempt !== 3
+    || previous.name !== 'text-mission' || previous.result?.outcome !== 'passed' || previous.result.endAcknowledged !== true
+    || !Number.isSafeInteger(previous.closedAt) || previous.closedAt < previous.result.finishedAt
+    || previous.identitySha256 !== digest(identity)) {
+    throw new Error('Conditional Voice requires the corrected Text pass, ending ACK, aggregate cleanup and identical identity.')
+  }
+  const fields = ['attempt', 'name', 'reservedAt', 'reservedSeconds', 'gracefulAt', 'hardAt', 'leaseUntil', 'identitySha256']
+  const matches = reports.filter(report => report && fields.every(field => report.reservation?.[field] === previous[field]))
+  if (matches.length !== 1) throw new Error('Corrected Text evidence is missing or ambiguous; conditional Voice remains unused.')
+  const report = matches[0]
+  const actionRequest = report.regressionCanary?.explicitLatchRequest
+  const actionStep = report.steps?.find(step => step.turnId === actionRequest?.turnId)
+  if (report.mode !== 'text' || report.scenario !== 'mission' || report.completion !== true || report.failure !== null
+    || report.tokenRequests !== 1 || report.explicitEndSent !== true || report.endAcknowledged !== true
+    || report.behavior?.status !== 'pass' || report.behavior.materialDefects?.length !== 0
+    || !Array.isArray(report.behavior.uncertainties) || report.behavior.uncertainties.some(item => item.blocking === true)
+    || report.regressionCanary?.status !== 'passed' || !Number.isSafeInteger(actionRequest?.turnId) || actionRequest.turnId < 4
+    || !['Please engage the Latch.', 'Please set the Latch to hold the Door open.'].includes(actionRequest?.text)
+    || actionStep?.utterance !== actionRequest.text || actionStep?.settled !== true
+    || !GOAL_004D_CANARY_INPUTS.every((input, index) => report.steps?.[index]?.utterance === input && report.steps[index].settled === true)
+    || report.runtimePolicyDelivery?.sha256 !== GOAL_004D_SESSION_UPDATE_SHA256
+    || report.runtimePolicyDelivery?.matchesExpected !== true || report.runtimePolicyDelivery?.messageCount !== 1
+    || !['activeTracks', 'activeSources', 'openApplicationContexts'].every(key => report.cleanup?.[key] === 0)
+    || !['browser.closed', 'server.closed'].every(type => report.lifecycle?.some(event => event.type === type && event.outcome === 'observed'))
+    || !validIdentity(report.identity) || JSON.stringify(report.identity) !== JSON.stringify(identity)) {
+    throw new Error('Conditional Voice requires the exact canary, repaired runtime delivery, full Text completion, correct action control, explicit ACK and cleanup on the frozen candidate.')
+  }
+}
+
+/** Independently called by the supervisor under the original aggregate kernel lock. */
+export function assertGoal004DReservationAuthorized({ directory, mode, identity }) {
+  assertGoal004DLiveAuthorized()
+  if (resolve(directory) !== resolve(campaignDirectory)) throw new Error('The runtime amendment cannot be redirected to another campaign.')
+  const frozenPath = join(campaignDirectory, GOAL_004D_FROZEN_FILE)
+  const stat = lstatSync(frozenPath)
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('A regular frozen runtime candidate receipt is required.')
+  const frozen = JSON.parse(readFileSync(frozenPath, 'utf8'))
+  if (!validIdentity(identity) || identity.runtimeSha256 !== GOAL_004D_RUNTIME_SHA256
+    || identity.sessionUpdateSha256 !== GOAL_004D_SESSION_UPDATE_SHA256
+    || Object.keys(identity.files).length !== 21 || !identity.fixtureSha256 || !identity.browserExecutableSha256
+    || frozen.amendmentId !== QA_RUNTIME_AMENDMENT_ID || JSON.stringify(frozen.identity) !== JSON.stringify(identity)) {
+    throw new Error('The repaired runtime, serialized policy, harness, fixtures, browser and environment must exactly match the frozen candidate.')
+  }
+  const reports = []
+  for (const entry of readdirSync(campaignDirectory, { withFileTypes: true })) {
+    if (!entry.isDirectory() || !/^\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d-\d{3}Z-(?:text|voice)-mission$/.test(entry.name)) continue
+    const path = join(campaignDirectory, entry.name, 'report.json')
+    const stat = lstatSync(path)
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Prior evidence must be a regular report file.')
+    reports.push(JSON.parse(readFileSync(path, 'utf8')))
+  }
+  assertGoal004DNextAttempt({ campaign: inspectAmendedCampaign(campaignDirectory, QA_RUNTIME_AMENDMENT_ID), mode, identity, reports })
 }

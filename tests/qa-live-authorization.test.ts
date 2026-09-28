@@ -6,8 +6,8 @@ import { test } from 'node:test'
 import { createHash } from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 import { initializeAllowance } from '../game/server/admission.js'
-import { assertGoal004CNextAttempt, assertGoal004CAmendedNextAttempt, GOAL_004C_AUTHORIZATION, GOAL_004C_PROPOSAL, GOAL_004C_AMENDMENT } from '../scripts/qa-live-authorization.mjs'
-import { writeGoal004CHistory } from './fixtures/goal-004c-history.js'
+import { assertGoal004CNextAttempt, assertGoal004CAmendedNextAttempt, GOAL_004C_AUTHORIZATION, GOAL_004C_PROPOSAL, GOAL_004C_AMENDMENT, assertGoal004DNextAttempt, GOAL_004D_AMENDMENT, GOAL_004D_CANARY_INPUTS, GOAL_004D_SESSION_UPDATE_SHA256 } from '../scripts/qa-live-authorization.mjs'
+import { writeGoal004CHistory, writeGoal004CAmendedHistory } from './fixtures/goal-004c-history.js'
 // @ts-expect-error Executable accounting helpers are native Node modules.
 import { initializeAmendment } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error Executable accounting helpers are native Node modules.
@@ -15,7 +15,7 @@ import { CampaignBudget, initializeCampaign, inspectCampaign } from '../scripts/
 // @ts-expect-error Executable accounting helpers are native Node modules.
 import { runSupervised } from '../scripts/qa-supervisor.mjs'
 
-async function authorizationFixture(run: (fixture: { directory: string; campaign: string; gate: (...args: unknown[]) => void }) => void) {
+async function authorizationFixture(run: (fixture: { directory: string; campaign: string; gate: (...args: unknown[]) => void }) => void, runtime = false) {
   const directory = mkdtempSync(join(tmpdir(), 'tmh-approval-fixture-'))
   const previous = Object.fromEntries(['CI', 'GAME_DISABLE_LIVE', 'GOAL_004C_APPROVED'].map(name => [name, process.env[name]]))
   try {
@@ -26,7 +26,7 @@ async function authorizationFixture(run: (fixture: { directory: string; campaign
     const module = await import(pathToFileURL(join(directory, 'scripts/qa-live-authorization.mjs')).href)
     delete process.env.CI
     delete process.env.GAME_DISABLE_LIVE
-    run({ directory, campaign: join(directory, '.validation/goal-004c-live'), gate: module.assertGoal004CLiveAuthorized })
+    run({ directory, campaign: join(directory, '.validation/goal-004c-live'), gate: runtime ? module.assertGoal004DLiveAuthorized : module.assertGoal004CLiveAuthorized })
   } finally {
     for (const [name, value] of Object.entries(previous)) {
       if (value === undefined) delete process.env[name]
@@ -73,6 +73,67 @@ test('compiled approval accepts only existing fixed accounting and always fails 
     assert.equal(inspectCampaign(campaign).attempts.length, 1)
     assert.equal(GOAL_004C_AMENDMENT.maxAttempts, 3)
   })
+})
+
+test('004D activation requires the existing linked amendment and remains disabled in CI regardless of local flags', async () => {
+  await authorizationFixture(({ directory, campaign, gate }) => {
+    writeFileSync(join(directory, 'approval.json'), '{"approved":true}\n')
+    assert.throws(() => gate({ approvalFile: join(directory, 'approval.json') }), /APPROVED_CAMPAIGN_UNAVAILABLE/)
+    writeGoal004CAmendedHistory(campaign)
+    assert.throws(() => gate(), /APPROVED_CAMPAIGN_UNAVAILABLE/)
+    const before = readFileSync(join(campaign, 'amendment-final-acceptance.jsonl'), 'utf8')
+    initializeAmendment(campaign, { amendmentId: GOAL_004D_AMENDMENT.id })
+    assert.doesNotThrow(() => gate())
+    for (const name of ['CI', 'GAME_DISABLE_LIVE']) {
+      for (const value of ['1', '0', '']) {
+        process.env[name] = value
+        assert.throws(() => gate(), /LIVE_DISABLED/)
+      }
+      delete process.env[name]
+    }
+    assert.equal(readFileSync(join(campaign, 'amendment-final-acceptance.jsonl'), 'utf8'), before)
+    assert.equal(GOAL_004D_AMENDMENT.maxAttempts, 4)
+    assert.equal(GOAL_004D_AMENDMENT.capacitySeconds, 2680)
+    assert.equal(GOAL_004D_AMENDMENT.planningDollars, 3.35)
+  }, true)
+})
+
+test('004D Voice requires corrected Text canary, explicit action, actual policy delivery and complete same-candidate cleanup', () => {
+  const f = prospectiveSequenceFixture()
+  const identitySha256 = f.hash(f.identity)
+  const historical = [1, 2].map(attempt => ({ ...f.previous, attempt, result: { ...f.previous.result, outcome: 'failed' } }))
+  const header = { ...f.header, id: GOAL_004D_AMENDMENT.id, maxAttempts: 4, capacitySeconds: 2680, planningDollars: 3.35, hourlyRate: 4.5 }
+  const initial = { header, attempts: historical, productionAttempts: 2 }
+  assert.doesNotThrow(() => assertGoal004DNextAttempt({ campaign: initial, mode: 'text', identity: f.identity }))
+  assert.throws(() => assertGoal004DNextAttempt({ campaign: initial, mode: 'voice', identity: f.identity }))
+  const previous = { ...f.previous, attempt: 3, identitySha256 }
+  const campaign = { header, attempts: [...historical, previous], productionAttempts: 3 }
+  const report = { ...f.report, reservation: { ...f.reservation, attempt: 3, identitySha256 },
+    behavior: { status: 'pass', materialDefects: [], uncertainties: [] },
+    regressionCanary: { status: 'passed', explicitLatchRequest: { turnId: 4, text: 'Please engage the Latch.' } },
+    steps: [...GOAL_004D_CANARY_INPUTS.map((utterance, index) => ({ turnId: index + 1, utterance, settled: true })),
+      { turnId: 4, utterance: 'Please engage the Latch.', settled: true }],
+    runtimePolicyDelivery: { sha256: GOAL_004D_SESSION_UPDATE_SHA256, matchesExpected: true, messageCount: 1 },
+    cleanup: { activeTracks: 0, activeSources: 0, openApplicationContexts: 0 },
+    lifecycle: [{ type: 'browser.closed', outcome: 'observed' }, { type: 'server.closed', outcome: 'observed' }] }
+  const guard = (evidence: unknown = report, state: unknown = campaign, identity: unknown = f.identity) => assertGoal004DNextAttempt({ campaign: state, mode: 'voice', identity, reports: [evidence] })
+  assert.doesNotThrow(() => guard())
+  assert.throws(() => assertGoal004DNextAttempt({ campaign, mode: 'text', identity: f.identity }))
+  for (const change of [
+    { completion: false }, { failure: 'Failure' }, { explicitEndSent: false }, { endAcknowledged: false },
+    { regressionCanary: { status: 'failed' } }, { regressionCanary: { status: 'passed' } }, { steps: report.steps.slice(1) },
+    { steps: report.steps.slice(0, 3) },
+    { runtimePolicyDelivery: { ...report.runtimePolicyDelivery, messageCount: 2 } },
+    { runtimePolicyDelivery: { ...report.runtimePolicyDelivery, sha256: 'a'.repeat(64) } },
+    { runtimePolicyDelivery: { ...report.runtimePolicyDelivery, matchesExpected: false } },
+    { behavior: { status: 'pass', materialDefects: [], uncertainties: [{ blocking: true }] } },
+    { behavior: { status: 'blocked', materialDefects: [{ code: 'unrequested_mutation' }], uncertainties: [] } },
+    { cleanup: { ...report.cleanup, activeTracks: 1 } }, { lifecycle: [] }, { tokenRequests: 2 },
+  ]) assert.throws(() => guard({ ...report, ...change }))
+  assert.throws(() => guard(report, { ...campaign, attempts: [...historical, { ...previous, result: { ...previous.result, outcome: 'failed' } }] }))
+  assert.throws(() => guard(report, { ...campaign, attempts: [...historical, { ...previous, closedAt: null }] }))
+  assert.throws(() => guard(report, campaign, { ...f.identity, commit: 'd'.repeat(40) }))
+  assert.throws(() => guard(report, { ...campaign, header: { ...header, planningDollars: 3.36 } }))
 })
 
 test('amended Voice requires new full-clear behavior, ACK, cleanup and identical candidate while retaining old failure', () => {

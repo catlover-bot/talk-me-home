@@ -11,3 +11,15 @@ export function writeGoal004CHistory(directory: string) {
     + '{"type":"closed","attempt":1,"closedAt":1790359165690}\n')
   writeFileSync(join(directory, 'allowance.jsonl'), '{"version":1,"allowanceSessions":2,"maxSessionSeconds":600}\n{"reservedAt":1790359091852,"leaseUntil":1790359761852}\n')
 }
+
+// Exact additional failed Text attempt preserved before the Goal 004D retest.
+export function writeGoal004CAmendedHistory(directory: string) {
+  writeGoal004CHistory(directory)
+  writeFileSync(join(directory, 'amendment-final-acceptance.jsonl'), '{"type":"amendment","version":1,"id":"goal-004c-final-acceptance-2026-09-27","originalCampaignSha256":"72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0","originalAllowanceSha256":"0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24","historicalAttempts":1,"maxNewAttempts":2,"newCapacitySeconds":1340,"maxAttempts":3,"reservationSeconds":670,"capacitySeconds":2010,"maxSessionSeconds":600,"planningDollars":2.52,"disconnectGraceSeconds":30,"hourlyRate":4.5,"createdAt":1790468540938}\n'
+    + '{"type":"reserved","attempt":2,"name":"text-mission","reservedAt":1790468663467,"reservedSeconds":670,"gracefulAt":1790469233467,"hardAt":1790469243467,"leaseUntil":1790469333467,"identitySha256":"db5f90c88478ab28ed9a685973c5d99bac848d1a8fab3fc46dad0aa0959c1c90"}\n'
+    + '{"type":"result","attempt":2,"finishedAt":1790468708795,"endAcknowledged":true,"connectedSeconds":44.61229999999702,"outcome":"failed"}\n'
+    + '{"type":"closed","attempt":2,"closedAt":1790468710967}\n')
+  writeFileSync(join(directory, 'amendment-final-acceptance-allowance.jsonl'), '{"version":1,"allowanceSessions":3,"maxSessionSeconds":600}\n'
+    + '{"reservedAt":1790359091852,"leaseUntil":1790359761852}\n'
+    + '{"reservedAt":1790468663487,"leaseUntil":1790469333487}\n')
+}
