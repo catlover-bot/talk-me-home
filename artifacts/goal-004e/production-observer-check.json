@@ -1,0 +1,10 @@
+{
+  "label": "OFFLINE COMPILED PRODUCTION OBSERVER CHECK",
+  "result": "passed",
+  "providerCalls": 0,
+  "unconfirmedPhysicalDigestUnchanged": true,
+  "commitsBeforeConfirmation": 0,
+  "commitsAfterConfirmation": 1,
+  "exactOwnerDecisionIdMatchesCommit": true,
+  "evaluatorNotInHumanView": true
+}

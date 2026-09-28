@@ -6,11 +6,13 @@ import type { GalleryConfiguration } from '../../game/server/gallery';
 /** A private per-test server chooses the authored fixture; production routes cannot. */
 export const test = base.extend<{
   galleryConfiguration: GalleryConfiguration;
-  rescueServer: { store: SessionStore; origin: string };
+  rescueServer: { store: SessionStore; origin: string; commits: Array<{ proposalId: string; revisionBefore: number; revisionAfter: number }> };
 }>({
   galleryConfiguration: ['a', { option: true }],
   rescueServer: [async ({ page, galleryConfiguration }, use) => {
-    const store = new SessionStore({ galleryConfiguration });
+    // Evaluator-only physical commit journal. It is never passed to the player.
+    const commits: Array<{ proposalId: string; revisionBefore: number; revisionAfter: number }> = [];
+    const store = new SessionStore({ galleryConfiguration, onRobotCommit: event => commits.push(event) });
     const server = createGameServer({ store, apiKey: '' });
     await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
     const address = server.address();
@@ -21,7 +23,7 @@ export const test = base.extend<{
       const response = await route.fetch({ url: origin + source.pathname + source.search });
       await route.fulfill({ response });
     });
-    try { await use({ store, origin }); }
+    try { await use({ store, origin, commits }); }
     finally {
       try {
         // Drain callbacks before Playwright disposes their fetched responses and context.

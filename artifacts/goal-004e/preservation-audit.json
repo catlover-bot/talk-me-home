@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-09-28T10:11:15.307Z",
+  "source": ".validation/goal-004e-preservation-before.json",
+  "preservedFileCount": 418,
+  "status": "passed",
+  "scope": "All previously existing B/C/D campaign/evidence files, historical budget, synthetic speech fixtures, artwork, icon and .env remain byte-identical. Newly added E files are not historical replacements. No credential bytes are exported."
+}

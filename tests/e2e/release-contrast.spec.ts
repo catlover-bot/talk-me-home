@@ -116,6 +116,7 @@ test('release contrast follows the rendered title, settings, controls, and three
     await page.getByRole('button', { name: 'Send message', exact: true }).click();
     expect((await (await response).json()).ok).toBe(true);
     await expect(page.getByLabel('Type a message')).toBeEnabled();
+    await confirmProposalForRequest(page, text);
   };
   const relay = async (name: string) => {
     const response = page.waitForResponse(response => response.url().endsWith('/relay'));
@@ -138,3 +139,4 @@ test('release contrast follows the rendered title, settings, controls, and three
   await info.attach('release-rendered-contrast.json', { body: JSON.stringify(measured, null, 2), contentType: 'application/json' });
   for (const sample of measured) expect(sample.ratio, `${sample.selector}: ${sample.ratio.toFixed(3)}:1; ${sample.text}`).toBeGreaterThanOrEqual(sample.minimum);
 });
+import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';

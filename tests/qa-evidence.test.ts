@@ -4,14 +4,31 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
-import { writeGoal004CHistory } from './fixtures/goal-004c-history.ts'
+import { writeGoal004CHistory, writeGoal004DRetestHistory } from './fixtures/goal-004c-history.ts'
 // @ts-expect-error This local accounting helper is intentionally a native Node module.
-import { initializeAmendment, AmendedCampaignBudget, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
+import { initializeAmendment, AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
 import { approximateVideoAlignment, summarizeAttempt, exportCampaign } from '../scripts/qa-evidence.mjs'
 
 const label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
 const textLabel = 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI'
+
+test('confirmed-action evidence preserves Game provenance and never reports a pending proposal as execution', () => {
+  const confirmedLabel = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI'
+  const report = { label: confirmedLabel, mode: 'voice', identity: {},
+    visibleHistory: [{ speaker: 'Game event', text: 'Action p1 declined; not executed.', sourceLabel: 'Game event' }],
+    confirmations: [{ proposalId: 'p2', label: 'Secure the door with the Latch', intendedRequest: 'Please engage the Latch.', status: 'committed', confirmedAtMs: 42, source: 'Visible exact UI button' }] }
+  const summary = summarizeAttempt(report, { label: confirmedLabel, events: [
+    { type: 'tool.call', name: 'propose_interaction', callRef: 1, atMs: 10 },
+    { type: 'tool.result', callRef: 1, atMs: 12, isError: false, actionStatus: 'awaiting_confirmation', proposalRef: 2 },
+  ] })
+  assert.equal(summary.visibleHistory[0].speaker, 'Game event')
+  assert.equal(summary.typedTurns.length, 0)
+  assert.equal(summary.tools[0].succeeded, false)
+  assert.equal(summary.tools[0].status, 'awaiting_confirmation_not_executed')
+  assert.equal(summary.confirmations[0].proposalId, 'p2')
+  assert.match(summary.boundary, /not hands-free/)
+})
 
 test('Text export keeps typed UI input separate from provider finals and retains interrupted provenance', () => {
   const report = { label: textLabel, mode: 'text', scenario: 'mission', identity: {},
@@ -229,4 +246,74 @@ test('partial or corrupt amendment evidence never falls back to an apparently av
     await writeFile(join(directory, QA_AMENDMENT_ALLOWANCE), 'corrupt\n')
     await assert.rejects(exportCampaign({ directory, output: join(directory, 'export') }))
   } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+test('newest linked export counts all preserved attempts, the single final slot and sanitized physical evidence', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'qa-final-export-offline-'))
+  try {
+    writeGoal004DRetestHistory(directory)
+    const historicalFiles = ['campaign.jsonl', 'allowance.jsonl', QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE]
+    const preserved = await Promise.all(historicalFiles.map(file => readFile(join(directory, file))))
+    const previous = inspectAmendedCampaign(directory, QA_RUNTIME_AMENDMENT_ID).attempts[2]
+    const historyName = '2026-09-28T00-00-00-000Z-text-mission'
+    await mkdir(join(directory, historyName))
+    await writeFile(join(directory, historyName, 'report.json'), JSON.stringify({ label: textLabel, mode: 'text', scenario: 'mission', reservation: previous, identity: {}, failure: 'Preserved failed fixture.' }))
+    await writeFile(join(directory, historyName, 'audio-evidence.json'), JSON.stringify({ label: textLabel, events: [] }))
+    const runtime = await exportCampaign({ directory, output: join(directory, 'runtime-export') })
+    assert.equal(runtime.amendmentId, QA_RUNTIME_AMENDMENT_ID)
+    assert.equal(runtime.attempts, 3); assert.equal(runtime.historicalAttempts, 2)
+    assert.equal(runtime.historicalProductionAttempts, 2); assert.equal(runtime.newProductionAttempts, 1)
+    assert.equal(runtime.admissionStatus, 'conditional_voice_blocked')
+    assert.equal(runtime.results[0].accountingAttempt, 3); assert.equal(runtime.results[0].historical, false)
+
+    initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID, now: () => 2_000_000_000_000 })
+    const unused = await exportCampaign({ directory, output: join(directory, 'unused-export') })
+    assert.equal(unused.amendmentId, QA_CONFIRMED_AMENDMENT_ID)
+    assert.equal(unused.historicalAttempts, 3); assert.equal(unused.newAttempts, 0)
+    assert.equal(unused.remainingAttempts, 1); assert.equal(unused.amendedSequence.passed, false)
+    assert.equal(unused.admissionStatus, 'requires_final_voice_frozen_candidate_admission')
+    assert.equal(unused.results[0].historical, true)
+
+    const identity = { commit: 'c'.repeat(40), runtimeSha256: 'a'.repeat(64), harnessSha256: 'b'.repeat(64) }
+    const budget = new AmendedCampaignBudget(directory, () => 2_000_000_000_100, QA_CONFIRMED_AMENDMENT_ID)
+    const reservation = budget.reserve({ name: 'voice-mission', identity })
+    const allowancePath = join(directory, QA_CONFIRMED_AMENDMENT_ALLOWANCE)
+    await writeFile(allowancePath, await readFile(allowancePath, 'utf8') + JSON.stringify({ reservedAt: reservation.reservedAt, leaseUntil: reservation.leaseUntil }) + '\n')
+    budget.finish(4, { outcome: 'failed', endAcknowledged: true, connectedSeconds: 20 }); budget.closed(4)
+    const confirmedLabel = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI'
+    const name = '2033-05-18T03-33-20-100Z-voice-mission'; const attemptPath = join(directory, name)
+    await mkdir(attemptPath)
+    const physical = { digest: 'd'.repeat(64), commits: [], observedAt: 2_000_000_000_120, state: 'excluded-hidden-fixture' }
+    await writeFile(join(attemptPath, 'report.json'), JSON.stringify({ label: confirmedLabel, mode: 'voice', scenario: 'mission', reservation, identity,
+      initialPhysicalTruth: physical, finalPhysicalTruth: { ...physical, commits: [{ proposalId: 'proposal-one', sessionId: 'excluded-hidden-fixture', revisionAfter: 1 }] },
+      regressionCanary: { status: 'passed', inputs: ['Please inspect the Latch.'], informationTurnId: 3, noPhysicalCommit: true, confirmationCount: 0, physical },
+      runtimePolicyDelivery: { sha256: 'e'.repeat(64), matchesExpected: true, messageCount: 1, config: 'excluded-hidden-fixture' },
+      confirmationAudit: { commits: 1, confirmations: 1, everyCommitHasExactConfirmation: true, everyCommittedConfirmationHasCommit: true, uniqueCommitIds: true },
+    }))
+    await writeFile(join(attemptPath, 'audio-evidence.json'), JSON.stringify({ label: confirmedLabel, events: [] }))
+    const output = join(directory, 'final-export'); const summary = await exportCampaign({ directory, output })
+    assert.equal(summary.attempts, 4); assert.equal(summary.productionAttempts, 4)
+    assert.equal(summary.newAttempts, 1); assert.equal(summary.historicalProductionAttempts, 3); assert.equal(summary.newProductionAttempts, 1)
+    assert.equal(summary.reservedSeconds, 2680); assert.equal(summary.estimatedReservedDollars, 3.35)
+    assert.equal(summary.remainingAttempts, 0); assert.equal(summary.admissionStatus, 'exhausted')
+    assert.equal(summary.amendmentLedgerSha256, createHash('sha256').update(await readFile(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER))).digest('hex'))
+    const metrics = JSON.parse(await readFile(join(output, `${name}-metrics.json`), 'utf8'))
+    assert.equal(metrics.accountingAttempt, 4); assert.equal(metrics.regressionCanary.noPhysicalCommit, true)
+    assert.equal(metrics.regressionCanary.physical.commitCount, 0); assert.equal(metrics.initialPhysicalTruth.digest, physical.digest)
+    assert.deepEqual(metrics.finalPhysicalTruth.commitProposalIds, ['proposal-one'])
+    assert.equal(metrics.runtimePolicyDelivery.messageCount, 1); assert.equal(metrics.confirmationAudit.everyCommittedConfirmationHasCommit, true)
+    assert.doesNotMatch(JSON.stringify(metrics), /excluded-hidden-fixture|revisionAfter|sessionId/)
+    for (const [index, file] of historicalFiles.entries()) assert.deepEqual(await readFile(join(directory, file)), preserved[index])
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+test('partial newest runtime or final supplement never silently exports an older profile', async () => {
+  for (const file of [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE]) {
+    const directory = await mkdtemp(join(tmpdir(), 'qa-newest-export-corrupt-'))
+    try {
+      writeGoal004CHistory(directory)
+      await writeFile(join(directory, file), 'corrupt\n')
+      await assert.rejects(exportCampaign({ directory, output: join(directory, 'export') }))
+    } finally { await rm(directory, { recursive: true, force: true }) }
+  }
 })

@@ -1,5 +1,7 @@
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { sessionConfig } from '../../game/agent/config';
+import type { ToolResponse, ToolResult } from '../../game/shared/contracts';
+import { confirmVisibleProposal } from '../../scripts/qa-mission-player.mjs';
 
 export type FixtureEvent = Record<string, unknown> & { type: string };
 type AudioFixture = {
@@ -109,12 +111,24 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
       emit({ type: 'tool.call', call_id: callId, name, arguments: args });
       emit({ type: 'reply.done', reply_id: `ordinary-${callId}`, status: 'completed' });
       await expect.poll(() => sent.slice(firstSent).find(event => event.type === 'tool.result' && event.call_id === callId)).toBeTruthy();
-      return JSON.parse(String(sent.slice(firstSent).find(event => event.call_id === callId)?.result)) as { ok: boolean; message: string };
+      return JSON.parse(String(sent.slice(firstSent).find(event => event.call_id === callId)?.result)) as ToolResult;
+    },
+    async confirmTool(name: string, args: Record<string, unknown>, expectedLabel: string, callId?: string): Promise<ToolResponse> {
+      const proposed = await this.tool(name, args, callId);
+      expect(proposed.code, 'A fixture action first yields one nonexecuting proposal result.').toBe('awaiting_confirmation');
+      return confirmFixtureProposal(page, expectedLabel);
     },
     async audioState() { return page.evaluate(() => window.__testAudio.stats()); },
     async render() { await page.evaluate(() => window.__testAudio.render()); },
     async drain() { await page.evaluate(() => window.__testAudio.drain()); },
   };
+}
+
+/** Explicit fixture intent, confirmed through the same visible UI as the player. */
+export async function confirmFixtureProposal(page: Page, expectedLabel: string): Promise<ToolResponse> {
+  const decision = page.waitForResponse(response => response.url().endsWith('/proposal-decision'));
+  await confirmVisibleProposal(page, expectedLabel, `Offline fixture explicitly selects: ${expectedLabel}`);
+  return (await decision).json() as Promise<ToolResponse>;
 }
 
 /** Explicitly complete the same local readiness step as a player, using fake devices. */

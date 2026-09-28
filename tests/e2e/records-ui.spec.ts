@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import type { HumanView } from '../../game/shared/contracts';
+import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';
 
 const providerRequests = new WeakMap<Page, string[]>();
 
@@ -43,6 +44,7 @@ async function say(page: Page, text: string) {
   await page.getByRole('button', { name: 'Send message', exact: true }).click();
   expect((await response).ok()).toBe(true);
   await expect(page.getByTestId('caption')).not.toHaveText(text);
+  await confirmProposalForRequest(page, text);
 }
 
 async function restart(page: Page) {
@@ -165,16 +167,16 @@ test('interruption after a server commit preserves the action while suppressing 
   await start(page);
   const action = gate();
   let committed = false;
-  await page.route('**/api/sessions/*/tools', async route => {
+  await page.route('**/api/sessions/*/proposal-decision', async route => {
     const response = await route.fetch();
-    if (route.request().postDataJSON().name === 'interact_object') {
-      expect((await response.json()).ok).toBe(true); committed = true; await action.promise;
-    }
+    expect((await response.json()).proposal.status).toBe('committed'); committed = true; await action.promise;
     await route.fulfill({ response });
   });
   try {
     await page.getByLabel('Type a message').fill('Keep the door open');
     await page.getByRole('button', { name: 'Send message', exact: true }).click();
+    await expect(page.getByTestId('proposal-label')).toHaveText('Engage the Latch');
+    await page.getByRole('button', { name: 'Confirm this action', exact: true }).click();
     await expect.poll(() => committed).toBe(true);
     const canceled = page.waitForResponse(response => response.url().endsWith('/cancel'));
     await page.getByRole('button', { name: 'Interrupt', exact: true }).click();

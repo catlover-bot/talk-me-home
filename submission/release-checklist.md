@@ -1,29 +1,26 @@
 # Release and submission checklist
 
-Prepared September 24, 2026. This checklist describes the release candidate and remaining owner actions; it is not a submitted entry.
+Updated for Goal 004E, September 28, 2026. This is local release preparation, not a submitted entry.
 
-Current Goal 004D branch: `work/goal-004d-runtime-intent-fix`. See [release status](../docs/goal-004d-release-status.md) and [runtime validation](../docs/goal-004d-runtime-intent-fix.md) for the final repaired candidate and exact checks. Live remains **LIVE_PENDING_AUTHORIZATION / RELEASE_NOT_LIVE_VERIFIED**; this runtime repair is offline only without a separate spending grant.
-
-Historical September 27 Goal 004C acceptance: the frozen candidate `6f1ee799a14dc24686459f40ab0cbf7238e2df92` failed its real Text retest in Cargo Bay on an instruction/action-control mismatch. Ending ACK and cleanup succeeded; Voice was not run. See `docs/goal-004c-live-recovery.md` for the delivered history. The September 24 preparation rows below are historical package status, not claims that later Live testing was absent or passed. Deployment/access, real demo URL, video, finished deck and submission remain incomplete.
+Current branch: **`work/goal-004e-confirmed-actions`**. The product now uses voice-led cooperation with explicit confirmation of each proposed local action. See the [E implementation and validation report](../docs/goal-004e-confirmed-actions.md). Final candidate checks and the real E run remain pending; **RELEASE_NOT_LIVE_VERIFIED** remains. Historical C/D failed Text results and unused-slot restrictions remain recorded in their original reports; a new implementation does not turn those failures into passes.
 
 | Item | Honest status and next action |
 | --- | --- |
-| Finished game source | Release branch: `work/goal-004-release-candidate` in `catlover-bot/talk-me-home`, based on feature commit `a212857e00c8ad75a3b630af2b8e0435c48ad899`. Use the final pushed head and exact CI result recorded in `docs/goal-004-validation.md`. |
-| Repository access | **OWNER CHECK REQUIRED.** Visibility has not been changed. Confirm judges can access the finished feature branch; starter-only `main` is not this submission. Do not publish private source or add a license without a deliberate owner decision. |
-| Production build | **PREPARED AND LOCALLY RUN.** `npm run build:game` and `npm run start:game`; one Node service serves the game and API. `npm start` and the original `render.yaml` remain the upstream starter. |
-| Public demo URL | **NOT PROVIDED — NOT DEPLOYED.** Follow `OWNER_ACTIONS.md` and `render.game.yaml`, select the exact release commit, and verify the actual HTTPS URL. Hosting/storage approval remains with the owner. |
-| Judge Live access | **NOT ENABLED PUBLICLY.** Configure the server-side code, provider key, explicit Live enable, and durable finite allowance. Provide the real URL and code through the appropriate private access field. Practice stays available without a provider connection. |
-| Descriptions | **PREPARED.** `project-description.md`: title 12 characters, short description 155 characters, long description 219 words. Recheck after any edits. |
-| Cover and app icon | **GAME ART PREPARED.** Use the final exports and provenance labels in `assets/`. Confirm the cover is 16:9 and identified as illustration. |
-| Gameplay screenshots | **PREPARED — PRACTICE.** Cargo, Gallery, Dock, history/pause, and confirmed ending captures are included in `assets/`. They are deterministic gameplay evidence, not Live captures. |
-| Credits and source identity | **OWNER FINAL CHECK.** Preserve upstream notices and review the packaged art provenance. No new upstream license grant or external asset purchase is implied. |
-| Demo video | **NOT PROVIDED.** Record the real human/Pip interaction using `demo-script.md`; identify edits and any simulated footage. Export within five minutes and under 300 MB, subject to the actual event form. |
-| Presentation | **OUTLINE PREPARED; DECK/LINK NOT PROVIDED.** Build the six-slide presentation from `pitch-outline.md`. An outline is not a finished deck. |
-| Local and CI evidence | See `docs/goal-004-validation.md` for the final tested/pushed head, exact checks, image provenance, sizes, and limitations. Historical Goal 001–003 results remain historical. |
-| Real Live verification | **OWNER CHECK REQUIRED FOR CHANGED RELEASE FLOW.** Confirm microphone capture, audible playback, and immediate End on the actual browser/device after enabling access. No new automated real-provider run was performed. |
-| Human play and enjoyment | The owner's earlier basic verification is accepted. No new natural Live clear, human enjoyment study, or measured audience outcome is claimed by this package. |
-| Event form and deadline | **OWNER CHECK REQUIRED.** Verify the logged-in form, precise cutoff, mandatory fields, uploads, and repository/demo access. |
-| Submission completion | **NOT SUBMITTED.** A saved draft is not final submission. The owner must complete submission and retain its confirmation. |
+| Game source | Goal 004E feature branch in `catlover-bot/talk-me-home`, based on delivered D head `52d8c6d4cc68d136890ffa4dfb39c4060602ffb0`. Final candidate commit and exact-head CI are pending in the E report. Starter-only `main` is not the game. |
+| Repository access | **OWNER CHECK REQUIRED.** Visibility has not changed. Confirm judges can access the selected feature branch; preserve upstream notices and art provenance. |
+| Production build | One Node service serves the compiled game and API through `build:game` / `start:game`. Current E production verification is pending; historical builds do not establish the new confirmation flow. |
+| Public demo URL | **NOT PROVIDED - NOT DEPLOYED.** `OWNER_ACTIONS.md` and `render.game.yaml` prepare the E branch with automatic deployment off. Verify an actual HTTPS URL after an owner-approved deployment. |
+| Judge Live access | **NOT ENABLED PUBLICLY.** Hosting, secrets, explicit enablement, and a separate durable finite public allowance remain owner actions. The private QA amendment is not a judges' allowance. |
+| Descriptions | **PREPARED.** `project-description.md`: title 12 characters, short description 172 characters, long description 226 words. Describes spoken coordination plus console confirmation, without a hands-free claim. |
+| Cover and app icon | **GAME ART PREPARED.** Preserve exports and provenance in `assets/`; the cover is an illustration. |
+| Gameplay screenshots | Existing `assets/` captures are **historical Practice**. E validation captures, when available, show confirmation states; offline captures cannot establish real conversation or physical audio. |
+| Demo video | **NOT PROVIDED.** `demo-script.md` is an owner recording plan. Private automated test footage is not a finished submission video; synthetic input must be labelled. |
+| Presentation | **OUTLINE PREPARED; DECK/LINK NOT PROVIDED.** `pitch-outline.md` is six-slide source copy, not a finished deck. |
+| Local and CI evidence | Current E results belong in `docs/goal-004e-confirmed-actions.md`. Record final candidate identity and exact-head CI after the checks finish; preserve historical Goal 001-004D evidence. |
+| Real Live verification | **PENDING.** The E amendment permits only its bounded final Voice attempt after offline gates. No successful complete real rescue is claimed. Physical microphone capture and human-audible playback remain separate owner checks. |
+| Human play and enjoyment | Earlier basic verification is historical. No new natural human Live clear, enjoyment study, or measured audience outcome is claimed. |
+| Event form and deadline | **OWNER CHECK REQUIRED.** Verify the logged-in form, precise cutoff, mandatory fields, uploads, and access. |
+| Submission completion | **NOT SUBMITTED.** The owner must complete submission and retain its confirmation. |
 
 The [official live listing](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/live), checked September 24, lists September 1–30, 2026 and “Live · Submissions open.” The exact cutoff time remains unverified. A JavaScript countdown displaying zeros does not establish that submission is closed. **September 29 is our internal owner-submission target**, leaving a buffer; it is not an organizer deadline.
 

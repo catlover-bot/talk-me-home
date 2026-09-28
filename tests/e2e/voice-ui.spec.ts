@@ -170,10 +170,10 @@ test('simulated success: authoritative cooperation permits one closing response 
   const provider = await fakeProvider(page);
   await startLive(page);
   expect((await provider.tool('observe_room', {}, 'completion-observe')).ok).toBe(true);
-  expect((await provider.tool('interact_object', { object: 'latch', action: 'latch_open' }, 'completion-latch')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'latch', action: 'latch_open' }, 'Engage the Latch', 'completion-latch')).ok).toBe(true);
   await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
-  expect((await provider.tool('move_to', { target: 'far_side' }, 'completion-cross')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_move', { target: 'far_side' }, 'Move to the far-side platform', 'completion-cross')).ok).toBe(true);
   await expect(page.getByRole('heading', { name: 'You got Pip through.' })).toBeVisible();
   provider.emit({ type: 'reply.started', reply_id: 'closing-response' });
   provider.emit({ type: 'reply.audio', data: 'AEAAQA==' });
@@ -232,10 +232,10 @@ test('simulated rejection: sanitizes diagnostics, shows connection error, and re
 test('simulated success watchdog: an absent closing response cannot keep the call open', async ({ page }) => {
   const provider = await fakeProvider(page);
   await startLive(page);
-  expect((await provider.tool('interact_object', { object: 'latch', action: 'latch_open' }, 'watchdog-latch')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'latch', action: 'latch_open' }, 'Engage the Latch', 'watchdog-latch')).ok).toBe(true);
   await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
-  expect((await provider.tool('move_to', { target: 'far_side' }, 'watchdog-cross')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_move', { target: 'far_side' }, 'Move to the far-side platform', 'watchdog-cross')).ok).toBe(true);
   await expect(page.getByRole('heading', { name: 'You got Pip through.' })).toBeVisible();
   await expect.poll(() => provider.ended, { timeout: 10_000 }).toBe(1);
   expect(provider.activeSockets).toBe(0);

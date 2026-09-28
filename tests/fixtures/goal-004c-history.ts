@@ -23,3 +23,16 @@ export function writeGoal004CAmendedHistory(directory: string) {
     + '{"reservedAt":1790359091852,"leaseUntil":1790359761852}\n'
     + '{"reservedAt":1790468663487,"leaseUntil":1790469333487}\n')
 }
+
+// Exact third failed Text attempt. This fixture never reads or changes real ledgers.
+export function writeGoal004DRetestHistory(directory: string) {
+  writeGoal004CAmendedHistory(directory)
+  writeFileSync(join(directory, 'amendment-runtime-retest.jsonl'), '{"type":"amendment","version":1,"id":"goal-004d-runtime-retest-2026-09-28","originalCampaignSha256":"8c9c0f4c94c8f8e400769fdbc62aa20a7b6c232fcf4bf5cfffc992bd28ef70d0","originalAllowanceSha256":"4cc324d8dc43d7bd4ff57986e43dc5f0d37ead592117b53d49fff7bf6a455152","historicalAttempts":2,"maxNewAttempts":2,"newCapacitySeconds":1340,"maxAttempts":4,"reservationSeconds":670,"capacitySeconds":2680,"maxSessionSeconds":600,"planningDollars":3.35,"disconnectGraceSeconds":30,"hourlyRate":4.5,"createdAt":1790586761153,"previousAmendmentId":"goal-004c-final-acceptance-2026-09-27"}\n'
+    + '{"type":"reserved","attempt":3,"name":"text-mission","reservedAt":1790586887051,"reservedSeconds":670,"gracefulAt":1790587457051,"hardAt":1790587467051,"leaseUntil":1790587557051,"identitySha256":"ef52d507f8931ea3517be9f723560c74e96e56258c344c89dc0492703eea8c73"}\n'
+    + '{"type":"result","attempt":3,"finishedAt":1790586927294,"endAcknowledged":true,"connectedSeconds":38.00119999998808,"outcome":"failed"}\n'
+    + '{"type":"closed","attempt":3,"closedAt":1790586929420}\n')
+  writeFileSync(join(directory, 'amendment-runtime-retest-allowance.jsonl'), '{"version":1,"allowanceSessions":4,"maxSessionSeconds":600}\n'
+    + '{"reservedAt":1790359091852,"leaseUntil":1790359761852}\n'
+    + '{"reservedAt":1790468663487,"leaseUntil":1790469333487}\n'
+    + '{"reservedAt":1790586887067,"leaseUntil":1790587557067}\n')
+}

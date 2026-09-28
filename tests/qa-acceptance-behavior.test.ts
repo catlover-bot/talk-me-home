@@ -129,3 +129,61 @@ test('a hypothetical action mention never grants permission and an unrelated sta
   const extraAction = evaluateAcceptanceBehavior({ steps: [step('Please hold the contact.', 'I have engaged the Latch. I am holding the contact.')], events: tool('interact_object') });
   assert.equal(extraAction.status, 'review_required');
 });
+
+test('confirmed-action contract permits an unsolicited pending proposal but preserves narration defects', () => {
+  const proposal = (name = 'propose_interaction'): AcceptanceEvent[] => [
+    { type: 'tool.call', name, callRef: 2, atMs: 250 },
+    { type: 'tool.result', callRef: 2, atMs: 260, isError: false, actionStatus: 'awaiting_confirmation', proposalRef: 22 },
+  ];
+  const prior = step('Please inspect the Latch.', 'The Latch is not engaged.');
+  const information = step('My diagram says the Door and Conveyor share one Power supply.', 'I propose engaging the Latch. It has not executed; please confirm on the console.', { turnId: 2, startedAtMs: 201, endedAtMs: 300 });
+  for (const name of ['propose_interaction', 'interact_object']) {
+    const review = evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [prior, information], events: proposal(name) });
+    assert.equal(review.status, 'pass');
+    assert.equal(review.turns[1]?.tools[0]?.outcome, 'awaiting_confirmation');
+  }
+  const falseReply = { ...information, messages: [{ speaker: 'Pip', text: 'The Latch is engaged.', final: true, interrupted: false }] };
+  const review = evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [prior, falseReply], events: proposal() });
+  assert.equal(review.status, 'blocked');
+  assert.ok(review.materialDefects.some(item => item.code === 'unsupported_new_completion_claim'));
+  assert.equal(evaluateAcceptanceBehavior({ steps: [prior, falseReply], events: tool('interact_object', false, 2, 250) }).status, 'blocked', 'Historical direct-action failure remains unchanged.');
+});
+
+test('verbal action requests alone cannot excuse a new completion claim under explicit confirmation', () => {
+  const pending = [{ type: 'tool.call', name: 'propose_interaction', callRef: 1, atMs: 150 }, { type: 'tool.result', callRef: 1, atMs: 160, isError: false, actionStatus: 'awaiting_confirmation', proposalRef: 2 }];
+  const input = { contract: 'confirmed_actions' as const, steps: [step('Please engage the Latch.', 'I have engaged the Latch.')], events: pending };
+  assert.equal(evaluateAcceptanceBehavior(input).status, 'blocked');
+  assert.equal(evaluateAcceptanceBehavior({ ...input, confirmations: [{ status: 'committed', label: 'Engage the Latch', confirmedAtMs: 175 }] }).status, 'pass');
+  assert.equal(evaluateAcceptanceBehavior({ ...input, confirmations: [{ status: 'declined', label: 'Engage the Latch', confirmedAtMs: 175 }] }).status, 'blocked');
+  assert.equal(evaluateAcceptanceBehavior({ ...input, confirmations: [{ status: 'committed', label: 'Hold the charging contact', confirmedAtMs: 175 }] }).status, 'blocked');
+});
+
+test('visible wrong-direction proposals, proposal spam and unconfirmed movement narration remain defects', () => {
+  const event = (proposalRef: number, callRef = 1, atMs = 150): AcceptanceEvent[] => [{ type: 'tool.call', name: 'propose_move', callRef, atMs }, { type: 'tool.result', callRef, atMs: atMs + 5, isError: false, actionStatus: 'awaiting_confirmation', proposalRef }];
+  const pending = step('Please go through the east gate.', 'I propose using the west gate.', { proposal: { proposalId: 'visible-proposal', label: 'Move through the west gate', status: 'awaiting_confirmation' } });
+  assert.equal(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [pending], events: event(1) }).status, 'blocked');
+  assert.equal(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [step('Please board the capsule.', 'I have boarded the capsule.')], events: event(1) }).status, 'blocked');
+  const info = step('The controller is ready to charge.', 'There are proposals waiting on the console.');
+  assert.ok(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [info], events: [...event(1), ...event(2, 2, 170)] }).materialDefects.some(item => item.code === 'multiple_distinct_proposals_in_one_turn'));
+});
+
+test('pending contact proposals permit truthful current-state reports but no unconfirmed new outcome', () => {
+  const events: AcceptanceEvent[] = [{ type: 'tool.call', name: 'propose_interaction', callRef: 1, atMs: 150 }, { type: 'tool.result', callRef: 1, atMs: 160, isError: false, actionStatus: 'awaiting_confirmation', proposalRef: 2 }];
+  for (const [request, label, current] of [
+    ['Please hold the contact.', 'Hold the charging contact', 'I am not holding the contact yet. Please confirm on the console.'],
+    ['Please release the contact.', 'Release the charging contact', 'I am still holding the contact until you confirm.'],
+  ]) {
+    const input = { contract: 'confirmed_actions' as const, steps: [step(request!, current!, { proposal: { proposalId: 'visible-proposal', label: label!, status: 'awaiting_confirmation' } })], events };
+    assert.equal(evaluateAcceptanceBehavior(input).status, 'pass');
+    const contradictoryAfterCommit = evaluateAcceptanceBehavior({ ...input, confirmations: [{ status: 'committed', label: label!, confirmedAtMs: 175 }] });
+    assert.ok(contradictoryAfterCommit.uncertainties.some(item => item.code === 'visible_report_contradicts_contact_request'));
+  }
+  for (const [request, label, falseClaim] of [
+    ['Please hold the contact.', 'Hold the charging contact', 'I am holding the contact.'],
+    ['Please release the contact.', 'Release the charging contact', 'I have released the contact.'],
+    ['My diagram says the Door and Conveyor share one Power supply.', 'Engage the Latch', 'The Latch is engaged.'],
+  ]) {
+    const review = evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [step(request!, falseClaim!, { proposal: { proposalId: 'visible-proposal', label: label!, status: 'awaiting_confirmation' } })], events });
+    assert.ok(review.materialDefects.some(item => item.code === 'unsupported_new_completion_claim'), falseClaim);
+  }
+});

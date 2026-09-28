@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID } from './qa-amended-budget.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 export const GOAL_004C_PROPOSAL = Object.freeze({
   status: 'AUTHORIZED_BOUNDED_CAMPAIGN',
@@ -51,6 +51,73 @@ export const GOAL_004D_CANARY_INPUTS = Object.freeze([
   'Pip, please look around.', 'Please inspect the Latch.',
   'My diagram says the Door and Conveyor share one Power supply.',
 ])
+
+// The owner explicitly replaced the failed-Text prerequisite for the existing
+// final slot with complete offline confirmed-action UI verification.
+export const GOAL_004E_AMENDMENT = Object.freeze({
+  id: QA_CONFIRMED_AMENDMENT_ID, approvedOnJst: '2026-09-28', reviewedCommit: '52d8c6d4cc68d136890ffa4dfb39c4060602ffb0',
+  historicalAttempts: 3, maxNewAttempts: 1, maxAttempts: 4, reservationSeconds: 670,
+  capacitySeconds: 2680, maxSessionSeconds: 600, concurrentConnections: 1,
+  hourlyRate: 4.5, planningDollars: 3.35, existingBalanceOnly: true, automaticReplenishment: false,
+  contract: 'synthetic_voice_plus_ui_confirmation',
+})
+export const GOAL_004E_FROZEN_FILE = 'confirmed-actions-candidate.json'
+export const GOAL_004E_RUNTIME_SHA256 = 'cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce'
+export const GOAL_004E_SESSION_UPDATE_SHA256 = '7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc'
+export const GOAL_004E_CANARY_INPUTS = GOAL_004D_CANARY_INPUTS
+
+export function assertGoal004ELiveAuthorized() {
+  if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE prohibit real Goal 004E calls.')
+  let campaign
+  try {
+    const directory = lstatSync(campaignDirectory)
+    if (!directory.isDirectory() || directory.isSymbolicLink()) throw new Error('Invalid directory')
+    campaign = inspectAmendedCampaign(campaignDirectory, QA_CONFIRMED_AMENDMENT_ID)
+  } catch { throw new Error('APPROVED_CAMPAIGN_UNAVAILABLE: The one-time final-slot amendment must already exist; no accounting was initialized.') }
+  if (campaign.attempts.length !== 3 || campaign.productionAttempts !== 3) throw new Error('APPROVED_CAMPAIGN_EXHAUSTED: The final linked C/D/E slot is consumed or unavailable; no retry is authorized.')
+}
+
+/** Pure gate: a receipt is required evidence, not a substitute for owner approval. */
+export function assertGoal004ENextAttempt({ campaign, mode, identity, offline }) {
+  const header = campaign?.header
+  if (mode !== 'voice' || header?.id !== QA_CONFIRMED_AMENDMENT_ID
+    || header.maxAttempts !== 4 || header.capacitySeconds !== 2680 || header.reservationSeconds !== 670
+    || header.maxSessionSeconds !== 600 || header.hourlyRate !== 4.5 || header.planningDollars !== 3.35
+    || campaign.attempts?.length !== 3 || campaign.productionAttempts !== 3
+    || campaign.attempts.some((attempt, index) => attempt.attempt !== index + 1 || attempt.name !== 'text-mission'
+      || attempt.result?.outcome !== 'failed' || !attempt.result.endAcknowledged
+      || !Number.isSafeInteger(attempt.closedAt) || attempt.closedAt < attempt.result.finishedAt)
+    || !validIdentity(identity)) throw new Error('The final slot requires the three preserved failures and one verified Voice candidate; no Text or retry is authorized.')
+  if (!offline || offline.status !== 'passed' || offline.dirty !== false || offline.commit !== identity.commit
+    || offline.branch !== 'work/goal-004e-confirmed-actions' || offline.realProviderCalls !== 0
+    || offline.runtimeManifestSha256 !== identity.runtimeSha256
+    || offline.confirmedActions?.confirmedHome !== true || !Number.isSafeInteger(offline.confirmedActions?.confirmations) || offline.confirmedActions.confirmations < 1
+    || !['pending', 'committed', 'declined', 'home'].every(state => offline.confirmedActions?.screenshots?.includes(state))
+    || !['typecheck', 'unit tests', 'production build', 'compiled-production browser tests', 'diff whitespace'].every(label => offline.checks?.some(check => check.label === label && check.status === 'passed'))
+    || offline.checks.some(check => check.status !== 'passed') || typeof offline.cleanup !== 'string') {
+    throw new Error('The exact clean candidate must complete the existing offline release suite and confirmed-action production UI before the final Voice slot.')
+  }
+}
+
+/** Independently enforced by the supervisor holding the original campaign lock. */
+export function assertGoal004EReservationAuthorized({ directory, mode, identity }) {
+  assertGoal004ELiveAuthorized()
+  if (resolve(directory) !== resolve(campaignDirectory)) throw new Error('The final slot cannot be redirected to another campaign.')
+  const frozenPath = join(campaignDirectory, GOAL_004E_FROZEN_FILE)
+  const offlinePath = fileURLToPath(new URL('../.validation/goal-004e-offline.json', import.meta.url))
+  for (const path of [frozenPath, offlinePath]) {
+    const stat = lstatSync(path)
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Frozen and offline evidence must be ordinary files.')
+  }
+  const frozen = JSON.parse(readFileSync(frozenPath, 'utf8'))
+  if (!validIdentity(identity) || identity.runtimeSha256 !== GOAL_004E_RUNTIME_SHA256
+    || identity.sessionUpdateSha256 !== GOAL_004E_SESSION_UPDATE_SHA256 || !identity.fixtureSha256 || !identity.browserExecutableSha256
+    || frozen.amendmentId !== QA_CONFIRMED_AMENDMENT_ID || JSON.stringify(frozen.identity) !== JSON.stringify(identity)) {
+    throw new Error('The confirmed-action runtime, policy, harness, fixtures and browser must exactly match the frozen candidate.')
+  }
+  assertGoal004ENextAttempt({ campaign: inspectAmendedCampaign(campaignDirectory, QA_CONFIRMED_AMENDMENT_ID), mode, identity,
+    offline: JSON.parse(readFileSync(offlinePath, 'utf8')) })
+}
 
 export function assertGoal004DLiveAuthorized() {
   if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) {

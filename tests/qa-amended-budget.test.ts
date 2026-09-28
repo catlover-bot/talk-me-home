@@ -7,9 +7,9 @@ import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { test } from 'node:test'
 import { LiveAdmission } from '../game/server/admission.js'
-import { writeGoal004CHistory, writeGoal004CAmendedHistory } from './fixtures/goal-004c-history.js'
+import { writeGoal004CHistory, writeGoal004CAmendedHistory, writeGoal004DRetestHistory } from './fixtures/goal-004c-history.js'
 // @ts-expect-error Executable accounting helpers remain native Node modules.
-import { AmendedCampaignBudget, initializeAmendment, inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_AMENDMENT_ORIGINAL_HASHES, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES } from '../scripts/qa-amended-budget.mjs'
+import { AmendedCampaignBudget, initializeAmendment, inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_AMENDMENT_ORIGINAL_HASHES, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error Executable accounting helpers remain native Node modules.
 import { CampaignBudget, inspectCampaign } from '../scripts/qa-budget.mjs'
 // @ts-expect-error Executable accounting helpers remain native Node modules.
@@ -249,7 +249,7 @@ test('internal supervisor CLI cannot run without its own original campaign flock
   assert.throws(() => assertOwnsCampaignLock(directory), /kernel lock/)
   const worker = join(directory, 'must-never-run.mjs')
   writeFileSync(worker, 'throw new Error("Unsupervised worker executed")\n')
-  for (const mode of ['--supervise', '--supervise-amendment', '--supervise-runtime-amendment']) {
+  for (const mode of ['--supervise', '--supervise-amendment', '--supervise-runtime-amendment', '--supervise-confirmed-amendment']) {
     const result = spawnSync(process.execPath, [resolve('scripts/qa-supervisor.mjs'), mode, directory, worker, '1'], { encoding: 'utf8' })
     assert.equal(result.status, 1)
     assert.doesNotMatch(result.stderr, /Unsupervised worker executed/)
@@ -293,7 +293,7 @@ process.disconnect();
 })
 
 test('compiled amendment supervisors prove their parent lock and reject an unfrozen reservation in isolated offline trees', { skip: process.platform !== 'linux' }, async () => {
-  for (const amendmentId of [QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID]) {
+  for (const amendmentId of [QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID]) {
     const directory = mkdtempSync(join(tmpdir(), 'tmh-real-parent-proof-'))
     try {
       const scripts = join(directory, 'scripts')
@@ -302,7 +302,8 @@ test('compiled amendment supervisors prove their parent lock and reject an unfro
         copyFileSync(resolve('scripts', file), join(scripts, file))
       }
       const campaign = join(directory, '.validation/goal-004c-live')
-      if (amendmentId === QA_RUNTIME_AMENDMENT_ID) writeGoal004CAmendedHistory(campaign)
+      if (amendmentId === QA_CONFIRMED_AMENDMENT_ID) writeGoal004DRetestHistory(campaign)
+      else if (amendmentId === QA_RUNTIME_AMENDMENT_ID) writeGoal004CAmendedHistory(campaign)
       else writeGoal004CHistory(campaign)
       initializeAmendment(campaign, { amendmentId })
       const worker = join(scripts, 'qa-live-browser.mjs')
@@ -320,9 +321,61 @@ process.disconnect();
         args: ['--worker', '--scenario', 'mission', '--mode', 'text'], env: { ...process.env, GAME_DISABLE_LIVE: '1' } })
       assert.equal(result.exitCode, 0)
       assert.equal(inspectAmendedCampaign(campaign, amendmentId).newAttempts, 0)
-      assert.equal(inspectAmendedCampaign(campaign, amendmentId).productionAttempts, amendmentId === QA_RUNTIME_AMENDMENT_ID ? 2 : 1)
-      const cleanupFile = amendmentId === QA_RUNTIME_AMENDMENT_ID ? 'amendment-runtime-retest-cleanup.jsonl' : 'amendment-final-acceptance-cleanup.jsonl'
+      assert.equal(inspectAmendedCampaign(campaign, amendmentId).productionAttempts, amendmentId === QA_CONFIRMED_AMENDMENT_ID ? 3 : amendmentId === QA_RUNTIME_AMENDMENT_ID ? 2 : 1)
+      const cleanupFile = amendmentId === QA_CONFIRMED_AMENDMENT_ID ? 'amendment-confirmed-actions-cleanup.jsonl' : amendmentId === QA_RUNTIME_AMENDMENT_ID ? 'amendment-runtime-retest-cleanup.jsonl' : 'amendment-final-acceptance-cleanup.jsonl'
       assert.equal(JSON.parse(readFileSync(join(campaign, cleanupFile), 'utf8').trim()).survivors, 0)
     } finally { rmSync(directory, { recursive: true, force: true }) }
   }
+})
+
+test('confirmed-action amendment reassigns only existing final Voice slot and preserves all three failures', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'tmh-confirmed-amendment-'))
+  try {
+    writeGoal004DRetestHistory(directory)
+    const oldWriter = new AmendedCampaignBudget(directory, Date.now, QA_RUNTIME_AMENDMENT_ID)
+    const state = initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID })
+    assert.equal(state.header.maxAttempts, 4)
+    assert.equal(state.header.capacitySeconds, 2680)
+    assert.equal(state.header.maxNewAttempts, 1)
+    assert.equal(state.header.newCapacitySeconds, 670)
+    assert.equal(state.header.planningDollars, 3.35)
+    assert.equal(state.attempts.length, 3)
+    assert.equal(state.productionAttempts, 3)
+    assert.equal(state.reservedSeconds, 2010)
+    assert.throws(() => oldWriter.reserve({ name: 'voice-mission', identity }), /preserved history/)
+    assert.throws(() => oldWriter.finish(3, { outcome: 'failed', endAcknowledged: true, connectedSeconds: 0 }), /preserved history/)
+    assert.throws(() => oldWriter.closed(3), /preserved history/)
+    assert.throws(() => new AmendedCampaignBudget(directory, Date.now, QA_AMENDMENT_ID), /preserved history/)
+    const budget = new AmendedCampaignBudget(directory, Date.now, QA_CONFIRMED_AMENDMENT_ID)
+    assert.throws(() => budget.reserve({ name: 'text-mission', identity }), /Invalid fixed/)
+    const voice = budget.reserve({ name: 'voice-mission', identity })
+    assert.equal(voice.attempt, 4)
+    assert.equal(voice.reservedSeconds, 670)
+    new LiveAdmission(join(directory, QA_CONFIRMED_AMENDMENT_ALLOWANCE), 1).reserve()
+    budget.finish(4, { outcome: 'failed', endAcknowledged: false, connectedSeconds: null })
+    budget.closed(4)
+    assert.throws(() => budget.reserve({ name: 'voice-mission', identity }), /exhausted/)
+    const bytes = readFileSync(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER))
+    const repeated = initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID })
+    assert.equal(repeated.attempts.length, 4)
+    assert.equal(repeated.reservedSeconds, 2680)
+    assert.equal(repeated.productionAttempts, 4)
+    assert.deepEqual(readFileSync(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER)), bytes)
+    assert.equal(hash(readFileSync(join(directory, QA_RUNTIME_AMENDMENT_LEDGER))), QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES.campaign)
+    assert.equal(hash(readFileSync(join(directory, QA_RUNTIME_AMENDMENT_ALLOWANCE))), QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES.allowance)
+  } finally { rmSync(directory, { recursive: true, force: true }) }
+})
+
+test('final-slot activation fails closed on changed history, price or partial accounting', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'tmh-confirmed-corruption-'))
+  try {
+    writeGoal004DRetestHistory(directory)
+    assert.throws(() => initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID, hourlyRate: 4.6 }), /price/)
+    writeFileSync(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER), '{}\n')
+    assert.throws(() => initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID }), /incomplete/)
+    rmSync(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER))
+    const original = readFileSync(join(directory, QA_RUNTIME_AMENDMENT_LEDGER), 'utf8')
+    writeFileSync(join(directory, QA_RUNTIME_AMENDMENT_LEDGER), original.replace('"outcome":"failed"', '"outcome":"passed"'))
+    assert.throws(() => initializeAmendment(directory, { amendmentId: QA_CONFIRMED_AMENDMENT_ID }), /preserved failed/)
+  } finally { rmSync(directory, { recursive: true, force: true }) }
 })

@@ -113,6 +113,7 @@ test('Gallery history has readable entries beside the map, current caption, port
     await page.getByRole('button', { name: 'Send message', exact: true }).click();
     expect((await response).ok()).toBe(true);
     await expect(page.getByTestId('caption')).not.toHaveText(text);
+    await confirmProposalForRequest(page, text);
   };
   await say('Inspect the latch');
   await say('Keep the door open');
@@ -136,3 +137,4 @@ test('Gallery history has readable entries beside the map, current caption, port
   await visibleTogether('Resume Practice');
   if (test.info().project.name === 'chromium-1280') await page.screenshot({ path: 'test-results/goal-004-history-paused-practice-1280.png', animations: 'disabled' });
 });
+import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';

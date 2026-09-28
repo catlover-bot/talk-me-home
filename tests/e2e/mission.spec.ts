@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', error => { throw error; });
@@ -19,6 +20,7 @@ async function say(page: Page, message: string, tool = true) {
   await page.getByRole('button', { name: 'Send message', exact: true }).click();
   if (response) expect((await response).ok()).toBe(true);
   await expect(page.getByTestId('caption')).not.toHaveText(message);
+  await confirmProposalForRequest(page, message);
 }
 async function power(page: Page, value: 'ON' | 'OFF') {
   await page.getByRole('button', { name: 'Power ' + value, exact: true }).click();
@@ -76,6 +78,8 @@ test('Classic cooperation reaches only a validated arrival and debrief', async (
 test('early Power loss recovers and Restart clears observations without opening another connection', async ({ page }) => {
   await start(page); await power(page, 'OFF');
   await say(page, 'What can you see?'); await say(page, 'Latch the door open');
+  await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'failed');
+  await say(page, 'Inspect the Door');
   await expect(page.getByTestId('caption')).toContainText(/closed/i);
   await power(page, 'ON'); await say(page, 'Latch the door open'); await power(page, 'OFF');
   await say(page, 'Cross to the far side');
@@ -163,7 +167,10 @@ test('Maintenance exchanges a real report and manual setting; wrong selector is 
   await page.screenshot({ path: 'test-results/goal-003-training-maintenance-' + info.project.name + '.png', fullPage: true });
   await say(page, 'Set the selector to ' + wrong);
   await say(page, 'Latch the door open');
-  await expect(page.getByTestId('caption')).toContainText(/does not seat|did not seat/);
+  await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'failed');
+  await say(page, 'Inspect the Latch');
+  await expect(page.getByTestId('caption')).toContainText('not engaged');
+  await expect(page.getByTestId('caption')).toContainText(`set to ${wrong}`);
   await say(page, 'Set the selector to ' + setting);
   await say(page, 'Latch the door open'); await power(page, 'OFF');
   await say(page, 'Cross to the far side');

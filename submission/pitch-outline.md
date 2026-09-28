@@ -10,9 +10,9 @@ This is an outline, **not a finished presentation deck**. Presentation link: **N
 
 ## 2. Information asymmetry — each partner contributes
 
-- The human reads documents and controls remote equipment. Pip observes, inspects, interacts, and moves locally.
+- The human reads documents and controls remote equipment. Pip observes and inspects freely, then proposes one exact local interaction or movement. The human confirms it on the console.
 - The map is a reference, not a live camera. Private annotations stay at the player's desk.
-- The authoritative server validates actions and final arrival. Conversation alone cannot declare success.
+- The server checks the confirmed action and final arrival. A proposal is an intention; a separate Game event reports its verified decision. Spoken "yes" cannot commit an action.
 
 ## 3. Three chapters — three kinds of cooperation
 
@@ -25,18 +25,18 @@ This is an outline, **not a finished presentation deck**. Presentation link: **N
 
 - AssemblyAI Voice Agent API provides Live conversation, speech recognition, spoken replies, and function calls through inline configuration.
 - React/Vite presents the desk, captions, and Pip; Node/TypeScript owns session state and validates local tools and remote controls.
-- Live Voice and Live Text use the provider. Deterministic Practice works without it.
+- Live Voice and Live Text use the provider. Deterministic Practice works without it; all three use the same explicit action-confirmation boundary.
 - Local readiness precedes token issuance. The production service includes browser ownership, code-gated public Live, and conservative durable admission limits.
 
 ## 5. Intended audience and product direction
 
 - Intended for players curious about short cooperative puzzle experiences with a conversational character.
-- Clear captions, deliberate pacing, optional hints, and recoverable decisions support trying unfamiliar voice interaction.
+- Clear captions, deliberate confirmation, optional hints, and recoverable decisions support trying unfamiliar voice interaction. This is voice-led cooperation with visible controls.
 - Future authored episodes or content packs are a product hypothesis, not shipped monetization. No accounts, subscriptions, sales, or customer metrics are claimed.
 
 ## 6. Current evidence and next steps
 
-- The owner reported basic functional verification before this release work. Current local checks cover the production build, deterministic gameplay, and injected communication tests; consult `docs/goal-004-validation.md` for exact results.
-- Original game artwork and labelled UI captures are prepared. Automated Goal 004 provider usage is zero; automated checks do not certify human speech, audible output, enjoyment, or a natural Live clear.
-- Owner next steps: publish the selected release commit with bounded access, record a real demonstration, finish this deck, and complete the event submission.
+- Current Goal 004E changes the action contract; its final offline candidate checks and bounded real Voice outcome are pending in `docs/goal-004e-confirmed-actions.md`. Historical C/D failed Text results remain failures. **RELEASE_NOT_LIVE_VERIFIED** remains.
+- Original artwork and historical Practice captures are prepared. Synthetic voice tests, injected-provider tests, human speech, physical audio, natural play, and enjoyment are distinct evidence categories.
+- Owner next steps: review the final verified candidate, approve any public hosting/access, record a real demonstration under a separate allowance, finish this deck, and complete submission.
 - Public demo, video, and presentation links: **NOT PROVIDED**. Do not replace these with hypothetical URLs.

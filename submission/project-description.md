@@ -8,20 +8,20 @@ Count: **12 characters** (limit: 50).
 
 ## Short description
 
-You have the map. Pip has eyes and hands. Guide a small robot home through three cooperative puzzles using your voice, shared plans, and separate controls.
+Guide Pip home through three cooperative puzzles. Share clues by voice, read each proposed action, and confirm it on your console. You have the map; Pip has eyes and hands.
 
-Count: **155 characters** (limit: 255).
+Count: **172 characters** (limit: 255).
 
 ## Long description
 
-Talk Me Home turns a conversation with an AI into a small rescue mission. You are at Mission Control with the station documents and remote controls. Pip, a stranded maintenance robot, can inspect equipment and act locally. Neither partner has the whole picture.
+Talk Me Home turns conversation with an AI into a small rescue mission. You are at Mission Control with station documents and remote controls. Pip, a stranded maintenance robot, sees nearby equipment. Neither partner has the whole picture.
 
-The rescue moves through three chapters. Cargo Bay introduces shared control of machinery. Relay Gallery asks you to compare Pip's descriptions with an illustrated route atlas. Return Dock brings both partners together for a carefully coordinated departure. Progress comes from explaining, checking, and revising a plan, with no countdown or accent score.
+Share clues by voice or text, ask Pip to inspect, and agree on a plan. Pip proposes one specific interaction or movement. Read its description, then choose Confirm this action or Not yet on your console. Spoken agreement cannot execute it. The game server rechecks conditions before committing, and a distinct Game event reports the decision. Practice uses the same confirmation step.
 
-AssemblyAI's Voice Agent API supplies the Live conversation, including speech recognition, spoken replies, and function calls. A Node server validates every game action and decides when Pip has actually returned home. The interface preserves real captions and keeps private map annotations out of Pip's recap.
+Cargo Bay introduces shared machinery and remote Power. Relay Gallery asks you to compare Pip's descriptions with an illustrated atlas and revise a route. Return Dock coordinates contact, charging, preparation, and a separately authorized departure. Only a validated return establishes that Pip is home.
 
-Players can choose Live Voice, provider-backed Live Text, or clearly labelled deterministic Practice without provider calls. Local microphone and output checks happen before a paid connection. Pause ends the call while preserving committed progress during the supported session.
+AssemblyAI's Voice Agent API supplies Live speech recognition, spoken replies, and function calls. Captions preserve what was said; private notes and map annotations stay out of Pip's context. Players can also choose provider-backed Live Text or deterministic Practice without provider calls.
 
-Original station illustrations, a responsive Pip portrait, readable chapter documents, and a confirmed homecoming give the experience a distinct identity. This release candidate includes a production server and bounded demo-access preparation; public deployment and an owner-recorded Live demonstration remain owner actions.
+Original illustrations, readable documents, and a responsive Pip portrait frame the experience. The confirmation flow is under validation; no successful complete real playthrough or human enjoyment result is claimed. Public deployment, a finished presentation, and an owner-recorded submission video remain pending.
 
-Count: **219 words**, counting whitespace-separated words (Goal 004 range: 150–250). Counts exclude headings and count notes. These are factual release-candidate descriptions; replace the deployment-status sentence only after an actual public deployment has been verified.
+Count: **226 words**, counting whitespace-separated words (Goal 004 range: 150-250). Counts exclude headings and count notes. Validation and deployment statements must change only after the corresponding result is observed.

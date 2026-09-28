@@ -4,7 +4,7 @@ import type { HumanView } from '../../game/shared/contracts';
 import type { SessionStore } from '../../game/server/sessions';
 
 /** An authoritative checkpoint fixture, never a prompt or model walkthrough. */
-async function prepareAuthorizedDock(store: SessionStore, initial: HumanView) {
+async function prepareAuthorizedDock(store: SessionStore, initial: HumanView, owner: string) {
   let view = initial;
   let sequence = 0;
   const envelope = () => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: `completion-setup-${++sequence}` });
@@ -14,7 +14,10 @@ async function prepareAuthorizedDock(store: SessionStore, initial: HumanView) {
       callId: `completion-setup-${++sequence}`, name, arguments: args,
     });
     expect(result.ok, result.message).toBe(true);
-    view = result.view;
+    expect(result.proposal?.status).toBe('awaiting_confirmation');
+    const confirmed = await store.decideProposal(view.sessionId, { roundId: view.roundId, requestId: `completion-confirm-${++sequence}`, proposalId: result.proposal!.id, decision: 'confirm' }, owner);
+    expect(confirmed.ok, confirmed.message).toBe(true);
+    view = confirmed.view;
   };
   await tool('interact_object', { object: 'latch', action: 'latch_open' });
   view = await store.power(view.sessionId, { ...envelope(), revision: view.revision, powerOn: false });
@@ -36,7 +39,9 @@ test('simulated completion recovery: a cancel response revealing committed home 
   let roundId = '';
   await page.route('**/api/sessions', async route => {
     const response = await route.fetch({ url: `${rescueServer.origin}/api/sessions` });
-    const view = await prepareAuthorizedDock(rescueServer.store, await response.json());
+    const owner = response.headers()['set-cookie']?.match(/tmh_browser=([A-Za-z0-9_-]+)/)?.[1];
+    if (!owner) throw new Error('The offline checkpoint fixture has no owning browser.');
+    const view = await prepareAuthorizedDock(rescueServer.store, await response.json(), owner);
     sessionId = view.sessionId; roundId = view.roundId;
     await route.fulfill({ response, json: view });
   });
@@ -52,7 +57,7 @@ test('simulated completion recovery: a cancel response revealing committed home 
   let committed = false;
   let release!: () => void;
   const delivery = new Promise<void>(resolve => { release = resolve; });
-  await page.route('**/api/sessions/*/tools', async route => {
+  await page.route('**/api/sessions/*/proposal-decision', async route => {
     const source = new URL(route.request().url());
     const response = await route.fetch({ url: rescueServer.origin + source.pathname });
     expect((await response.json()).view.completed).toBe(true);
@@ -61,9 +66,10 @@ test('simulated completion recovery: a cancel response revealing committed home 
     await route.fulfill({ response });
   });
   try {
-    provider.emit({ type: 'reply.started', reply_id: 'return-reply' });
-    provider.emit({ type: 'tool.call', call_id: 'return-once', name: 'interact_object', arguments: { object: 'return.capsule', action: 'confirm_return' } });
-    provider.emit({ type: 'reply.done', reply_id: 'return-reply', status: 'completed' });
+    const pending = await provider.tool('propose_interaction', { object: 'return.capsule', action: 'confirm_return' }, 'return-once');
+    expect(pending.code).toBe('awaiting_confirmation');
+    await expect(page.getByTestId('proposal-label')).toHaveText('Confirm the authorized return');
+    await page.getByRole('button', { name: 'Confirm this action', exact: true }).click();
     await expect.poll(() => committed).toBe(true);
     expect(rescueServer.store.get(sessionId).completed).toBe(true);
     await expect(page.getByRole('heading', { name: 'You brought Pip home.' })).toHaveCount(0);
@@ -73,7 +79,8 @@ test('simulated completion recovery: a cancel response revealing committed home 
     expect(canceledView.completed).toBe(true);
     release();
     await expect(page.getByRole('heading', { name: 'You brought Pip home.' })).toBeVisible();
-    expect(provider.sent.filter(event => event.type === 'tool.result')).toHaveLength(0);
+    expect(provider.sent.filter(event => event.type === 'tool.result')).toHaveLength(1);
+    expect(JSON.parse(String(provider.sent.find(event => event.type === 'tool.result')?.result)).code).toBe('awaiting_confirmation');
     expect(provider.ended).toBe(0);
 
     // No closing reply is injected. The confirmed physical result alone must
@@ -96,6 +103,6 @@ test('simulated completion recovery: a cancel response revealing committed home 
     await fixtureScreenshot(page, `test-results/goal-004c-cancel-confirmed-home-${info.project.name}.png`);
   } finally {
     release();
-    await page.unroute('**/api/sessions/*/tools');
+    await page.unroute('**/api/sessions/*/proposal-decision');
   }
 });

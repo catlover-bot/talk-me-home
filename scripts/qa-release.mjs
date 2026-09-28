@@ -7,6 +7,7 @@ import { createServer } from 'node:net';
 import { join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, expect } from '@playwright/test';
+import { confirmProposalForRequest, proposalLabelForRequest } from './qa-mission-player.mjs';
 
 const args = process.argv.slice(2);
 let target;
@@ -21,7 +22,7 @@ if (target) {
   if (url.origin !== target || url.username || url.password || !['http:', 'https:'].includes(url.protocol)) throw new Error('Target must be an exact HTTP(S) origin without credentials or a path.');
   if (url.protocol !== 'https:' && !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('A remote approved target requires HTTPS.');
 }
-const directory = resolve('.validation/goal-004d-offline');
+const directory = resolve('.validation/goal-004e-offline');
 mkdirSync(join(directory, 'screenshots'), { recursive: true });
 const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', GAME_QA_PREBUILT: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };
 const children = new Set();
@@ -45,6 +46,18 @@ function buildHash() {
     }
   }
   visit('dist/client'); visit('dist/server'); return hash.digest('hex');
+}
+function runtimeManifestHash() {
+  const files = {};
+  function visit(directory) {
+    for (const item of readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const path = join(directory, item.name);
+      if (item.isDirectory()) visit(path);
+      else files[path] = createHash('sha256').update(readFileSync(path)).digest('hex');
+    }
+  }
+  visit('dist');
+  return createHash('sha256').update(JSON.stringify(files)).digest('hex');
 }
 function start(command, arguments_, extra = {}) {
   const child = spawn(command, arguments_, { env: { ...environment, ...extra }, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
@@ -107,14 +120,36 @@ async function productionSmoke(origin) {
     await page.evaluate(() => scrollTo(0, 0));
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${name}: horizontal overflow`);
     await page.screenshot({ path: join(directory, 'screenshots', `${name}.png`), animations: 'disabled', fullPage: true });
-    report.screenshots.push(`.validation/goal-004d-offline/screenshots/${name}.png`);
+    report.screenshots.push(`.validation/goal-004e-offline/screenshots/${name}.png`);
   };
-  const say = async text => {
+  report.confirmedActions = { confirmations: 0, confirmedHome: false, screenshots: [] };
+  const say = async (text, { decision = 'confirm' } = {}) => {
     await page.getByLabel('Type a message').fill(text);
     const response = page.waitForResponse(response => response.url().endsWith('/tools'));
     await page.getByRole('button', { name: 'Send message', exact: true }).click();
     assert.equal((await response).status(), 200);
     await expect(page.getByTestId('caption')).not.toHaveText(text);
+    const expectedLabel = proposalLabelForRequest(text);
+    if (expectedLabel) {
+      await expect(page.getByTestId('proposal-label')).toHaveText(expectedLabel);
+      await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'awaiting_confirmation');
+      if (!report.confirmedActions.screenshots.includes('pending')) {
+        await screenshot('action-pending'); report.confirmedActions.screenshots.push('pending');
+      }
+      if (decision === 'decline') {
+        await page.getByTestId('action-proposal').getByRole('button', { name: 'Not yet', exact: true }).click();
+        await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'declined');
+        await screenshot('action-declined'); report.confirmedActions.screenshots.push('declined');
+      } else {
+        const receipt = await confirmProposalForRequest(page, text, report);
+        assert.equal(receipt.status, 'committed', 'The intended visible proposal must actually commit.');
+        report.confirmedActions.confirmations++;
+        if (!report.confirmedActions.screenshots.includes('committed')) {
+          await screenshot('action-confirmed'); report.confirmedActions.screenshots.push('committed');
+        }
+      }
+    }
+    if (await page.getByRole('heading', { name: 'You brought Pip home.', exact: true }).isVisible()) return 'Server-confirmed home';
     return page.getByTestId('caption').innerText();
   };
   const relay = async name => {
@@ -126,7 +161,7 @@ async function productionSmoke(origin) {
   await expect(page.getByRole('button', { name: 'Start Practice', exact: true })).toBeVisible();
   await page.evaluate(() => {
     const label = document.createElement('div');
-    label.textContent = 'AUTOMATED QA - OFFLINE PRACTICE';
+    label.textContent = 'AUTOMATED QA - OFFLINE PRACTICE + UI CONFIRMATION';
     label.style.cssText = 'position:fixed;bottom:0;left:0;padding:3px 8px;background:#17252f;color:#fff;z-index:99999;font:12px sans-serif;pointer-events:none';
     document.body.append(label);
   });
@@ -151,11 +186,13 @@ async function productionSmoke(origin) {
     const response = await outsider.request.post('/api/sessions', { headers: { Origin: origin }, data: { missionKind: 'rescue', scenario: 'classic' } });
     assert.equal(response.status(), 201);
     for (const suffix of ['', `/record?roundId=${initial.roundId}`, `/recap?roundId=${initial.roundId}`]) assert.equal((await outsider.request.get(`/api/sessions/${initial.sessionId}${suffix}`)).status(), 404);
-    for (const action of ['power', 'relay', 'dock-control', 'annotations', 'tools', 'stop', 'resume', 'reset', 'end', 'cancel', 'voice-token', 'messages', 'notebook', 'hint']) {
+    for (const action of ['power', 'relay', 'dock-control', 'annotations', 'tools', 'proposal-decision', 'stop', 'resume', 'reset', 'end', 'cancel', 'voice-token', 'messages', 'notebook', 'hint']) {
       assert.equal((await outsider.request.post(`/api/sessions/${initial.sessionId}/${action}`, { headers: { Origin: origin }, data: {} })).status(), 404, action);
     }
   } finally { await outsider.close(); }
-  await say('Look around'); await say('Inspect the latch'); await say('Keep the door open');
+  await say('Look around'); await say('Inspect the latch');
+  await say('Keep the door open', { decision: 'decline' });
+  await say('Keep the door open');
   await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
   await say('Cross to the far side'); await say('Where are you?');
@@ -192,6 +229,7 @@ async function productionSmoke(origin) {
   const final = await (await context.request.get(`${origin}/api/sessions/${initial.sessionId}`)).json();
   assert.equal(final.completed, true); // Oracle assertion after UI actions only.
   await screenshot('home');
+  report.confirmedActions.confirmedHome = true; report.confirmedActions.screenshots.push('home');
   await page.getByRole('button', { name: 'Start another rescue', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Start Practice', exact: true })).toBeVisible();
   assert.deepEqual(forbidden, []); assert.deepEqual(errors, []);
@@ -215,6 +253,7 @@ try {
   }
   assert.ok(existsSync('dist/server/server/production.js'), 'Build the production game before --smoke-only.');
   report.localBuildSha256 = buildHash();
+  report.runtimeManifestSha256 = runtimeManifestHash();
   if (!target) report.runtimeBuildSha256 = report.localBuildSha256;
   else report.targetBuildIdentity = 'Remote runtime identity is unverified; local build hash does not identify the remote deployment.';
   let origin = target;
@@ -241,7 +280,7 @@ try {
   for (const child of children) await stop(child);
   report.finishedAt = new Date().toISOString(); report.status = successful ? 'passed' : 'failed';
   report.cleanup = 'Owned browser contexts and child process groups stopped; no provider connection opened.';
-  const output = smokeOnly ? '.validation/goal-004d-offline-smoke.json' : '.validation/goal-004d-offline.json';
+  const output = smokeOnly ? '.validation/goal-004e-offline-smoke.json' : '.validation/goal-004e-offline.json';
   writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
   console.log(`Offline QA ${report.status}. Evidence: ${output}`);
 }

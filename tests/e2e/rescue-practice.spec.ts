@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import type { Page, TestInfo } from '@playwright/test';
 import type { HumanView, ToolResponse } from '../../game/shared/contracts';
 import { test, expect } from './rescue-fixture';
+import { confirmProposalForRequest, proposalLabelForRequest } from '../../scripts/qa-mission-player.mjs';
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', error => { throw error; });
@@ -23,7 +24,12 @@ async function say(page: Page, text: string, ok = true) {
   await page.getByLabel('Type a message').fill(text);
   const response = page.waitForResponse(response => response.url().endsWith('/tools'), { timeout: 5000 });
   await page.getByRole('button', { name: 'Send message', exact: true }).click();
-  const result = await (await response).json() as ToolResponse;
+  let result = await (await response).json() as ToolResponse;
+  if (result.code === 'awaiting_confirmation' && proposalLabelForRequest(text)) {
+    const decision = page.waitForResponse(response => response.url().endsWith('/proposal-decision'));
+    await confirmProposalForRequest(page, text);
+    result = await (await decision).json() as ToolResponse;
+  }
   expect(result.ok, `The validated result for ${text}`).toBe(ok);
   await expect(page.getByTestId('caption')).not.toHaveText(text);
   return result;
@@ -45,6 +51,8 @@ async function cargo(page: Page, recover = false) {
     await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
     await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
     await say(page, 'Keep the door open', false);
+    await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'failed');
+    await say(page, 'Inspect the Door');
     await expect(page.getByTestId('caption')).toContainText('closed');
     await page.getByRole('button', { name: 'Power ON', exact: true }).click();
     await expect(page.getByTestId('acknowledged-power')).toHaveText('ON');
@@ -151,6 +159,8 @@ test.describe('Authored Gallery B', () => {
     await say(page, 'Inspect the northeast gate');
     await expect(page.getByTestId('caption')).toContainText('Cargo blocks');
     await say(page, 'Go through the northeast gate', false);
+    await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'failed');
+    await say(page, 'Inspect the northeast gate');
     await expect(page.getByTestId('caption')).toContainText('Cargo blocks');
     await screenshot(page, 'blocked-route', info);
     await relay(page, 'Off'); await say(page, 'Go through the northwest gate', false);

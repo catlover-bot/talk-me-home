@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from './rescue-fixture';
-import { fakeProvider, fixtureScreenshot, confirmLocalReadiness } from './fake-provider';
+import { fakeProvider, fixtureScreenshot, confirmLocalReadiness, confirmFixtureProposal } from './fake-provider';
 
 type Provider = Awaited<ReturnType<typeof fakeProvider>>;
 
@@ -23,11 +23,11 @@ async function relay(page: Page, circuit: 'Beacon' | 'Harbor') {
 async function cargo(page: Page, provider: Provider, batchOldWork = false) {
   expect((await provider.tool('observe_room', {}, 'cargo-survey')).message).toContain('Latch');
   expect((await provider.tool('inspect_object', { object: 'latch' }, 'cargo-inspect')).ok).toBe(true);
-  expect((await provider.tool('interact_object', { object: 'latch', action: 'latch_open' }, 'cargo-latch')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'latch', action: 'latch_open' }, 'Engage the Latch', 'cargo-latch')).ok).toBe(true);
   await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
   await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
   if (batchOldWork) {
-    // Both requests arrive before the first response advances the chapter.
+    // Both requests finish in Cargo before the independent UI decision advances it.
     provider.emit({ type: 'reply.started', reply_id: 'ordinary-crossing' });
     provider.emit({ type: 'tool.call', call_id: 'crossing', name: 'move_to', arguments: { target: 'far_side' } });
     provider.emit({ type: 'tool.call', call_id: 'old-cargo-survey', name: 'observe_room', arguments: {} });
@@ -37,11 +37,13 @@ async function cargo(page: Page, provider: Provider, batchOldWork = false) {
     expect(crossing).toHaveLength(1);
     expect(JSON.parse(String(crossing[0]?.result)).ok).toBe(true);
     const old = provider.sent.find(event => event.type === 'tool.result' && event.call_id === 'old-cargo-survey');
-    expect(old?.is_error).toBe(true);
+    expect(old?.is_error).toBe(false);
     expect(String(old?.result)).not.toMatch(/Ring emblem|gallery\.g/);
+    expect(JSON.parse(String(crossing[0]?.result)).code).toBe('awaiting_confirmation');
+    await confirmFixtureProposal(page, 'Move to the far-side platform');
     provider.emit({ type: 'tool.call', call_id: 'crossing', name: 'move_to', arguments: { target: 'far_side' } });
     provider.emit({ type: 'reply.done', reply_id: 'ordinary-crossing', status: 'completed' });
-  } else expect((await provider.tool('move_to', { target: 'far_side' }, 'cargo-cross')).ok).toBe(true);
+  } else expect((await provider.confirmTool('propose_move', { target: 'far_side' }, 'Move to the far-side platform', 'cargo-cross')).ok).toBe(true);
   await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'You got Pip through.' })).toHaveCount(0);
   expect(provider.ended).toBe(0);
@@ -54,23 +56,23 @@ async function gallery(page: Page, provider: Provider) {
   expect(entry.message).toContain('Ring emblem');
   expect(entry.message).toContain('East gate (gallery.g1)');
   await relay(page, 'Beacon');
-  expect((await provider.tool('move_to', { target: 'gallery.g1' })).message).toContain('Fork emblem');
+  expect((await provider.confirmTool('propose_move', { target: 'gallery.g1' }, 'Move through the east gate')).message).toContain('Fork emblem');
   await relay(page, 'Harbor');
-  expect((await provider.tool('move_to', { target: 'gallery.g2' })).message).toContain('Sail emblem');
+  expect((await provider.confirmTool('propose_move', { target: 'gallery.g2' }, 'Move through the northeast gate')).message).toContain('Sail emblem');
   const exit = await provider.tool('inspect_object', { object: 'gallery.g3' });
   if (/Cargo blocks/.test(exit.message)) {
     // This branch follows an actual local observation, not the hidden configuration.
-    expect((await provider.tool('move_to', { target: 'gallery.g3' })).ok).toBe(false);
-    expect((await provider.tool('move_to', { target: 'gallery.g2' })).message).toContain('Fork emblem');
+    expect((await provider.confirmTool('propose_move', { target: 'gallery.g3' }, 'Move through the southeast gate')).ok).toBe(false);
+    expect((await provider.confirmTool('propose_move', { target: 'gallery.g2' }, 'Move through the southwest gate')).message).toContain('Fork emblem');
     await relay(page, 'Beacon');
-    expect((await provider.tool('move_to', { target: 'gallery.g4' })).message).toContain('Leaf emblem');
+    expect((await provider.confirmTool('propose_move', { target: 'gallery.g4' }, 'Move through the southeast gate')).message).toContain('Leaf emblem');
     expect((await provider.tool('inspect_object', { object: 'gallery.g5' })).message).toContain('clear of cargo');
     await relay(page, 'Harbor');
-    expect((await provider.tool('move_to', { target: 'gallery.g5' })).ok).toBe(true);
+    expect((await provider.confirmTool('propose_move', { target: 'gallery.g5' }, 'Move through the northeast gate')).ok).toBe(true);
   } else {
     expect(exit.message).toContain('clear of cargo');
     await relay(page, 'Beacon');
-    expect((await provider.tool('move_to', { target: 'gallery.g3' })).ok).toBe(true);
+    expect((await provider.confirmTool('propose_move', { target: 'gallery.g3' }, 'Move through the southeast gate')).ok).toBe(true);
   }
   await expect(page.getByRole('heading', { name: 'Return Dock', exact: true })).toBeVisible();
   expect(provider.ended).toBe(0);
@@ -81,13 +83,13 @@ async function gallery(page: Page, provider: Provider) {
 async function board(page: Page, provider: Provider) {
   expect((await provider.tool('observe_room', {})).message).toContain('return.contact');
   expect((await provider.tool('inspect_object', { object: 'return.contact' })).message).toContain('hold_contact');
-  expect((await provider.tool('interact_object', { object: 'return.contact', action: 'hold_contact' })).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'return.contact', action: 'hold_contact' }, 'Hold the charging contact')).ok).toBe(true);
   await page.getByRole('button', { name: 'Charge', exact: true }).click();
   await expect(page.getByTestId('dock-energy')).toHaveText('Primed');
   await page.getByRole('button', { name: 'Store', exact: true }).click();
   await expect(page.getByTestId('dock-energy')).toHaveText('Stored');
-  expect((await provider.tool('interact_object', { object: 'return.contact', action: 'release_contact' })).ok).toBe(true);
-  expect((await provider.tool('move_to', { target: 'return.aboard' })).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'return.contact', action: 'release_contact' }, 'Release the charging contact')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_move', { target: 'return.aboard' }, 'Board the recovery capsule')).ok).toBe(true);
   await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
   expect((await provider.tool('inspect_object', { object: 'return.capsule' })).message).toContain('confirm_return');
 }
@@ -101,7 +103,8 @@ test('simulated Gallery movement: queued same-gate retries cannot walk back from
   expect(entry.message).toContain('gallery.g1');
   await relay(page, 'Beacon');
 
-  // Both intents originate at Ring; the first move must not reinterpret the second at Fork.
+  // Both identical proposals originate at Ring; a single confirmation must not
+  // reinterpret a queued duplicate as a backtrack after arriving at Fork.
   provider.emit({ type: 'reply.started', reply_id: 'ordinary-same-gate' });
   provider.emit({ type: 'tool.call', call_id: 'same-gate-first', name: 'move_to', arguments: { target: 'gallery.g1' } });
   provider.emit({ type: 'tool.call', call_id: 'same-gate-queued', name: 'move_to', arguments: { target: 'gallery.g1' } });
@@ -116,16 +119,17 @@ test('simulated Gallery movement: queued same-gate retries cannot walk back from
   expect(first).toHaveLength(1);
   expect(queued).toHaveLength(1);
   expect(JSON.parse(String(first[0]?.result))).toMatchObject({ ok: true });
-  expect(String(first[0]?.result)).toContain('Fork emblem');
-  expect(queued[0]?.is_error).toBe(true);
-  expect(JSON.parse(String(queued[0]?.result))).toMatchObject({ ok: false });
+  expect(JSON.parse(String(first[0]?.result))).toMatchObject({ code: 'awaiting_confirmation' });
+  expect(queued[0]?.is_error).toBe(false);
+  expect(JSON.parse(String(queued[0]?.result)).proposal.id).toBe(JSON.parse(String(first[0]?.result)).proposal.id);
+  await confirmFixtureProposal(page, 'Move through the east gate');
 
   const afterBatch = await provider.tool('observe_room', {}, 'same-gate-after-batch');
   expect(afterBatch.message).toContain('Fork emblem');
   expect(afterBatch.message).not.toContain('Ring emblem');
   expect(afterBatch.message).toContain('West gate (gallery.g1)');
   // Freshly requested backtracking has the new location context and is still recoverable.
-  const backtrack = await provider.tool('move_to', { target: 'gallery.g1' }, 'same-gate-deliberate-return');
+  const backtrack = await provider.confirmTool('propose_move', { target: 'gallery.g1' }, 'Move through the west gate', 'same-gate-deliberate-return');
   expect(backtrack.ok).toBe(true);
   expect(backtrack.message).toContain('Ring emblem');
   expect(provider.connections).toBe(1);
@@ -137,7 +141,7 @@ test('simulated Gallery movement: queued same-gate retries cannot walk back from
   expect(provider.activeSockets).toBe(0);
 });
 
-test('simulated Rescue: one connection, exactly one checkpoint result, stale queued chapter rejection, typed authorized return', async ({ page }, info) => {
+test('simulated Rescue: one connection, single pending result, separately confirmed checkpoint and typed authorized return', async ({ page }, info) => {
   const provider = await fakeProvider(page);
   await startRescue(page, provider);
   await cargo(page, provider, true);
@@ -161,7 +165,7 @@ test('simulated Rescue: one connection, exactly one checkpoint result, stale que
   await expect.poll(() => provider.sent.some(event => event.type === 'conversation.message' && event.content === 'Please confirm the return.')).toBe(true);
   await expect(page.getByTestId('dock-authorization')).toHaveText('Granted');
   await fixtureScreenshot(page, `test-results/goal-003-simulated-return-ready-${info.project.name}.png`);
-  expect((await provider.tool('interact_object', { object: 'return.capsule', action: 'confirm_return' }, 'final-return')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'return.capsule', action: 'confirm_return' }, 'Confirm the authorized return', 'final-return')).ok).toBe(true);
   provider.emit({ type: 'reply.started', reply_id: 'home-response' });
   provider.emit({ type: 'transcript.agent', reply_id: 'home-response', text: 'I am home. Thank you for guiding me.' });
   provider.emit({ type: 'reply.done', reply_id: 'home-response', status: 'completed' });
@@ -200,11 +204,11 @@ test('simulated Rescue continuity: pause after boarding revokes grant, fresh con
   expect(String(recap?.content)).toContain('return_dock');
   expect(String(recap?.content)).toContain('boarded');
   expect(String(recap?.content)).not.toMatch(/galleryConfiguration|configuration.*[ab]|readinessVersion/);
-  expect((await provider.tool('interact_object', { object: 'return.capsule', action: 'confirm_return' }, 'stale-grant')).ok).toBe(false);
+  expect((await provider.confirmTool('propose_interaction', { object: 'return.capsule', action: 'confirm_return' }, 'Confirm the authorized return', 'stale-grant')).ok).toBe(false);
   await expect(page.getByTestId('dock-energy')).toHaveText('Stored');
   await page.getByRole('button', { name: 'Authorize return', exact: true }).click();
   await expect(page.getByTestId('dock-authorization')).toHaveText('Granted');
-  expect((await provider.tool('interact_object', { object: 'return.capsule', action: 'confirm_return' }, 'fresh-grant')).ok).toBe(true);
+  expect((await provider.confirmTool('propose_interaction', { object: 'return.capsule', action: 'confirm_return' }, 'Confirm the authorized return', 'fresh-grant')).ok).toBe(true);
   provider.emit({ type: 'reply.started', reply_id: 'resumed-home' });
   provider.emit({ type: 'transcript.agent', reply_id: 'resumed-home', text: 'The return is complete.' });
   provider.emit({ type: 'reply.done', reply_id: 'resumed-home', status: 'completed' });

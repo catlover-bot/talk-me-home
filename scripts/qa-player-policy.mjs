@@ -37,7 +37,8 @@ export function communicatedActionClaim(text, action) {
     if (explicit !== action && !(referent && topic === action)) continue;
     // Questions, conditions, quotations and promises supply no independent result.
     // They therefore cannot replace an already retained declarative report.
-    if (clause.question || clause.conditional || clause.quoted || /\b(?:i|we) (?:will|shall|plan to|intend to|am going to)\b/.test(value)) continue;
+    if (clause.question || clause.conditional || clause.quoted || /\b(?:i|we) (?:will|shall|plan to|intend to|am going to)\b/.test(value)
+      || /\b(?:propos(?:e|ed|al)|awaiting confirmation|pending (?:your )?confirmation|not executed)\b/.test(value)) continue;
     mentioned = true;
     if (uncertainty.test(value)) {
       if (!/\b(?:will|would|could|try|trying)\b/.test(value) || /\b(?:cannot|can't) confirm\b/.test(value)) invalid = true;

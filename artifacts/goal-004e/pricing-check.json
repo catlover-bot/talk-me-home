@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-09-28",
+  "source": "https://www.assemblyai.com/pricing",
+  "supportingSource": "https://www.assemblyai.com/products/voice-agent-api",
+  "product": "Voice Agent API",
+  "verifiedDollarsPerHour": 4.5,
+  "remainingReservationSeconds": 670,
+  "remainingPlanningDollars": 0.8375,
+  "aggregateMaximumAttempts": 4,
+  "aggregateMaximumReservedSeconds": 2680,
+  "aggregatePlanningDollars": 3.35,
+  "boundary": "Public price rechecked from the current official pages. Existing balance only; balance and unrelated account use were not inspected. This is conservative reservation planning, not an invoice or account-wide billing cap. No purchase or billing setting change."
+}

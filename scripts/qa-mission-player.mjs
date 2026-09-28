@@ -2,7 +2,7 @@
 // Decisions use human-visible documents, reports and controls only.
 import { expect } from '@playwright/test';
 import { crossCargoWithRecovery } from './qa-player-policy.mjs';
-import { createPlayerMemory, readVisiblePlayerReports, confirmReportedAction } from './qa-player-memory.mjs';
+import { createPlayerMemory, readVisiblePlayerReports } from './qa-player-memory.mjs';
 
 export const PHRASES = {
   observe: 'Pip, please look around.', latch: 'Please inspect the Latch.',
@@ -16,8 +16,62 @@ export const PHRASES = {
   board: 'Please board the capsule.', home: 'Please confirm the return.', wait: 'Please wait.',
 };
 
+/** Fixed player intentions, matched against the server's visible action label. */
+export function proposalLabelForRequest(text) {
+  const request = text.toLowerCase().replace(/^please /, '').replace(/[.!]$/, '').trim();
+  if (['engage the latch', 'set the latch to hold the door open', 'keep the door open', 'latch the door open'].includes(request)) return 'Engage the Latch';
+  if (['hold the contact', 'grip the contact steadily', 'hold the contact while i store the charge'].includes(request)) return 'Hold the charging contact';
+  if (['release the contact', 'let go of the contact'].includes(request)) return 'Release the charging contact';
+  if (request === 'board the capsule') return 'Board the recovery capsule';
+  if (['confirm the return', 'confirm return'].includes(request)) return 'Confirm the authorized return';
+  if (['cross to the far side', 'cross to the far side now if the route is clear', 'walk through the door'].includes(request)) return 'Move to the far-side platform';
+  const selector = request.match(/^set (?:the )?selector to (neutral|anchor|bridge)$/)?.[1];
+  if (selector) return `Set the Latch selector to ${selector[0].toUpperCase()}${selector.slice(1)}`;
+  const direction = request.match(/^(?:go|move) through the (east|west|northeast|northwest|southeast|southwest) gate$/)?.[1];
+  return direction ? `Move through the ${direction} gate` : null;
+}
+
+export async function confirmProposalForRequest(page, intendedRequest, report = {}) {
+  const expectedLabel = proposalLabelForRequest(intendedRequest);
+  if (!expectedLabel) return null;
+  report.confirmations ??= [];
+  return confirmVisibleProposal(page, expectedLabel, intendedRequest, report.confirmations);
+}
+
+/** Only an explicitly selected, exactly matching visible proposal can be confirmed. */
+export async function confirmVisibleProposal(page, expectedLabel, intendedRequest, confirmations = []) {
+  const strip = page.getByTestId('action-proposal');
+  await expect(strip).toBeVisible();
+  await expect(strip).toHaveAttribute('data-status', 'awaiting_confirmation');
+  expect(await page.getByTestId('proposal-label').innerText()).toBe(expectedLabel);
+  const proposalId = await strip.getAttribute('data-proposal-id');
+  if (!proposalId) throw new Error('Visible proposal identity is unavailable.');
+  const confirmationRequestedAtMs = await page.evaluate(() => globalThis.__qaAudio?.snapshot().elapsedMs ?? performance.now());
+  await strip.getByRole('button', { name: 'Confirm this action', exact: true }).click();
+  let status;
+  await expect.poll(async () => {
+    // One DOM snapshot avoids waiting on a strip that disappears between a
+    // visibility check and a terminal heading mounting after validated arrival.
+    const visible = await page.evaluate(() => ({
+      completed: [...document.querySelectorAll('h1')].some(element => /^(?:You brought Pip home\.|You got Pip through\.)$/.test(element.textContent.trim())),
+      id: document.querySelector('[data-testid="action-proposal"]')?.getAttribute('data-proposal-id'),
+      status: document.querySelector('[data-testid="action-proposal"]')?.getAttribute('data-status'),
+    }));
+    if (visible.completed) return status = 'committed';
+    if (!visible.id) return null;
+    if (visible.id !== proposalId) throw new Error('The visible proposal changed during confirmation.');
+    status = visible.status;
+    return ['committed', 'failed', 'expired', 'declined', 'invalidated'].includes(status) ? status : null;
+  }).not.toBeNull();
+  const confirmedAtMs = await page.evaluate(() => globalThis.__qaAudio?.snapshot().elapsedMs ?? performance.now());
+  const receipt = { proposalId, label: expectedLabel, intendedRequest, status, confirmationRequestedAtMs, confirmedAtMs, source: 'Visible action strip and normal owner confirmation button' };
+  confirmations.push(receipt);
+  return receipt;
+}
+
 export async function runRescuePlayer({ page, say: exchange, screenshot = async () => {}, report = { route: [], steps: [] } }) {
   report.route ??= []; report.steps ??= [];
+  report.confirmations ??= [];
   // There is no round identifier in the rendered UI. This identity belongs only to this
   // invocation. Replacement/disconnection of its communication panel invalidates it.
   const round = 'current uninterrupted QA invocation';
@@ -50,6 +104,11 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
     await consume();
     if (await home() || chapter !== phase) return '';
     await exchange(text, options);
+    const expectedLabel = proposalLabelForRequest(text);
+    if (expectedLabel) {
+      const receipt = await confirmVisibleProposal(page, expectedLabel, text, report.confirmations);
+      if (receipt.status !== 'committed') throw new Error(`The selected action was ${receipt.status}, not committed: ${expectedLabel}`);
+    }
     if (options.terminal) await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
     await consume(options.context);
     return (await readVisiblePlayerReports(page, round)).filter(item => item.speaker === 'Pip' && item.chapter === chapter && item.final && !item.interrupted && !item.historical).at(-1)?.text ?? '';
@@ -70,7 +129,9 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
         if (await power.innerText() !== 'ON') await page.getByRole('button', { name: 'Power ON', exact: true }).click();
         await expect(power).toHaveText('ON');
         await say(PHRASES.wiring);
-        if (!await confirmReportedAction({ memory, consume, say, request: PHRASES.engage, clarify: PHRASES.confirmLatch, retry: PHRASES.retryLatch, action: 'latch', checkpoint: atGallery })) throw new Error('Player oracle: Latch completion remained unconfirmed after bounded recovery.');
+        // Information and a model's completion claim never substitute for this
+        // explicit request and the separate owner decision on its exact proposal.
+        await say(PHRASES.engage);
         if (!await atGallery()) {
           await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
           await expect(power).toHaveText('OFF');
@@ -146,16 +207,15 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
     const charged = async () => await home() || ['Primed', 'Stored'].includes(await energy());
     if (!await charged()) {
       await say(PHRASES.dock); await say(PHRASES.inspectContact);
-      if (!await confirmReportedAction({ memory, consume, say, request: PHRASES.contact, clarify: PHRASES.confirmContact, retry: PHRASES.retryContact, action: 'contact', checkpoint: charged })) throw new Error('Player oracle: contact holding remained unconfirmed after bounded recovery.');
+      await say(PHRASES.contact);
       if (!await charged()) {
         await say(PHRASES.controller);
-        if (!await charged() && !await confirmReportedAction({ memory, consume, say, request: PHRASES.contact, clarify: PHRASES.confirmContact, retry: PHRASES.retryContact, action: 'contact', checkpoint: charged })) throw new Error('Contact holding became uncertain before Charge.');
         if (!await charged()) { await page.getByRole('button', { name: 'Charge', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Primed'); }
       }
     }
     if (!await home() && await energy() === 'Primed') { await page.getByRole('button', { name: 'Store', exact: true }).click(); await expect(page.getByTestId('dock-energy')).toHaveText('Stored'); }
     if (!await home() && !await ready()) {
-      if (!await confirmReportedAction({ memory, consume, say, request: PHRASES.release, clarify: PHRASES.confirmContact, retry: PHRASES.retryRelease, action: 'contact', expectedValue: 'not_done', checkpoint: ready })) throw new Error('Player oracle: contact release remained unconfirmed before boarding.');
+      await say(PHRASES.release);
       if (!await ready()) await say(PHRASES.board);
       await expect(page.getByTestId('dock-readiness')).toHaveText('Ready');
     }

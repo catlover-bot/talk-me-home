@@ -45,3 +45,13 @@ test('QA digital recording preserves time gaps and real PCM sample values', () =
   assert.equal(samples.length, 6000); assert.equal(samples[2399], 0);
   assert.equal(samples[2400], 6000); assert.equal(samples[2639], 6000); assert.equal(samples[2640], 0);
 });
+
+test('QA proposal metadata records nonexecution and an aliased identity without retaining raw descriptors', () => {
+  const references = new Map<string, number>();
+  const result = sanitizeWireEvent({ type: 'tool.result', call_id: 'call', is_error: false, result: JSON.stringify({ code: 'awaiting_confirmation', proposal: { id: 'private-proposal-id', status: 'awaiting_confirmation', label: 'Private descriptor', action: { object: 'hidden-target' } } }) }, 'sent', references);
+  assert.equal(result?.actionStatus, 'awaiting_confirmation');
+  assert.equal(typeof result?.proposalRef, 'number');
+  assert.doesNotMatch(JSON.stringify(result), /private-proposal-id|Private descriptor|hidden-target/);
+  assert.equal(sanitizeWireEvent({ type: 'tool.call', name: 'propose_move' }, 'received')?.name, 'propose_move');
+  assert.equal(sanitizeWireEvent({ type: 'tool.call', name: 'get_action_status' }, 'received')?.name, 'get_action_status');
+});

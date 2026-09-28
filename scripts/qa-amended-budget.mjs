@@ -19,6 +19,14 @@ export const QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES = Object.freeze({
   campaign: '8c9c0f4c94c8f8e400769fdbc62aa20a7b6c232fcf4bf5cfffc992bd28ef70d0',
   allowance: '4cc324d8dc43d7bd4ff57986e43dc5f0d37ead592117b53d49fff7bf6a455152',
 })
+export const QA_CONFIRMED_AMENDMENT_ID = 'goal-004e-confirmed-actions-2026-09-28'
+export const QA_CONFIRMED_AMENDMENT_LEDGER = 'amendment-confirmed-actions.jsonl'
+export const QA_CONFIRMED_AMENDMENT_ALLOWANCE = 'amendment-confirmed-actions-allowance.jsonl'
+// Reassign the existing fourth slot. Neither aggregate limit increases.
+export const QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES = Object.freeze({
+  campaign: 'f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae',
+  allowance: '5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5',
+})
 const integer = value => Number.isSafeInteger(value) && value >= 0
 const keys = value => Object.keys(value).sort().join(',')
 const digest = value => createHash('sha256').update(value).digest('hex')
@@ -26,16 +34,22 @@ const hash = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value)
 const rowKeys = 'attempt,gracefulAt,hardAt,identitySha256,leaseUntil,name,reservedAt,reservedSeconds,type'
 const headerKeys = 'capacitySeconds,createdAt,disconnectGraceSeconds,historicalAttempts,hourlyRate,id,maxAttempts,maxNewAttempts,maxSessionSeconds,newCapacitySeconds,originalAllowanceSha256,originalCampaignSha256,planningDollars,reservationSeconds,type,version'
 
-// Only these two compiled, owner-approved amendments exist. A caller cannot supply limits.
+// Only these compiled, owner-approved amendments exist. A caller cannot supply limits.
 function profile(amendmentId) {
   if (amendmentId === QA_AMENDMENT_ID) return { id: amendmentId, ledger: QA_AMENDMENT_LEDGER, allowance: QA_AMENDMENT_ALLOWANCE,
     historicalAttempts: 1, limits: QA_LIMITS, originalHashes: QA_AMENDMENT_ORIGINAL_HASHES, precedingAllowance: 'allowance.jsonl' }
   if (amendmentId === QA_RUNTIME_AMENDMENT_ID) return { id: amendmentId, ledger: QA_RUNTIME_AMENDMENT_LEDGER, allowance: QA_RUNTIME_AMENDMENT_ALLOWANCE,
     historicalAttempts: 2, limits: QA_RUNTIME_AMENDMENT_LIMITS, originalHashes: QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES,
     precedingAllowance: QA_AMENDMENT_ALLOWANCE, previousAmendmentId: QA_AMENDMENT_ID }
+  if (amendmentId === QA_CONFIRMED_AMENDMENT_ID) return { id: amendmentId, ledger: QA_CONFIRMED_AMENDMENT_LEDGER, allowance: QA_CONFIRMED_AMENDMENT_ALLOWANCE,
+    historicalAttempts: 3, limits: QA_RUNTIME_AMENDMENT_LIMITS, originalHashes: QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES,
+    precedingAllowance: QA_RUNTIME_AMENDMENT_ALLOWANCE, previousAmendmentId: QA_RUNTIME_AMENDMENT_ID, finalVoiceOnly: true }
   throw new Error('Unknown fixed campaign amendment.')
 }
 function assertCurrentWriter(directory, amendmentId) {
+  if (amendmentId !== QA_CONFIRMED_AMENDMENT_ID && [QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
+    throw new Error('Earlier amendments are preserved history; only the linked Goal 004E writer may consume the existing final slot.')
+  }
   if (amendmentId === QA_AMENDMENT_ID && [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
     throw new Error('The earlier amendment is preserved history; only the linked Goal 004D writer may consume the reassigned slot.')
   }
@@ -70,6 +84,17 @@ function originalCampaign(directory) {
 
 function precedingCampaign(directory, amendmentId) {
   if (amendmentId === QA_AMENDMENT_ID) return originalCampaign(directory)
+  if (amendmentId === QA_CONFIRMED_AMENDMENT_ID) {
+    const previous = inspectAmendedCampaign(directory, QA_RUNTIME_AMENDMENT_ID)
+    if (digest(readFileSync(join(directory, QA_RUNTIME_AMENDMENT_LEDGER))) !== QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES.campaign
+      || digest(readFileSync(join(directory, QA_RUNTIME_AMENDMENT_ALLOWANCE))) !== QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES.allowance
+      || previous.attempts.length !== 3 || previous.productionAttempts !== 3
+      || previous.attempts.some(attempt => attempt.name !== 'text-mission' || attempt.result?.outcome !== 'failed'
+        || attempt.result.endAcknowledged !== true || !integer(attempt.closedAt) || attempt.closedAt < attempt.result.finishedAt)) {
+      throw new Error('Goal 004E requires all three exact preserved failed and closed Text attempts; a consumed final slot cannot be reassigned again.')
+    }
+    return previous
+  }
   const previous = inspectAmendedCampaign(directory, QA_AMENDMENT_ID)
   if (digest(readFileSync(join(directory, QA_AMENDMENT_LEDGER))) !== QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES.campaign
     || digest(readFileSync(join(directory, QA_AMENDMENT_ALLOWANCE))) !== QA_RUNTIME_AMENDMENT_ORIGINAL_HASHES.allowance
@@ -90,12 +115,13 @@ export function initializeAmendment(directory, { hourlyRate = 4.5, now = Date.no
   const ledger = join(directory, selected.ledger)
   const allowance = join(directory, selected.allowance)
   // Repeated delivery reuses this exact linked amendment, including consumed attempts.
-  if (amendmentId === QA_RUNTIME_AMENDMENT_ID && existsSync(ledger) && existsSync(allowance)) return inspectAmendedCampaign(directory, amendmentId)
+  if ([QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID].includes(amendmentId) && existsSync(ledger) && existsSync(allowance)) return inspectAmendedCampaign(directory, amendmentId)
   if (existsSync(ledger) || existsSync(allowance)) throw new Error('This fixed amendment already exists or is incomplete; it can never be initialized again.')
   const createdAt = now()
   if (!integer(createdAt) || createdAt < original.attempts.at(-1).closedAt) throw new Error('Invalid amendment creation time.')
   append(ledger, [{ type: 'amendment', version: 1, id: amendmentId, originalCampaignSha256: selected.originalHashes.campaign,
-    originalAllowanceSha256: selected.originalHashes.allowance, historicalAttempts: selected.historicalAttempts, maxNewAttempts: 2, newCapacitySeconds: 1340,
+    originalAllowanceSha256: selected.originalHashes.allowance, historicalAttempts: selected.historicalAttempts,
+    maxNewAttempts: selected.limits.maxAttempts - selected.historicalAttempts, newCapacitySeconds: (selected.limits.maxAttempts - selected.historicalAttempts) * 670,
     ...selected.limits, hourlyRate, createdAt, ...(selected.previousAmendmentId ? { previousAmendmentId: selected.previousAmendmentId } : {}) }], true)
   // The production format remains unchanged: preceding reservations are historical,
   // and this aggregate copy cannot make the original slot independently spendable.
@@ -117,7 +143,8 @@ export function inspectAmendedCampaign(directory, amendmentId = QA_AMENDMENT_ID)
     || header.type !== 'amendment' || header.version !== 1 || header.id !== amendmentId
     || header.originalCampaignSha256 !== selected.originalHashes.campaign || header.originalAllowanceSha256 !== selected.originalHashes.allowance
     || header.previousAmendmentId !== selected.previousAmendmentId
-    || header.historicalAttempts !== selected.historicalAttempts || header.maxNewAttempts !== 2 || header.newCapacitySeconds !== 1340
+    || header.historicalAttempts !== selected.historicalAttempts || header.maxNewAttempts !== selected.limits.maxAttempts - selected.historicalAttempts
+    || header.newCapacitySeconds !== (selected.limits.maxAttempts - selected.historicalAttempts) * 670
     || Object.entries(selected.limits).some(([key, value]) => header[key] !== value) || header.hourlyRate !== 4.5
     || !integer(header.createdAt) || header.createdAt < original.attempts.at(-1).closedAt) throw new Error('Invalid fixed amendment limits or history link.')
   const attempts = original.attempts.map(value => ({ ...value }))
@@ -125,12 +152,12 @@ export function inspectAmendedCampaign(directory, amendmentId = QA_AMENDMENT_ID)
     if (!row || !integer(row.attempt) || row.attempt <= selected.historicalAttempts || row.attempt > selected.limits.maxAttempts) throw new Error('Invalid amended accounting event.')
     const previous = attempts.at(-1)
     if (row.type === 'reserved') {
-      if (keys(row) !== rowKeys || row.attempt !== attempts.length + 1 || row.name !== (row.attempt === selected.historicalAttempts + 1 ? 'text-mission' : 'voice-mission')
+      if (keys(row) !== rowKeys || row.attempt !== attempts.length + 1 || row.name !== (selected.finalVoiceOnly ? 'voice-mission' : row.attempt === selected.historicalAttempts + 1 ? 'text-mission' : 'voice-mission')
         || !integer(row.reservedAt) || row.reservedAt < header.createdAt || row.reservedSeconds !== 670 || row.leaseUntil !== row.reservedAt + 670_000
         || !integer(row.gracefulAt) || row.gracefulAt <= row.reservedAt || row.gracefulAt > row.reservedAt + 590_000
         || row.hardAt !== row.gracefulAt + 10_000 || !hash(row.identitySha256)
         || !previous.result?.endAcknowledged || !integer(previous.closedAt) || previous.closedAt > row.reservedAt
-        || row.attempt === selected.limits.maxAttempts && (previous.result.outcome !== 'passed' || previous.identitySha256 !== row.identitySha256)) throw new Error('Invalid amended reservation or Text-before-Voice sequence.')
+        || !selected.finalVoiceOnly && row.attempt === selected.limits.maxAttempts && (previous.result.outcome !== 'passed' || previous.identitySha256 !== row.identitySha256)) throw new Error('Invalid amended reservation or approved sequence.')
       attempts.push({ ...row, result: null, closedAt: null })
     } else if (row.type === 'result') {
       if (keys(row) !== 'attempt,connectedSeconds,endAcknowledged,finishedAt,outcome,type' || row.attempt !== previous.attempt || previous.result
@@ -166,13 +193,14 @@ export class AmendedCampaignBudget {
     const state = inspectAmendedCampaign(this.directory, this.amendmentId)
     if (state.attempts.length >= this.selected.limits.maxAttempts) throw new Error('The aggregate amended attempt allowance is exhausted.')
     const attempt = state.attempts.length + 1
-    if (name !== (attempt === this.selected.historicalAttempts + 1 ? 'text-mission' : 'voice-mission') || !Number.isSafeInteger(maxRunSeconds) || maxRunSeconds < 1 || maxRunSeconds > 590
+    if (name !== (this.selected.finalVoiceOnly ? 'voice-mission' : attempt === this.selected.historicalAttempts + 1 ? 'text-mission' : 'voice-mission') || !Number.isSafeInteger(maxRunSeconds) || maxRunSeconds < 1 || maxRunSeconds > 590
       || !identity || !/^[0-9a-f]{40}$/.test(identity.commit) || !hash(identity.runtimeSha256) || !hash(identity.harnessSha256)) throw new Error('Invalid fixed amended attempt or candidate identity.')
     const previous = state.attempts.at(-1)
     const identitySha256 = digest(JSON.stringify(identity))
     const reservedAt = this.now()
     if (!integer(reservedAt) || reservedAt < state.header.createdAt || !previous.result?.endAcknowledged || !integer(previous.closedAt) || previous.closedAt > reservedAt
-      || attempt === this.selected.limits.maxAttempts && (previous.result.outcome !== 'passed' || previous.identitySha256 !== identitySha256 || state.productionAttempts !== this.selected.limits.maxAttempts - 1)) {
+      || state.productionAttempts !== attempt - 1
+      || !this.selected.finalVoiceOnly && attempt === this.selected.limits.maxAttempts && (previous.result.outcome !== 'passed' || previous.identitySha256 !== identitySha256)) {
       throw new Error('Conditional Voice requires passed, acknowledged, closed Text on the unchanged candidate; failures never release the next slot.')
     }
     const row = { type: 'reserved', attempt, name, reservedAt, reservedSeconds: 670, gracefulAt: reservedAt + maxRunSeconds * 1000,

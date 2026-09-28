@@ -22,6 +22,14 @@ export const GOAL_004D_CANARY_INPUTS: readonly string[]
 export function assertGoal004DLiveAuthorized(): void
 export function assertGoal004DNextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[] }): void
 export function assertGoal004DReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown }): void
+export const GOAL_004E_AMENDMENT: Readonly<Record<string, unknown>>
+export const GOAL_004E_FROZEN_FILE: string
+export const GOAL_004E_RUNTIME_SHA256: string
+export const GOAL_004E_SESSION_UPDATE_SHA256: string
+export const GOAL_004E_CANARY_INPUTS: readonly string[]
+export function assertGoal004ELiveAuthorized(): void
+export function assertGoal004ENextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; offline: unknown }): void
+export function assertGoal004EReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown }): void
 export function assertGoal004CNextAttempt(input: {
   campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[];
 }): void

@@ -5,18 +5,22 @@ import { createHash } from 'node:crypto'
 import { basename, join, resolve, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inspectCampaign } from './qa-budget.mjs'
-import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
-import { assertGoal004CAmendedNextAttempt } from './qa-live-authorization.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE,
+  QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE,
+  QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
+import { assertGoal004CAmendedNextAttempt, assertGoal004DNextAttempt } from './qa-live-authorization.mjs'
 import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
 const LABEL = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI'
 const TEXT_LABEL = 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI'
+const CONFIRMED_LABEL = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI'
 const MIXED_LABEL = 'AUTOMATED QA — UI LIVE TEXT / SYNTHETIC VOICE — REAL ASSEMBLYAI'
 const round = value => Number.isFinite(value) ? Math.round(value * 10) / 10 : null
 const count = value => Number.isSafeInteger(value) && value >= 0 ? value : null
 const exists = path => access(path).then(() => true, () => false)
 const iso = value => Number.isSafeInteger(value) ? new Date(value).toISOString() : null
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
+const digest = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value) ? value : null
 const present = path => lstat(path).then(() => true, error => { if (error.code === 'ENOENT') return false; throw error })
 const text = value => {
   if (typeof value !== 'string') return null
@@ -25,7 +29,7 @@ const text = value => {
 }
 const visibleMessage = item => ({
   source: 'Visible application history snapshot; final/interrupted status may be unavailable',
-  speaker: item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), sourceLabel: text(item.sourceLabel),
+  speaker: item.speaker === 'Game event' ? 'Game event' : item.speaker === 'Pip' ? 'Pip' : 'Mission Control', text: text(item.text), sourceLabel: text(item.sourceLabel),
   chapterLabel: text(item.chapterLabel), final: typeof item.final === 'boolean' ? item.final : null,
   interrupted: typeof item.interrupted === 'boolean' ? item.interrupted : null,
   ...(item.historyIndex !== undefined ? { historyIndex: count(item.historyIndex) } : {}),
@@ -41,7 +45,14 @@ const stepProvenance = step => ({
   ...(step.terminal !== undefined ? { terminal: typeof step.terminal === 'boolean' ? step.terminal : null } : {}),
   ...(step.inputSource !== undefined ? { inputSource: text(step.inputSource) } : {}),
   ...(Array.isArray(step.messages) ? { messages: step.messages.map(visibleMessage) } : {}),
+  ...(step.proposal ? { proposal: { label: text(step.proposal.label), status: text(step.proposal.status), proposalId: text(step.proposal.proposalId) } } : {}),
 })
+const physicalSummary = value => value ? {
+  digest: digest(value.digest), commitCount: Array.isArray(value.commits) ? value.commits.length : null,
+  observedAt: iso(value.observedAt),
+  // Only opaque proposal references leave the evaluator; no physical fields or session IDs.
+  commitProposalIds: Array.isArray(value.commits) ? value.commits.map(commit => text(commit.proposalId)) : [],
+} : null
 
 function summarizeBehavior(behavior) {
   const finding = item => ({
@@ -99,7 +110,7 @@ export function approximateVideoAlignment(report) {
 }
 
 export function summarizeAttempt(report, evidence, reservation) {
-  if (![LABEL, TEXT_LABEL].includes(report.label) || evidence.label !== report.label || !Array.isArray(evidence.events)
+  if (![LABEL, TEXT_LABEL, CONFIRMED_LABEL].includes(report.label) || evidence.label !== report.label || !Array.isArray(evidence.events)
     || report.label === TEXT_LABEL && report.mode !== 'text') throw new Error('Only consistently labelled real-provider Text or synthetic Voice QA evidence is accepted.')
   const events = evidence.events
   const endSent = events.find(event => event.type === 'session.end')
@@ -125,7 +136,8 @@ export function summarizeAttempt(report, evidence, reservation) {
   const tools = events.filter(event => event.type === 'tool.call').map(call => {
     const results = Number.isSafeInteger(call.callRef) ? events.filter(event => event.type === 'tool.result' && event.callRef === call.callRef && event.atMs >= call.atMs) : []
     const result = results.length === 1 ? results[0] : undefined
-    return { name: ['observe_room', 'inspect_object', 'interact_object', 'move_to'].includes(call.name) ? call.name : 'other', callRef: count(call.callRef), replyRef: count(call.replyRef), resultReplyRef: count(result?.replyRef), callAtMs: round(call.atMs), resultAtMs: round(result?.atMs), callToResultMs: result ? round(result.atMs - call.atMs) : null, succeeded: typeof result?.isError === 'boolean' ? !result.isError : null, status: !result ? 'missing_result' : result.isError === true ? 'error' : result.isError === false ? 'success' : 'unknown' }
+    const pending = result?.actionStatus === 'awaiting_confirmation';
+    return { name: ['observe_room', 'inspect_object', 'interact_object', 'move_to', 'propose_interaction', 'propose_move', 'get_action_status'].includes(call.name) ? call.name : 'other', callRef: count(call.callRef), replyRef: count(call.replyRef), resultReplyRef: count(result?.replyRef), callAtMs: round(call.atMs), resultAtMs: round(result?.atMs), callToResultMs: result ? round(result.atMs - call.atMs) : null, succeeded: pending ? false : typeof result?.isError === 'boolean' ? !result.isError : null, status: !result ? 'missing_result' : pending ? 'awaiting_confirmation_not_executed' : result.isError === true ? 'error' : result.isError === false ? 'success' : 'unknown', ...(result?.actionStatus ? { actionStatus: text(result.actionStatus), proposalRef: count(result.proposalRef) } : {}) }
   })
   const audio = Object.fromEntries(['input', 'provider', 'rendered', 'postVolume'].map(kind => {
     const counter = evidence.counters?.[kind] ?? {}
@@ -154,6 +166,22 @@ export function summarizeAttempt(report, evidence, reservation) {
       fixture: text(step.fixture), ...stepProvenance(step), failureLayer: text(step.failureLayer), reason: text(step.reason),
     })) } : {}),
     ...(report.behavior ? { behavior: summarizeBehavior(report.behavior) } : {}),
+    ...(Array.isArray(report.confirmations) ? { confirmations: report.confirmations.map(receipt => ({ proposalId: text(receipt.proposalId), label: text(receipt.label), intendedRequest: text(receipt.intendedRequest), status: text(receipt.status),
+      confirmationRequestedAtMs: round(receipt.confirmationRequestedAtMs), confirmedAtMs: round(receipt.confirmedAtMs), source: text(receipt.source) })) } : {}),
+    ...(report.confirmationAudit ? { confirmationAudit: { commits: count(report.confirmationAudit.commits), confirmations: count(report.confirmationAudit.confirmations), everyCommitHasExactConfirmation: report.confirmationAudit.everyCommitHasExactConfirmation === true,
+      everyCommittedConfirmationHasCommit: report.confirmationAudit.everyCommittedConfirmationHasCommit === true, uniqueCommitIds: report.confirmationAudit.uniqueCommitIds === true } } : {}),
+    ...(report.regressionCanary ? { regressionCanary: {
+      status: ['passed', 'failed'].includes(report.regressionCanary.status) ? report.regressionCanary.status : 'unknown',
+      inputs: (report.regressionCanary.inputs ?? []).map(text), informationTurnId: turnIdentity(report.regressionCanary.informationTurnId),
+      noPhysicalCommit: report.regressionCanary.noPhysicalCommit === true, confirmationCount: count(report.regressionCanary.confirmationCount),
+      physical: physicalSummary(report.regressionCanary.physical),
+      ...(report.regressionCanary.explicitLatchRequest ? { explicitLatchRequest: { turnId: turnIdentity(report.regressionCanary.explicitLatchRequest.turnId), text: text(report.regressionCanary.explicitLatchRequest.text) } } : {}),
+      boundary: text(report.regressionCanary.boundary),
+    } } : {}),
+    ...(report.initialPhysicalTruth ? { initialPhysicalTruth: physicalSummary(report.initialPhysicalTruth) } : {}),
+    ...(report.finalPhysicalTruth ? { finalPhysicalTruth: physicalSummary(report.finalPhysicalTruth) } : {}),
+    ...(report.runtimePolicyDelivery ? { runtimePolicyDelivery: { sha256: digest(report.runtimePolicyDelivery.sha256),
+      matchesExpected: report.runtimePolicyDelivery.matchesExpected === true, messageCount: count(report.runtimePolicyDelivery.messageCount) } } : {}),
     visibleHistoryBoundary: 'These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.',
     cleanup: { activeTracks: count(report.cleanup?.activeTracks), activeSources: count(report.cleanup?.activeSources), openApplicationContexts: count(report.cleanup?.openApplicationContexts) },
     ...(Array.isArray(report.lifecycle) ? { lifecycle: report.lifecycle.filter(event => ['end.requested', 'session.end', 'session.ended', 'socket.open', 'socket.close', 'browser.close.requested', 'browser.closed', 'server.close.requested', 'server.closed'].includes(event.type)).map(event => ({
@@ -174,7 +202,7 @@ export function summarizeAttempt(report, evidence, reservation) {
       'Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.',
       'A clean WebSocket close without session.ended does not confirm remote termination.',
     ],
-    boundary: report.label === TEXT_LABEL ? 'Player text was submitted through the normal UI; provider replies and digital output are separate evidence. No ASR, physical microphone, loudspeaker routing, human listening, or enjoyment pass is inferred from Text.' : 'Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.',
+    boundary: report.label === TEXT_LABEL ? 'Player text was submitted through the normal UI; provider replies and digital output are separate evidence. No ASR, physical microphone, loudspeaker routing, human listening, or enjoyment pass is inferred from Text.' : `${report.label === CONFIRMED_LABEL ? 'Synthetic voice plus deliberate UI confirmation; not hands-free gameplay. Game events are application-generated decision receipts, not player speech. ' : ''}Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.`,
   }
 }
 
@@ -242,10 +270,21 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   directory = resolve(directory)
   // Either supplement file means amended accounting must be complete and valid.
   // A partial/corrupt supplement must never silently fall back to the old ledger.
-  const amended = await present(join(directory, QA_AMENDMENT_LEDGER)) || await present(join(directory, QA_AMENDMENT_ALLOWANCE))
-  const state = amended ? inspectAmendedCampaign(directory) : inspectCampaign(directory)
-  output = resolve(output ?? (amended ? 'artifacts/goal-004c/final-acceptance/live' : 'artifacts/goal-004b/live'))
-  if (amended && ['artifacts/goal-004b/live', 'artifacts/goal-004c/live'].some(path => output === resolve(path))) throw new Error('Amended exports must use a new evidence directory; historical compact exports remain unchanged.')
+  let amendment
+  for (const candidate of [
+    { id: QA_CONFIRMED_AMENDMENT_ID, ledger: QA_CONFIRMED_AMENDMENT_LEDGER, allowance: QA_CONFIRMED_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004e/live' },
+    { id: QA_RUNTIME_AMENDMENT_ID, ledger: QA_RUNTIME_AMENDMENT_LEDGER, allowance: QA_RUNTIME_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004d/retest/live' },
+    { id: QA_AMENDMENT_ID, ledger: QA_AMENDMENT_LEDGER, allowance: QA_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004c/final-acceptance/live' },
+  ]) {
+    if (await present(join(directory, candidate.ledger)) || await present(join(directory, candidate.allowance))) { amendment = candidate; break }
+  }
+  const amended = Boolean(amendment)
+  const state = amended ? inspectAmendedCampaign(directory, amendment.id) : inspectCampaign(directory)
+  output = resolve(output ?? amendment?.output ?? 'artifacts/goal-004b/live')
+  const historicalOutputs = ['artifacts/goal-004b/live', 'artifacts/goal-004c/live',
+    ...(amendment?.id !== QA_AMENDMENT_ID ? ['artifacts/goal-004c/final-acceptance/live'] : []),
+    ...(amendment?.id === QA_CONFIRMED_AMENDMENT_ID ? ['artifacts/goal-004d/retest/live'] : [])]
+  if (amended && historicalOutputs.some(path => output === resolve(path))) throw new Error('Amended exports must use a new evidence directory; historical compact exports remain unchanged.')
   if (mux) {
     const location = relative(resolve('.validation'), directory)
     if (!location || location === '..' || location.startsWith(`..${sep}`) || resolve('.validation', location) !== directory) throw new Error('Large processed media must remain within the ignored .validation directory.')
@@ -281,7 +320,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     await writeFile(join(output, `${entry.name}-metrics.json`), `${JSON.stringify(attempt, null, 2)}\n`)
     await writeFile(join(output, `${entry.name}-conversation.md`), conversationMarkdown(attempt))
     attempts.push({ evidenceDirectory: entry.name, mode: attempt.mode, label: attempt.label, runtimeSha256: attempt.runtimeSha256, failure: attempt.failure, completion: attempt.completion, endAcknowledged: attempt.ending.endAcknowledged,
-      ...(amended ? { accountingAttempt: attempt.accountingAttempt, historical: attempt.accountingAttempt === 1, behaviorStatus: attempt.behavior?.status ?? null, materialDefects: attempt.behavior?.materialDefects.length ?? null, cleanup: attempt.cleanup,
+      ...(amended ? { accountingAttempt: attempt.accountingAttempt, historical: attempt.accountingAttempt !== null && attempt.accountingAttempt <= state.historicalAttempts, behaviorStatus: attempt.behavior?.status ?? null, materialDefects: attempt.behavior?.materialDefects.length ?? null, cleanup: attempt.cleanup,
         processCleanup: { browserClosedObserved: report.lifecycle?.some(event => event.type === 'browser.closed' && event.outcome === 'observed') ?? false, serverClosedObserved: report.lifecycle?.some(event => event.type === 'server.closed' && event.outcome === 'observed') ?? false, supervisorClosedAt: iso(reservation?.closedAt) },
       } : {}),
     })
@@ -303,18 +342,22 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt'
   let amendedSequence
   if (amended) {
-    const candidate = reports.find(report => report.reservation?.attempt === 2)?.identity
-    amendedSequence = { mode: state.newAttempts === 0 ? 'text' : 'voice', passed: false,
+    const finalVoice = amendment.id === QA_CONFIRMED_AMENDMENT_ID
+    const candidate = reports.find(report => report.reservation?.attempt === state.historicalAttempts + 1)?.identity
+    amendedSequence = { mode: finalVoice || state.newAttempts !== 0 ? 'voice' : 'text', passed: false,
       reason: remainingAttempts === 0 ? 'The aggregate campaign allowance is exhausted.' : 'No new frozen candidate report is available for a prospective sequencing check.',
       boundary: 'Read-only pure sequencing check against recorded reports and their candidate, not spending authorization or a current-worktree identity check.' }
-    if (remainingAttempts > 0 && candidate) {
+    if (remainingAttempts > 0 && finalVoice) {
+      amendedSequence.reason = 'The existing final Voice slot requires the compiled Goal 004E gate, exact frozen candidate and complete offline release receipt; historical failed Text is not a new pass.'
+    } else if (remainingAttempts > 0 && candidate) {
       try {
-        assertGoal004CAmendedNextAttempt({ campaign: state, mode: amendedSequence.mode, identity: candidate, reports })
+        const guard = amendment.id === QA_RUNTIME_AMENDMENT_ID ? assertGoal004DNextAttempt : assertGoal004CAmendedNextAttempt
+        guard({ campaign: state, mode: amendedSequence.mode, identity: candidate, reports })
         amendedSequence.passed = true
         amendedSequence.reason = 'Recorded Text evidence satisfies the pure sequence guard for this recorded candidate; production admission still requires the unchanged frozen candidate and the aggregate supervisor lock.'
       } catch (error) { amendedSequence.reason = text(error instanceof Error ? error.message : 'The amended sequence guard rejected these reports.') }
     }
-    admissionStatus = remainingAttempts === 0 ? 'exhausted' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
+    admissionStatus = remainingAttempts === 0 ? 'exhausted' : finalVoice ? 'requires_final_voice_frozen_candidate_admission' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
       : amendedSequence.passed ? 'requires_identical_frozen_candidate_voice_admission' : 'conditional_voice_blocked'
   }
   const summary = {
@@ -323,15 +366,15 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     localConnectedSeconds: state.attempts.map(attempt => attempt.result?.connectedSeconds ?? null), endAcknowledgements: state.attempts.map(attempt => attempt.result?.endAcknowledged ?? false),
     nextPermittedAt: iso(nextPermittedAt), admissionStatus, inspectedAt: new Date().toISOString(), ledgerSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
     ...(amended ? {
-      amendmentId: QA_AMENDMENT_ID, historicalAttempts: state.historicalAttempts, newAttempts: state.newAttempts,
+      amendmentId: amendment.id, historicalAttempts: state.historicalAttempts, newAttempts: state.newAttempts,
       historicalReservedSeconds: state.reservedSeconds - state.newReservedSeconds, newReservedSeconds: state.newReservedSeconds,
-      historicalProductionAttempts: 1, newProductionAttempts: state.productionAttempts - 1,
+      historicalProductionAttempts: state.historicalAttempts, newProductionAttempts: state.productionAttempts - state.historicalAttempts,
       remainingReservedCapacitySeconds: state.header.capacitySeconds - state.reservedSeconds,
       maximumAggregatePlanningDollars: state.header.capacitySeconds * state.header.hourlyRate / 3600, approvedAggregatePlanningCeiling: state.header.planningDollars,
       originalCampaignSha256: sha256(await readFile(join(directory, 'campaign.jsonl'))),
       originalAllowanceSha256: sha256(await readFile(join(directory, 'allowance.jsonl'))),
-      amendmentLedgerSha256: sha256(await readFile(join(directory, QA_AMENDMENT_LEDGER))),
-      amendedAllowanceSha256: sha256(await readFile(join(directory, QA_AMENDMENT_ALLOWANCE))),
+      amendmentLedgerSha256: sha256(await readFile(join(directory, amendment.ledger))),
+      amendedAllowanceSha256: sha256(await readFile(join(directory, amendment.allowance))),
       amendedSequence,
     } : {}),
     results: attempts, accountingBoundary: 'Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.',

@@ -25,8 +25,15 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
   if (type === 'tool.call' || type === 'tool.result') {
     event.callRef = reference(value.call_id);
     event.replyRef = reference(value.reply_id);
-    if (['observe_room', 'inspect_object', 'interact_object', 'move_to'].includes(value.name)) event.name = value.name;
+    if (['observe_room', 'inspect_object', 'interact_object', 'move_to', 'propose_interaction', 'propose_move', 'get_action_status'].includes(value.name)) event.name = value.name;
     if (typeof value.is_error === 'boolean') event.isError = value.is_error;
+    if (type === 'tool.result' && direction === 'sent') {
+      let result; try { result = typeof value.result === 'string' ? JSON.parse(value.result) : value.result; } catch { /* Raw payload is never retained. */ }
+      if (result?.proposal && ['awaiting_confirmation', 'committed', 'declined', 'expired', 'invalidated', 'failed'].includes(result.proposal.status)) {
+        event.proposalRef = reference(result.proposal.id);
+        event.actionStatus = result.proposal.status;
+      }
+    }
   }
   if (type === 'reply.started' || type === 'reply.done') {
     event.replyRef = reference(value.reply_id);

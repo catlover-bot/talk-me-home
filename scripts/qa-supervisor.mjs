@@ -4,13 +4,13 @@ import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { randomUUID } from 'node:crypto'
 import { CampaignBudget } from './qa-budget.mjs'
-import { AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID } from './qa-amended-budget.mjs'
+import { AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 const SELF = fileURLToPath(import.meta.url)
 const FIXED_DIRECTORY = fileURLToPath(new URL('../.validation/goal-004c-live', import.meta.url))
 const FIXED_WORKER = fileURLToPath(new URL('./qa-live-browser.mjs', import.meta.url))
-const supervisorMode = amendmentId => amendmentId === QA_RUNTIME_AMENDMENT_ID ? '--supervise-runtime-amendment' : amendmentId === QA_AMENDMENT_ID ? '--supervise-amendment' : '--supervise'
-const watchdogMode = amendmentId => amendmentId === QA_RUNTIME_AMENDMENT_ID ? '--watchdog-runtime-amendment' : amendmentId === QA_AMENDMENT_ID ? '--watchdog-amendment' : '--watchdog'
+const supervisorMode = amendmentId => amendmentId === QA_CONFIRMED_AMENDMENT_ID ? '--supervise-confirmed-amendment' : amendmentId === QA_RUNTIME_AMENDMENT_ID ? '--supervise-runtime-amendment' : amendmentId === QA_AMENDMENT_ID ? '--supervise-amendment' : '--supervise'
+const watchdogMode = amendmentId => amendmentId === QA_CONFIRMED_AMENDMENT_ID ? '--watchdog-confirmed-amendment' : amendmentId === QA_RUNTIME_AMENDMENT_ID ? '--watchdog-runtime-amendment' : amendmentId === QA_AMENDMENT_ID ? '--watchdog-amendment' : '--watchdog'
 const sleep = milliseconds => new Promise(resolveSleep => setTimeout(resolveSleep, milliseconds))
 const safeEnv = source => {
   const env = { ...source }
@@ -64,7 +64,7 @@ export async function runSupervised({ directory, worker, args = [], env = proces
 
 function validateCampaignRoute(directory, worker, amendmentId) {
   if (amendmentId !== undefined) {
-    if (![QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID].includes(amendmentId) || directory !== FIXED_DIRECTORY || worker !== FIXED_WORKER) throw new Error('Only the fixed linked amendment and compiled Live worker may use the aggregate campaign.')
+    if (![QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID].includes(amendmentId) || directory !== FIXED_DIRECTORY || worker !== FIXED_WORKER) throw new Error('Only the fixed linked amendment and compiled Live worker may use the aggregate campaign.')
     inspectAmendedCampaign(directory, amendmentId)
   } else {
     if (directory === FIXED_DIRECTORY) throw new Error('The original Goal 004C runner is disabled; its remaining slot is governed by the fixed aggregate amendment.')
@@ -94,7 +94,7 @@ export function assertSupervisedParent(directory) {
   directory = resolve(directory)
   const amendmentId = process.env.QA_CAMPAIGN_AMENDMENT
   if (directory !== FIXED_DIRECTORY || !process.send || process.env.QA_SUPERVISED_WORKER !== '1'
-    || process.env.QA_CAMPAIGN_DIRECTORY !== directory || ![QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID].includes(amendmentId)) {
+    || process.env.QA_CAMPAIGN_DIRECTORY !== directory || ![QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID].includes(amendmentId)) {
     throw new Error('The Live worker requires its fixed, independently supervised parent.')
   }
   const parent = processIdentity(process.ppid)
@@ -139,7 +139,7 @@ async function supervise(directory, worker, preparationSeconds, args, amendmentI
   if (!Number.isInteger(preparationSeconds) || preparationSeconds < 1 || preparationSeconds > 300) throw new Error('Invalid QA preparation deadline.')
   const budget = amendmentId ? new AmendedCampaignBudget(directory, Date.now, amendmentId) : new CampaignBudget(directory)
   const authorization = amendmentId ? await import('./qa-live-authorization.mjs') : null
-  const reservationGuard = amendmentId === QA_RUNTIME_AMENDMENT_ID ? authorization.assertGoal004DReservationAuthorized : amendmentId ? authorization.assertGoal004CReservationAuthorized : null
+  const reservationGuard = amendmentId === QA_CONFIRMED_AMENDMENT_ID ? authorization.assertGoal004EReservationAuthorized : amendmentId === QA_RUNTIME_AMENDMENT_ID ? authorization.assertGoal004DReservationAuthorized : amendmentId ? authorization.assertGoal004CReservationAuthorized : null
   if (amendmentId && typeof reservationGuard !== 'function') throw new Error('The fixed amendment reservation guard is unavailable.')
   const driver = fork(worker, args, { detached: true, stdio: ['ignore', 'inherit', 'inherit', 'ipc'], env: { ...safeEnv(process.env), QA_SUPERVISED_WORKER: '1', QA_CAMPAIGN_DIRECTORY: directory, ...(amendmentId ? { QA_CAMPAIGN_AMENDMENT: amendmentId } : {}) } })
   const identity = processIdentity(driver.pid)
@@ -259,7 +259,7 @@ async function watch(directory, pid, start, initialDeadline, amendmentId) {
     if (collect().length) signalOwned('SIGKILL')
     for (let count = 0; count < 20 && collect().length; count++) await sleep(100)
     const survivors = collect().length
-    const cleanupFile = amendmentId === QA_RUNTIME_AMENDMENT_ID ? 'amendment-runtime-retest-cleanup.jsonl' : amendmentId === QA_AMENDMENT_ID ? 'amendment-final-acceptance-cleanup.jsonl' : 'cleanup.jsonl'
+    const cleanupFile = amendmentId === QA_CONFIRMED_AMENDMENT_ID ? 'amendment-confirmed-actions-cleanup.jsonl' : amendmentId === QA_RUNTIME_AMENDMENT_ID ? 'amendment-runtime-retest-cleanup.jsonl' : amendmentId === QA_AMENDMENT_ID ? 'amendment-final-acceptance-cleanup.jsonl' : 'cleanup.jsonl'
     const descriptor = openSync(join(directory, cleanupFile), 'a', 0o600)
     try { writeFileSync(descriptor, `${JSON.stringify({ time: Date.now(), driverPid: pid, survivors })}\n`); fsyncSync(descriptor) } finally { closeSync(descriptor) }
     if (process.connected) process.send({ type: 'closed', survivors })
@@ -289,9 +289,11 @@ if (resolve(process.argv[1] ?? '') === SELF) {
     if (mode === '--supervise') await supervise(directory, args[0], Number(args[1]), args.slice(2))
     else if (mode === '--supervise-amendment') await supervise(directory, args[0], Number(args[1]), args.slice(2), QA_AMENDMENT_ID)
     else if (mode === '--supervise-runtime-amendment') await supervise(directory, args[0], Number(args[1]), args.slice(2), QA_RUNTIME_AMENDMENT_ID)
+    else if (mode === '--supervise-confirmed-amendment') await supervise(directory, args[0], Number(args[1]), args.slice(2), QA_CONFIRMED_AMENDMENT_ID)
     else if (mode === '--watchdog') await watch(directory, Number(args[0]), args[1], Number(args[2]))
     else if (mode === '--watchdog-amendment') await watch(directory, Number(args[0]), args[1], Number(args[2]), QA_AMENDMENT_ID)
     else if (mode === '--watchdog-runtime-amendment') await watch(directory, Number(args[0]), args[1], Number(args[2]), QA_RUNTIME_AMENDMENT_ID)
+    else if (mode === '--watchdog-confirmed-amendment') await watch(directory, Number(args[0]), args[1], Number(args[2]), QA_CONFIRMED_AMENDMENT_ID)
     else throw new Error('Use the QA release runner to start the supervisor.')
   } catch { console.error('Bounded QA supervision failed; reservations were preserved.'); process.exitCode = 1 }
 }

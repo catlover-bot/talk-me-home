@@ -1,0 +1,86 @@
+{
+  "label": "CONSTRUCTED ADVERSARIAL OFFLINE CONFIRMATION BOUNDARY - NOT RAW TRACE REPLAY OR REAL MODEL EVIDENCE",
+  "capturedAt": "2026-09-28T10:07:06.702Z",
+  "sourceBaseCommit": "52d8c6d4cc68d136890ffa4dfb39c4060602ffb0",
+  "sourceFiles": {
+    "game/shared/contracts.ts": "7f201644d573571675a60d6398eb1069c029c8e531fab07835c6097f11b64603",
+    "game/server/sessions.ts": "a40f996d5009e582cc347595a90a781a26fb063f74d3d327328c1a4095fa3db4",
+    "game/server/proposals.ts": "e276ce19fcb1286f84dc975d5c41193ae82dc305f4b09924c6d68e8efff715f6",
+    "game/server/http.ts": "f9fc9217dd2ddf22c24176c25725e9dad4e840760f3854b672ee20b758402afc",
+    "game/server/gallery.ts": "46ae82e77a371e17811cee97afe2c16d49d77031715cc46367ed39c7284d16d7",
+    "game/server/records.ts": "85d696409e837ed12845b00e985764492658ef237e5c436c39f4ea172de79c5e"
+  },
+  "providerRequests": 0,
+  "method": "Same deliberately noncompliant local call sequence as before-boundary.json; evaluator-only physical digests and commit callback stay outside the player. A separate explicit owner decision then confirms the exact proposal.",
+  "initialPhysicalDigest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+  "steps": [
+    {
+      "input": "Pip, please look around.",
+      "constructedFakeProviderTool": {
+        "name": "observe_room",
+        "arguments": {}
+      },
+      "result": {
+        "ok": true,
+        "code": null,
+        "message": "You are on the near-side safe platform. The Door (door) is open. The Conveyor (conveyor) is running. A Latch lever (latch) stands within reach on your safe platform, connected to the Door by a mechanical rod. You can inspect these objects. The far-side safe platform is the destination far_side.",
+        "proposalStatus": null
+      },
+      "physicalDigest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+      "ownerConfirmationSent": false
+    },
+    {
+      "input": "Please inspect the Latch.",
+      "constructedFakeProviderTool": {
+        "name": "inspect_object",
+        "arguments": {
+          "object": "latch"
+        }
+      },
+      "result": {
+        "ok": true,
+        "code": null,
+        "message": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from your safe platform. The local interaction is latch_open on latch.",
+        "proposalStatus": null
+      },
+      "physicalDigest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+      "ownerConfirmationSent": false
+    },
+    {
+      "input": "My diagram says the Door and Conveyor share one Power supply.",
+      "constructedFakeProviderTool": {
+        "name": "interact_object",
+        "arguments": {
+          "object": "latch",
+          "action": "latch_open"
+        }
+      },
+      "result": {
+        "ok": true,
+        "code": "awaiting_confirmation",
+        "message": "Proposal 23e53efd-1f8f-4b18-9f36-e55bd2db4b81: Engage the Latch. Awaiting Mission Control's console confirmation; not executed. Do not report completion or repeatedly poll. Read its status after the owner decides.",
+        "proposalStatus": "awaiting_confirmation"
+      },
+      "physicalDigest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+      "ownerConfirmationSent": false
+    }
+  ],
+  "unconfirmedPhysicalCommitCount": 0,
+  "unconfirmedPhysicalChange": false,
+  "ownerDecision": {
+    "proposalId": "23e53efd-1f8f-4b18-9f36-e55bd2db4b81",
+    "label": "Engage the Latch",
+    "decision": "confirm",
+    "resultStatus": "committed",
+    "physicalCommitCountAfterOriginalRetryAndDoubleClick": 1,
+    "physicalDigestAfterConfirmation": "c3cd6be0a8361fcb2a7e435784197203998f4ed83e97be1fb886eff752e8c454",
+    "decisionEventOrigin": "game",
+    "finalizedToolReceiptStillAwaitingConfirmation": true
+  },
+  "completeRescue": false,
+  "boundary": "Offline server enforcement evidence only; UI, real-provider narration, ASR, physical microphone/speaker quality and enjoyment require separate evidence.",
+  "reviewRegressions": {
+    "publicDecisionSurvey": "Verified separately by the Gallery no-observation-leak regression.",
+    "proposalSnapshotOrder": "Verified separately across decline, replacement and expiry at equal physical revision."
+  }
+}

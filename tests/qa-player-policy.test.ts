@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { communicatedEmblem, communicatedEmblemClaim, communicatedPassability, communicatedPassabilityClaim, crossCargoWithRecovery, communicatedAction, communicatedActionClaim, confirmedAction } from '../scripts/qa-player-policy.mjs';
+import { proposalLabelForRequest } from '../scripts/qa-mission-player.mjs';
 
 const visibleMapLabels = ['Ring', 'Fork', 'Sail', 'Leaf', 'Dock'];
 
@@ -192,4 +193,19 @@ test('detailed location claims distinguish fresh ambiguity from questions and fu
   ]) assert.deepEqual(communicatedEmblemClaim(quote, visibleMapLabels), { mentioned: false, value: null }, quote);
   assert.deepEqual(communicatedEmblemClaim('I am at Fork, but the west gate is not open.', visibleMapLabels), { mentioned: true, value: 'fork' });
   assert.deepEqual(communicatedEmblemClaim('Ring.', visibleMapLabels), { mentioned: true, value: 'ring' });
+});
+test('a proposed action is not a completed report and cannot erase an explicit current state', () => {
+  for (const text of ['Proposed: engage the Latch; awaiting confirmation, not executed.', 'The Latch is engaged pending your confirmation.', 'I proposed holding the contact.']) {
+    assert.equal(communicatedActionClaim(text, /contact/.test(text) ? 'contact' : 'latch').value, null);
+  }
+  assert.equal(communicatedActionClaim('The Latch is not engaged. I propose engaging the Latch.', 'latch').value, 'not_done');
+  assert.equal(communicatedActionClaim('I proposed engaging the Latch. The Latch is engaged.', 'latch').value, 'reported_done', 'Raw false-success narration must remain detectable, not silently rewritten.');
+});
+
+test('confirmation matching is limited to the player current explicit action and direction', () => {
+  for (const text of ['Pip, please look around.', 'Please inspect the Latch.', 'My diagram says the Door and Conveyor share one Power supply.', 'Yes, go ahead.', 'Is the Latch engaged now?', 'Please do not engage the Latch.', 'You said "Please engage the Latch."']) assert.equal(proposalLabelForRequest(text), null, text);
+  assert.equal(proposalLabelForRequest('Please engage the Latch.'), 'Engage the Latch');
+  assert.equal(proposalLabelForRequest('Please go through the northwest gate.'), 'Move through the northwest gate');
+  assert.equal(proposalLabelForRequest('Please release the contact.'), 'Release the charging contact');
+  assert.equal(proposalLabelForRequest('Please hold the contact.'), 'Hold the charging contact');
 });
