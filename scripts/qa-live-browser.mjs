@@ -15,9 +15,10 @@ import { assertGoal004ELiveAuthorized, assertGoal004EReservationAuthorized, GOAL
 import { evaluateAcceptanceBehavior } from './qa-acceptance-behavior.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, assertSupervisedParent } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
+import { playerSpeechTexts, readFrozenSpeechFixture, validateFrozenPlayerSpeech } from './qa-live-speech.mjs';
 import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
 import { runRescuePlayer, PHRASES } from './qa-mission-player.mjs';
-import { waitForTurn, submitPlayerTurn } from './qa-turn-pacing.mjs';
+import { waitForTurn, waitBeforePlayerTurn, submitPlayerTurn } from './qa-turn-pacing.mjs';
 import { createLifecycleJournal } from './qa-lifecycle.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
@@ -49,15 +50,7 @@ async function fixture(text) {
   return ensureSpeechFixture({ text, id });
 }
 async function prepareFixtures() {
-  for (const text of [...Object.values(PHRASES), ...Object.values(STRESS_PHRASES)]) await fixture(text);
-  for (const text of ['Please cross to the far side.', 'Please cross to the far side now if the route is clear.', 'Please look around and report the objects you can reach from the platform.']) await fixture(text);
-  for (const direction of ['east', 'west', 'northeast', 'northwest', 'southeast', 'southwest']) {
-    await fixture(`Please inspect the ${direction} gate and tell me whether anything blocks it.`);
-    await fixture(`Please go through the ${direction} gate, then look around and report the emblem where you arrive.`);
-    await fixture(`Please go through the ${direction} gate.`);
-    await fixture(`Is the opening of the ${direction} gate physically clear or blocked?`);
-    await fixture(`Please check the ${direction} gate again and report whether cargo blocks passage.`);
-  }
+  for (const text of [...playerSpeechTexts(), ...Object.values(STRESS_PHRASES)]) await fixture(text);
 }
 async function buildIdentity() {
   const hashes = {};
@@ -70,7 +63,7 @@ async function buildIdentity() {
   }
   await walk('dist');
   const harnessFiles = {};
-  for (const file of ['qa-live-browser.mjs', 'qa-production-observer.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
+  for (const file of ['qa-live-browser.mjs', 'qa-live-speech.mjs', 'qa-production-observer.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
   const fixtureFiles = {};
   for (const file of (await readdir('.validation/goal-004b-media')).filter(name => /^speech-[a-f0-9]{16}\.(?:json|wav)$/.test(name)).sort()) fixtureFiles[file] = createHash('sha256').update(await readFile(join('.validation/goal-004b-media', file))).digest('hex');
   const { sessionConfig } = await import(pathToFileURL(resolve('dist/server/agent/config.js')).href);
@@ -100,6 +93,7 @@ async function worker(scenario, mode) {
   if (scenario !== 'mission' || mode !== 'voice') throw new Error('The final slot permits only mission Voice with UI confirmation.');
   const identity = await buildIdentity();
   await checkNextAttempt(mode, identity);
+  await validateFrozenPlayerSpeech(identity.fixtureFiles);
   // This private parent loader parses dotenv data; it never executes shell content.
   const envFile = parseEnv(await readFile('.env', 'utf8'));
   const key = envFile.ASSEMBLYAI_API_KEY;
@@ -234,10 +228,18 @@ async function worker(scenario, mode) {
           else if (text !== PHRASES.confirmLatch) throw new Error('An explicit Latch operation must follow the passed canary before continuing.');
         }
       }
+      // Keep prior decision acknowledgement outside the next player-turn window.
+      // No speech is queued while its request/reply/tool/playback is unresolved.
+      report.preSubmitWaits ??= [];
+      let preSubmit;
+      try { preSubmit = await waitBeforePlayerTurn(page, { mode, confirmation: report.confirmations?.at(-1), timeoutMs: 40_000 }); }
+      catch (error) { report.preSubmitWaits.push({ beforeTurnId: report.steps.length + 1, ...error.preSubmit }); throw error; }
+      if (stopping) throw new Error('The supervised session deadline ended this attempt.');
+      report.preSubmitWaits.push({ beforeTurnId: report.steps.length + 1, ...preSubmit });
       const before = await audioSnapshot(page); const previous = new Set((await visibleHistory()).map(captionIdentity));
       const newMessages = async () => (await visibleHistory()).filter(item => !previous.has(captionIdentity(item)));
       const step = { turnId: report.steps.length + 1, utterance: text, inputMode: mode, inputSource: mode === 'text' ? 'Normal UI typed submission; not ASR' : 'Offline synthetic fixture through browser microphone capture', startedAtMs: before.elapsedMs, settled: false, terminal };
-      const speech = mode === 'voice' ? await fixture(text) : undefined;
+      const speech = mode === 'voice' ? await readFrozenSpeechFixture(text, identity.fixtureFiles) : undefined;
       await submitPlayerTurn(page, { mode, text, fixture: speech });
       let pacing;
       // The final return first produces a proposal; settle it before UI confirmation.
@@ -406,7 +408,7 @@ if (process.exitCode) {
 } else if (args.includes('--inspect')) {
   const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
-  await prepareFixtures();
+  if (!args.includes('--live')) await prepareFixtures();
   if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 004E final Voice test only; aggregate sequencing gates apply.', campaignLimits: GOAL_004E_AMENDMENT }));
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];

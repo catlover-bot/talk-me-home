@@ -11,7 +11,7 @@ export function turnCycleStatus(snapshot, { afterMs = -1, mode = 'voice', requir
   if (mode === 'voice' && fixture) {
     if (snapshot.activeSources || !events.some(event => event.type === 'synthetic.speech.drained' && event.id === fixture.id && event.atMs >= fixture.atMs)) return pending('input_waveform_not_drained');
   }
-  const user = mode === 'text' ? last('conversation.message') : last('transcript.user');
+  const user = mode === 'text' ? events.findLast(event => event.type === 'conversation.message' && event.role === 'human') : last('transcript.user');
   if (afterMs >= 0 && !user) return pending('input_not_observed');
   const started = last('input.speech.started');
   if (started && (!last('input.speech.stopped') || last('input.speech.stopped').atMs < started.atMs)) return pending('asr_turn_open');
@@ -57,6 +57,56 @@ export async function waitForTurn(page, options = {}) {
     await new Promise(resolve => setTimeout(resolve, 100));
   } while (performance.now() < deadline);
   throw new Error(`QA turn stalled: ${status.reason}`);
+}
+
+/** Read-only scheduling before the next user input. */
+export function preSubmitStatus(snapshot, { mode = 'voice', confirmation } = {}) {
+  if (snapshot.events.some(event => event.type === 'session.error')) return { settled: false, reason: 'provider_error', fatal: true };
+  if (snapshot.events.some(event => ['session.end', 'session.ended', 'socket.close'].includes(event.type))) return { settled: false, reason: 'session_ended', fatal: true };
+  const status = turnCycleStatus(snapshot, { mode, requireReply: false });
+  if (!status.settled) return status;
+  const result = snapshot.events.findLast(event => event.type === 'tool.result');
+  if (result) {
+    const final = snapshot.events.findLast(event => event.type === 'transcript.agent' && event.final && !event.interrupted && event.atMs > result.atMs);
+    const done = final && snapshot.events.findLast(event => event.type === 'reply.done' && event.atMs >= final.atMs && !['interrupted', 'cancelled', 'failed'].includes(event.status) && (final.reference === undefined || event.replyRef === undefined || final.reference === event.replyRef));
+    if (!done) return { settled: false, reason: 'tool_continuation_pending' };
+  }
+  const acknowledgements = snapshot.events.filter(event => event.type === 'reply.create' && event.purpose === 'decision_acknowledgement');
+  const acknowledgement = acknowledgements.at(-1);
+  let cancelled = false; let expired = false;
+  if (acknowledgement) {
+    const events = snapshot.events.filter(event => event.atMs > acknowledgement.atMs);
+    const started = events.findLast(event => event.type === 'reply.started');
+    if (!started) return { settled: false, reason: 'acknowledgement_response_pending' };
+    const done = events.findLast(event => event.type === 'reply.done' && event.atMs >= started.atMs && event.replyRef !== undefined && event.replyRef === started.replyRef);
+    cancelled = Boolean(done && ['cancelled', 'interrupted'].includes(done.status));
+    if (done?.status === 'failed') return { settled: false, reason: 'acknowledgement_failed', fatal: true };
+    // A sent request is not a completed reply. This also includes subsequent
+    // tool continuations and actual playback, without inventing provider ACKs.
+    const response = turnCycleStatus({ ...snapshot, events }, { mode, requireReply: !cancelled });
+    if (!response.settled) return response;
+  }
+  if (confirmation) {
+    const receipt = snapshot.events.findLast(event => event.type === 'conversation.message' && event.purpose === 'decision_receipt' && event.atMs >= confirmation.confirmationRequestedAtMs);
+    const requested = acknowledgements.some(event => event.atMs >= confirmation.confirmationRequestedAtMs && (!receipt || event.proposalRef === receipt.proposalRef));
+    if (!requested && snapshot.elapsedMs < confirmation.confirmedAtMs + 4000) return { settled: false, reason: 'acknowledgement_opportunity_pending' };
+    expired = !requested;
+  }
+  return { ...status, reason: expired ? 'acknowledgement_opportunity_expired' : acknowledgement ? cancelled ? 'acknowledgement_cancelled_and_drained' : 'acknowledgement_and_playback_drained' : status.reason };
+}
+
+export async function waitBeforePlayerTurn(page, { timeoutMs = 40_000, ...options } = {}) {
+  const deadline = performance.now() + timeoutMs;
+  let status; let startedAtMs; let endedAtMs;
+  const observation = () => ({ ...status, startedAtMs, endedAtMs, waitedMs: endedAtMs - startedAtMs });
+  do {
+    const snapshot = await audioSnapshot(page); startedAtMs ??= snapshot.elapsedMs; endedAtMs = snapshot.elapsedMs;
+    status = preSubmitStatus(snapshot, options);
+    if (status.fatal) throw Object.assign(new Error(`QA pre-submit stopped: ${status.reason}`), { preSubmit: observation() });
+    if (status.settled) return observation();
+    await new Promise(resolve => setTimeout(resolve, 100));
+  } while (performance.now() < deadline);
+  throw Object.assign(new Error(`QA pre-submit stalled: ${status.reason}`), { preSubmit: observation() });
 }
 
 /** The exact UI input path shared by offline replay and the future gated player. */

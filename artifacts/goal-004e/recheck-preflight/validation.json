@@ -1,0 +1,150 @@
+{
+  "label": "UNFUNDED OFFLINE RECHECK HARNESS PREFLIGHT - NO SPENDING AUTHORIZATION",
+  "status": "UNFUNDED_PREFLIGHT_PASS",
+  "checkedAt": "2026-09-28T14:59:49.852Z",
+  "baseCommit": "d094ba654895a300d97b5741262ce90353a80ef6",
+  "worktreeDirty": true,
+  "scope": "Only finite speech preparation/read-only lookup and pre-submit ACK pacing. This is focused preflight, not another full-suite or Live pass.",
+  "before": "artifacts/goal-004e/recheck-preflight/before.json",
+  "checks": [
+    {
+      "label": "focused unit tests",
+      "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test tests/qa-live-preflight.test.ts tests/qa-turn-pacing.test.ts tests/qa-audio.test.ts",
+      "passed": 22,
+      "failed": 0,
+      "exitCode": 0,
+      "raw": ".validation/goal-004e-recheck-preflight-after.log"
+    },
+    {
+      "label": "compiled injected-browser pacing",
+      "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 node node_modules/@playwright/test/cli.js test tests/e2e/qa-player.spec.ts --project=chromium-1440 --workers=1 --output=.validation/goal-004e-recheck-preflight-browser",
+      "passed": 3,
+      "failed": 0,
+      "exitCode": 0,
+      "elapsedSeconds": 12.2,
+      "output": ".validation/goal-004e-recheck-preflight-browser",
+      "scope": "Actual unchanged compiled app/worklet and normal UI confirmation. Token endpoint and WebSocket peer are injected. Next microphone input is an explicitly labelled local tone, not ASR evidence."
+    },
+    {
+      "label": "typecheck",
+      "command": "GAME_DISABLE_LIVE=1 npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "label": "diff whitespace",
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "harnessFiles": {
+    "qa-live-browser.mjs": "f44c55c55066310bd02cd1bbfc56341cf5854ee5e067a9b20fbc9f54c1fd9eaf",
+    "qa-live-speech.mjs": "2b906060687c52d2516d873685308ce8c675fbd7215e61d5fa8be69ec4c289e8",
+    "qa-production-observer.mjs": "909b8c48102d7f0f8214fa2c6dd4cd362c87de4d622a5e5aa6fdfa9c48cda548",
+    "qa-player-policy.mjs": "a8304c1863c4d4da010938b487c29b13bda13611f233a42b973b8c40ea338aff",
+    "qa-player-memory.mjs": "67e81bc6acecdd0193af11539c7835495b99e5d26c1603c9a770c87a8cbdf3f6",
+    "qa-mission-player.mjs": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1",
+    "qa-turn-pacing.mjs": "ceac25abf4a42b84c21688eb05c498261da38a4eb2901763fe7eb472ffd81c7c",
+    "qa-browser-instrumentation.mjs": "04fc636d3e25e8403cdbf989d06f87ee93be977da62a98480c93bc05fa6fc38a",
+    "qa-lifecycle.mjs": "77c865e249be707c5a27de9cfec75e8ad45e97dc34fbaf77f6a2e6d3a532e7ce",
+    "qa-live-authorization.mjs": "357adf01125aeacababa03486338fcb544cd9f2fde24f79cb2cbb3764531cc12",
+    "qa-budget.mjs": "3a90e4b3e51c5a490f323adacca71fc618020c2d82a2c1990bc66c91eb6db706",
+    "qa-supervisor.mjs": "18cf2c527e6f98f983fb4bf3a548d7d88a7d6233a0a1d95794c44c9b16de701a",
+    "qa-speech-fixtures.mjs": "e42268b22dd0a64018129fcbecb81fa6375d7b0c1243d72e2cc82ff176ca2ef7",
+    "qa-evidence.mjs": "904367134a18b34ae9a87e171910c139a50e7b8ba8289f119b4ded09ab20182d",
+    "qa-amended-budget.mjs": "722957475f2950e26bac3eb1df4142197db675a8afeb51639df5a38d7f6f1884",
+    "qa-acceptance-behavior.mjs": "f441c1c60ad43d7d35560786054c9af096671de9a5a649a84b19d18d6b7205e9"
+  },
+  "harnessSha256": "46e467d5d1321f9d6d6d775010c10ad1916b5acbd9a2b94e4d33df8945060827",
+  "tests": [
+    {
+      "path": "tests/qa-live-preflight.test.ts",
+      "sha256": "c057bec8a372ea542431a1ea97ba03859ea2a617ac9a130990137bc20ee1e732"
+    },
+    {
+      "path": "tests/qa-turn-pacing.test.ts",
+      "sha256": "2162983faf10eecd411c970f742e25db985f016cdfbf6f2d81effc1d5ebac6e0"
+    },
+    {
+      "path": "tests/qa-audio.test.ts",
+      "sha256": "27547fa000ed7d86e505bfcab2dba98e1f313b3abd1606b7c75624b572ed1cdc"
+    },
+    {
+      "path": "tests/e2e/qa-player.spec.ts",
+      "sha256": "b75222fb371041b10ac31b729890c2da79a20e73627166e9c4812be2f1ef1479"
+    }
+  ],
+  "runtime": {
+    "sourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+    "receipt": "artifacts/goal-004e/follow-up/candidate.json",
+    "filesCompared": 22,
+    "allUnchanged": true,
+    "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+    "applicationSourceUnchanged": true,
+    "preservedPlayerSources": [
+      {
+        "path": "scripts/qa-mission-player.mjs",
+        "sha256": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1",
+        "unchanged": true
+      },
+      {
+        "path": "scripts/qa-player-policy.mjs",
+        "sha256": "a8304c1863c4d4da010938b487c29b13bda13611f233a42b973b8c40ea338aff",
+        "unchanged": true
+      },
+      {
+        "path": "scripts/qa-player-memory.mjs",
+        "sha256": "67e81bc6acecdd0193af11539c7835495b99e5d26c1603c9a770c87a8cbdf3f6",
+        "unchanged": true
+      }
+    ]
+  },
+  "speech": {
+    "receipt": "artifacts/goal-004e/recheck-preflight/speech-preparation.json",
+    "catalogTexts": 303,
+    "newFixtures": 251,
+    "newFiles": 753,
+    "historicalFiles": 244,
+    "historicalFilesUnchanged": true,
+    "catalogSha256": "6646737352a9b6159ade32013fc4f6b37d27c716e24b9aea57b0eddf80a51e42",
+    "manifestSha256": "cca6cf87e16f776684046d0d27a977f1105b9be6998adbac1fcccc23adf8ab03",
+    "validation": "Every metadata and WAV hash checked read-only; no synthesis on worker/--live paths, no old speech manifest or freeze overwritten."
+  },
+  "pacing": {
+    "maximumWaitMs": 40000,
+    "undispatchedOpportunityMs": 4000,
+    "clock": "Browser elapsed clock, bound from observed confirmed receipt, never reset by polling/synthesis.",
+    "tested": [
+      "ACK request with no reply.started and late old reply.done stays pending",
+      "Own correlated cancelled/interrupted reply may drain without a final transcript",
+      "Tool result requires normal post-result continuation, with or without ACK",
+      "Actual playback must drain before next synthetic input",
+      "Missing ACK expires once; an older ACK cannot conceal newer expiry",
+      "System receipt never counts as typed user input",
+      "Provider failure stops before submission",
+      "Pre-submit timestamps/history stay separate from the new player turn"
+    ]
+  },
+  "cleanup": {
+    "ownedBrowserAndServerClosed": true,
+    "ownedSpeechPreparationExitCode": 0,
+    "port5173Listening": false,
+    "unrelatedProcessesKilled": false
+  },
+  "authorization": {
+    "newGrantAccepted": false,
+    "newAllowanceCreated": false,
+    "newReservation": false,
+    "realTokenRequests": 0,
+    "realProviderConnections": 0,
+    "providerCalls": 0,
+    "freezeWrites": 0,
+    "boundary": "Attachment presence is not approval. This task used GAME_DISABLE_LIVE=1 only."
+  },
+  "limitations": [
+    "Constructed peer/tone tests do not prove real ASR, model comprehension, physical speech/audio or Voice Rescue.",
+    "The existing 450 ms quiet window does not guarantee against arbitrarily late provider events.",
+    "Observed request/reply metadata is not a provider context-ingestion ACK.",
+    "Prior full-suite/failure/media/accounting evidence remains unchanged; separately accepted execution requires its own activation freeze/admission."
+  ],
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

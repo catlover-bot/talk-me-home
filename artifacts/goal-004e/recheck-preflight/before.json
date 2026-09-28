@@ -1,0 +1,14 @@
+{
+  "label": "UNFUNDED OFFLINE HARNESS PREFLIGHT - CONSTRUCTED INPUTS",
+  "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test tests/qa-live-preflight.test.ts tests/qa-turn-pacing.test.ts",
+  "raw": ".validation/goal-004e-recheck-preflight-before.log",
+  "expectedFailures": [
+    "Delivered recovery speech absent from existing preparation catalog",
+    "Sent confirmation ACK request with no new reply boundary incorrectly accepted"
+  ],
+  "passed": 6,
+  "failed": 2,
+  "exitCode": 1,
+  "providerRequests": 0,
+  "allowanceMutations": 0
+}

@@ -1,0 +1,18 @@
+{
+  "label": "OFFLINE RECHECK PRESERVATION AUDIT",
+  "checkedAt": "2026-09-28T15:00:49.480250+00:00",
+  "deliveredHead": "d094ba654895a300d97b5741262ce90353a80ef6",
+  "applicationSourceFreeze": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "preservedBaselineContents": 467,
+  "compiledFilesVerified": 22,
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "applicationPromptConfigurationSharedPlayerEvaluatorAccountingUnchanged": true,
+  "mediaOutputAndRecipeHashesVerified": true,
+  "accountingFiles": {
+    ".validation/goal-004c-live/amendment-confirmed-actions.jsonl": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+    ".validation/goal-004c-live/amendment-confirmed-actions-allowance.jsonl": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb"
+  },
+  "newTokenRequests": 0,
+  "newProviderConnections": 0,
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

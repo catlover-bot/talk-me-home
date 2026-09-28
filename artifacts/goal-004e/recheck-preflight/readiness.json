@@ -1,0 +1,87 @@
+{
+  "label": "DELIVERED-CANDIDATE RECHECK PREFLIGHT - NO NEW PROVIDER USE",
+  "checkedAt": "2026-09-28T14:44:00Z",
+  "requestSha256": "3de81cdd9d54b9e5cf7c300c7e530fab0d2d236973146a12645b13cc8ac6d656",
+  "deliveredHead": "d094ba654895a300d97b5741262ce90353a80ef6",
+  "applicationSourceFreeze": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "sessionUpdateSha256": "2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1",
+  "deliveredCi": {
+    "url": "https://github.com/catlover-bot/talk-me-home/actions/runs/36435823074",
+    "headSha": "d094ba654895a300d97b5741262ce90353a80ef6",
+    "conclusion": "success",
+    "currentRemoteStateInspected": true
+  },
+  "existingValidation": {
+    "receipt": "artifacts/goal-004e/follow-up/offline-validation.json",
+    "sourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+    "unitTests": 358,
+    "browserCases": 124,
+    "boundary": "Existing completed results, with current compiled/source hashes verified. No unchanged full suite was rerun or relabelled as a new activation commit."
+  },
+  "offlinePreflight": {
+    "status": "UNFUNDED_PREFLIGHT_PASS",
+    "receipt": "artifacts/goal-004e/recheck-preflight/validation.json",
+    "focusedUnitChecks": 22,
+    "compiledInjectedBrowserCases": 3,
+    "speechCatalogTexts": 303,
+    "priorSpeechFilesPreserved": 244,
+    "activationFreezeWritten": false,
+    "scope": "QA preparation only; no grant or accounting change. The browser next-input waveform is a constructed tone, separate from the local speech catalog."
+  },
+  "proposedAdditionalAttempt": {
+    "status": "AWAITING_EXPLICIT_OWNER_ACCEPTANCE_AND_CREDIT_CONFIRMATION",
+    "reason": "The supplied instruction explicitly says presence in an attachment is not authorization. An asynchronous question requests explicit acceptance and confirmation of sufficient existing balance; no reply is assumed.",
+    "attempts": 1,
+    "mode": "synthetic_voice_plus_ui_confirmation",
+    "reservationSeconds": 670,
+    "maxSessionSeconds": 600,
+    "maxNewDollars": 0.84,
+    "hourlyRate": 4.5,
+    "estimatedNewDollars": 0.8375,
+    "proposedLinkedAttempts": 5,
+    "proposedLinkedSeconds": 3350,
+    "proposedLinkedEstimateDollars": 4.1875,
+    "retry": false,
+    "existingBalanceOnly": true,
+    "fundedAllowanceCreated": false,
+    "accountingAmendmentCreated": false
+  },
+  "pricing": {
+    "officialSources": [
+      "https://www.assemblyai.com/pricing",
+      "https://www.assemblyai.com/docs/billing-and-pricing",
+      "https://www.assemblyai.com/docs/account-management"
+    ],
+    "configuration": "Unchanged managed default stack, anna, and local function tools; no Gateway/custom LLM, HTTP-paid tool, stored agent or telephony.",
+    "additionalChargeInference": "No separately billed integration is configured; additional charge inferred as zero from the documented managed stack.",
+    "credit": "Unverified. No authenticated Billing session or documented account-balance API is available to this task.",
+    "ending": "Idle connected time is billed. Preserve explicit session.end and independently observed session.ended; socket closure is not ending acknowledgement."
+  },
+  "existingAccounting": {
+    "attempts": 4,
+    "reservedSeconds": 2680,
+    "planningDollars": 3.35,
+    "remainingAttempts": 0,
+    "ledgerSha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+    "allowanceSha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb",
+    "fifthAmendmentFound": false,
+    "historicalResults": "Three failed Text attempts and one failed synthetic Voice attempt remain consumed; ending ACK and cleanup are distinct retained outcomes."
+  },
+  "localMedia": {
+    "receipt": "submission/local-deliverables/provenance.json",
+    "outputHashesMatch": true,
+    "nativeSlideRenderHashesMatch": true,
+    "historicalMediaFilesUnchanged": 6,
+    "slides": 6,
+    "editableTextShapes": 71,
+    "videoSeconds": 166.788021,
+    "videoBytes": 4526386,
+    "video": "H.264, 1280x720; AAC, 48000 Hz, stereo",
+    "audioCoverage": "Original recorded speech belongs only to the historical excerpt at edited 29.0-73.6 seconds, with pauses. Titles, transitions, Practice and ending are silent. The AAC stream is not narration throughout.",
+    "modeBoundary": "Retained failed real synthetic Voice on bb6dfd2, followed by separately labelled deterministic Practice on fcbd513. No real full-mission or human-play pass is claimed."
+  },
+  "newTokenRequests": 0,
+  "newProviderConnections": 0,
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

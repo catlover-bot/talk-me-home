@@ -37,7 +37,7 @@ test('queued playback, interrupted finals, and newly arriving late events preven
 });
 
 test('UI text input needs its new reply but no microphone or fabricated ASR final', () => {
-  const events = [event(100, 'conversation.message', { direction: 'sent' }), event(110, 'reply.create'), event(200, 'reply.started', { replyRef: 1 }), event(300, 'transcript.agent', { final: true, reference: 1 }), event(320, 'reply.done', { replyRef: 1 })];
+  const events = [event(100, 'conversation.message', { direction: 'sent', role: 'human' }), event(110, 'reply.create'), event(200, 'reply.started', { replyRef: 1 }), event(300, 'transcript.agent', { final: true, reference: 1 }), event(320, 'reply.done', { replyRef: 1 })];
   assert.equal(turnCycleStatus(snapshot(events, { activeTracks: 0 }), { mode: 'text', afterMs: 0 }).settled, true);
   assert.equal(turnCycleStatus(snapshot(events, { activeTracks: 0 }), { mode: 'voice', afterMs: 0 }).reason, 'input_not_observed');
 });
@@ -49,7 +49,7 @@ test('legitimate wait needs drained recognized input, but no invented reply requ
 });
 
 test('canonical fc call completion and late call settle only after actual delivery and fresh continuation', () => {
-  const events = [event(100, 'conversation.message'), event(200, 'reply.started', { replyRef: 1 }), event(300, 'reply.done', { replyRef: 2, callRef: 3, status: 'completed' }), event(310, 'tool.call', { callRef: 3 })];
+  const events = [event(100, 'conversation.message', { role: 'human' }), event(200, 'reply.started', { replyRef: 1 }), event(300, 'reply.done', { replyRef: 2, callRef: 3, status: 'completed' }), event(310, 'tool.call', { callRef: 3 })];
   assert.equal(turnCycleStatus(snapshot(events), { afterMs: 0, mode: 'text' }).reason, 'tool_result_pending');
   events.push(event(350, 'tool.result', { callRef: 3 }), event(400, 'reply.started', { replyRef: 4 }), event(450, 'transcript.agent', { reference: 4, final: true }), event(460, 'reply.done', { replyRef: 4, status: 'completed' }));
   assert.equal(turnCycleStatus(snapshot(events), { afterMs: 0, mode: 'text' }).settled, true);

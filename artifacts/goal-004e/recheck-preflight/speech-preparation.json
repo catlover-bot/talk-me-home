@@ -1,0 +1,19 @@
+{
+  "label": "UNFUNDED OFFLINE LOCAL SPEECH PREPARATION",
+  "catalogTexts": 303,
+  "catalogSha256": "6646737352a9b6159ade32013fc4f6b37d27c716e24b9aea57b0eddf80a51e42",
+  "newFixtures": 251,
+  "newFiles": 753,
+  "historicalFiles": 244,
+  "historicalFilesUnchanged": true,
+  "afterFiles": 997,
+  "manifestSha256": "cca6cf87e16f776684046d0d27a977f1105b9be6998adbac1fcccc23adf8ab03",
+  "beforeManifest": ".validation/goal-004e-recheck-fixtures-before.json",
+  "afterManifest": ".validation/goal-004e-recheck-fixtures.json",
+  "readOnlyValidation": "Every catalog metadata+WAV read and checked against the completed manifest; no files created during validation.",
+  "elapsedSeconds": 132.895,
+  "providerRequests": 0,
+  "allowanceMutations": 0,
+  "freezeWrites": 0,
+  "source": "Existing Windows System.Speech installed generic voice through ensureSpeechFixture; no paid or network synthesizer."
+}

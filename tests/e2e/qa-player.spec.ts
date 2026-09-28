@@ -2,8 +2,9 @@ import { test, expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { sessionConfig } from '../../game/agent/config';
 import { audioSnapshot, installAudioInstrumentation, queueSpeech, cleanupAudioInstrumentation } from '../../scripts/qa-browser-instrumentation.mjs';
-import { submitPlayerTurn, waitForTurn, turnCycleStatus } from '../../scripts/qa-turn-pacing.mjs';
+import { submitPlayerTurn, waitBeforePlayerTurn, waitForTurn, turnCycleStatus } from '../../scripts/qa-turn-pacing.mjs';
 import { encodePcmWav } from '../../scripts/qa-speech-fixtures.mjs';
+import { confirmVisibleProposal } from '../../scripts/qa-mission-player.mjs';
 
 async function offlinePeer(page: Page, mode: 'text' | 'voice') {
   let peer: WebSocketRoute; let tokens = 0; const typed: string[] = [];
@@ -96,4 +97,45 @@ test('shared voice player drains the actual capture stream and rejects overlap w
   expect((await audioSnapshot(page)).events.find(event => event.type === 'synthetic.speech.queued' && event.id === 'next-tone')!.atMs).toBeGreaterThan(nextBefore);
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
   await cleanupAudioInstrumentation(page);
+});
+
+test('real QA pre-submit helper waits for the compiled confirmation ACK and worklet drain before the next synthetic input', async ({ page }, info) => {
+  expect(process.env.GAME_DISABLE_LIVE).toBe('1');
+  const peer = await offlinePeer(page, 'voice');
+  try {
+    peer.send({ type: 'tool.call', call_id: 'offline-latch-proposal', name: 'propose_interaction', arguments: { object: 'latch', action: 'latch_open' } });
+    peer.send({ type: 'reply.done', reply_id: 'fc-offline-latch-proposal', status: 'completed' });
+    await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'awaiting_confirmation');
+    audibleReply(peer.send, 'proposal-explanation', 'Please confirm the proposed Latch action.', 0.1);
+    await waitForTurn(page, { mode: 'voice', timeoutMs: 5000 });
+    const confirmation = await confirmVisibleProposal(page, 'Engage the Latch', 'Please engage the Latch.');
+    let ready = false;
+    const waiting = waitBeforePlayerTurn(page, { mode: 'voice', confirmation, timeoutMs: 5000 }).then(result => { ready = true; return result; });
+    await expect.poll(async () => (await audioSnapshot(page)).events.some(event => event.purpose === 'decision_acknowledgement')).toBe(true);
+    expect(ready).toBe(false);
+    // A late completion from the earlier reply must not satisfy the new request.
+    peer.send({ type: 'reply.done', reply_id: 'proposal-explanation', status: 'completed' });
+    expect((await audioSnapshot(page)).events.filter(event => event.type === 'synthetic.speech.queued')).toHaveLength(0);
+    audibleReply(peer.send, 'actual-confirmation-ack', 'The confirmed Latch action is complete.', 1);
+    await expect.poll(async () => (await audioSnapshot(page)).playbackPending).toBe(true);
+    expect(ready).toBe(false);
+    const waited = await waiting;
+    expect(waited.reason).toBe('acknowledgement_and_playback_drained');
+    const before = await audioSnapshot(page);
+    expect(before.playbackPending).toBe(false);
+    expect(before.events.filter(event => event.purpose === 'decision_acknowledgement')).toHaveLength(1);
+    const ackFinal = before.events.find(event => event.type === 'transcript.agent' && event.text === 'The confirmed Latch action is complete.')!;
+    expect(ackFinal.atMs).toBeLessThan(before.elapsedMs);
+    const samples = new Int16Array(24_000); for (let i = 4320; i < 16_000; i++) samples[i] = Math.round(Math.sin(i / 24) * 7000);
+    const path = info.outputPath('offline-next-input.wav'); await writeFile(path, encodePcmWav(samples));
+    await submitPlayerTurn(page, { mode: 'voice', text: 'Constructed offline input tone', fixture: { path, id: 'after-confirmation-ack' } });
+    const after = await audioSnapshot(page);
+    const queued = after.events.find(event => event.type === 'synthetic.speech.queued')!;
+    expect(queued.atMs).toBeGreaterThan(before.elapsedMs);
+    expect(after.events.filter(event => event.type === 'transcript.agent' && event.atMs > before.elapsedMs)).toHaveLength(0);
+  } finally {
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+    await expect.poll(async () => (await audioSnapshot(page)).events.some(event => event.type === 'session.ended')).toBe(true);
+    await cleanupAudioInstrumentation(page);
+  }
 });

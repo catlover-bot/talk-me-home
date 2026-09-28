@@ -43,8 +43,18 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
     if (['completed', 'interrupted', 'failed', 'cancelled'].includes(value.status)) event.status = value.status;
   }
   if (type === 'session.error') event.failed = true;
+  if (type === 'reply.create' && direction === 'sent' && typeof value.instructions === 'string') {
+    const proposal = value.instructions.match(/^Briefly acknowledge only the verified result for proposal (\S+) in one short sentence\./)?.[1];
+    if (proposal) { event.purpose = 'decision_acknowledgement'; event.proposalRef = reference(proposal); }
+  }
   // Scheduling records that typed input was sent, never arbitrary recap content.
   if (type === 'conversation.message') event.role = value.role === 'user' ? 'human' : 'other';
+  if (type === 'conversation.message' && direction === 'sent' && value.role === 'system' && typeof value.content === 'string' && value.content.startsWith('Verified game decision receipt.')) {
+    try {
+      const receipt = JSON.parse(value.content.slice(value.content.indexOf('\n') + 1));
+      if (typeof receipt?.proposal?.id === 'string') { event.purpose = 'decision_receipt'; event.proposalRef = reference(receipt.proposal.id); }
+    } catch { /* Retain neither the raw receipt nor malformed content. */ }
+  }
   if (type === 'session.ended' && Number.isFinite(value.session_duration_seconds) && value.session_duration_seconds >= 0 && value.session_duration_seconds < 3600) event.durationSeconds = value.session_duration_seconds;
   return event;
 }
