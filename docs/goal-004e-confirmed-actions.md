@@ -45,6 +45,8 @@ The shared QA player matches one exact visible proposal label to its current exp
 
 Targeted boundary, ownership, idempotency, ordering, private-survey, client, evidence and financial tests passed during implementation. The final clean execution candidate passed the complete existing release suite: **342 unit tests, 100 browser cases**, typecheck, production build, whitespace and fresh-browser production smoke. It used Node 24.20.0 and sandboxed Linux Chromium 153.0.8010.12; this is not a Windows physical-device measurement. The [offline receipt](../artifacts/goal-004e/offline-validation.json) records the exact candidate, checks and sizes. Final pushed-head CI is checked separately and linked in the delivery report.
 
+The [first delivery-head CI run](https://github.com/catlover-bot/talk-me-home/actions/runs/36410332537), at `d628a618c143559896b5e1b855f64ebdb9d0ba86`, passed typecheck, unit tests and production build, then reached the existing 210-second browser-suite limit with 90 passing cases and 10 not run. No individual case failed. The CI workflow now runs the two existing viewport projects in separate matrix jobs. All 100 cases, individual and global deadlines, zero retries, assertions and offline provider policy remain unchanged. This CI scheduling correction does not alter the shipped runtime, frozen real-test harness or failed real result.
+
 ### Pre-token preparation failure
 
 The first clean candidate `fae42ae9d9a12e29a3fe9895d1e8f28a09063d0f` passed the full existing release suite: 341 unit tests and 98 browser cases. Its supervised launcher then stopped during local audio-instrumentation setup because that helper did not allow the new explicit evidence label. This was a harness defect before any token request, WebSocket or reservation. The original report, silent local browser video and frozen manifest are preserved; the aggregate ledger still contains exactly three consumed attempts / 2,010 seconds, and the production allowance still contains the same three reservations. No failed request was refunded or removed.
@@ -53,7 +55,7 @@ The narrow correction permits the exact synthetic-voice-plus-confirmation label 
 
 ## Final frozen execution and observed result
 
-Implementation commits are `73250f5` (server/client boundary), `fae42ae` (QA, contract and final-slot guards), and `bb6dfd2` (pre-token evidence-label correction). The actual execution candidate is **`bb6dfd2181503415a14c440c52dd762db88f5e3c`**. Its [manifest](../artifacts/goal-004e/candidate.json) pins all 22 compiled files, 15 harness files, 150 fixture files and the browser binary. Later delivery changes contain evidence and documentation only.
+Implementation commits are `73250f5` (server/client boundary), `fae42ae` (QA, contract and final-slot guards), and `bb6dfd2` (pre-token evidence-label correction). The actual execution candidate is **`bb6dfd2181503415a14c440c52dd762db88f5e3c`**. Its [manifest](../artifacts/goal-004e/candidate.json) pins all 22 compiled files, 15 harness files, 150 fixture files and the browser binary. Later delivery changes contain evidence, documentation and CI-only viewport scheduling.
 
 | Identity | SHA-256 |
 | --- | --- |

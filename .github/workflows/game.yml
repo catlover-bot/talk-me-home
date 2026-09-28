@@ -4,6 +4,10 @@ jobs:
   game:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium-1280, chromium-1440]
     env:
       GAME_DISABLE_LIVE: '1'
       # Ubuntu's AppArmor profile permits the runner's installed Chrome sandbox.
@@ -25,5 +29,5 @@ jobs:
         run: |
           test -x /opt/google/chrome/chrome
           /opt/google/chrome/chrome --version
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --project=${{ matrix.project }}
         timeout-minutes: 4

@@ -48,5 +48,5 @@
     "supervisorSurvivors": 0
   },
   "limitation": "Pip requested permission to check status instead of proposing movement; the strict QA player expected a pending crossing proposal and stopped before its clarification path. Human recoverability and provider ingestion of game context remain unverified. The narrow behavior pass is not mission success.",
-  "boundary": "No further source/harness change, real retry, allowance replacement, refund, billing change, public deployment or upload. Raw media remain local. Exact delivery-head CI is checked after the evidence commit."
+  "boundary": "No further shipped runtime or executed QA harness change, real retry, allowance replacement, refund, billing change, public deployment or upload. Raw media remain local. Exact delivery-head CI is checked after the evidence commit; the later CI-only correction schedules the existing viewport projects separately without changing assertions or deadlines."
 }
