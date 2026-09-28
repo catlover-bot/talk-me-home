@@ -1,6 +1,6 @@
 export interface TranscriptEntry {
   id: string;
-  role: 'human' | 'robot';
+  role: 'human' | 'robot' | 'game';
   text: string;
   final: boolean;
   interrupted?: boolean;
@@ -44,7 +44,7 @@ export interface ProtocolHooks {
   onDiagnostic?(event: ProtocolDiagnostic): void;
 }
 
-const tools = new Set(['observe_room', 'inspect_object', 'interact_object', 'move_to']);
+const tools = new Set(['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status', 'interact_object', 'move_to']);
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -415,8 +415,14 @@ export class VoiceProtocol {
         : { ok: false, message: 'That local tool is not available.' };
       // Never forward HumanView or arbitrary transport diagnostics into the model.
       const safe = isRecord(result) && typeof result.ok === 'boolean' && typeof result.message === 'string'
-        ? { ok: result.ok, message: result.message, ...(!result.ok ? {
-          code: result.code === 'cancelled_before_execution' || result.code === 'outcome_unknown' ? result.code : 'precondition_failed',
+        ? { ok: result.ok, message: result.message,
+          ...(result.code === 'awaiting_confirmation' ? { code: 'awaiting_confirmation' } : {}),
+          ...(isRecord(result.proposal) && typeof result.proposal.id === 'string'
+            && typeof result.proposal.label === 'string' && typeof result.proposal.expiresAt === 'number'
+            && ['awaiting_confirmation', 'committed', 'declined', 'expired', 'invalidated', 'failed'].includes(String(result.proposal.status))
+            ? { proposal: { id: result.proposal.id, status: result.proposal.status, label: result.proposal.label, expiresAt: result.proposal.expiresAt } } : {}),
+          ...(!result.ok ? {
+          code: result.code === 'cancelled_before_execution' || result.code === 'outcome_unknown' || result.code === 'not_executed' ? result.code : 'precondition_failed',
         } : {}) }
         : { ok: false, code: 'outcome_unknown', message: 'The local action result could not be verified. Observe again before acting.' };
       this.retainOutcome(pending, { result: JSON.stringify(safe), is_error: !safe.ok });

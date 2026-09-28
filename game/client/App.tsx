@@ -17,7 +17,7 @@ export default function App() {
   const m = useMission();
   const restartDialog = useRef<HTMLDialogElement>(null);
   const [presentation, setPresentation] = useState(false);
-  const closingCaption = <div className="closing-caption"><span className="source-label">{m.activeCaption ? originLabel[m.activeCaption.origin] : 'Mission'} · {m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</span><p data-testid="caption" aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? 'Arrival confirmed.'}</p>{m.activeCaption?.interrupted && <span>Interrupted / incomplete speech</span>}</div>;
+  const closingCaption = <div className="closing-caption"><span className="source-label">{m.activeCaption ? originLabel[m.activeCaption.origin] : 'Mission'} · {m.activeCaption?.role === 'game' ? 'Game event' : m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</span><p data-testid="caption" aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? 'Arrival confirmed.'}</p>{m.activeCaption?.interrupted && <span>Interrupted / incomplete speech</span>}</div>;
   const activeLive = m.segment?.origin !== 'practice' && (m.connected || m.busy) && m.stage !== 'briefing';
   return <div data-reduced-motion={m.reducedMotion} className={'app-shell' + (presentation && m.stage === 'mission' ? ' presentation-mode' : '')}>
     <a className="skip-link" href="#main">Skip to mission controls</a>

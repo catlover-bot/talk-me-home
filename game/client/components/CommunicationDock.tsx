@@ -2,11 +2,12 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { originLabel, type Caption, type useMission } from '../useMission';
 import type { TransportOrigin } from '../../shared/contracts';
 import { chapterNames } from './ChapterHeader';
+import { ActionProposalStrip } from './ActionProposalStrip';
 
 type Mission = ReturnType<typeof useMission>;
 export function MessageQuote({ item, onPin, historical = false }: { item: Caption; onPin(id: string): void; historical?: boolean }) {
   return <article className="history-message">
-    <div className="caption-meta"><strong>{item.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
+    <div className="caption-meta"><strong>{item.role === 'game' ? 'Game event' : item.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
       <span className="source-label">{originLabel[item.origin]}{item.inputMethod === 'typed' ? ' · Typed' : item.inputMethod === 'speech' ? ' · Speech' : ''}</span>
       {historical && <span className="earlier">Previous call</span>}
       {item.chapter && <span className="source-label chapter-source">{chapterNames[item.chapter]}</span>}
@@ -66,7 +67,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       <span role="status">{connectionText}</span></div>
     {live && (m.connected || m.seconds > 0) && <p className="call-time">{m.seconds}s connected · 10-minute limit · provider usage</p>}
     <div className="caption-panel">
-      <div className="caption-speaker"><strong>{m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
+      <div className="caption-speaker"><strong>{m.activeCaption?.role === 'game' ? 'Game event' : m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
         {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : ''}</span>}</div>
       <div className="caption-reading" data-overflow={captionOverflow}><p ref={captionText} className="caption-text" data-testid="caption" tabIndex={0} title="Scroll for longer replies. History keeps the full text." aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? (m.connected ? m.toolPending ? 'Pip is checking local equipment.' : 'Connected. Say hello or type a message.' : m.captions.length ? 'Earlier conversations are in history. Choose how to reconnect.' : 'Your partner is waiting for a connection.')}</p>{captionOverflow && <span className="caption-scroll-cue" title="Scroll this caption for more" aria-hidden="true">↕</span>}</div>
       <div className="caption-meta">{m.activeCaption?.interrupted ? <span>Interrupted / incomplete speech</span> : m.activeCaption && !m.activeCaption.final ? <span>Partial transcript</span> : null}
@@ -74,6 +75,10 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         <button ref={historyTrigger} className="text-button" onClick={() => setHistoryOpen(!historyOpen)} aria-expanded={historyOpen} aria-controls="conversation-history" aria-label="Open transcript history">History ({m.captions.length})</button>
       </div>
     </div>
+    <ActionProposalStrip proposal={m.view?.proposal} confirming={m.proposalConfirming === m.view?.proposal?.id}
+      failed={m.proposalFailure === m.view?.proposal?.id}
+      enabled={m.connected && !m.busy && !m.toolPending && !m.playing && m.status !== 'responding'}
+      onDecision={decision => { void m.decideProposal(decision); }}/>
     <div className="communication-actions">
       {m.connected || m.busy ? <><button onClick={() => { void m.interrupt(); }} disabled={!m.connected}>Interrupt</button>
         <button className="secondary-button" onClick={() => { void m.stop(); }}>{live ? 'Pause / End call' : 'Pause mission'}</button></>

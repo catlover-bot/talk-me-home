@@ -125,3 +125,7 @@ export const setRelay = (view: HumanView, relay: Relay) => request<HumanView>(pa
 export const dockControl = (view: HumanView, action: DockControl) => request<HumanView>(path(view, 'dock-control'), { ...controlEnvelope(view), action });
 export type AnnotationChange = { kind: 'location'; target: GalleryAnnotation['location'] } | { kind: 'blocked_gate'; target: string; marked: boolean };
 export const annotate = (view: HumanView, change: AnnotationChange) => request<MissionRecord>(path(view, 'annotations'), { roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: requestId(), ...change });
+
+/** Confirmation names an immutable server proposal; replacement arguments are never sent. */
+export const decideProposal = (view: HumanView, proposalId: string, decision: 'confirm' | 'decline', decisionRequestId: string) =>
+  request<ToolResponse>(path(view, 'proposal-decision'), { roundId: view.roundId, requestId: decisionRequestId, proposalId, decision });

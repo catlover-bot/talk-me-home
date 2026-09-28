@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { test } from 'node:test'
-import type { HumanView, MessageRequest } from '../game/shared/contracts.js'
+import type { HumanView, MessageRequest, ToolResponse } from '../game/shared/contracts.js'
 import { SessionStore } from '../game/server/sessions.js'
 
 const command = (view: HumanView, fields = {}) => ({ roundId: view.roundId, requestId: randomUUID(), ...fields })
 const tool = (view: HumanView, name = 'observe_room', args = {}) => ({ roundId: view.roundId, actionEpoch: view.actionEpoch, callId: randomUUID(), name, arguments: args })
+const confirm = (store: SessionStore, result: ToolResponse) => store.decideProposal(result.view.sessionId, {
+  roundId: result.view.roundId, requestId: randomUUID(), proposalId: result.proposal!.id, decision: 'confirm',
+}, 'record-owner')
 const message = (view: HumanView, fields: Partial<MessageRequest> = {}): MessageRequest => ({
   roundId: view.roundId, messageId: randomUUID(), segmentId: 'practice:first', role: 'robot', text: 'I can see a local lever.', origin: 'practice', inputMethod: 'robot', interrupted: false, ...fields,
 })
@@ -165,23 +168,25 @@ test('bounded transcripts, notebook and recap do not grow with arbitrary input h
 
 test('debrief is unlocked by physical arrival and shows actual recovery events rather than a canned solution', async () => {
   const store = new SessionStore()
-  let view = store.create()
+  let view = store.create('classic', 'training', 'record-owner')
   view = await store.power(view.sessionId, command(view, { revision: view.revision, powerOn: false }))
-  await store.tool(view.sessionId, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))
+  await confirm(store, await store.tool(view.sessionId, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' })))
   view = await store.power(view.sessionId, command(view, { revision: view.revision, powerOn: true }))
   const latchRequest = tool(view, 'interact_object', { object: 'latch', action: 'latch_open' })
-  const latched = await store.tool(view.sessionId, latchRequest)
+  const latched = await confirm(store, await store.tool(view.sessionId, latchRequest))
   await store.tool(view.sessionId, latchRequest)
   view = latched.view
   await store.hint(view.sessionId, command(view, { level: 1 }))
   assert.equal(store.record(view.sessionId, view.roundId).debrief, null)
   view = await store.power(view.sessionId, command(view, { revision: view.revision, powerOn: false }))
-  view = (await store.tool(view.sessionId, tool(view, 'move_to', { target: 'far_side' }))).view
+  view = (await confirm(store, await store.tool(view.sessionId, tool(view, 'move_to', { target: 'far_side' })))).view
   const debrief = store.record(view.sessionId, view.roundId).debrief!
-  assert.deepEqual(debrief.timeline.map((entry) => entry.kind), ['power', 'power', 'action', 'hint', 'power', 'action', 'completion'])
+  const physicalTimeline = debrief.timeline.filter(entry => entry.kind !== 'confirmation')
+  assert.deepEqual(physicalTimeline.map((entry) => entry.kind), ['power', 'power', 'action', 'hint', 'power', 'action', 'completion'])
   assert.match(debrief.timeline[0]!.text, /OFF/)
-  assert.match(debrief.timeline[1]!.text, /ON/)
-  assert.match(debrief.timeline[2]!.text, /engaged the Latch/)
+  assert.match(physicalTimeline[1]!.text, /ON/)
+  assert.match(physicalTimeline[2]!.text, /engaged the Latch/)
+  assert.equal(debrief.timeline.filter(entry => entry.kind === 'confirmation' && entry.actor === 'human').length, 3)
   assert.equal(debrief.timeline.filter((entry) => entry.kind === 'action').length, 2)
   assert.ok(debrief.timeline.every((entry) => entry.roundId === view.roundId))
   assert.equal(debrief.truncated, false)
@@ -191,7 +196,7 @@ test('recap contains committed actions once and never includes canceled pending 
   let release!: () => void
   const gate = new Promise<void>((resolve) => { release = resolve })
   const store = new SessionStore({ beforeToolCommit: () => gate })
-  const view = store.create()
+  const view = store.create('classic', 'training', 'record-owner')
   const pending = store.tool(view.sessionId, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))
   await new Promise<void>((resolve) => setImmediate(resolve))
   const canceled = await store.lifecycle(view.sessionId, 'cancel', command(view))
@@ -199,7 +204,7 @@ test('recap contains committed actions once and never includes canceled pending 
   assert.equal((await pending).ok, false)
   assert.deepEqual(store.recap(view.sessionId, view.roundId).entries, [])
   const request = tool(canceled, 'interact_object', { object: 'latch', action: 'latch_open' })
-  await store.tool(view.sessionId, request)
+  await confirm(store, await store.tool(view.sessionId, request))
   await store.tool(view.sessionId, request)
   assert.equal(store.recap(view.sessionId, view.roundId).entries.filter((entry) => entry.kind === 'action').length, 1)
 })
@@ -215,16 +220,17 @@ test('recap chronology remains deterministic when observations and player quotes
 
 test('round logs are bounded and a truncated debrief uses only retained real events', async () => {
   const store = new SessionStore()
-  let view = store.create()
+  let view = store.create('classic', 'training', 'record-owner')
   for (let i = 0; i < 170; i += 1) await store.tool(view.sessionId, tool(view))
   assert.equal(store.recap(view.sessionId, view.roundId).entries.length <= 16, true)
   assert.equal(store.record(view.sessionId, view.roundId).debrief, null)
-  view = (await store.tool(view.sessionId, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).view
+  view = (await confirm(store, await store.tool(view.sessionId, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' })))).view
   view = await store.power(view.sessionId, command(view, { revision: view.revision, powerOn: false }))
-  await store.tool(view.sessionId, tool(view, 'move_to', { target: 'far_side' }))
+  await confirm(store, await store.tool(view.sessionId, tool(view, 'move_to', { target: 'far_side' })))
   const debrief = store.record(view.sessionId, view.roundId).debrief!
   assert.equal(debrief.truncated, true)
-  assert.deepEqual(debrief.timeline.map((entry) => entry.kind), ['action', 'power', 'action', 'completion'])
+  assert.deepEqual(debrief.timeline.filter(entry => entry.kind !== 'confirmation').map((entry) => entry.kind), ['action', 'power', 'action', 'completion'])
+  assert.equal(debrief.timeline.filter(entry => entry.kind === 'confirmation').length, 2)
   assert.doesNotMatch(JSON.stringify(debrief), /A Latch lever/)
 })
 

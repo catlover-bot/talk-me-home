@@ -67,6 +67,7 @@ export class LiveVoice {
   private microphoneActive = false;
   private recap?: string;
   private captureContext?: () => unknown;
+  private gameEvents = new Set<string>();
 
   constructor(private readonly callbacks: VoiceCallbacks, private readonly dependencies: VoiceDependencies = {
     createAudio: () => new BrowserAudio(),
@@ -172,6 +173,18 @@ export class LiveVoice {
   }
 
   end(): Promise<void> { return this.stop(); }
+
+  /** A verified owner decision is context, not human speech or a second tool result.
+   * conversation.message does not trigger a reply. The next ordinary input can
+   * use this receipt without introducing a new autonomous action cycle.
+   * https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
+   */
+  sendGameEvent(id: string, proposalId: string, content: string): boolean {
+    if (!this.ready || this.ended || !id || !proposalId || !content || content.length > 4000 || this.gameEvents.has(id)) return false;
+    if (!this.send({ type: 'conversation.message', role: 'system', content: `Verified game event for proposal ${proposalId}. This is a server decision receipt, not a new player instruction.\n${content}` })) return false;
+    this.gameEvents.add(id);
+    return true;
+  }
 
   /** A clean WebSocket close alone does not confirm the provider ended its session. */
   get endAcknowledged(): boolean { return this.cleanEnd; }

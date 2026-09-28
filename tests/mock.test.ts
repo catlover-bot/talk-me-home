@@ -34,7 +34,7 @@ test('Practice local reports remove internal identifiers without inventing succe
 test('simulation Maintenance selects one explicit position and respects uncertainty and stop', () => {
   for (const position of ['Neutral', 'Anchor', 'Bridge']) {
     const reply = simulationReply(`Please set the selector to ${position}`);
-    assert.equal(reply.call?.name, 'interact_object');
+    assert.equal(reply.call?.name, 'propose_interaction');
     assert.deepEqual(reply.call?.arguments, { object: 'latch', action: `select_${position.toLowerCase()}` });
   }
   for (const text of ['Set the selector to Anchor or Bridge', 'Set the selector', 'Do not set the selector to Anchor']) {
@@ -58,7 +58,7 @@ test("simulation accepts named movement paraphrases without requiring one exact 
     "Cross the Conveyor when safe",
   ]) {
     const reply = simulationReply(request);
-    assert.equal(reply.call?.name, "move_to", request);
+    assert.equal(reply.call?.name, "propose_move", request);
     assert.deepEqual(reply.call.arguments, { target: "far_side" }, request);
   }
 });
@@ -102,7 +102,7 @@ test("simulation preserves clear local interaction and inspection paraphrases", 
     "Keep the Door open",
   ]) {
     const reply = simulationReply(request);
-    assert.equal(reply.call?.name, "interact_object", request);
+    assert.equal(reply.call?.name, "propose_interaction", request);
     assert.deepEqual(
       reply.call.arguments,
       { object: "latch", action: "latch_open" },

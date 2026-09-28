@@ -114,7 +114,7 @@ test('all deployed session reads, records, tools, mutations and token requests b
       for (const suffix of ['', `/record?roundId=${first.view.roundId}`, `/recap?roundId=${first.view.roundId}`]) {
         assert.equal((await request(base, `${path}${suffix}`, undefined, cookie)).status, 404, suffix)
       }
-      for (const action of ['power', 'relay', 'dock-control', 'annotations', 'tools', 'stop', 'resume', 'reset', 'end', 'cancel', 'voice-token', 'messages', 'notebook', 'hint']) {
+      for (const action of ['power', 'relay', 'dock-control', 'annotations', 'tools', 'proposal-decision', 'stop', 'resume', 'reset', 'end', 'cancel', 'voice-token', 'messages', 'notebook', 'hint']) {
         assert.equal((await request(base, `${path}/${action}`, {}, cookie)).status, 404, action)
       }
     }

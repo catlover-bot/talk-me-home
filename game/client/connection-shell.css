@@ -52,8 +52,26 @@
 .history-panel .history-help { position: static; width: auto; height: auto; clip-path: none; margin: 6px 0 0; font-size: 12px; }
 .history-panel .history-partner > div > span, .history-panel > p { color: #4b5840; font-size: 12px; }
 .companion-console:has(.history-panel) .call-settings { order: 1; }
+.action-proposal:not([data-status=awaiting_confirmation]):not([data-status=confirming]) { padding-block: 7px; }
+.action-proposal:not([data-status=awaiting_confirmation]):not([data-status=confirming]) .proposal-kicker { display: none; }
+.debrief:not(.rescue-debrief) .collaboration-timeline li { padding-block: 7px; }
+@media (max-height: 950px) and (min-width: 1000px) {
+  .companion-console:has(.history-panel):has(.action-proposal) > .pip-portrait { display: flex; align-items: center; gap: 12px; }
+  .companion-console:has(.history-panel):has(.action-proposal) > .pip-portrait .pip-art { width: 88px; height: 74px; flex: 0 0 88px; }
+  .companion-console:has(.history-panel):has(.action-proposal) > .pip-portrait figcaption { flex: 1; padding: 0; }
+  .companion-console:has(.history-panel):has(.action-proposal) .caption-text { max-height: 54px; }
+}
 html[data-reduced-motion=true] *, html[data-reduced-motion=true] *::before, html[data-reduced-motion=true] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 @media (max-height: 790px) and (min-width: 1000px) {
+  .debrief:not(.rescue-debrief) .debrief-paper { padding: 18px 25px; }
+  .debrief:not(.rescue-debrief) .debrief-paper h1 { margin-block: 8px; }
+  .debrief:not(.rescue-debrief) .debrief-intro { font-size: 14px; line-height: 1.45; }
+  .debrief:not(.rescue-debrief) .contribution-strip { margin: 12px 0; padding: 10px 0; }
+  .debrief:not(.rescue-debrief) .contribution-strip strong { font-size: 22px; margin-bottom: 2px; }
+  .debrief:not(.rescue-debrief) .debrief-paper h2 { margin-bottom: 10px; }
+  .debrief:not(.rescue-debrief) .debrief-actions { margin-top: 12px; }
+  .debrief:not(.rescue-debrief) .collaboration-timeline li { padding-block: 6px; }
+  .companion-console:has(.action-proposal) > .pip-portrait .pip-art { height: 65px; }
   .companion-console:has(.history-panel) > .pip-portrait { display: flex; align-items: center; gap: 12px; }
   .companion-console:has(.history-panel) > .pip-portrait .pip-art { width: 88px; height: 74px; flex: 0 0 88px; }
   .companion-console:has(.history-panel) > .pip-portrait figcaption { flex: 1; padding: 0; }

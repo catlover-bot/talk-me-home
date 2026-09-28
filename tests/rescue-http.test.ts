@@ -5,6 +5,7 @@ import { test } from 'node:test'
 import type { HumanView, MissionRecord, RobotRecap, ToolResponse } from '../game/shared/contracts.js'
 import { createGameServer } from '../game/server/http.js'
 import { SessionStore } from '../game/server/sessions.js'
+const ownerCookies = new Map<string, string>()
 
 async function withRescue(configuration: 'a' | 'b', callback: (base: string) => Promise<void>) {
   let providerCalls = 0
@@ -22,9 +23,12 @@ async function withRescue(configuration: 'a' | 'b', callback: (base: string) => 
   }
 }
 
-const post = (base: string, path: string, body: unknown) => fetch(`${base}${path}`, {
-  method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(5000),
-})
+const post = async (base: string, path: string, body: unknown) => {
+  const response = await fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', cookie: ownerCookies.get(base) ?? '' }, body: JSON.stringify(body), signal: AbortSignal.timeout(5000) })
+  const owner = response.headers.getSetCookie().find(value => value.startsWith('tmh_browser='))
+  if (owner) ownerCookies.set(base, owner.split(';')[0]!)
+  return response
+}
 const path = (view: HumanView, action: string) => `/api/sessions/${view.sessionId}/${action}`
 const envelope = (view: HumanView, extra = {}) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: randomUUID(), ...extra })
 const tool = (view: HumanView, name: string, args: Record<string, unknown>) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, actionEpoch: view.actionEpoch, callId: randomUUID(), name, arguments: args })
@@ -36,7 +40,10 @@ async function create(base: string) {
 async function act(base: string, view: HumanView, name: string, args: Record<string, unknown>, ok = true) {
   const response = await post(base, path(view, 'tools'), tool(view, name, args))
   assert.equal(response.status, 200)
-  const result = await response.json() as ToolResponse
+  let result = await response.json() as ToolResponse
+  if (result.code === 'awaiting_confirmation') result = await (await post(base, path(view, 'proposal-decision'), {
+    roundId: view.roundId, requestId: randomUUID(), proposalId: result.proposal!.id, decision: 'confirm',
+  })).json() as ToolResponse
   assert.equal(result.ok, ok, result.message)
   return result.view
 }
@@ -52,7 +59,7 @@ async function gallery(base: string, start = create(base)) {
   return act(base, view, 'move_to', { target: 'far_side' })
 }
 async function record<T = MissionRecord>(base: string, view: HumanView, action = 'record'): Promise<T> {
-  const response = await fetch(`${base}${path(view, action)}?roundId=${view.roundId}`, { signal: AbortSignal.timeout(5000) })
+  const response = await fetch(`${base}${path(view, action)}?roundId=${view.roundId}`, { headers: { cookie: ownerCookies.get(base) ?? '' }, signal: AbortSignal.timeout(5000) })
   assert.equal(response.status, 200)
   return response.json() as Promise<T>
 }
@@ -88,9 +95,13 @@ for (const configuration of ['a', 'b'] as const) {
       view = await control(base, view, 'dock-control', { action: 'authorize_return' })
       assert.equal(view.completed, false)
       const confirm = tool(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' })
-      const result = await (await post(base, path(view, 'tools'), confirm)).json() as ToolResponse
+      const proposed = await (await post(base, path(view, 'tools'), confirm)).json() as ToolResponse
+      assert.equal(proposed.view.completed, false)
+      const approval = { roundId: view.roundId, requestId: randomUUID(), proposalId: proposed.proposal!.id, decision: 'confirm' }
+      const result = await (await post(base, path(view, 'proposal-decision'), approval)).json() as ToolResponse
       assert.equal(result.view.completed, true); assert.equal(result.view.roundId, roundId)
-      assert.deepEqual(await (await post(base, path(view, 'tools'), confirm)).json(), result)
+      assert.deepEqual(await (await post(base, path(view, 'tools'), confirm)).json(), proposed)
+      assert.deepEqual(await (await post(base, path(view, 'proposal-decision'), approval)).json(), result)
       const timeline = (await record(base, result.view)).debrief!.timeline
       assert.equal(timeline.filter(event => event.kind === 'checkpoint').length, 2)
       assert.equal(timeline.filter(event => event.kind === 'completion').length, 1)

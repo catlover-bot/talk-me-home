@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { test } from 'node:test'
-import type { DockControl, HumanView, MessageRequest, Relay } from '../game/shared/contracts.js'
+import type { DockControl, HumanView, MessageRequest, Relay, ToolResponse } from '../game/shared/contracts.js'
 import { applyHumanPower, applyRobotTool, humanView, initialState, missionCompleted, robotView, type GameState } from '../game/server/state.js'
 import { applyHumanRelay, type GalleryConfiguration } from '../game/server/gallery.js'
 import { applyHumanDock, dockReady } from '../game/server/return-dock.js'
@@ -14,6 +14,15 @@ const inspect = (state: GameState, object: string) => applyRobotTool(state, 'ins
 const envelope = (view: HumanView, extra = {}) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: randomUUID(), ...extra })
 const call = (view: HumanView, name: string, args: Record<string, unknown> = {}) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, actionEpoch: view.actionEpoch, callId: randomUUID(), name, arguments: args })
 const speech = (view: HumanView, extra: Partial<MessageRequest> = {}): MessageRequest => ({ roundId: view.roundId, chapter: view.chapter, chapterEpoch: view.chapterEpoch, messageId: randomUUID(), segmentId: 'practice:rescue', role: 'human', inputMethod: 'typed', origin: 'practice', text: 'Please check the local equipment.', interrupted: false, ...extra })
+const confirm = (store: SessionStore, result: ToolResponse) => {
+  assert.equal(result.proposal?.status, 'awaiting_confirmation')
+  return store.decideProposal(result.view.sessionId, { roundId: result.view.roundId, requestId: randomUUID(), proposalId: result.proposal.id, decision: 'confirm' }, 'test-owner')
+}
+async function confirmed(store: SessionStore, view: HumanView, name: string, args: Record<string, unknown>) {
+  const proposal = await store.tool(view.sessionId, call(view, name, args))
+  assert.equal(proposal.view.revision, view.revision, 'A proposal cannot perform the fixture action.')
+  return confirm(store, proposal)
+}
 function gallery(configuration: GalleryConfiguration = 'a') {
   const state = fresh(configuration)
   interact(state, 'latch', 'latch_open'); applyHumanPower(state, false); move(state, 'far_side')
@@ -154,7 +163,7 @@ test('all Gallery human projections are independent of hidden configuration and 
 })
 
 test('a saturated request cache still permits bounded safety commands and Restart without evicting action receipts', async () => {
-  const store = new SessionStore(), initial = store.create('classic', 'rescue')
+  const store = new SessionStore(), initial = store.create('classic', 'rescue', 'test-owner')
   const first = call(initial, 'observe_room'), original = await store.tool(initial.sessionId, first)
   for (let index = 1; index < 1000; index += 1) await store.tool(initial.sessionId, call(initial, 'observe_room'))
   assert.throws(() => store.tool(initial.sessionId, call(initial, 'observe_room')), /request limit/)
@@ -228,37 +237,44 @@ test('chapter-specific objects and forged array actions never operate another ch
   assert.equal(interact(dock(), 'latch', 'latch_open').ok, false)
 })
 
-async function enterGallery(store: SessionStore, initial = store.create('classic', 'rescue')) {
-  let view = (await store.tool(initial.sessionId, call(initial, 'interact_object', { object: 'latch', action: 'latch_open' }))).view
+async function enterGallery(store: SessionStore, initial = store.create('classic', 'rescue', 'test-owner')) {
+  let view = (await confirmed(store, initial, 'interact_object', { object: 'latch', action: 'latch_open' })).view
   view = await store.power(view.sessionId, envelope(view, { revision: view.revision, powerOn: false }))
-  return (await store.tool(view.sessionId, call(view, 'move_to', { target: 'far_side' }))).view
+  return (await confirmed(store, view, 'move_to', { target: 'far_side' })).view
 }
 async function enterDock(store: SessionStore) {
   let view = await enterGallery(store)
   view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
-  for (const target of ['gallery.g1', 'gallery.g4']) view = (await store.tool(view.sessionId, call(view, 'move_to', { target }))).view
+  for (const target of ['gallery.g1', 'gallery.g4']) view = (await confirmed(store, view, 'move_to', { target })).view
   view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'harbor' }))
-  return (await store.tool(view.sessionId, call(view, 'move_to', { target: 'gallery.g5' }))).view
+  return (await confirmed(store, view, 'move_to', { target: 'gallery.g5' })).view
 }
 async function boarded(store: SessionStore) {
   let view = await enterDock(store)
-  view = (await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.contact', action: 'hold_contact' }))).view
+  view = (await confirmed(store, view, 'interact_object', { object: 'return.contact', action: 'hold_contact' })).view
   for (const action of ['charge', 'store']) view = await store.control(view.sessionId, 'dock', envelope(view, { revision: view.revision, action }))
-  view = (await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.contact', action: 'release_contact' }))).view
-  return (await store.tool(view.sessionId, call(view, 'move_to', { target: 'return.aboard' }))).view
+  view = (await confirmed(store, view, 'interact_object', { object: 'return.contact', action: 'release_contact' })).view
+  return (await confirmed(store, view, 'move_to', { target: 'return.aboard' })).view
 }
 
 test('a committed chapter-advancing result deduplicates once and queued previous-chapter calls are rejected', async () => {
-  const store = new SessionStore({ galleryConfiguration: 'a' })
-  let view = store.create('classic', 'rescue')
-  view = (await store.tool(view.sessionId, call(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).view
+  let delayNext = false, release!: () => void
+  const gate = new Promise<void>(resolve => { release = resolve })
+  const store = new SessionStore({ galleryConfiguration: 'a', beforeToolCommit: async () => { if (delayNext) { delayNext = false; await gate } } })
+  let view = store.create('classic', 'rescue', 'test-owner')
+  view = (await confirmed(store, view, 'interact_object', { object: 'latch', action: 'latch_open' })).view
   view = await store.power(view.sessionId, envelope(view, { revision: view.revision, powerOn: false }))
   const transition = call(view, 'move_to', { target: 'far_side' }), queued = call(view, 'observe_room')
-  const crossed = store.tool(view.sessionId, transition), stale = store.tool(view.sessionId, queued)
-  const result = await crossed
+  const proposal = await store.tool(view.sessionId, transition)
+  delayNext = true
+  const stale = store.tool(view.sessionId, queued)
+  await new Promise<void>(resolve => setImmediate(resolve))
+  const result = await confirm(store, proposal)
+  release()
   assert.equal(result.ok, true); assert.equal(result.view.chapter, 'gallery'); assert.equal(result.view.completed, false)
   await assert.rejects(stale, /earlier chapter/)
-  assert.deepEqual(await store.tool(view.sessionId, transition), result)
+  assert.deepEqual(await store.tool(view.sessionId, transition), proposal)
+  assert.deepEqual(await confirm(store, proposal), result)
   assert.equal(store.recap(view.sessionId, view.roundId).entries.filter(entry => /checkpoint confirms/.test(entry.text)).length, 1)
   assert.equal(store.record(view.sessionId, view.roundId).debrief, null)
   const stopped = await store.lifecycle(view.sessionId, 'stop', envelope(view))
@@ -266,7 +282,7 @@ test('a committed chapter-advancing result deduplicates once and queued previous
 })
 
 test('Rescue actions require chapter generations and stale human controls, annotations and hints are rejected', async () => {
-  const store = new SessionStore(), initial = store.create('classic', 'rescue')
+  const store = new SessionStore(), initial = store.create('classic', 'rescue', 'test-owner')
   await assert.rejects(store.tool(initial.sessionId, { ...call(initial, 'observe_room'), chapterEpoch: undefined }), /chapter generation/)
   const current = await enterGallery(store, initial)
   await assert.rejects(store.power(current.sessionId, envelope(initial, { revision: current.revision, powerOn: true })), /earlier chapter/)
@@ -289,11 +305,13 @@ test('Return Dock pause, interruption and revoke invalidate grants; supersede an
     view = await store.lifecycle(view.sessionId, action, envelope(view))
     assert.equal(view.returnDock?.returnAuthorized, false); assert.equal(view.returnDock?.energy, 'stored'); assert.equal(view.returnDock?.readyForReturn, true)
     if (action === 'stop') view = await store.lifecycle(view.sessionId, 'resume', envelope(view))
-    assert.equal((await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' }))).ok, false)
+    assert.equal((await confirmed(store, view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' })).ok, false)
     view = await store.control(view.sessionId, 'dock', envelope(view, { revision: view.revision, action: 'authorize_return' }))
   }
-  const confirm = call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' })
-  const first = await store.tool(view.sessionId, confirm), duplicate = await store.tool(view.sessionId, confirm)
+  const request = call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' })
+  const proposal = await store.tool(view.sessionId, request)
+  assert.deepEqual(await store.tool(view.sessionId, request), proposal)
+  const first = await confirm(store, proposal), duplicate = await confirm(store, proposal)
   assert.deepEqual(first, duplicate); assert.equal(first.view.completed, true)
   assert.equal(store.record(view.sessionId, view.roundId).debrief!.timeline.filter(event => event.kind === 'completion').length, 1)
 })
@@ -304,14 +322,15 @@ test('delayed final confirmation cannot commit after accepted revoke even if aut
   const store = new SessionStore({ galleryConfiguration: 'a', beforeToolCommit: async () => { if (hold) await gate } })
   let view = await boarded(store)
   view = await store.control(view.sessionId, 'dock', envelope(view, { revision: view.revision, action: 'authorize_return' }))
+  const proposal = await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' }))
   hold = true
-  const pending = store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' }))
+  const pending = confirm(store, proposal)
   await new Promise<void>(resolve => setImmediate(resolve))
   view = await store.control(view.sessionId, 'dock', envelope(view, { revision: view.revision, action: 'revoke_return' }))
   view = await store.control(view.sessionId, 'dock', envelope(view, { revision: view.revision, action: 'authorize_return' }))
   release()
   assert.equal((await pending).ok, false); assert.equal(store.get(view.sessionId).completed, false)
-  assert.equal((await store.tool(view.sessionId, call(view, 'interact_object', { object: 'return.capsule', action: 'confirm_return' }))).ok, true)
+  assert.equal((await confirmed(store, store.get(view.sessionId), 'interact_object', { object: 'return.capsule', action: 'confirm_return' })).ok, true)
 })
 
 test('Gallery movement rechecks the latest Relay selection immediately before a delayed commit', async () => {
@@ -320,8 +339,9 @@ test('Gallery movement rechecks the latest Relay selection immediately before a 
   const store = new SessionStore({ galleryConfiguration: 'b', beforeToolCommit: async () => { if (hold) await gate } })
   let view = await enterGallery(store)
   view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
+  const proposal = await store.tool(view.sessionId, call(view, 'move_to', { target: 'gallery.g1' }))
   hold = true
-  const pending = store.tool(view.sessionId, call(view, 'move_to', { target: 'gallery.g1' }))
+  const pending = confirm(store, proposal)
   await new Promise<void>(resolve => setImmediate(resolve))
   try {
     view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'off' }))
@@ -334,24 +354,29 @@ test('Gallery movement rechecks the latest Relay selection immediately before a 
   assert.equal(store.recap(view.sessionId, view.roundId).entries.filter(entry => entry.kind === 'action' && entry.chapter === 'gallery').length, 0)
 })
 
-test('two queued moves cannot bounce through one Gallery gate; a newly requested return remains valid', async () => {
+test('two queued moves share one exact proposal and cannot bounce through a gate; a fresh confirmed return remains valid', async () => {
   const store = new SessionStore({ galleryConfiguration: 'a' })
   let view = await enterGallery(store)
   view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
   const first = call(view, 'move_to', { target: 'gallery.g1' }), stale = call(view, 'move_to', { target: 'gallery.g1' })
-  const [moved, rejected] = await Promise.all([store.tool(view.sessionId, first), store.tool(view.sessionId, stale)])
+  const [proposal, repeated] = await Promise.all([store.tool(view.sessionId, first), store.tool(view.sessionId, stale)])
+  assert.equal(proposal.proposal?.id, repeated.proposal?.id)
+  assert.equal(proposal.view.revision, view.revision)
+  const [moved, duplicate] = await Promise.all([confirm(store, proposal), confirm(store, repeated)])
   assert.equal(moved.ok, true); assert.match(moved.message, /Fork emblem/)
+  assert.deepEqual(duplicate, moved)
+  const rejected = await store.tool(view.sessionId, call(view, 'move_to', { target: 'gallery.g1' }))
   assert.equal(rejected.ok, false); assert.match(rejected.message, /canceled before it committed/)
   assert.equal(rejected.view.revision, moved.view.revision)
-  assert.deepEqual(await store.tool(view.sessionId, first), moved)
-  const returned = await store.tool(view.sessionId, call(moved.view, 'move_to', { target: 'gallery.g1' }))
+  assert.deepEqual(await store.tool(view.sessionId, first), proposal)
+  const returned = await confirmed(store, moved.view, 'move_to', { target: 'gallery.g1' })
   assert.equal(returned.ok, true); assert.match(returned.message, /Ring emblem/)
   assert.equal(store.recap(view.sessionId, view.roundId).entries.filter(entry => entry.kind === 'action' && entry.chapter === 'gallery').length, 2)
 })
 
 test('chapter-aware recap byte limits preserve whole faithful quotes and never admit private hints or annotations', async () => {
   const store = new SessionStore({ galleryConfiguration: 'a' })
-  const cargo = store.create('classic', 'rescue'), current = await enterGallery(store, cargo)
+  const cargo = store.create('classic', 'rescue', 'test-owner'), current = await enterGallery(store, cargo)
   const text = String.fromCharCode(0x22, 0x5c, 0x01).repeat(500)
   for (let index = 0; index < 4; index += 1) await store.message(current.sessionId, speech(index % 2 ? current : cargo, { messageId: `expanded-${index}`, text: `${index}:${text}` }))
   await store.annotate(current.sessionId, envelope(current, { kind: 'blocked_gate', target: 'g5', marked: true }))
@@ -367,7 +392,7 @@ test('chapter-aware recap byte limits preserve whole faithful quotes and never a
 
 test('chapter-aware records retain historical conversation but exclude private map annotations, notes and unobserved graph', async () => {
   const store = new SessionStore({ galleryConfiguration: 'a' })
-  const first = store.create('classic', 'rescue'), oldCaption = speech(first, { text: 'My manual says the Door and Conveyor share Power.' })
+  const first = store.create('classic', 'rescue', 'test-owner'), oldCaption = speech(first, { text: 'My manual says the Door and Conveyor share Power.' })
   let view = await enterGallery(store, first)
   const saved = await store.message(view.sessionId, oldCaption)
   assert.equal(saved.chapter, 'cargo')

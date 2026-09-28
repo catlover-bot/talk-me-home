@@ -853,3 +853,22 @@ dialog p { font-size: 14px; line-height: 1.6; }
 @media (prefers-reduced-motion: reduce) {
   .homecoming-capsule, .pip-checking, .pip-antenna-tip { animation: none !important; }
 }
+
+/* A proposal communicates one intention; only its explicit buttons decide it. */
+.action-proposal { margin-top: 10px; border: 1px solid #a99b73; border-radius: 5px; padding: 10px 12px; background: #f0eadb; color: #25372f; }
+.action-proposal .proposal-kicker { display: block; margin-bottom: 4px; font-size: 10px; letter-spacing: .6px; text-transform: uppercase; color: #5b624d; }
+.action-proposal > strong { display: block; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.action-proposal p { margin: 5px 0 0; font-size: 12px; line-height: 1.4; }
+.proposal-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.proposal-buttons button { min-height: 44px; padding: 7px 11px; font-size: 12px; }
+.companion-console .proposal-buttons .primary-button { background: #465d49; color: #fff9e9; border-color: #465d49; box-shadow: none; }
+.companion-console .proposal-buttons .secondary-button { background: #f0eadb; color: #25372f; border-color: #71816b; }
+.action-proposal[data-status=committed] { border-color: #8aaa87; }
+.action-proposal[data-status=failed] { border-color: #ba8359; }
+.companion-console:has(.action-proposal) .pip-art { height: 105px; }
+@media (max-height: 790px) and (min-width: 1000px) {
+  .companion-console:has(.action-proposal) .pip-art { height: 65px; }
+  .companion-console:has(.action-proposal) .caption-text { max-height: 54px; }
+  .action-proposal { margin-top: 7px; padding: 8px 10px; }
+  .proposal-buttons { margin-top: 6px; }
+}

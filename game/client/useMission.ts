@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason } from '../shared/contracts';
+import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason, RecordedMessage } from '../shared/contracts';
 import * as api from './api';
 import { LiveVoice, type TranscriptEntry, type VoiceInputState, type VoiceStatus } from './voice';
-import { simulationReply, simulationSpeech, rememberLocalResult, type PracticeMemory } from './mock';
+import { simulationReply, simulationToolSpeech, rememberLocalResult, type PracticeMemory } from './mock';
 import { LocalEffects } from './effects';
 import { copy } from './strings';
+import { acceptsHumanViewSnapshot } from './view-order';
 
 export interface Caption extends TranscriptEntry {
   origin: TransportOrigin;
@@ -17,7 +18,7 @@ export interface Caption extends TranscriptEntry {
   chapterEpoch: number;
 }
 export const originLabel: Record<TransportOrigin, string> = {
-  practice: 'Practice', live_voice: 'Live Voice', live_text: 'Live Text',
+  practice: 'Practice', live_voice: 'Live Voice', live_text: 'Live Text', game: 'Game event',
 };
 type Segment = { id: string; origin: TransportOrigin };
 const emptyRecord = (roundId: string): MissionRecord => ({ roundId, messages: [], notebook: [], hintsUsed: [], debrief: null });
@@ -43,6 +44,9 @@ export function useMission() {
   const [controlPending, setControlPending] = useState<string | null>(null);
   const controlBusy = useRef(false);
   const [toolPending, setToolPending] = useState(false);
+  const [proposalConfirming, setProposalConfirming] = useState<string | null>(null);
+  const [proposalFailure, setProposalFailure] = useState<string | null>(null);
+  const proposalDecisionBusy = useRef(false);
   const [status, setStatus] = useState<VoiceStatus>('ended');
   const [microphone, setMicrophone] = useState(false);
   const [inputState, setInputState] = useState<VoiceInputState>('inactive');
@@ -80,7 +84,7 @@ export function useMission() {
   const currentRound = (roundId: string) => viewRef.current?.roundId === roundId;
   const applyView = (next: HumanView) => {
     const previous = viewRef.current;
-    if (previous?.sessionId === next.sessionId && previous.roundId === next.roundId && previous.revision > next.revision) return;
+    if (!acceptsHumanViewSnapshot(previous, next)) return;
     viewRef.current = next; setView(next);
     if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
       setHint('');
@@ -143,6 +147,16 @@ export function useMission() {
     const current = viewRef.current;
     if (source && current) addCaption({ id: api.requestId(), role: 'robot', text: message, final: true }, source, current.roundId);
   };
+  const addGameEvent = (event: RecordedMessage) => {
+    if (!currentRound(event.roundId) || event.role !== 'game' || event.origin !== 'game' || event.inputMethod !== 'game_event'
+      || !event.chapter || !Number.isSafeInteger(event.chapterEpoch)) return;
+    if (captionsRef.current.some(item => item.id === event.messageId)) return;
+    const item: Caption = { id: event.messageId, role: 'game', text: event.text, final: true,
+      origin: 'game', inputMethod: 'game_event', roundId: event.roundId,
+      segmentId: segmentRef.current?.id ?? event.segmentId, timestamp: event.timestamp, saved: true,
+      chapter: event.chapter!, chapterEpoch: event.chapterEpoch! };
+    captionsRef.current = [...captionsRef.current, item].slice(-200); setCaptions(captionsRef.current);
+  };
   const clearClosing = () => {
     if (closingTimer.current) clearTimeout(closingTimer.current);
     if (closingGrace.current) clearTimeout(closingGrace.current);
@@ -168,6 +182,7 @@ export function useMission() {
     if (playingRef.current && lastSpoken) addCaption({ ...lastSpoken, id: lastSpoken.id.slice(lastSpoken.segmentId.length + 1), final: true, interrupted: true }, segmentRef.current!, lastSpoken.roundId);
     ++generation.current; ++mockTurn.current;
     setBusyNow(true); setConnectedNow(false); setToolPending(false); setPowerPending(null); setControlPending(null); controlBusy.current = false;
+    setProposalConfirming(null); setProposalFailure(null);
     mockAbort.current?.abort(); mockAbort.current = null;
     clearClosing();
     const connection = voice.current; voice.current = null;
@@ -204,13 +219,16 @@ export function useMission() {
     if (expected !== generation.current || !currentRound(result.view.roundId)) throw new DOMException('Canceled', 'AbortError');
     // A received authoritative result remains true even if the input changed.
     // The cancellation response owns the newer human view; do not overwrite it.
-    if (signal.aborted) return { ok: result.ok, message: result.message, code: result.code };
+    if (signal.aborted) return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal };
     applyView(result.view);
+    if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
     if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
-    return { ok: result.ok, message: result.message, code: result.code };
+    if (result.proposal) practiceMemory.current = { ...practiceMemory.current, proposalId: result.proposal.id };
+    return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal };
   };
 
   const start = (connectionMode: TransportOrigin = mode) => {
+    if (connectionMode === 'game') return;
     if (busyRef.current || connectedRef.current || voice.current) return;
     setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0);
     // Both audio paths begin in this user gesture; no capture happens on page load.
@@ -346,7 +364,7 @@ export function useMission() {
       if (hadPending || reply.cancel) await cancelPending(expected, reply.cancel ? 'interrupt' : 'supersede');
       if (expected !== generation.current || turn !== mockTurn.current || abort.signal.aborted) return true;
       if (reply.cancel) setInterrupted(true);
-      const message = reply.call ? simulationSpeech((await runTool(reply.call, abort.signal, expected)).message) : reply.message;
+      const message = reply.call ? simulationToolSpeech(await runTool(reply.call, abort.signal, expected)) : reply.message;
       if (expected === generation.current && turn === mockTurn.current) robotSays(message, source);
     } catch (cause) {
       if (expected === generation.current && turn === mockTurn.current && !(cause instanceof DOMException && cause.name === 'AbortError')) showError(cause);
@@ -390,6 +408,50 @@ export function useMission() {
   };
   const changeRelay = (relay: Relay) => changeControl(relay, current => api.setRelay(current, relay));
   const dockControl = (action: DockControl) => changeControl(action, current => api.dockControl(current, action));
+
+  const decideProposal = async (decision: 'confirm' | 'decline') => {
+    const current = viewRef.current; const proposal = current?.proposal;
+    if (!current || !proposal || proposal.status !== 'awaiting_confirmation' || proposalDecisionBusy.current
+      || busyRef.current || !connectedRef.current || current.status !== 'active') return;
+    const expected = generation.current; const connection = voice.current;
+    proposalDecisionBusy.current = true; setProposalConfirming(proposal.id); setProposalFailure(null); setError('');
+    try {
+      const result = await api.decideProposal(current, proposal.id, decision, api.requestId());
+      if (expected !== generation.current || !currentRound(result.view.roundId)) return;
+      // A newer chapter/result owns the view; old decisions cannot seed it.
+      if (viewRef.current!.chapterEpoch > result.view.chapterEpoch) return;
+      applyView(result.view);
+      if (result.decisionEvent) {
+        addGameEvent(result.decisionEvent);
+        if (connection && voice.current === connection && connectedRef.current) {
+          // A chapter-transition receipt is delivered once, as context only.
+          // It requests neither speech nor another physical operation.
+          if (!result.proposal || !connection.sendGameEvent(result.decisionEvent.messageId, result.proposal.id, result.decisionEvent.text)) {
+            setWarning('The decision is saved, but its delivery to Pip was not confirmed. Ask Pip to check the proposal status before continuing.');
+          }
+        }
+      }
+      if (result.ok && result.proposal?.status === 'committed') {
+        practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
+        effects.current.play('acknowledge');
+      }
+      await refreshRecord(result.view);
+    } catch (cause) {
+      if (expected !== generation.current || !currentRound(current.roundId)) return;
+      setProposalFailure(proposal.id); showError(cause);
+      // One explicit decision recovery read, never an autonomous status loop.
+      try {
+        const latest = await api.getSession(current.sessionId);
+        if (expected === generation.current && currentRound(latest.roundId)) {
+          applyView(latest);
+          if (latest.proposal?.id === proposal.id && latest.proposal.status !== 'awaiting_confirmation') setProposalFailure(null);
+        }
+      } catch { /* Keep the unconfirmed state and visible recovery instruction. */ }
+    } finally {
+      proposalDecisionBusy.current = false;
+      if (expected === generation.current) setProposalConfirming(null);
+    }
+  };
 
   const newBriefing = async (nextScenario: Scenario = scenario, nextKind: MissionKind = missionKind) => {
     await stop();
@@ -440,6 +502,7 @@ export function useMission() {
     } catch (cause) { if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) showError(cause); }
   };
   const chooseMode = (next: TransportOrigin) => {
+    if (next === 'game') return;
     if (connectedRef.current || voice.current || busyRef.current) return;
     setMode(next); setError(''); setWarning('');
     // Selection never relabels old captions as a different transport.
@@ -449,6 +512,7 @@ export function useMission() {
   const changeEffectsVolume = (value: number) => { setEffectsVolume(value); effects.current.setVolume(value); if (value > 0) void effects.current.unlock(); else void effects.current.close(); };
 
   const requestStart = (next: TransportOrigin = mode) => {
+    if (next === 'game') return;
     if (busyRef.current || connectedRef.current || voice.current) return;
     chooseMode(next);
     if (next === 'practice') start(next);
@@ -496,6 +560,7 @@ export function useMission() {
   return {
     stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
+    proposalConfirming, proposalFailure, decideProposal,
     error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
     start: () => requestStart(), stop, interrupt, send, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,

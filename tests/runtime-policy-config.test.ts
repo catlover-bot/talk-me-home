@@ -13,7 +13,6 @@ import { createGameServer } from '../game/server/http.ts'
 // recorded before the policy edit. No private baseline file is required in CI.
 const oldPromptTextSha256 = '91fab9ffdf310da7b33aea7f0e09e6c53114d30ebc173162332b7fe23f0ebe2a'
 const oldSerializedConfigSha256 = 'bbe17ef3fb2bdc8af2ef59ceb52fba4b174d462643b6131734fd62f5ccbebeea'
-const preservedSchemaSha256 = '0d9df292feca03f2e193f762c4e6212573f749716c48f19267221ea81556e945'
 const preservedTransportAndGreetingSha256 = '543788394cf464d7fc043d45e614a5a627afa997275f0c54bbed253ee0494cf9'
 const sha256 = (value: string) => createHash('sha256').update(value).digest('hex')
 
@@ -41,6 +40,7 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
     let audioClosed = 0
     let tokenResponses = 0
     let receivedHttpConfiguration: unknown
+    let ownerCookie = ''
     const errors: string[] = []
     const socket = new OfflineSocket()
     const server = createGameServer({
@@ -79,7 +79,9 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       const path = String(input)
       assert.ok(path.startsWith('/api/'), 'Only controlled loopback API requests are allowed.')
       const response = await nativeFetch(origin + path, { ...init,
+        headers: { ...Object.fromEntries(new Headers(init?.headers)), ...(ownerCookie ? { cookie: ownerCookie } : {}) },
         signal: AbortSignal.any([...(init?.signal ? [init.signal] : []), AbortSignal.timeout(2000)]) })
+      if (response.headers.get('set-cookie')) ownerCookie = response.headers.get('set-cookie')!.split(';')[0]!
       if (path.endsWith('/voice-token')) {
         tokenResponses++
         assert.equal(response.status, 200)
@@ -107,19 +109,25 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.equal(wire.session.system_prompt, robotPrompt)
       assert.notEqual(sha256(wire.session.system_prompt), oldPromptTextSha256)
       assert.notEqual(sha256(JSON.stringify(wire.session)), oldSerializedConfigSha256)
-      assert.match(wire.session.system_prompt.split('\n\n')[1], /^Information changes your knowledge, not your permission to act\./)
-      assert.match(wire.session.system_prompt, /Without permission, briefly propose the action and wait; do not call a mutation tool first/)
-      for (const name of ['interact_object', 'move_to']) {
+      assert.match(wire.session.system_prompt, /every physical action needs their separate console confirmation/)
+      assert.match(wire.session.system_prompt, /awaiting_confirmation means NOT EXECUTED/)
+      assert.match(wire.session.system_prompt, /none replaces pressing Confirm this action/)
+      assert.deepEqual(wire.session.tools.map(tool => tool.name), ['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status'])
+      for (const name of ['propose_interaction', 'propose_move']) {
         const tool = wire.session.tools.find(tool => tool.name === name)
         assert.ok(tool)
         assert.equal(tool.description, sessionConfig.tools.find(tool => tool.name === name)?.description)
-        assert.match(tool.description, /explicit current.*request/)
-        assert.match(tool.description, /still-valid player-agreed plan/)
+        assert.match(tool.description, /without executing|without moving/)
+        assert.match(tool.description, /console/)
+        assert.equal(tool.parameters.additionalProperties, false)
       }
       assert.equal(Object.hasOwn(wire.session, 'agent_id'), false)
       assert.equal(wire.session.output.voice, 'anna')
       assert.equal(sha256(JSON.stringify({ greeting: wire.session.greeting, input: wire.session.input, output: wire.session.output })), preservedTransportAndGreetingSha256)
-      assert.equal(sha256(JSON.stringify(wire.session.tools.map(({ type, name, parameters }) => ({ type, name, parameters })))), preservedSchemaSha256)
+      const statusTool = wire.session.tools.find(tool => tool.name === 'get_action_status')!
+      assert.deepEqual(statusTool.parameters.required, ['proposal_id'])
+      assert.equal(statusTool.parameters.additionalProperties, false)
+      assert.match(statusTool.description, /Do not poll/)
       assert.deepEqual(Object.keys(wire.session), ['system_prompt', 'greeting', 'tools', 'input', 'output'])
       // Developer-only regression facts stay out of the transmitted instructions.
       assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor|"enum"/)

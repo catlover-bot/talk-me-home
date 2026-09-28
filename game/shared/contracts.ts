@@ -24,9 +24,32 @@ export interface HumanView {
   relay?: Relay
   /** Working Return Dock instruments, not a local room camera. */
   returnDock?: { energy: 'empty' | 'primed' | 'stored'; readyForReturn: boolean; returnAuthorized: boolean }
+  /** Pip's communicated intention and verified decision, not equipment telemetry. */
+  proposal?: ActionProposal | null
+  /** Orders proposal snapshots independently of physical/controller revisions. */
+  proposalRevision?: number
 }
 
-export type ToolName = 'observe_room' | 'inspect_object' | 'interact_object' | 'move_to'
+export type ToolName = 'observe_room' | 'inspect_object' | 'propose_interaction' | 'propose_move' | 'get_action_status' | 'interact_object' | 'move_to'
+
+export type ProposedAction = { kind: 'interaction'; object: string; action: string } | { kind: 'move'; target: string }
+export interface ActionProposal {
+  id: string
+  roundId: string
+  chapter: Chapter
+  chapterEpoch: number
+  action: ProposedAction
+  label: string
+  status: 'awaiting_confirmation' | 'committed' | 'declined' | 'expired' | 'invalidated' | 'failed'
+  expiresAt: number
+  result?: ActionOutcome
+}
+export interface ProposalDecisionRequest {
+  roundId: string
+  requestId: string
+  proposalId: string
+  decision: 'confirm' | 'decline'
+}
 
 export interface ToolRequest {
   roundId: string
@@ -37,15 +60,17 @@ export interface ToolRequest {
   chapterEpoch?: number
 }
 
-export interface ToolResult {
+export interface ActionOutcome {
   ok: boolean
   message: string
-  code?: 'cancelled_before_execution' | 'precondition_failed' | 'outcome_unknown'
+  code?: 'cancelled_before_execution' | 'precondition_failed' | 'outcome_unknown' | 'awaiting_confirmation' | 'not_executed'
 }
+export interface ToolResult extends ActionOutcome { proposal?: ActionProposal }
 
 /** Forward only ok/message and a recognized outcome code; view stays human-only. */
 export interface ToolResponse extends ToolResult {
   view: HumanView
+  decisionEvent?: RecordedMessage
 }
 
 export interface PowerRequest {
@@ -65,15 +90,15 @@ export interface LifecycleRequest {
   reason?: CancelReason
 }
 
-export type TransportOrigin = 'practice' | 'live_voice' | 'live_text'
-export type InputMethod = 'typed' | 'speech' | 'robot'
+export type TransportOrigin = 'practice' | 'live_voice' | 'live_text' | 'game'
+export type InputMethod = 'typed' | 'speech' | 'robot' | 'game_event'
 
 /** Communicated text is a reported claim, never a physical-state update. */
 export interface MessageRequest {
   roundId: string
   messageId: string
   segmentId: string
-  role: 'human' | 'robot'
+  role: 'human' | 'robot' | 'game'
   text: string
   origin: TransportOrigin
   inputMethod: InputMethod
@@ -113,7 +138,7 @@ export interface TimelineEntry {
   roundId: string
   timestamp: number
   actor: 'human' | 'robot' | 'mission'
-  kind: 'power' | 'relay' | 'dock' | 'action' | 'hint' | 'checkpoint' | 'completion'
+  kind: 'power' | 'relay' | 'dock' | 'action' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
   text: string
   chapter?: Chapter
   chapterEpoch?: number

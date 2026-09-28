@@ -1,19 +1,28 @@
 import type { RobotCall } from "./api";
 import { requestId } from "./api";
-import type { Chapter } from '../shared/contracts';
+import type { Chapter, ToolResult } from '../shared/contracts';
 
 /** Practice retains only labels in validated local reports, never the human route map. */
-export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[] }
+export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string }
 export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter): PracticeMemory {
   const gates = [...message.matchAll(/\b(Northeast|Northwest|Southeast|Southwest|East|West|North|South) gate \((gallery\.g[1-5])\)/gi)]
     .map(match => ({ label: match[1]!.toLowerCase(), id: match[2]! }));
-  return { chapter, gates: gates.length ? gates : memory.chapter === chapter ? memory.gates : [] };
+  return { chapter, gates: gates.length ? gates : memory.chapter === chapter ? memory.gates : [],
+    ...(memory.chapter === chapter && memory.proposalId ? { proposalId: memory.proposalId } : {}) };
 }
 
 export interface MockReply {
   message: string;
   call?: RobotCall;
   cancel?: boolean;
+}
+
+/** Practice authors its own dialogue; real provider transcripts are never rewritten. */
+export function simulationToolSpeech(result: ToolResult): string {
+  if (result.code === 'awaiting_confirmation' && result.proposal?.status === 'awaiting_confirmation') {
+    return `I propose: ${result.proposal.label}. Please confirm on the console, or choose Not yet.`;
+  }
+  return simulationSpeech(result.message);
 }
 
 /** An explicit API-free test driver. It never decides whether a game action succeeds. */
@@ -26,6 +35,10 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
     message: "",
     call: { callId: requestId(), name, arguments: args },
   });
+  if (/\b(?:proposal|action status)\b/.test(text) && /\b(?:status|check|happened|result)\b/.test(text)) {
+    return memory?.proposalId ? call('get_action_status', { proposal_id: memory.proposalId })
+      : { message: 'I do not have a proposal to check yet. Tell me which local action you want to propose.' };
+  }
   if (
     /\b(stop|wait|pause|hold on|cancel)\b/.test(text) ||
     /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select|release|board|return|confirm)\b/.test(
@@ -71,7 +84,7 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
       const matches = memory.gates.filter(gate => new RegExp(`\\b${gate.label}\\b`).test(normalized) || normalized.includes(gate.id));
       if (matches.length !== 1 || /\b(and|or|then)\b/.test(normalized)) return { message: 'Which gate do you mean? Use one compass label from my local report. I can look around again if needed.' };
       if (/\b(inspect|examine|check|look at)\b/.test(text)) return call('inspect_object', { object: matches[0]!.id });
-      return call('move_to', { target: matches[0]!.id });
+      return call('propose_move', { target: matches[0]!.id });
     }
   }
   if (memory?.chapter === 'return_dock') {
@@ -82,10 +95,10 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
       if (contact && capsule) return { message: 'Should I inspect the contact or the capsule first?' };
       if (contact || capsule) return call('inspect_object', { object: contact ? 'return.contact' : 'return.capsule' });
     }
-    if (/\b(release|let go)\b/.test(text) && /\b(contact|it)\b/.test(text)) return call('interact_object', { object: 'return.contact', action: 'release_contact' });
-    if (/\b(hold|keep|press)\b/.test(text) && /\bcontact\b/.test(text)) return call('interact_object', { object: 'return.contact', action: 'hold_contact' });
-    if (/\b(board|aboard|enter|step into)\b/.test(text) && /\b(capsule|aboard)\b/.test(text)) return call('move_to', { target: 'return.aboard' });
-    if (/\b(confirm|begin|make)\b.*\breturn\b/.test(text) || /\b(return|go|come) home\b/.test(text)) return call('interact_object', { object: 'return.capsule', action: 'confirm_return' });
+    if (/\b(release|let go)\b/.test(text) && /\b(contact|it)\b/.test(text)) return call('propose_interaction', { object: 'return.contact', action: 'release_contact' });
+    if (/\b(hold|keep|press)\b/.test(text) && /\bcontact\b/.test(text)) return call('propose_interaction', { object: 'return.contact', action: 'hold_contact' });
+    if (/\b(board|aboard|enter|step into)\b/.test(text) && /\b(capsule|aboard)\b/.test(text)) return call('propose_move', { target: 'return.aboard' });
+    if (/\b(confirm|begin|make)\b.*\breturn\b/.test(text) || /\b(return|go|come) home\b/.test(text)) return call('propose_interaction', { object: 'return.capsule', action: 'confirm_return' });
     if (/\b(charge|store|authorize|revoke)\b/.test(text) && !/\b(see|observe|around)\b/.test(text)) return { message: 'The remote charge controller belongs to Mission Control. I can inspect or operate the local contact and capsule.' };
     if (/^yes[.! ]*$/.test(text)) return { message: 'Please tell me the next local action. A general yes does not confirm the return.' };
   }
@@ -93,7 +106,7 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
     const positions = ['neutral', 'anchor', 'bridge'].filter(position => new RegExp(`\\b${position}\\b`).test(text));
     if (positions.length !== 1 || /\b(and|or|then)\b/.test(text))
       return { message: 'Which one selector position should I use?' };
-    return call('interact_object', { object: 'latch', action: `select_${positions[0]}` });
+    return call('propose_interaction', { object: 'latch', action: `select_${positions[0]}` });
   }
   if (
     /\b(inspect|examine|check|look at|tell me about|what does|how does|is (?:the )?(?:latch|lever|door|conveyor))\b/.test(
@@ -127,7 +140,7 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
       text,
     );
     if (explicitLatch || holdDoorOpen) {
-      return call("interact_object", { object: "latch", action: "latch_open" });
+      return call("propose_interaction", { object: "latch", action: "latch_open" });
     }
     return { message: "Which local interaction would you like me to perform?" };
   }
@@ -153,13 +166,13 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
         (path === "through" && target === "door") ||
         (path === "across" && target === "conveyor");
       if (namedPlatform || knownPath)
-        return call("move_to", { target: "far_side" });
+        return call("propose_move", { target: "far_side" });
     } else if (
       /\bcross (?:the )?conveyor(?:\s+(?:please|now|when safe))?[.!?]*$/.test(
         text,
       )
     ) {
-      return call("move_to", { target: "far_side" });
+      return call("propose_move", { target: "far_side" });
     }
     return {
       message:

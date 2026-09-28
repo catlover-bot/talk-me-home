@@ -53,14 +53,14 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
           {mode === 'practice' && <button className="primary-button voice-launch" onClick={onVoice} disabled={busy}>Play with voice <span aria-hidden="true">↗</span></button>}
           <button className={mode === 'practice' ? 'secondary-button' : 'primary-button'} onClick={onStart} disabled={busy} aria-describedby="connection-explanation">{busy ? 'Preparing mission…' : mode === 'practice' ? 'Start Practice' : mode === 'live_voice' ? 'Start with Voice' : 'Start with Text'}</button>
         </div>
-        <p className="launch-note">Voice starts with a local microphone check.<br/>No countdown. Take your time.</p>
+        <p className="launch-note">Talk with Pip. Confirm proposed actions on the console.<br/>Spoken “yes” is not a confirmation.</p>
         <details className="quick-guide">
           <summary>Quick guide <span>Optional</span></summary>
           <p>The remote sensors are damaged. You have the plans; Pip supplies the local checks.</p>
           <ol>
             <li><strong>Your map</strong><p>Read the reference documents. Ask Pip to look around and compare what you know.</p></li>
             <li><strong>Your controls</strong><p>You handle remote equipment. Pip has local eyes and hands.</p></li>
-            <li><strong>Talk with Pip</strong><p>Speak or type. Captions preserve both sides of your conversation.</p></li>
+            <li><strong>Talk with Pip</strong><p>Speak or type, then confirm Pip’s exact proposed action on the console. Looking and inspecting need no confirmation.</p></li>
             <li><strong>Pause when needed</strong><p>Pause keeps progress and ends any Live call. Resume explicitly. Refresh or server restart loses this mission.</p></li>
           </ol>
         </details>

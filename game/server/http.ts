@@ -67,7 +67,7 @@ export function createGameServer(options: ServerOptions = {}) {
     try { const parsed = new URL(origin); return parsed.origin !== origin || !['http:', 'https:'].includes(parsed.protocol) }
     catch { return true }
   }))) throw new Error('Production requires explicit game origins.')
-  const browserAccess = new BrowserAccess(options.demoAccessCode, options.secureCookies ?? true)
+  const browserAccess = new BrowserAccess(options.demoAccessCode, options.secureCookies ?? production)
   const liveEnabled = () => Boolean(apiKey && (process.env.GAME_DISABLE_LIVE !== '1' || options.allowTestProvider) && (!production || options.publicLiveEnabled && options.demoAccessCode && options.demoAccessCode.length >= 16 && options.admission))
   const accessStatus = (request: IncomingMessage, justAuthorized = false) => {
     const enabled = liveEnabled()
@@ -101,17 +101,17 @@ export function createGameServer(options: ServerOptions = {}) {
       }
       if (request.method === 'POST' && path === '/api/sessions') {
         const setup = await jsonBody(request)
-        const owner = production ? browserAccess.owner(request, response) : undefined
+        const owner = browserAccess.owner(request, response)
         if (exactObject(setup, [])) return reply(response, 201, store.create('classic', 'training', owner))
         if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner))
         if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
         return reply(response, 201, store.create(setup.scenario, 'training', owner))
       }
-      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
+      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|proposal-decision|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
       if (!route) throw new GameError(404, 'This game endpoint does not exist.')
       const id = route[1]!
       const action = route[2]
-      if (production) store.assertOwner(id, browserAccess.owner(request))
+      store.assertOwner(id, browserAccess.owner(request))
       if (request.method === 'GET' && !action) return reply(response, 200, store.get(id))
       if (request.method === 'GET' && (action === 'record' || action === 'recap')) {
         const roundId = requestUrl.searchParams.get('roundId') ?? ''
@@ -124,6 +124,7 @@ export function createGameServer(options: ServerOptions = {}) {
       if (action === 'relay' || action === 'dock-control') return reply(response, 200, await store.control(id, action === 'relay' ? 'relay' : 'dock', body))
       if (action === 'annotations') return reply(response, 200, await store.annotate(id, body))
       if (action === 'tools') return reply(response, 200, await store.tool(id, body))
+      if (action === 'proposal-decision') return reply(response, 200, await store.decideProposal(id, body, browserAccess.owner(request)))
       if (action === 'messages') return reply(response, 200, await store.message(id, body))
       if (action === 'notebook') return reply(response, 200, await store.notebook(id, body))
       if (action === 'hint') return reply(response, 200, await store.hint(id, body))

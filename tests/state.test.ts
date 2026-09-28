@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { test } from 'node:test'
-import type { HumanView, ToolRequest } from '../game/shared/contracts.js'
+import type { HumanView, ToolRequest, ToolResponse } from '../game/shared/contracts.js'
 import { applyHumanPower, applyRobotTool, conveyorRunning, doorOpen, humanView, initialState, robotView, type GameState } from '../game/server/state.js'
 import { GameError, SessionStore } from '../game/server/sessions.js'
 
@@ -10,6 +10,10 @@ const cross = (state: GameState) => applyRobotTool(state, 'move_to', { target: '
 const command = (view: HumanView, fields = {}) => ({ roundId: view.roundId, requestId: randomUUID(), ...fields })
 const tool = (view: HumanView, fields: Partial<ToolRequest> = {}): ToolRequest => ({ roundId: view.roundId, callId: randomUUID(), actionEpoch: view.actionEpoch, name: 'interact_object', arguments: { object: 'latch', action: 'latch_open' }, ...fields })
 const tick = () => new Promise<void>((resolve) => setImmediate(resolve))
+const confirm = (store: SessionStore, result: ToolResponse) => {
+  assert.equal(result.proposal?.status, 'awaiting_confirmation')
+  return store.decideProposal(result.view.sessionId, { roundId: result.view.roundId, requestId: randomUUID(), proposalId: result.proposal.id, decision: 'confirm' }, 'test-owner')
+}
 
 test('initial state derives an open Door and running Conveyor from shared Power', () => {
   const state = initialState()
@@ -148,7 +152,7 @@ test('explicit desired Power state is idempotent', () => {
 
 test('session identity, schema and stale rounds are validated outside model arguments', async () => {
   const store = new SessionStore()
-  const view = store.create()
+  const view = store.create('classic', 'training', 'test-owner')
   assert.throws(() => store.get('invalid'), GameError)
   assert.throws(() => store.tool(view.sessionId, { ...tool(view), role: 'human' }), GameError)
   assert.throws(() => store.power(view.sessionId, { ...command(view), revision: 0, powerOn: false, role: 'robot' }), GameError)
@@ -158,19 +162,22 @@ test('session identity, schema and stale rounds are validated outside model argu
   assert.throws(() => store.power(view.sessionId, command(view, { revision: 0, powerOn: false })), /earlier round/)
 })
 
-test('concurrent duplicate calls commit once and identifier conflicts are rejected', async () => {
+test('concurrent duplicate calls share one proposal; duplicate confirmations commit once and identifier conflicts are rejected', async () => {
   const store = new SessionStore()
-  const view = store.create()
+  const view = store.create('classic', 'training', 'test-owner')
   const request = tool(view)
   const [first, second] = await Promise.all([store.tool(view.sessionId, request), store.tool(view.sessionId, { ...request })])
   assert.deepEqual(first, second)
-  assert.equal(first.view.revision, 1)
+  assert.equal(first.view.revision, 0)
+  const [confirmed, duplicate] = await Promise.all([confirm(store, first), confirm(store, second)])
+  assert.deepEqual(confirmed, duplicate)
+  assert.equal(confirmed.view.revision, 1)
   assert.throws(() => store.tool(view.sessionId, { ...request, name: 'observe_room', arguments: {} }), /different request/)
 })
 
 test('duplicate Power retries return their original result and out-of-order revisions cannot overwrite', async () => {
   const store = new SessionStore()
-  const view = store.create()
+  const view = store.create('classic', 'training', 'test-owner')
   const request = command(view, { revision: view.revision, powerOn: false })
   const first = await store.power(view.sessionId, request)
   assert.deepEqual(await store.power(view.sessionId, request), first)
@@ -180,10 +187,13 @@ test('duplicate Power retries return their original result and out-of-order revi
 
 test('latest preconditions are checked after a delayed tool reaches its commit boundary', async () => {
   let release!: () => void
+  let hold = false
   const gate = new Promise<void>((resolve) => { release = resolve })
-  const store = new SessionStore({ beforeToolCommit: () => gate })
-  const view = store.create()
-  const pending = store.tool(view.sessionId, tool(view))
+  const store = new SessionStore({ beforeToolCommit: async () => { if (hold) await gate } })
+  const view = store.create('classic', 'training', 'test-owner')
+  const proposed = await store.tool(view.sessionId, tool(view))
+  hold = true
+  const pending = confirm(store, proposed)
   await tick()
   await store.power(view.sessionId, command(view, { revision: 0, powerOn: false }))
   release()
@@ -197,7 +207,7 @@ test('accepted cancellation discards pending actions while preserving committed 
   let release!: () => void
   const gate = new Promise<void>((resolve) => { release = resolve })
   const store = new SessionStore({ beforeToolCommit: () => gate })
-  const view = store.create()
+  const view = store.create('classic', 'training', 'test-owner')
   const pending = store.tool(view.sessionId, tool(view))
   await tick()
   const canceled = await store.lifecycle(view.sessionId, 'cancel', command(view))
@@ -205,7 +215,7 @@ test('accepted cancellation discards pending actions while preserving committed 
   const result = await pending
   assert.equal(result.ok, false)
   assert.match(result.message, /canceled before/)
-  const committed = await store.tool(view.sessionId, tool(canceled))
+  const committed = await confirm(store, await store.tool(view.sessionId, tool(canceled)))
   assert.equal(committed.ok, true)
   const again = await store.lifecycle(view.sessionId, 'cancel', command(committed.view))
   const observation = await store.tool(view.sessionId, tool(again, { name: 'inspect_object', arguments: { object: 'latch' } }))
@@ -216,8 +226,8 @@ test('reset rejects a delayed previous-round action and does not mix independent
   let release!: () => void
   const gate = new Promise<void>((resolve) => { release = resolve })
   const store = new SessionStore({ beforeToolCommit: () => gate })
-  const first = store.create()
-  const second = store.create()
+  const first = store.create('classic', 'training', 'test-owner')
+  const second = store.create('classic', 'training', 'test-owner')
   const pending = store.tool(first.sessionId, tool(first))
   await tick()
   const reset = await store.lifecycle(first.sessionId, 'reset', command(first))
@@ -230,7 +240,7 @@ test('reset rejects a delayed previous-round action and does not mix independent
 
 test('stop blocks pending and new actions; resume permits fresh calls; end requires reset', async () => {
   const store = new SessionStore()
-  const view = store.create()
+  const view = store.create('classic', 'training', 'test-owner')
   const stopped = await store.lifecycle(view.sessionId, 'stop', command(view))
   assert.equal((await store.tool(view.sessionId, tool(stopped))).ok, false)
   await assert.rejects(store.power(view.sessionId, command(stopped, { revision: stopped.revision, powerOn: false })), /stopped/)
@@ -247,7 +257,7 @@ test('stop and end accepted before commit discard delayed robot actions', async 
     let release!: () => void
     const gate = new Promise<void>((resolve) => { release = resolve })
     const store = new SessionStore({ beforeToolCommit: () => gate })
-    const view = store.create()
+    const view = store.create('classic', 'training', 'test-owner')
     const pending = store.tool(view.sessionId, tool(view))
     await tick()
     const stopped = await store.lifecycle(view.sessionId, action, command(view))
@@ -260,11 +270,11 @@ test('stop and end accepted before commit discard delayed robot actions', async 
 test('session memory is bounded and idle sessions expire', () => {
   let now = 0
   const store = new SessionStore({ now: () => now, maxSessions: 1, idleMilliseconds: 100 })
-  const view = store.create()
-  assert.throws(() => store.create(), /session limit/)
+  const view = store.create('classic', 'training', 'test-owner')
+  assert.throws(() => store.create('classic', 'training', 'test-owner'), /session limit/)
   now = 101
   assert.throws(() => store.get(view.sessionId), /unavailable/)
-  assert.ok(store.create().sessionId)
+  assert.ok(store.create('classic', 'training', 'test-owner').sessionId)
 })
 
 const select = (state: GameState, position: 'neutral' | 'anchor' | 'bridge') => applyRobotTool(state, 'interact_object', { object: 'latch', action: `select_${position}` })
@@ -360,7 +370,7 @@ test('Maintenance plate is learned only on inspection and never includes the man
 
 test('scenario and hidden plate remain fixed across pause and resume; only reset selects a new scenario', async () => {
   const store = new SessionStore()
-  let view = store.create('maintenance')
+  let view = store.create('maintenance', 'training', 'test-owner')
   const before = await store.tool(view.sessionId, tool(view, { name: 'inspect_object', arguments: { object: 'latch' } }))
   view = await store.lifecycle(view.sessionId, 'stop', command(view))
   view = await store.lifecycle(view.sessionId, 'resume', command(view))
@@ -375,23 +385,34 @@ test('scenario and hidden plate remain fixed across pause and resume; only reset
   assert.doesNotMatch(classic.message, /selector|crescent|kite/i)
 })
 
-test('Maintenance revalidates selector immediately before a delayed latch commits', async () => {
+test('Maintenance prevents selector replacement under a pending Latch and rejects an invalidated delayed confirmation', async () => {
   let release!: () => void
-  let calls = 0
+  let hold = false
   const gate = new Promise<void>((resolve) => { release = resolve })
-  const store = new SessionStore({ beforeToolCommit: async () => { if (++calls === 3) await gate } })
-  let view = store.create('maintenance')
+  const store = new SessionStore({ beforeToolCommit: async () => { if (hold) await gate } })
+  let view = store.create('maintenance', 'training', 'test-owner')
   const inspection = await store.tool(view.sessionId, tool(view, { name: 'inspect_object', arguments: { object: 'latch' } }))
   const correct = inspection.message.includes('Crescent') ? 'anchor' : 'bridge'
   const wrong = correct === 'anchor' ? 'bridge' : 'anchor'
-  view = (await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${correct}` } }))).view
-  const pending = store.tool(view.sessionId, tool(view))
+  view = (await confirm(store, await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${correct}` } })))).view
+  const proposal = await store.tool(view.sessionId, tool(view))
+  const replacement = await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${wrong}` } }))
+  assert.equal(replacement.ok, false)
+  assert.equal(replacement.proposal?.id, proposal.proposal?.id)
+  assert.equal(replacement.view.revision, view.revision)
+  hold = true
+  const pending = confirm(store, proposal)
   await tick()
-  const changed = await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${wrong}` } }))
+  view = await store.lifecycle(view.sessionId, 'cancel', command(view))
+  hold = false
+  const changed = await confirm(store, await store.tool(view.sessionId, tool(view, { arguments: { object: 'latch', action: `select_${wrong}` } })))
   release()
   const result = await pending
   assert.equal(result.ok, false)
-  assert.match(result.message, /catch did not seat/)
+  assert.equal(result.proposal?.status, 'invalidated')
   assert.equal(result.view.revision, changed.view.revision)
   assert.equal(result.view.completed, false)
+  const rechecked = await confirm(store, await store.tool(view.sessionId, tool(changed.view)))
+  assert.equal(rechecked.ok, false)
+  assert.match(rechecked.message, /catch did not seat/)
 })

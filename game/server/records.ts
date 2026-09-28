@@ -7,7 +7,7 @@ type LocalEvent = {
   roundId: string
   timestamp: number
   audience: 'robot' | 'human' | 'public'
-  kind: 'observation' | 'action' | 'power' | 'relay' | 'dock' | 'hint' | 'checkpoint' | 'completion'
+  kind: 'observation' | 'action' | 'power' | 'relay' | 'dock' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
   text: string
   order: number
   chapter: Chapter
@@ -123,7 +123,7 @@ export class RoundRecords {
   }
 
   publicRecord(completed: boolean): MissionRecord {
-    const timeline: TimelineEntry[] = this.events.filter((event) => ['power', 'relay', 'dock', 'action', 'hint', 'checkpoint', 'completion'].includes(event.kind)).map((event) => ({
+    const timeline: TimelineEntry[] = this.events.filter((event) => ['power', 'relay', 'dock', 'action', 'confirmation', 'hint', 'checkpoint', 'completion'].includes(event.kind)).map((event) => ({
       id: event.id, roundId: event.roundId, timestamp: event.timestamp,
       actor: event.kind === 'action' ? 'robot' : ['completion', 'checkpoint'].includes(event.kind) ? 'mission' : 'human',
       kind: event.kind as TimelineEntry['kind'], text: event.text,

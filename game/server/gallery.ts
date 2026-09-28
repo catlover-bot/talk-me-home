@@ -17,6 +17,11 @@ const gates: Gate[] = [
 ]
 const adjacent = (room: GalleryRoom) => gates.filter(gate => gate.from === room || gate.to === room)
 const direction = (gate: Gate, room: GalleryRoom) => gate.from === room ? gate.outward : gate.inward
+/** Only one locally reachable direction may appear in a communicated proposal. */
+export const localGateDirection = (state: GameState, target: string): string | null => {
+  const gate = adjacent(state.gallery.room).find(candidate => candidate.id === target)
+  return gate ? direction(gate, state.gallery.room) : null
+}
 const obstructed = (state: GameState, gate: Gate) => gate.id === (state.gallery.configuration === 'a' ? 'gallery.g3' : 'gallery.g5')
 const reject = (message: string): ToolResult => ({ ok: false, message })
 

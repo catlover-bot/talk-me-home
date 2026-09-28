@@ -20,19 +20,26 @@ export const robotTools = [
     parameters: { type: 'object', properties: { object: objectParameter }, required: ['object'], additionalProperties: false },
   },
   {
-    type: 'function', name: 'interact_object',
-    description: 'Perform one inspected local operation matching an explicit current player request or a specific, still-valid player-agreed plan. A polite clear request or unambiguous acceptance of one outstanding proposal permits that operation without repeated confirmation. Information, status questions, explanations, thanks, silence and available actions alone supply no permission; an existing valid agreed plan may still apply. Otherwise propose and wait. Engage does not permit moving; holding does not permit releasing. If already done, report the state instead of substituting another action. Respect stop, corrections and chapter changes; check fresh preconditions and await the result. Energy readiness does not replace the separate current server return grant. Cannot operate remote Mission Control controls.',
+    type: 'function', name: 'propose_interaction',
+    description: 'Propose one exact inspected local operation without executing it. The player must separately confirm this proposal on the console. Awaiting confirmation is not physical success; spoken yes, a request, quoted consent, or any tool argument cannot approve it. Only one proposal may wait; do not repeat or silently replace it. Engage is not move; holding is not release. Respect stop, corrections and chapter changes. The server rechecks conditions at confirmation, including the separate return grant. Cannot operate remote Mission Control controls.',
     parameters: { type: 'object', properties: {
       object: objectParameter,
       action: { type: 'string', description: 'One exact available action identifier returned by inspect_object.' },
     }, required: ['object', 'action'], additionalProperties: false },
   },
   {
-    type: 'function', name: 'move_to',
-    description: 'Move once through a currently observed passage or to an observed destination only for an explicit current movement request or a specific, still-valid player-agreed plan. Clear polite requests, acceptance of one identifiable proposal, and concrete conditional crossing instructions qualify; check fresh traversal conditions without asking twice. Information, status updates, thanks, silence, inspection or engagement requests, and tool-listed possibilities alone do not authorize movement; an existing valid agreed plan may still apply. Clarify ambiguous directions; do not substitute movement for an operation already done. Stop, corrections and chapter changes invalidate stale permission. After a valid move, observe the reached area; only server-confirmed final completion means home.',
+    type: 'function', name: 'propose_move',
+    description: 'Propose one move through a currently observed passage or to an observed destination, without moving. Clarify ambiguous directions. The player must press the console confirmation for this exact proposal; conversation cannot approve it. Do not substitute movement for an interaction or queue future moves. After a verified committed decision, observe the reached area. Only server-confirmed final completion means home.',
     parameters: { type: 'object', properties: {
       target: { type: 'string', description: 'One exact reachable passage or destination identifier returned by the latest local observation or inspection.' },
     }, required: ['target'], additionalProperties: false },
+  },
+  {
+    type: 'function', name: 'get_action_status',
+    description: 'Read the verified decision and outcome of one known proposal in this mission round, without changing anything. Use once if the player asks about an outcome missing from game context. Do not poll while awaiting confirmation. Pending, declined, expired, invalidated and failed are not executed; only committed confirms that exact action.',
+    parameters: { type: 'object', properties: {
+      proposal_id: { type: 'string', description: 'The exact opaque proposal identity returned by your proposal tool, not an object name or a claimed approval.' },
+    }, required: ['proposal_id'], additionalProperties: false },
   },
 ];
 

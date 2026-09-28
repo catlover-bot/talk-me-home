@@ -7,6 +7,7 @@ import type { HumanView, ToolResponse } from '../game/shared/contracts.js'
 import { createGameServer } from '../game/server/http.js'
 
 type TestServerOptions = Parameters<typeof createGameServer>[0]
+const ownerCookies = new Map<string, string>()
 async function withServer(callback: (base: string) => Promise<void>, options: TestServerOptions = {}) {
   const server = createGameServer({ apiKey: '', allowTestProvider: Boolean(options.fetch), ...options })
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
@@ -18,7 +19,15 @@ async function withServer(callback: (base: string) => Promise<void>, options: Te
 }
 
 async function post(base: string, path: string, body: unknown, headers = {}) {
-  return fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body), signal: AbortSignal.timeout(5000) })
+  const response = await fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', cookie: ownerCookies.get(base) ?? '', ...headers }, body: JSON.stringify(body), signal: AbortSignal.timeout(5000) })
+  const owner = response.headers.getSetCookie().find(value => value.startsWith('tmh_browser='))
+  if (owner) ownerCookies.set(base, owner.split(';')[0]!)
+  return response
+}
+const get = (base: string, path: string) => fetch(`${base}${path}`, { headers: { cookie: ownerCookies.get(base) ?? '' }, signal: AbortSignal.timeout(5000) })
+async function confirm(base: string, path: string, proposal: ToolResponse): Promise<ToolResponse> {
+  assert.equal(proposal.code, 'awaiting_confirmation')
+  return (await post(base, `${path}/proposal-decision`, { roundId: proposal.view.roundId, requestId: randomUUID(), proposalId: proposal.proposal!.id, decision: 'confirm' })).json()
 }
 async function create(base: string): Promise<HumanView> {
   const response = await post(base, '/api/sessions', {})
@@ -36,15 +45,15 @@ test('HTTP cooperative path uses separate routes and returns authoritative compl
     assert.doesNotMatch(JSON.stringify(view), /latch|conveyor|doorOpen|robotLocation/i)
     const observation = await (await post(base, `${path}/tools`, tool(view, 'observe_room', {}))).json() as ToolResponse
     assert.match(observation.message, /near-side safe platform/)
-    const latched = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    const latched = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse)
     assert.equal(latched.ok, true)
     view = latched.view
     view = await (await post(base, `${path}/power`, { ...lifecycle(view), revision: view.revision, powerOn: false })).json() as HumanView
     assert.equal(view.completed, false)
-    const crossed = await (await post(base, `${path}/tools`, tool(view, 'move_to', { target: 'far_side' }))).json() as ToolResponse
+    const crossed = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'move_to', { target: 'far_side' }))).json() as ToolResponse)
     assert.equal(crossed.ok, true)
     assert.equal(crossed.view.completed, true)
-    assert.equal((await (await fetch(`${base}${path}`)).json()).completed, true)
+    assert.equal((await (await get(base, path)).json()).completed, true)
   })
 })
 
@@ -59,6 +68,26 @@ test('HTTP rejects forged roles, unknown sessions and unauthorized action sets',
     assert.equal(denied.ok, false)
     assert.equal(denied.view.powerOn, true)
     assert.equal((await post(base, `${path}/human-move`, {})).status, 404)
+  })
+})
+
+test('local development confirmation is browser-owned, exact, idempotent and unavailable as a model tool', async () => {
+  await withServer(async base => {
+    const view = await create(base), owner = ownerCookies.get(base)!
+    const path = `/api/sessions/${view.sessionId}`
+    const pending = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    assert.equal(pending.code, 'awaiting_confirmation'); assert.equal(pending.view.revision, 0)
+    const decision = { roundId: view.roundId, requestId: randomUUID(), proposalId: pending.proposal!.id, decision: 'confirm' }
+    await post(base, '/api/sessions', {}, { cookie: '' })
+    assert.equal((await post(base, `${path}/proposal-decision`, decision)).status, 404)
+    assert.equal((await post(base, `${path}/proposal-decision`, decision, { cookie: '' })).status, 404)
+    assert.equal((await post(base, `${path}/proposal-decision`, { ...decision, arguments: { action: 'different' } }, { cookie: owner })).status, 400)
+    const fakeTool = await (await post(base, `${path}/tools`, tool(view, 'proposal-decision', decision), { cookie: owner })).json() as ToolResponse
+    assert.equal(fakeTool.ok, false)
+    const committed = await (await post(base, `${path}/proposal-decision`, decision, { cookie: owner })).json() as ToolResponse
+    assert.equal(committed.proposal?.status, 'committed'); assert.equal(committed.view.revision, 1)
+    assert.deepEqual(await (await post(base, `${path}/proposal-decision`, decision, { cookie: owner })).json(), committed)
+    assert.equal((await post(base, `${path}/messages`, committed.decisionEvent, { cookie: owner })).status, 400)
   })
 })
 
@@ -118,7 +147,7 @@ test('missing credentials block Live explicitly while Mock state remains availab
     const response = await post(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId })
     assert.equal(response.status, 503)
     assert.match((await response.json()).error, /Mock \/ Simulation remains available/)
-    assert.equal((await fetch(`${base}/api/sessions/${view.sessionId}`)).status, 200)
+    assert.equal((await get(base, `/api/sessions/${view.sessionId}`)).status, 200)
   })
 })
 
@@ -216,17 +245,17 @@ test('HTTP Maintenance setup hides the plate, exposes only an inspected module, 
     const path = `/api/sessions/${view.sessionId}`
     const inspection = await (await post(base, `${path}/tools`, tool(view, 'inspect_object', { object: 'latch' }))).json() as ToolResponse
     const correct = inspection.message.includes('Crescent') ? 'anchor' : 'bridge'
-    const neutral = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    const neutral = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse)
     assert.equal(neutral.ok, false)
-    const selected = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: `select_${correct}` }))).json() as ToolResponse
+    const selected = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: `select_${correct}` }))).json() as ToolResponse)
     view = selected.view
-    const latched = await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse
+    const latched = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'interact_object', { object: 'latch', action: 'latch_open' }))).json() as ToolResponse)
     view = latched.view
     view = await (await post(base, `${path}/power`, { ...lifecycle(view), revision: view.revision, powerOn: false })).json() as HumanView
-    const crossed = await (await post(base, `${path}/tools`, tool(view, 'move_to', { target: 'far_side' }))).json() as ToolResponse
+    const crossed = await confirm(base, path, await (await post(base, `${path}/tools`, tool(view, 'move_to', { target: 'far_side' }))).json() as ToolResponse)
     assert.equal(crossed.view.completed, true)
-    const debrief = await (await fetch(`${base}${path}/record?roundId=${view.roundId}`)).json()
-    assert.equal(debrief.debrief.timeline.at(-1).kind, 'completion')
+    const debrief = await (await get(base, `${path}/record?roundId=${view.roundId}`)).json()
+    assert.equal(debrief.debrief.timeline.filter((entry: { kind: string }) => entry.kind === 'completion').length, 1)
   })
 })
 
@@ -235,7 +264,7 @@ test('HTTP notebook, hint and recap routes remain round scoped and never export 
     const view = await create(base)
     const path = `/api/sessions/${view.sessionId}`
     await post(base, `${path}/tools`, tool(view, 'observe_room', {}))
-    const initial = await (await fetch(`${base}${path}/record?roundId=${view.roundId}`)).json()
+    const initial = await (await get(base, `${path}/record?roundId=${view.roundId}`)).json()
     assert.deepEqual(initial.messages, [])
     assert.equal(initial.debrief, null)
     assert.doesNotMatch(JSON.stringify(initial), /Latch|Conveyor|near-side/)
@@ -245,14 +274,14 @@ test('HTTP notebook, hint and recap routes remain round scoped and never export 
     assert.equal(note.text, communicated.text)
     await post(base, `${path}/notebook`, { ...lifecycle(view), kind: 'note', text: 'PRIVATE_NOTE_ONLY' })
     assert.equal((await post(base, `${path}/hint`, { ...lifecycle(view), level: 1 })).status, 200)
-    const recap = await (await fetch(`${base}${path}/recap?roundId=${view.roundId}`)).json()
+    const recap = await (await get(base, `${path}/recap?roundId=${view.roundId}`)).json()
     assert.match(recap.entries[0].text, /near-side/)
     assert.doesNotMatch(JSON.stringify(recap), /PRIVATE_NOTE_ONLY/)
-    assert.equal((await fetch(`${base}${path}/recap`)).status, 400)
-    assert.equal((await fetch(`${base}${path}/record?roundId=${view.roundId}&role=robot`)).status, 400)
+    assert.equal((await get(base, `${path}/recap`)).status, 400)
+    assert.equal((await get(base, `${path}/record?roundId=${view.roundId}&role=robot`)).status, 400)
     assert.equal((await post(base, `${path}/recap`, {})).status, 405)
     await post(base, `${path}/reset`, lifecycle(view))
-    assert.equal((await fetch(`${base}${path}/recap?roundId=${view.roundId}`)).status, 409)
+    assert.equal((await get(base, `${path}/recap?roundId=${view.roundId}`)).status, 409)
     assert.equal((await post(base, `${path}/messages`, communicated)).status, 409)
   })
 })
