@@ -36,7 +36,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'get_action_status',
-    description: 'Read the verified decision and outcome of one known proposal in this mission round, without changing anything. Use once if the player asks about an outcome missing from game context. Do not poll while awaiting confirmation. Pending, declined, expired, invalidated and failed are not executed; only committed confirms that exact action.',
+    description: 'Read the verified decision and outcome of one known proposal in this mission round, without changing anything and without asking permission. Use once when a current request needs a genuinely missing result, then continue that request. An existing committed receipt already proves that exact past action. Do not poll while awaiting confirmation. Pending, declined, expired, invalidated and failed are not executed. This check cannot authorize another action.',
     parameters: { type: 'object', properties: {
       proposal_id: { type: 'string', description: 'The exact opaque proposal identity returned by your proposal tool, not an object name or a claimed approval.' },
     }, required: ['proposal_id'], additionalProperties: false },

@@ -22,7 +22,8 @@ if (target) {
   if (url.origin !== target || url.username || url.password || !['http:', 'https:'].includes(url.protocol)) throw new Error('Target must be an exact HTTP(S) origin without credentials or a path.');
   if (url.protocol !== 'https:' && !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('A remote approved target requires HTTPS.');
 }
-const directory = resolve('.validation/goal-004e-offline');
+const evidenceBase = '.validation/goal-004e-followup-offline';
+const directory = resolve(evidenceBase);
 mkdirSync(join(directory, 'screenshots'), { recursive: true });
 const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', GAME_QA_PREBUILT: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };
 const children = new Set();
@@ -120,7 +121,7 @@ async function productionSmoke(origin) {
     await page.evaluate(() => scrollTo(0, 0));
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${name}: horizontal overflow`);
     await page.screenshot({ path: join(directory, 'screenshots', `${name}.png`), animations: 'disabled', fullPage: true });
-    report.screenshots.push(`.validation/goal-004e-offline/screenshots/${name}.png`);
+    report.screenshots.push(`${evidenceBase}/screenshots/${name}.png`);
   };
   report.confirmedActions = { confirmations: 0, confirmedHome: false, screenshots: [] };
   const say = async (text, { decision = 'confirm' } = {}) => {
@@ -280,7 +281,7 @@ try {
   for (const child of children) await stop(child);
   report.finishedAt = new Date().toISOString(); report.status = successful ? 'passed' : 'failed';
   report.cleanup = 'Owned browser contexts and child process groups stopped; no provider connection opened.';
-  const output = smokeOnly ? '.validation/goal-004e-offline-smoke.json' : '.validation/goal-004e-offline.json';
+  const output = `${evidenceBase}${smokeOnly ? '-smoke' : ''}.json`;
   writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
   console.log(`Offline QA ${report.status}. Evidence: ${output}`);
 }

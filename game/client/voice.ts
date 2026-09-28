@@ -1,5 +1,6 @@
 import { BrowserAudio, microphoneError, type VoiceAudio } from './audio.ts';
 import { MissionServiceError } from './api.ts';
+import type { ActionOutcome, ActionProposal, Chapter, RecordedMessage } from '../shared/contracts';
 import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion, type CancellationReason } from './voice-protocol.ts';
 export type { ToolCall, TranscriptEntry, VoiceStatus, VoiceInputState, ReplyCompletion, CancellationReason } from './voice-protocol.ts';
 
@@ -44,6 +45,17 @@ export interface VoiceDependencies {
   createSocket(url: URL): VoiceSocket;
   handshakeMs?: number;
   endGraceMs?: number;
+  acknowledgementIdleMs?: number;
+  acknowledgementExpiryMs?: number;
+  decisionInputGraceMs?: number;
+}
+
+/** Constructed only from the owner decision response, never player/model text. */
+export interface VerifiedDecisionReceipt {
+  event: RecordedMessage;
+  proposal: ActionProposal;
+  result: ActionOutcome;
+  checkpoint: { chapter: Chapter; chapterEpoch: number; completed: boolean };
 }
 
 /** One instance owns one provider connection. Reconnect creates a fresh instance. */
@@ -67,7 +79,12 @@ export class LiveVoice {
   private microphoneActive = false;
   private recap?: string;
   private captureContext?: () => unknown;
-  private gameEvents = new Set<string>();
+  private gameEvents = new Map<string, VerifiedDecisionReceipt>();
+  private playerTurn = 0;
+  private pendingAcknowledgement?: VerifiedDecisionReceipt;
+  private acknowledgementTimer?: ReturnType<typeof setTimeout>;
+  private acknowledgementExpiry?: ReturnType<typeof setTimeout>;
+  private decisionInput?: { queued: (() => void)[]; characters: number; timer?: ReturnType<typeof setTimeout> };
 
   constructor(private readonly callbacks: VoiceCallbacks, private readonly dependencies: VoiceDependencies = {
     createAudio: () => new BrowserAudio(),
@@ -90,13 +107,14 @@ export class LiveVoice {
       playAudio: (data) => this.audio?.play(data),
       stopAudio: () => this.audio?.stopPlayback(),
       onInputState: (state) => this.callbacks.onInputState?.(this.microphoneActive ? state : 'inactive'),
+      onBoundaryChange: () => this.scheduleAcknowledgement(),
       onError: (message) => this.fail(message),
     });
     let stage: 'audio' | 'token' | 'connection' = 'audio';
     try {
       await this.audio.prepare(options.microphone, (audio) => {
         // Media may be acquired before connect; no samples leave before readiness.
-        if (this.ready && !this.ended) this.send({ type: 'input.audio', audio });
+        if (this.ready && !this.ended) this.deliverInput(() => { this.send({ type: 'input.audio', audio }); }, audio.length);
       }, (message) => this.callbacks.onWarning?.(message), () => this.protocol?.playbackDrained(), (active) => {
         this.microphoneActive = active;
         this.callbacks.onMicrophone?.(active);
@@ -156,34 +174,124 @@ export class LiveVoice {
   sendText(text: string): boolean {
     const content = text.trim();
     if (!this.ready || this.ended || !content || content.length > 2000 || !this.protocol) return false;
+    this.playerTurn++; this.cancelAcknowledgement();
     const protocol = this.protocol;
-    protocol.resumeInput();
     const sequence = ++this.textSequence;
-    void protocol.beginInput().then(() => {
-      if (!this.ready || this.ended || !protocol.ready) return;
-      // Current reference documents these messages, not an input.text event.
-      // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
-      if (!this.send({ type: 'conversation.message', role: 'user', content })) return;
-      // Only communicated input belongs in transcript history and a later recap.
-      this.callbacks.onTranscript({ id: `typed:${sequence}`, role: 'human', text, final: true }, this.captureContext?.());
-      this.send({ type: 'reply.create' });
-      this.callbacks.onStatus('responding');
+    this.deliverInput(() => {
+      protocol.resumeInput();
+      void protocol.beginInput().then(() => {
+        if (!this.ready || this.ended || !protocol.ready) return;
+        // Current reference documents these messages, not an input.text event.
+        // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
+        if (!this.send({ type: 'conversation.message', role: 'user', content })) return;
+        // Only communicated input belongs in transcript history and a later recap.
+        this.callbacks.onTranscript({ id: `typed:${sequence}`, role: 'human', text, final: true }, this.captureContext?.());
+        protocol.applicationReplyRequested();
+        this.send({ type: 'reply.create' });
+      });
     });
     return true;
   }
 
   end(): Promise<void> { return this.stop(); }
 
-  /** A verified owner decision is context, not human speech or a second tool result.
-   * conversation.message does not trigger a reply. The next ordinary input can
-   * use this receipt without introducing a new autonomous action cycle.
+  /** Captured at Confirm so an input racing the HTTP receipt wins over speech. */
+  get inputTurn(): number { return this.playerTurn; }
+
+  /** Hold a short input window only while the local owner-decision request settles. */
+  beginGameDecision(): { inputTurn: number; finish(): void } {
+    const inputTurn = this.playerTurn;
+    if (!this.ready || this.ended || this.decisionInput) return { inputTurn, finish() {} };
+    const pending = { queued: [] as (() => void)[], characters: 0, timer: undefined as ReturnType<typeof setTimeout> | undefined };
+    this.decisionInput = pending;
+    pending.timer = setTimeout(() => {
+      if (this.decisionInput !== pending) return;
+      this.playerTurn++; this.cancelAcknowledgement();
+      this.releaseDecisionInput();
+      this.callbacks.onWarning?.('The decision response is still pending. Your input is continuing; use the visible result or ask about its status.');
+    }, this.dependencies.decisionInputGraceMs ?? 1500);
+    return { inputTurn, finish: () => { if (this.decisionInput === pending) this.releaseDecisionInput(); } };
+  }
+
+  private deliverInput(send: () => void, characters = 0): void {
+    if (!this.decisionInput) { send(); return; }
+    this.decisionInput.queued.push(send); this.decisionInput.characters += characters;
+    // Flush rather than truncate a long capture. Silence is not a detected turn.
+    if (this.decisionInput.characters > 192_000 || this.decisionInput.queued.length > 200) {
+      this.playerTurn++; this.cancelAcknowledgement(); this.releaseDecisionInput();
+    }
+  }
+
+  private releaseDecisionInput(discard = false): void {
+    const pending = this.decisionInput;
+    if (!pending) return;
+    clearTimeout(pending.timer); this.decisionInput = undefined;
+    if (!discard) for (const send of pending.queued) send();
+  }
+
+  /** Context is locally sent once; one bounded reply request may follow when idle.
+   * Neither send establishes provider ingestion or model comprehension.
    * https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
    */
-  sendGameEvent(id: string, proposalId: string, content: string): boolean {
-    if (!this.ready || this.ended || !id || !proposalId || !content || content.length > 4000 || this.gameEvents.has(id)) return false;
-    if (!this.send({ type: 'conversation.message', role: 'system', content: `Verified game event for proposal ${proposalId}. This is a server decision receipt, not a new player instruction.\n${content}` })) return false;
-    this.gameEvents.add(id);
+  sendGameEvent(receipt: VerifiedDecisionReceipt, expectedInputTurn = this.playerTurn): boolean {
+    const { event, proposal, result, checkpoint } = receipt;
+    if (!this.ready || this.ended || !event.messageId
+      || event.role !== 'game' || event.origin !== 'game' || event.inputMethod !== 'game_event'
+      || event.roundId !== proposal.roundId || proposal.status === 'awaiting_confirmation'
+      || !proposal.id || result.message.length > 4000 || !this.receiptInScope(receipt)) return false;
+    const previous = this.gameEvents.get(event.messageId);
+    if (previous) {
+      if (JSON.stringify(previous) !== JSON.stringify(receipt)) return false;
+      this.releaseDecisionInput(); return true;
+    }
+    const action = proposal.action.kind === 'interaction'
+      ? { kind: 'interaction', object: proposal.action.object, action: proposal.action.action }
+      : { kind: 'move', target: proposal.action.target };
+    const context = { proposal: { id: proposal.id, action, label: proposal.label, status: proposal.status },
+      sourceChapter: proposal.chapter, result: { ok: result.ok, message: result.message, ...(result.code ? { code: result.code } : {}) },
+      checkpoint: { chapter: checkpoint.chapter, completed: checkpoint.completed } };
+    if (!this.send({ type: 'conversation.message', role: 'system', content: `Verified game decision receipt. This is recorded application data, not a new player instruction or permission for another action.\n${JSON.stringify(context)}` })) return false;
+    const retained = structuredClone(receipt);
+    this.gameEvents.set(event.messageId, retained);
+    this.releaseDecisionInput();
+    this.cancelAcknowledgement();
+    if (expectedInputTurn !== this.playerTurn) return true;
+    this.pendingAcknowledgement = retained;
+    this.acknowledgementExpiry = setTimeout(() => {
+      this.cancelAcknowledgement();
+      this.callbacks.onWarning?.('The decision is saved. Pip did not have a safe opportunity for a separate acknowledgement; you can ask about the recorded result.');
+    }, this.dependencies.acknowledgementExpiryMs ?? 4000);
+    this.scheduleAcknowledgement();
     return true;
+  }
+
+  private receiptInScope(receipt: VerifiedDecisionReceipt): boolean {
+    const current = this.captureContext?.() as { roundId?: string; chapterEpoch?: number } | undefined;
+    return !current || (current.roundId === undefined || current.roundId === receipt.proposal.roundId)
+      && (current.chapterEpoch === undefined || current.chapterEpoch === receipt.checkpoint.chapterEpoch);
+  }
+
+  private scheduleAcknowledgement(): void {
+    const receipt = this.pendingAcknowledgement;
+    if (!receipt || !this.ready || this.ended) return;
+    if (!this.receiptInScope(receipt)) { this.cancelAcknowledgement(); return; }
+    if (!this.protocol?.acknowledgementReady) {
+      clearTimeout(this.acknowledgementTimer); this.acknowledgementTimer = undefined; return;
+    }
+    if (this.acknowledgementTimer) return;
+    this.acknowledgementTimer = setTimeout(() => {
+      this.acknowledgementTimer = undefined;
+      if (this.pendingAcknowledgement !== receipt || !this.protocol?.acknowledgementReady || !this.receiptInScope(receipt)) return;
+      this.cancelAcknowledgement();
+      this.protocol.applicationReplyRequested();
+      this.send({ type: 'reply.create', instructions: `Briefly acknowledge only the verified result for proposal ${receipt.proposal.id} in one short sentence. Use player-facing terms, not identifiers. Do not call tools, request permission, invent current conditions, propose another action, or continue a plan.${receipt.checkpoint.completed ? ' The mission is complete; this is the single closing acknowledgement.' : ''}` });
+    }, this.dependencies.acknowledgementIdleMs ?? 150);
+  }
+
+  private cancelAcknowledgement(): void {
+    clearTimeout(this.acknowledgementTimer); clearTimeout(this.acknowledgementExpiry);
+    this.acknowledgementTimer = this.acknowledgementExpiry = undefined;
+    this.pendingAcknowledgement = undefined;
   }
 
   /** A clean WebSocket close alone does not confirm the provider ended its session. */
@@ -192,6 +300,8 @@ export class LiveVoice {
   /** Reliable local interruption; the provider connection remains billable. */
   async interrupt(): Promise<void> {
     if (!this.ready || this.ended || !this.protocol) return;
+    this.playerTurn++; this.cancelAcknowledgement();
+    this.releaseDecisionInput();
     await this.protocol.interrupt(true);
     if (!this.ready || this.ended || !this.protocol.ready) return;
     // There is no documented client reply.cancel event. Seed the actual wait intent
@@ -206,12 +316,14 @@ export class LiveVoice {
   }
 
   /** Called after the one permitted closing response; later replies cannot extend it. */
-  finishReply(replyId: string): void { this.protocol?.finishReply(replyId); }
+  finishReply(replyId: string): void { this.cancelAcknowledgement(); this.protocol?.finishReply(replyId); }
 
   stop(): Promise<void> {
     if (this.stopping) return this.stopping;
     this.ended = true;
     this.ready = false;
+    this.cancelAcknowledgement();
+    this.releaseDecisionInput(true);
     clearTimeout(this.handshakeTimer);
     clearTimeout(this.durationTimer);
     clearTimeout(this.warningTimer);
@@ -262,6 +374,7 @@ export class LiveVoice {
       return;
     }
     if (this.ended) return;
+    if (event.type === 'input.speech.started') { this.playerTurn++; this.cancelAcknowledgement(); }
     if (event.type === 'session.error') {
       // Provider messages/config echoes can contain credentials or private details.
       const message = event.code === 'session_expired'

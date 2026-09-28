@@ -414,6 +414,7 @@ export function useMission() {
     if (!current || !proposal || proposal.status !== 'awaiting_confirmation' || proposalDecisionBusy.current
       || busyRef.current || !connectedRef.current || current.status !== 'active') return;
     const expected = generation.current; const connection = voice.current;
+    const decisionInput = connection?.beginGameDecision();
     proposalDecisionBusy.current = true; setProposalConfirming(proposal.id); setProposalFailure(null); setError('');
     try {
       const result = await api.decideProposal(current, proposal.id, decision, api.requestId());
@@ -424,9 +425,12 @@ export function useMission() {
       if (result.decisionEvent) {
         addGameEvent(result.decisionEvent);
         if (connection && voice.current === connection && connectedRef.current) {
-          // A chapter-transition receipt is delivered once, as context only.
-          // It requests neither speech nor another physical operation.
-          if (!result.proposal || !connection.sendGameEvent(result.decisionEvent.messageId, result.proposal.id, result.decisionEvent.text)) {
+          // Keep the source chapter and robot-eligible result of this exact commit.
+          // A bounded acknowledgement cannot authorize another physical operation.
+          if (!result.proposal || !connection.sendGameEvent({ event: result.decisionEvent, proposal: result.proposal,
+            result: { ok: result.ok, message: result.message, ...(result.code ? { code: result.code } : {}) },
+            checkpoint: { chapter: result.view.chapter, chapterEpoch: result.view.chapterEpoch, completed: result.view.completed },
+          }, decisionInput?.inputTurn)) {
             setWarning('The decision is saved, but its delivery to Pip was not confirmed. Ask Pip to check the proposal status before continuing.');
           }
         }
@@ -448,6 +452,7 @@ export function useMission() {
         }
       } catch { /* Keep the unconfirmed state and visible recovery instruction. */ }
     } finally {
+      decisionInput?.finish();
       proposalDecisionBusy.current = false;
       if (expected === generation.current) setProposalConfirming(null);
     }

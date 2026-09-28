@@ -112,6 +112,9 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.match(wire.session.system_prompt, /every physical action needs their separate console confirmation/)
       assert.match(wire.session.system_prompt, /awaiting_confirmation means NOT EXECUTED/)
       assert.match(wire.session.system_prompt, /none replaces pressing Confirm this action/)
+      assert.match(wire.session.system_prompt, /Checking a known proposal is read-only and needs no extra permission/)
+      assert.match(wire.session.system_prompt, /Continue the current clear request after that check/)
+      assert.match(wire.session.system_prompt, /A verified committed receipt is sufficient evidence for its exact past action/)
       assert.deepEqual(wire.session.tools.map(tool => tool.name), ['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status'])
       for (const name of ['propose_interaction', 'propose_move']) {
         const tool = wire.session.tools.find(tool => tool.name === name)
@@ -128,6 +131,7 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.deepEqual(statusTool.parameters.required, ['proposal_id'])
       assert.equal(statusTool.parameters.additionalProperties, false)
       assert.match(statusTool.description, /Do not poll/)
+      assert.match(statusTool.description, /without asking permission/)
       assert.deepEqual(Object.keys(wire.session), ['system_prompt', 'greeting', 'tools', 'input', 'output'])
       // Developer-only regression facts stay out of the transmitted instructions.
       assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor|"enum"/)

@@ -42,6 +42,7 @@ export interface ProtocolHooks {
   onToolState?(active: boolean): void;
   onReplyDone?(reply: ReplyCompletion): void;
   onDiagnostic?(event: ProtocolDiagnostic): void;
+  onBoundaryChange?(): void;
 }
 
 const tools = new Set(['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status', 'interact_object', 'move_to']);
@@ -142,8 +143,22 @@ export class VoiceProtocol {
   private transcriptContexts = new Map<string, unknown>();
   private speechContext?: unknown;
   private inputActive = false;
+  private awaitingToolContinuation = false;
+  private cancellationPending = 0;
 
   constructor(private readonly hooks: ProtocolHooks) {}
+
+  /** Application replies share the existing turn/tool/playback boundary. */
+  get acknowledgementReady(): boolean {
+    return this.ready && !this.stopped && !this.held && !this.closingReply && !this.inputActive && this.latestType === 'reply.done'
+      && !this.pendingReply && !this.audioPlaying && !this.awaitingToolContinuation
+      && this.cancellationPending === 0 && this.calls.size === 0 && this.interruptedCalls.size === 0;
+  }
+
+  applicationReplyRequested(): void {
+    this.pendingReply = true;
+    this.hooks.onStatus('responding');
+  }
 
   receive(event: ProviderEvent): void {
     if (this.stopped) return;
@@ -188,6 +203,7 @@ export class VoiceProtocol {
     }
     if (this.held && ['reply.started', 'reply.audio', 'transcript.agent.delta', 'transcript.agent'].includes(event.type)) return;
     if (event.type === 'reply.started' && typeof event.reply_id === 'string') {
+      this.awaitingToolContinuation = false;
       this.currentReply = event.reply_id;
       this.rememberTranscriptContext(`robot:${event.reply_id}`, this.hooks.captureToolContext?.());
       this.pendingReply = true;
@@ -237,6 +253,7 @@ export class VoiceProtocol {
         entry.role === 'human' ? this.speechContext ?? this.hooks.captureToolContext?.() : this.hooks.captureToolContext?.());
       this.hooks.onTranscript(entry, this.transcriptContexts.get(entry.id));
     }
+    this.hooks.onBoundaryChange?.();
   }
 
   playbackChanged(active: boolean): void {
@@ -244,6 +261,7 @@ export class VoiceProtocol {
     this.hooks.onPlayback?.(this.audioPlaying);
     if (this.audioPlaying) this.hooks.onStatus('speaking');
     else if (!this.stopped && this.ready) this.hooks.onStatus(this.pendingReply ? 'responding' : 'listening');
+    this.hooks.onBoundaryChange?.();
   }
 
   playbackDrained(): void {
@@ -280,6 +298,7 @@ export class VoiceProtocol {
     this.hooks.onToolState?.(false);
     this.executingCount = 0;
     this.pendingReply = false;
+    this.awaitingToolContinuation = false;
     for (const [id, pending] of this.calls) {
       // Speech can race the HTTP response after a physical commit. Preserve its
       // eventual outcome, not its permission to execute, until safe delivery.
@@ -299,10 +318,14 @@ export class VoiceProtocol {
     }
     this.completedInterruptedReplies.clear();
     // Serialize cancellation requests so an older response cannot replace a new epoch.
+    this.cancellationPending++;
     this.cancellation = this.cancellation.then(() => this.hooks.cancelPending(reason)).catch(() => {
       this.stopped = true;
       this.ready = false;
       this.hooks.onError('Could not confirm that pending actions stopped. End the call and reconnect.');
+    }).finally(() => {
+      this.cancellationPending--;
+      this.hooks.onBoundaryChange?.();
     });
     return this.cancellation;
   }
@@ -374,6 +397,7 @@ export class VoiceProtocol {
     for (const [id, pending] of this.calls) {
       if (!pending.replyDone) continue;
       if (pending.result) {
+        this.awaitingToolContinuation = true;
         this.hooks.send({ type: 'tool.result', call_id: id, ...pending.result });
         this.calls.delete(id);
         this.clearRecovery(id);
@@ -395,6 +419,7 @@ export class VoiceProtocol {
     if (this.stopped || this.inputActive || this.held || this.closingReply || (!pending.retained && this.currentReply !== pending.replyId) || this.latestType !== 'reply.done' || this.interruptedCalls.get(id) !== pending) return;
     this.interruptedCalls.delete(id);
     this.clearRecovery(id);
+    this.awaitingToolContinuation = true;
     this.hooks.send({ type: 'tool.result', call_id: id, ...(pending.result ?? { is_error: true, result: JSON.stringify({
       ok: false, code: 'cancelled_before_execution',
       message: 'This request belongs to an interrupted reply and was not executed. Respond to the latest player request. If it still requires an action, use a new tool call.',

@@ -12,7 +12,7 @@ type AudioFixture = {
 declare global { interface Window { __testAudio: AudioFixture } }
 
 /** Browser-only fixtures. No provider connection, hardware audio, or production hooks. */
-export async function fakeProvider(page: Page, { permissionDenied = false } = {}) {
+export async function fakeProvider(page: Page, { permissionDenied = false, acknowledgeDecisions = false } = {}) {
   await page.addInitScript(({ deny }) => {
     let captures = 0;
     let activeTracks = 0;
@@ -73,6 +73,8 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
   let ended = 0;
   const sockets: WebSocketRoute[] = [];
   const sent: FixtureEvent[] = [];
+  let decision: { proposal: { id: string; label: string; status: string }; result: { ok: boolean } } | undefined;
+  let acknowledgements = 0;
   await page.route('**/api/access', route => route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, message: 'Offline fixture access. No provider is contacted.' } }));
   await page.route('**/api/sessions/*/voice-token', async route => {
     tokenRequests++;
@@ -89,6 +91,19 @@ export async function fakeProvider(page: Page, { permissionDenied = false } = {}
       const event = JSON.parse(String(data)) as FixtureEvent;
       // Never retain provider configuration echoes, URLs, or microphone bytes.
       sent.push(event.type === 'session.update' || event.type === 'input.audio' ? { type: event.type } : event);
+      if (acknowledgeDecisions && event.type === 'conversation.message' && event.role === 'system' && String(event.content).startsWith('Verified game decision receipt.')) {
+        decision = JSON.parse(String(event.content).split('\n').slice(1).join('\n'));
+      }
+      if (acknowledgeDecisions && decision && event.type === 'reply.create' && String(event.instructions).startsWith(`Briefly acknowledge only the verified result for proposal ${decision.proposal.id} `)) {
+        // Constructed acknowledgement of the actual eligible receipt. No local
+        // survey, player intention, tool call or unobserved state is invented.
+        const reply_id = `fixture-decision-ack-${++acknowledgements}`;
+        const text = decision.result.ok && decision.proposal.status === 'committed'
+          ? `The game confirmed: ${decision.proposal.label}.` : `The game did not execute: ${decision.proposal.label}.`;
+        socket.send(JSON.stringify({ type: 'reply.started', reply_id }));
+        socket.send(JSON.stringify({ type: 'transcript.agent', reply_id, text }));
+        socket.send(JSON.stringify({ type: 'reply.done', reply_id, status: 'completed' }));
+      }
       if (event.type === 'session.update') socket.send(JSON.stringify({ type: 'session.ready' }));
       if (event.type === 'session.end') {
         ended++; socket.send(JSON.stringify({ type: 'session.ended', session_duration_seconds: 0 }));

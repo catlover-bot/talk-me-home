@@ -1,0 +1,21 @@
+{
+  "reviewedOn": "2026-09-28",
+  "baseCommit": "7139bb5b2f41e3f3730fed46a884439e829756df",
+  "sources": [
+    "https://www.assemblyai.com/docs/llms.txt",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration"
+  ],
+  "usedProtocol": {
+    "conversation.message": "role: system, content: application-generated verified receipt; adds context without requesting a reply",
+    "reply.create": "optional instructions: one-shot concise acknowledgement at an idle reply boundary after playback drains",
+    "tool.result": "call_id, JSON-string result and optional is_error; one correlated result at the existing valid reply.done boundary",
+    "session.update": "inline session configuration; never combined with agent_id",
+    "session.end/session.ended": "explicit ending and observed remote acknowledgement remain separate from mission completion"
+  },
+  "priorCodeTrace": "SessionStore.decideProposal retained the robot result and original proposal scope, plus a public Game event. useMission previously forwarded only that event text to LiveVoice.sendGameEvent, which sent system context and deliberately did not request a reply. get_action_status already returned the retained result without physical mutation.",
+  "historicalEvidenceLimit": "The failed real run retained one local context-send event, not its payload or a provider ingestion acknowledgement. It does not prove context loss, comprehension, ASR failure, an unauthorized mutation, or a tool-result deadlock.",
+  "newRealTokenRequests": 0,
+  "newRealProviderConnections": 0
+}

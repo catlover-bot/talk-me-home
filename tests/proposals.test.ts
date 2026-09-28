@@ -121,6 +121,13 @@ test('a confirmed Gallery move communicates its decision without publishing the 
   view = await store.power(view.sessionId, envelope(view, { revision: view.revision, powerOn: false }))
   const crossing = await call(store, view, 'propose_move', { target: 'far_side' })
   view = (await store.decideProposal(view.sessionId, decision(crossing), owner)).view
+  const arrived = store.physicalDigestForEvaluation(view.sessionId)
+  const crossingStatus = await call(store, view, 'get_action_status', { proposal_id: crossing.proposal!.id })
+  assert.equal(crossingStatus.proposal?.chapter, 'cargo')
+  assert.equal(crossingStatus.proposal?.chapterEpoch, crossing.proposal!.chapterEpoch)
+  assert.equal(crossingStatus.proposal?.status, 'committed')
+  assert.equal(crossingStatus.view.chapter, 'gallery')
+  assert.equal(store.physicalDigestForEvaluation(view.sessionId), arrived)
   view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'beacon' }))
   const passage = await call(store, view, 'propose_move', { target: 'gallery.g1' })
   assert.equal(passage.proposal?.label, 'Move through the east gate')
@@ -129,6 +136,37 @@ test('a confirmed Gallery move communicates its decision without publishing the 
   assert.doesNotMatch(JSON.stringify([moved.view, moved.proposal, moved.decisionEvent]), /Fork|gallery\.g2|gallery\.g4|Northeast gate|Southeast gate/)
   const status = await call(store, moved.view, 'get_action_status', { proposal_id: passage.proposal!.id })
   assert.match(status.message, /Fork/)
+})
+
+test('known proposal status is read-only; unknown, declined and expired receipts never become success or reveal unrelated state', async () => {
+  let now = 1000; let commits = 0
+  const store = new SessionStore({ now: () => now, onRobotCommit: () => { commits += 1 } }); const view = create(store)
+  const original = store.physicalDigestForEvaluation(view.sessionId)
+  const unknown = await call(store, view, 'get_action_status', { proposal_id: randomUUID() })
+  assert.equal(unknown.ok, false); assert.equal(unknown.code, 'not_executed'); assert.equal(unknown.proposal, undefined)
+  const first = await propose(store, view)
+  await store.decideProposal(view.sessionId, decision(first, 'decline'), owner)
+  const declined = await call(store, view, 'get_action_status', { proposal_id: first.proposal!.id })
+  assert.equal(declined.ok, false); assert.equal(declined.proposal?.status, 'declined')
+  const second = await propose(store, view)
+  now += 90_001
+  const expired = await call(store, view, 'get_action_status', { proposal_id: second.proposal!.id })
+  assert.equal(expired.ok, false); assert.equal(expired.proposal?.status, 'expired')
+  assert.equal(store.physicalDigestForEvaluation(view.sessionId), original); assert.equal(commits, 0)
+  for (const { view: humanView, ...robotResult } of [unknown, declined, expired]) {
+    assert.equal(humanView.completed, false)
+    assert.doesNotMatch(JSON.stringify(robotResult), /selector|maintenanceProfile|gallery\.g|Fork|obstruction|readyForReturn/)
+  }
+  const third = await propose(store, view)
+  const committed = await store.decideProposal(view.sessionId, decision(third), owner)
+  const after = store.physicalDigestForEvaluation(view.sessionId)
+  for (let read = 0; read < 2; read += 1) {
+    const receipt = await call(store, committed.view, 'get_action_status', { proposal_id: third.proposal!.id })
+    assert.equal(receipt.ok, true); assert.equal(receipt.proposal?.status, 'committed')
+    assert.equal(receipt.message, committed.message)
+    assert.equal(receipt.view.revision, committed.view.revision)
+  }
+  assert.equal(store.physicalDigestForEvaluation(view.sessionId), after); assert.equal(commits, 1)
 })
 
 test('proposal snapshots retain a monotonic order across decline, replacement and expiry at the same physical revision', async () => {

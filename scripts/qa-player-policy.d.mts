@@ -6,3 +6,6 @@ export function communicatedAction(text: string, action: 'latch' | 'contact' | '
 export function communicatedActionClaim(text: string, action: 'latch' | 'contact' | 'crossing'): { mentioned: boolean; value: 'reported_done' | 'not_done' | null; transition?: boolean };
 export function confirmedAction(options: { say(text: string): Promise<string>; request: string; clarify: string; retry: string; action: 'latch' | 'contact'; checkpoint?(): Promise<boolean> }): Promise<boolean>;
 export function crossCargoWithRecovery(options: { say(text: string): Promise<unknown>; atGallery(): Promise<boolean> }): Promise<boolean>;
+export interface ObservableProposal { proposalId: string; label: string; status: string }
+export function classifyProposalResponse(options: { expectedLabel: string; before?: ObservableProposal | null; current?: ObservableProposal | null; reply?: string; terminalIds?: string[]; confirmedIds?: string[] }): { kind: string; relevant: boolean };
+export function proposalRecoveryPhrases(expectedLabel: string, current?: ObservableProposal | null): { clarify: string; retry: string };

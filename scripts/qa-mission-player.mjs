@@ -1,7 +1,7 @@
 // Shared by the supervised real driver and explicitly offline synthetic browser tests.
 // Decisions use human-visible documents, reports and controls only.
 import { expect } from '@playwright/test';
-import { crossCargoWithRecovery } from './qa-player-policy.mjs';
+import { classifyProposalResponse, proposalRecoveryPhrases } from './qa-player-policy.mjs';
 import { createPlayerMemory, readVisiblePlayerReports } from './qa-player-memory.mjs';
 
 export const PHRASES = {
@@ -39,15 +39,19 @@ export async function confirmProposalForRequest(page, intendedRequest, report = 
 }
 
 /** Only an explicitly selected, exactly matching visible proposal can be confirmed. */
-export async function confirmVisibleProposal(page, expectedLabel, intendedRequest, confirmations = []) {
+export async function confirmVisibleProposal(page, expectedLabel, intendedRequest, confirmations = [], expectedProposalId) {
   const strip = page.getByTestId('action-proposal');
   await expect(strip).toBeVisible();
   await expect(strip).toHaveAttribute('data-status', 'awaiting_confirmation');
   expect(await page.getByTestId('proposal-label').innerText()).toBe(expectedLabel);
   const proposalId = await strip.getAttribute('data-proposal-id');
   if (!proposalId) throw new Error('Visible proposal identity is unavailable.');
+  if (expectedProposalId && proposalId !== expectedProposalId) throw new Error('The selected proposal identity changed before confirmation.');
+  if (confirmations.some(receipt => receipt.proposalId === proposalId)) throw new Error('A terminal proposal cannot be confirmed again.');
   const confirmationRequestedAtMs = await page.evaluate(() => globalThis.__qaAudio?.snapshot().elapsedMs ?? performance.now());
-  await strip.getByRole('button', { name: 'Confirm this action', exact: true }).click();
+  // The click locator retains the original identity; a replacement strip cannot
+  // acquire the earlier action's confirmation while Playwright waits for readiness.
+  await page.locator(`[data-testid="action-proposal"][data-proposal-id=${JSON.stringify(proposalId)}]`).getByRole('button', { name: 'Confirm this action', exact: true }).click();
   let status;
   await expect.poll(async () => {
     // One DOM snapshot avoids waiting on a strip that disappears between a
@@ -67,6 +71,69 @@ export async function confirmVisibleProposal(page, expectedLabel, intendedReques
   const receipt = { proposalId, label: expectedLabel, intendedRequest, status, confirmationRequestedAtMs, confirmedAtMs, source: 'Visible action strip and normal owner confirmation button' };
   confirmations.push(receipt);
   return receipt;
+}
+
+async function visibleProposal(page) {
+  return page.getByTestId('action-proposal').evaluateAll(elements => {
+    const element = elements[0];
+    return element ? { proposalId: element.getAttribute('data-proposal-id'), label: element.querySelector('[data-testid="proposal-label"]')?.textContent, status: element.getAttribute('data-status') } : null;
+  });
+}
+
+async function visibleActionChapter(page) {
+  return page.locator('h1, h2').evaluateAll(elements => {
+    const chapters = elements.map(element => element.textContent.trim()).filter(text => ['Cargo Bay', 'Relay Gallery', 'Return Dock'].includes(text));
+    const completed = elements.some(element => /^(?:You brought Pip home\.|You got Pip through\.)$/.test(element.textContent.trim()));
+    return !completed && chapters.length === 1 ? chapters[0] : null;
+  });
+}
+
+/** One initial exchange, at most one clarification and one same-intention retry. */
+export async function requestConfirmedAction({ page, request, exchange, checkScope = async () => {}, report = {}, options = {} }) {
+  const expectedLabel = proposalLabelForRequest(request);
+  if (!expectedLabel) throw new Error('The QA player has no exact proposal label for this intention.');
+  report.confirmations ??= []; report.actionRequests ??= [];
+  const diagnostic = { intendedRequest: request, expectedLabel, strictFirstResponse: false, recovered: false, outcome: 'pending', exchanges: [] };
+  report.actionRequests.push(diagnostic);
+  const terminalIds = new Set(report.confirmations.map(receipt => receipt.proposalId));
+  let text = request; let kind = 'initial'; let retry;
+  try {
+    const actionChapter = await visibleActionChapter(page);
+    if (!actionChapter) throw new Error('QA player scope ended: the action chapter is unavailable.');
+    diagnostic.sourceChapter = actionChapter;
+    const checkActionScope = async () => {
+      await checkScope();
+      if (await visibleActionChapter(page) !== actionChapter) throw new Error('QA player scope ended: the chapter changed before the selected action was confirmed.');
+    };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await checkActionScope();
+      const before = await visibleProposal(page);
+      if (before && before.status !== 'awaiting_confirmation') terminalIds.add(before.proposalId);
+      const oldReports = await readVisiblePlayerReports(page, 'current uninterrupted QA invocation');
+      const identity = item => JSON.stringify([item.messageId, item.displayedAt, item.sourceLabel, item.speaker, item.text]);
+      const oldIdentities = new Set(oldReports.map(identity));
+      const exchangeRecord = { kind, text, outcome: 'pending', proposal: null, replies: [] };
+      diagnostic.exchanges.push(exchangeRecord);
+      await exchange(text, options);
+      await checkActionScope();
+      const current = await visibleProposal(page);
+      const replies = (await readVisiblePlayerReports(page, 'current uninterrupted QA invocation')).filter(item => item.speaker === 'Pip' && item.chapter === actionChapter && item.final && !item.interrupted && !item.historical && !oldIdentities.has(identity(item)));
+      const outcome = classifyProposalResponse({ expectedLabel, before, current, reply: replies.map(item => item.text).join(' '), terminalIds: [...terminalIds], confirmedIds: report.confirmations.filter(item => item.status === 'committed').map(item => item.proposalId) });
+      Object.assign(exchangeRecord, { outcome: outcome.kind, proposal: current, replies });
+      if (outcome.kind === 'matching_pending') {
+        const receipt = await confirmVisibleProposal(page, expectedLabel, request, report.confirmations, current.proposalId);
+        if (receipt.status !== 'committed') throw new Error(`The selected action was ${receipt.status}, not committed: ${expectedLabel}`);
+        diagnostic.strictFirstResponse = attempt === 0; diagnostic.recovered = attempt > 0; diagnostic.outcome = 'committed';
+        return receipt;
+      }
+      if (!['verified_committed_receipt', 'relevant_clarification'].includes(outcome.kind) || !outcome.relevant) throw new Error(`QA action stopped: ${outcome.kind} for ${expectedLabel}`);
+      if (attempt === 2) throw new Error(`QA action recovery exhausted after 3 exchanges for ${expectedLabel}`);
+      if (attempt === 0) {
+        const phrases = proposalRecoveryPhrases(expectedLabel, current);
+        text = phrases.clarify; retry = phrases.retry; kind = 'clarification';
+      } else { text = retry; kind = 'rephrased_request'; }
+    }
+  } catch (error) { diagnostic.outcome = 'failed'; diagnostic.failure = error.message; throw error; }
 }
 
 export async function runRescuePlayer({ page, say: exchange, screenshot = async () => {}, report = { route: [], steps: [] } }) {
@@ -103,12 +170,10 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
   async function say(text, options = {}) {
     await consume();
     if (await home() || chapter !== phase) return '';
-    await exchange(text, options);
     const expectedLabel = proposalLabelForRequest(text);
     if (expectedLabel) {
-      const receipt = await confirmVisibleProposal(page, expectedLabel, text, report.confirmations);
-      if (receipt.status !== 'committed') throw new Error(`The selected action was ${receipt.status}, not committed: ${expectedLabel}`);
-    }
+      await requestConfirmedAction({ page, request: text, exchange, report, options, checkScope: consume });
+    } else await exchange(text, options);
     if (options.terminal) await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
     await consume(options.context);
     return (await readVisiblePlayerReports(page, round)).filter(item => item.speaker === 'Pip' && item.chapter === chapter && item.final && !item.interrupted && !item.historical).at(-1)?.text ?? '';
@@ -139,7 +204,8 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
         }
       }
     }
-    if (!await crossCargoWithRecovery({ say, atGallery })) throw new Error('Cargo crossing did not commit after one clarification and one justified retry.');
+    if (!await atGallery()) await say('Please cross to the far side.');
+    if (!await atGallery()) throw new Error('Cargo crossing did not reach its authoritative checkpoint.');
     report.route.push('Cargo Bay');
   }
   if (!await atDock()) {

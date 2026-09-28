@@ -1,0 +1,12 @@
+{
+  "label": "CONSTRUCTED OFFLINE SHARED-PLAYER REGRESSION — NOT REAL PROVIDER EVIDENCE",
+  "source": "tests/e2e/qa-mission-player.spec.ts, actual runRescuePlayer with the exact retained final status question and a constructed peer",
+  "playerSha256": "7c22dd41bbfb2df722823c3f591b4719cec1083a121447a496c5f28be364f70b",
+  "before": { "passed": 0, "failed": 4, "profiles": ["a", "b"], "viewports": [1280, 1440] },
+  "failure": "Expected awaiting_confirmation but observed committed on the retained Engage the Latch strip; confirmVisibleProposal threw before conversation recovery.",
+  "retainedQuote": "I need to check if the latch actually engaged first. May I check the status of that proposal?",
+  "historicalSource": "artifacts/goal-004e/live/2026-09-28T10-24-13-651Z-voice-mission-conversation.md",
+  "rawFailure": ".validation/goal-004e-followup/player-before/error-context.md",
+  "screenshot": ".validation/goal-004e-followup/player-before/cargo-failure.png",
+  "boundary": "Pre-change player failure reproduced using the prebuilt shipped client and local fixture server. No real token issuance, provider connection, or historical-event replay is claimed. Future compiled-production coverage is separate."
+}

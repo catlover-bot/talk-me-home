@@ -7,6 +7,7 @@ import { simulationReply, simulationToolSpeech } from '../game/client/mock.ts';
 import { acceptsHumanViewSnapshot } from '../game/client/view-order.ts';
 import { SessionStore } from '../game/server/sessions.ts';
 import { randomUUID } from 'node:crypto';
+import { decisionReceipt } from './fixtures/decision-receipt.ts';
 
 const tick = () => new Promise<void>(resolve => setImmediate(resolve));
 
@@ -69,7 +70,7 @@ test('proposal result is prompt, correlated and single; human projection and mod
   await protocol.stop();
 });
 
-test('verified owner receipt uses system context once without human transcript, second tool result or automatic reply', async () => {
+test('verified owner receipt uses system context once without human transcript or second tool result; End cancels pending acknowledgement', async () => {
   const sent: Record<string, unknown>[] = [];
   const captions: unknown[] = [];
   const socket: VoiceSocket = { readyState: 1, onopen: null, onmessage: null, onclose: null, onerror: null,
@@ -80,17 +81,18 @@ test('verified owner receipt uses system context once without human transcript, 
   let cancellations = 0;
   const live = new LiveVoice({ onTranscript: entry => captions.push(entry), onStatus() {}, onError: message => assert.fail(message) },
     { createAudio: () => audio, createSocket: () => { queueMicrotask(() => { socket.onopen?.(new Event('open')); socket.onmessage?.({ data: JSON.stringify({ type: 'session.ready' }) } as MessageEvent); }); return socket; }, endGraceMs: 50 });
-  assert.equal(live.sendGameEvent('event1', 'p1', 'Engage the Latch: completed.'), false);
+  const receipt = decisionReceipt();
+  assert.equal(live.sendGameEvent(receipt), false);
   await live.start({ token: 'offline-placeholder', config: {}, microphone: false, executeTool: async () => assert.fail('A context receipt cannot execute a tool.'), cancelPending: async () => { cancellations++; } });
-  assert.equal(live.sendGameEvent('event1', 'p1', 'Engage the Latch: completed.'), true);
-  assert.equal(live.sendGameEvent('event1', 'p1', 'Engage the Latch: completed.'), false);
+  assert.equal(live.sendGameEvent(receipt), true);
+  assert.equal(live.sendGameEvent(receipt), true);
   const messages = sent.filter(event => event.type === 'conversation.message');
-  assert.equal(messages.length, 1); assert.equal(messages[0].role, 'system'); assert.match(String(messages[0].content), /proposal p1/);
-  assert.match(String(messages[0].content), /Engage the Latch: completed/);
+  assert.equal(messages.length, 1); assert.equal(messages[0].role, 'system'); assert.match(String(messages[0].content), /proposal-1/);
+  assert.match(String(messages[0].content), /holding the Door open/);
   assert.equal(sent.some(event => event.type === 'reply.create' || event.type === 'tool.result'), false);
   assert.equal(cancellations, 0); assert.deepEqual(captions, []);
   await live.stop(); assert.equal(live.endAcknowledged, true);
-  assert.equal(live.sendGameEvent('event2', 'p2', 'Engage the Latch: declined.'), false);
+  assert.equal(live.sendGameEvent(receipt), false);
 });
 
 test('Practice proposes physical work and ordinary consent never becomes a confirmation channel', () => {

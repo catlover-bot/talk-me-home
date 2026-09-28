@@ -1,10 +1,28 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { communicatedEmblem, communicatedEmblemClaim, communicatedPassability, communicatedPassabilityClaim, crossCargoWithRecovery, communicatedAction, communicatedActionClaim, confirmedAction } from '../scripts/qa-player-policy.mjs';
+import { communicatedEmblem, communicatedEmblemClaim, communicatedPassability, communicatedPassabilityClaim, crossCargoWithRecovery, communicatedAction, communicatedActionClaim, confirmedAction, classifyProposalResponse, proposalRecoveryPhrases } from '../scripts/qa-player-policy.mjs';
 import { proposalLabelForRequest } from '../scripts/qa-mission-player.mjs';
 
 const visibleMapLabels = ['Ring', 'Fork', 'Sail', 'Leaf', 'Dock'];
+
+test('proposal recovery distinguishes retained receipts from exact new pending actions and hard failures', () => {
+  const old = { proposalId: 'old-latch', label: 'Engage the Latch', status: 'committed' };
+  const request = { expectedLabel: 'Move to the far-side platform', before: old, current: old, reply: 'I need to check if the latch actually engaged first. May I check the status of that proposal?', confirmedIds: ['old-latch'] };
+  assert.equal(classifyProposalResponse(request).kind, 'verified_committed_receipt');
+  assert.match(proposalRecoveryPhrases(request.expectedLabel, old).clarify, /console confirms "Engage the Latch" completed/);
+  for (const status of ['awaiting_confirmation', 'declined', 'expired', 'failed']) assert.doesNotMatch(proposalRecoveryPhrases(request.expectedLabel, { ...old, status }).clarify, /console confirms/);
+  const pending = { proposalId: 'next-move', label: request.expectedLabel, status: 'awaiting_confirmation' };
+  assert.equal(classifyProposalResponse({ ...request, current: pending }).kind, 'matching_pending');
+  assert.equal(classifyProposalResponse({ ...request, current: { ...pending, label: 'Move through the west gate' } }).kind, 'wrong_pending');
+  assert.equal(classifyProposalResponse({ ...request, current: { ...pending, proposalId: old.proposalId } }).kind, 'stale_pending');
+  assert.equal(classifyProposalResponse({ ...request, current: { ...pending, status: 'committed' } }).kind, 'unconfirmed_commit');
+  for (const status of ['failed', 'declined', 'expired', 'invalidated', 'confirming']) assert.equal(classifyProposalResponse({ ...request, current: { ...pending, status } }).kind, 'rejected_or_unresolved');
+  assert.equal(classifyProposalResponse({ ...request, current: null }).kind, 'relevant_clarification');
+  assert.equal(classifyProposalResponse({ ...request, current: null, reply: 'A nice day.' }).kind, 'no_relevant_reply');
+  assert.equal(classifyProposalResponse({ ...request, reply: 'I have crossed to the far side.' }).kind, 'false_completion');
+  assert.equal(classifyProposalResponse({ ...request, reply: 'I have not crossed to the far side.' }).kind, 'verified_committed_receipt');
+});
 
 test('recorded Part B Latch report keeps its declarative claim before an unrelated movement question', () => {
   const metrics = JSON.parse(readFileSync(new URL('../artifacts/goal-004c/live/2026-09-25T17-58-10-565Z-text-mission-metrics.json', import.meta.url), 'utf8'));

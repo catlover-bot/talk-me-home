@@ -1,0 +1,240 @@
+{
+  "label": "CONSTRUCTED OFFLINE CONFIRMATION-CONTINUITY COVERAGE - NOT REAL PROVIDER EVIDENCE",
+  "before": "artifacts/goal-004e/follow-up/player-before.json",
+  "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 node node_modules/@playwright/test/cli.js test tests/e2e/qa-mission-player.spec.ts --project=chromium-1440 --workers=2 --output=.validation/goal-004e-followup/player-final",
+  "result": {
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "elapsedSeconds": 30.6,
+    "exitCode": 0,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "runtime": {
+    "path": "dist/client/assets/index-Dj-Sr5Me.js",
+    "bytes": 333968,
+    "sha256": "f397d505ef2080995ba0f1a9147193091000ffeaf8df2386b89d9788cbd396dc",
+    "server": "Actual compiled production HTTP and SessionStore factories, unchanged ownership/Host/Origin validation, isolated per-test authored profile and evaluator-only commit journal"
+  },
+  "sources": [
+    {
+      "path": "scripts/qa-mission-player.mjs",
+      "sha256": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1"
+    },
+    {
+      "path": "scripts/qa-mission-player.d.mts",
+      "sha256": "fbafec380af7c36eda6c05ba186af0665c710cc566f7c988591bff17ead17c65"
+    },
+    {
+      "path": "scripts/qa-player-policy.mjs",
+      "sha256": "a8304c1863c4d4da010938b487c29b13bda13611f233a42b973b8c40ea338aff"
+    },
+    {
+      "path": "scripts/qa-player-policy.d.mts",
+      "sha256": "00049c4506c6e3ac7a2efb9ed91f3ec5b1bb2e8f85d6192ff83b4b21fa782cd8"
+    },
+    {
+      "path": "tests/e2e/qa-mission-player.spec.ts",
+      "sha256": "c568cc289567c56f124086274890e125d29827d02b51b57cc61f4a917d27147a"
+    },
+    {
+      "path": "tests/e2e/fake-provider.ts",
+      "sha256": "f757508ab2ab0cf27cbc63e3083b09785626acfcd2a8a9b38f3685fc450b87b6"
+    },
+    {
+      "path": "tests/e2e/rescue-fixture.ts",
+      "sha256": "96bbc265857ad6323419f34f0d522ce937f6453e15e46257971ad48945b4c27a"
+    },
+    {
+      "path": "tests/qa-player-policy.test.ts",
+      "sha256": "38c5da891f6825a88b37a0545fbd7961e318a93fbc45ed9577ff4a12c89aaab1"
+    }
+  ],
+  "runs": [
+    {
+      "profile": "a",
+      "source": ".validation/goal-004e-followup/player-final/qa-mission-player-Shared-Q-30109--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-evidence.json",
+      "sha256": "b86e04ecb239e37bec5b5e5737b872cbb18d03e2b89b6a12c73addc17d5bf5dd",
+      "completion": true,
+      "route": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "ring",
+        "fork",
+        "sail",
+        "fork",
+        "leaf",
+        "dock",
+        "Return Dock",
+        "home"
+      ],
+      "confirmations": 11,
+      "recoveredActions": [
+        {
+          "label": "Move to the far-side platform",
+          "sourceChapter": "Cargo Bay",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Move through the east gate",
+          "sourceChapter": "Relay Gallery",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Hold the charging contact",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Release the charging contact",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Board the recovery capsule",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        }
+      ],
+      "strictFirstResponseActions": 6,
+      "realTokenIssuance": 0,
+      "realProviderConnections": 0,
+      "realExternalRequests": 0,
+      "cleanup": {
+        "captures": 0,
+        "activeTracks": 0,
+        "contexts": 2,
+        "closedContexts": 2,
+        "queuedChunks": 0
+      }
+    },
+    {
+      "profile": "b",
+      "source": ".validation/goal-004e-followup/player-final/qa-mission-player-Shared-Q-4c708--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-evidence.json",
+      "sha256": "3771d2de92d65bb022fd17f88ac408c203885e94e3d943e2b38f28c240d45f88",
+      "completion": true,
+      "route": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "ring",
+        "fork",
+        "sail",
+        "dock",
+        "Return Dock",
+        "home"
+      ],
+      "confirmations": 9,
+      "recoveredActions": [
+        {
+          "label": "Move to the far-side platform",
+          "sourceChapter": "Cargo Bay",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Move through the east gate",
+          "sourceChapter": "Relay Gallery",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Hold the charging contact",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Release the charging contact",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        },
+        {
+          "label": "Board the recovery capsule",
+          "sourceChapter": "Return Dock",
+          "strictFirstResponse": false,
+          "exchangeCount": 3,
+          "outcome": "committed"
+        }
+      ],
+      "strictFirstResponseActions": 4,
+      "realTokenIssuance": 0,
+      "realProviderConnections": 0,
+      "realExternalRequests": 0,
+      "cleanup": {
+        "captures": 0,
+        "activeTracks": 0,
+        "contexts": 2,
+        "closedContexts": 2,
+        "queuedChunks": 0
+      }
+    }
+  ],
+  "stoppedCases": [
+    "Recovery exhausted at 3 exchanges without another connection",
+    "Wrong pending action, zero confirmation",
+    "Already-confirmed proposal ID replayed as pending",
+    "Constructed expired projection",
+    "Real precondition rejection at confirmation",
+    "False spoken crossing without proposal",
+    "Constructed unexpected visible checkpoint",
+    "New reply labelled with a different chapter",
+    "Stop",
+    "Restart",
+    "Reconnect"
+  ],
+  "otherPasses": [
+    "Deliberate exact keyboard confirmation",
+    "TypeScript typecheck",
+    "15 policy unit cases",
+    "git diff --check"
+  ],
+  "observations": [
+    "First three exact informational inputs made zero physical commits in both route fixtures.",
+    "Retained committed Latch plus the exact historical status question recovered through one targeted read-only status exchange and one same-intention rephrasing.",
+    "The same helper recovered Gallery movement and Dock hold, release and boarding, each in exactly three exchanges.",
+    "Each confirmed action uses the discovered exact proposal ID once through the normal owner UI.",
+    "Public confirmed-home state was required; dialogue alone could not complete a chapter.",
+    "Original source identity, timestamps, chapter, finality and interruption labels remain in local full evidence.",
+    "The opt-in fake peer answered actual one-shot acknowledgement requests; it did not autonomously perform tools or emit a second original tool result."
+  ],
+  "earlierDevelopmentFailure": {
+    "path": ".validation/goal-004e-followup/player-after",
+    "failed": 12,
+    "reason": "The first opt-in compiled fixture proxy changed Host to its ephemeral port while preserving the browser Origin. Production correctly rejected the mismatch before player behavior ran. The test proxy now preserves the browser Host/Origin pair; no production validation was relaxed."
+  },
+  "visualReview": {
+    "inspected": [
+      "1440 Cargo retained committed Latch plus status question",
+      "1440 recovered pending crossing proposal and confirmation controls",
+      "1440 Gallery and Dock chapter transitions with original Cargo history labels",
+      "1440 confirmed home for both profiles"
+    ],
+    "finding": "Readable action states, history provenance and confirmed-home treatment; full-page captures include normal vertical scrolling. Synthetic fixture mode labels remain visible.",
+    "remaining": "The final frozen full suite owns the second viewport and Training regressions."
+  },
+  "limits": [
+    "Constructed peer responses and fake audio are not a live-model pass, human speech, microphone hardware, or physical speaker evidence.",
+    "The retained Cargo quote is exact, but missing historical identifiers and event payloads are not reconstructed.",
+    "Relevant-reply and false-completion classification are bounded QA heuristics, not a general natural-language guarantee; independent driver hard failures still propagate.",
+    "No new real-provider token issuance, provider connection, allowance initialization, retry or accounting change was performed by this work.",
+    "The historical failed real Voice outcome remains unchanged; RELEASE_NOT_LIVE_VERIFIED."
+  ]
+}

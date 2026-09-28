@@ -1,0 +1,83 @@
+{
+  "label": "OFFLINE CONSTRUCTED TRANSPORT REGRESSION - ACTUAL SHIPPED ADAPTER - NO REAL PROVIDER",
+  "recordedAt": "2026-09-28T14:07:14.346Z",
+  "baselineHead": "7139bb5b2f41e3f3730fed46a884439e829756df",
+  "before": {
+    "command": "GAME_DISABLE_LIVE=1 npx tsx --test tests/confirmation-acknowledgement.test.ts",
+    "tests": 1,
+    "passed": 0,
+    "failed": 1,
+    "test": "a verified confirmation gets one acknowledgement only after the existing reply and playback drain",
+    "legacyCall": "live.sendGameEvent('receipt-1', 'proposal-1', 'Engage the Latch: completed after your confirmation.')",
+    "observed": {
+      "contextMessages": 1,
+      "acknowledgementRequests": 0,
+      "expectedAcknowledgementRequests": 1
+    },
+    "assertion": "The shipped adapter must request the missing acknowledgement after a safe boundary.",
+    "provenance": "This test was written and executed before integration-source edits. It injected a fake socket and audio callbacks into the existing LiveVoice implementation; it was not a raw event replay of the historical real attempt."
+  },
+  "after": {
+    "command": "GAME_DISABLE_LIVE=1 npx tsx --test tests/confirmation-acknowledgement.test.ts tests/confirmed-actions-client.test.ts && npm run typecheck",
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "typecheck": "passed",
+    "testNames": [
+      "a verified confirmation gets one acknowledgement only after the existing reply and playback drain",
+      "receipt serialization carries only the exact robot result and known action; one idle request cannot become a second tool result",
+      "an immediate typed turn follows receipt context and suppresses the separate acknowledgement without losing input",
+      "immediate microphone speech cancels queued acknowledgement and keeps its audio and raw transcript",
+      "speech during the acknowledgement uses existing interruption guards and never requests a replacement acknowledgement",
+      "a player turn racing the owner HTTP receipt suppresses stale acknowledgement but retains the verified context",
+      "a confirmation HTTP race preserves microphone chunks after the receipt without mistaking silence for a user turn",
+      "decision input limits release every queued chunk once and a late receipt never requests stale speech",
+      "session readiness alone cannot race an unfinished greeting; conflicting duplicate receipt content is rejected",
+      "unresolved tool output and its ordinary continuation both precede a standalone acknowledgement",
+      "an unsafe opportunity expires once, with no polling, retry or later acknowledgement",
+      "Pause, explicit interruption and old-round replacement cancel queued speech without replaying the receipt",
+      "a chapter-advancing receipt retains its source; final-home closing never queues a second farewell",
+      "delayed pending and declined snapshots cannot replace a newer proposal at the same physical revision",
+      "proposal result is prompt, correlated and single; human projection and model claims never become execution receipts",
+      "verified owner receipt uses system context once without human transcript or second tool result; End cancels pending acknowledgement",
+      "Practice proposes physical work and ordinary consent never becomes a confirmation channel"
+    ],
+    "retainedRegressionCommand": "GAME_DISABLE_LIVE=1 npx tsx --test tests/voice.test.ts tests/voice-lifecycle.test.ts tests/voice-recovery.test.ts tests/voice-recovery-review.test.ts tests/voice-authority.test.ts && git diff --check",
+    "retainedRegressionTests": 77,
+    "retainedRegressionPassed": 77,
+    "retainedRegressionFailed": 0,
+    "diffWhitespace": "passed"
+  },
+  "implementation": {
+    "receiptContext": "Exact server decision event/proposal/result retained locally; only whitelisted known action, robot outcome, source chapter and public checkpoint serialized.",
+    "standaloneAcknowledgement": "At most one documented reply.create after a known reply.done boundary, resolved tool continuation/cancellation and drained playback.",
+    "idleDelayMs": 150,
+    "safeOpportunityExpiryMs": 4000,
+    "decisionInputGraceMs": 1500,
+    "bufferedInputLimitBase64Characters": 192000,
+    "bufferedInputLimitChunks": 200,
+    "inputPriority": "Pending local decision buffers typed input and PCM briefly; valid receipt context is sent before buffered input. New typed input or detected provider speech suppresses standalone acknowledgement. Silence PCM alone does not.",
+    "limits": "Expiry/size releases unchanged input rather than dropping it. A late receipt stays context-only. End clears timers and capture; existing final-home eight-second fallback unchanged."
+  },
+  "sourceSha256": {
+    "game/client/voice.ts": "168ac28615f70904f58e866fb7662043e0c16f58e5ecd9f930f4369e232a00b1",
+    "game/client/voice-protocol.ts": "73ff430090424298020e77013fc61de3cdca2cc31a5258b3b03f27153d29e646",
+    "game/client/useMission.ts": "7a2c24b2f58b8ca4ef3bf41b78325955e0911ef85ad70904e3bd5c2df9797a12",
+    "tests/confirmation-acknowledgement.test.ts": "b7ff28d09f13e53dca8ffa28717de4281996d3555bc59e50d09160785b2acfac",
+    "tests/confirmed-actions-client.test.ts": "23e2f8dbf95a0e6420992c1fe6b2c6e66595fdb4137cc1ae64a1b0d9c4ffc79d",
+    "tests/fixtures/decision-receipt.ts": "7697ff55a344401a9a029c923d3ecded8c059e2fdb73a6c6db849a7e93ee96f9"
+  },
+  "officialDocumentation": [
+    "https://www.assemblyai.com/docs/llms.txt",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration"
+  ],
+  "limitations": [
+    "Fake transport proof does not establish provider ingestion, model comprehension, or live acknowledgement behavior.",
+    "Input already transmitted before Confirm cannot be reordered. After bounded decision timeout/size release, an unavailable receipt cannot precede already released input.",
+    "Browser-hook and complete production validation are separate evidence owned by the release run.",
+    "No new token request, real provider connection, or accounting mutation was performed. Historical failed real evidence remains unchanged."
+  ],
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

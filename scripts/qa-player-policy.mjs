@@ -171,3 +171,40 @@ export async function crossCargoWithRecovery({ say, atGallery }) {
   await say('Please cross to the far side now if the route is clear.');
   return Boolean(await atGallery());
 }
+
+/** Bounded observable classification, never hidden physical-state inference. */
+export function classifyProposalResponse({ expectedLabel, before, current, reply = '', terminalIds = [], confirmedIds = [] }) {
+  const relevant = /\b(?:check|inspect|status|proposal|confirm|latch|door|conveyor|gate|passage|contact|capsule|return|cross|board)\b/i.test(reply);
+  const text = String(reply).replaceAll('\u2019', "'");
+  const subject = expectedLabel === 'Engage the Latch' ? 'latch' : /charging contact/.test(expectedLabel) ? 'contact' : expectedLabel === 'Move to the far-side platform' ? 'crossing' : null;
+  const claim = subject && communicatedActionClaim(text, subject);
+  const completion = expectedLabel === 'Release the charging contact'
+    ? claim?.value === 'not_done' && /\b(?:released|let go of) (?:the )?contact\b/i.test(text)
+    : claim?.value === 'reported_done' || /\b(?:i (?:have |already )?(?:moved|went|boarded|returned home)|i've (?:moved|boarded)|i am (?:aboard|home))\b/i.test(text) && !/\b(?:not|haven't|didn't|cannot|can't|will|would|could|might)\b/i.test(text);
+  if (current?.status === 'awaiting_confirmation') {
+    if (!current.proposalId || terminalIds.includes(current.proposalId) || confirmedIds.includes(current.proposalId)) return { kind: 'stale_pending', relevant };
+    if (current.label !== expectedLabel) return { kind: 'wrong_pending', relevant };
+    if (completion) return { kind: 'false_completion', relevant };
+    return { kind: 'matching_pending', relevant };
+  }
+  if (current?.status === 'committed' && current.proposalId !== before?.proposalId && !confirmedIds.includes(current.proposalId)) return { kind: 'unconfirmed_commit', relevant };
+  if (completion && !(current?.status === 'committed' && current.label === expectedLabel && confirmedIds.includes(current.proposalId))) return { kind: 'false_completion', relevant };
+  if (current && ['declined', 'expired', 'invalidated', 'failed', 'confirming'].includes(current.status)) return { kind: 'rejected_or_unresolved', relevant };
+  if (current?.status === 'committed') return { kind: 'verified_committed_receipt', relevant };
+  return { kind: relevant ? 'relevant_clarification' : 'no_relevant_reply', relevant };
+}
+
+export function proposalRecoveryPhrases(expectedLabel, current) {
+  const receipt = current?.status === 'committed' ? `The console confirms "${current.label}" completed. ` : '';
+  const clarify = `${receipt}Please check the relevant proposal result and local conditions needed for "${expectedLabel}".`;
+  const fixed = {
+    'Engage the Latch': 'Please set the Latch to hold the Door open.',
+    'Hold the charging contact': 'Please grip the contact steadily.',
+    'Release the charging contact': 'Please let go of the contact.',
+    'Move to the far-side platform': 'Please cross to the far side now if the route is clear.',
+    'Board the recovery capsule': 'Please board the capsule when it is safe to board.',
+    'Confirm the authorized return': 'Please confirm the return under the current authorization.',
+  };
+  const direction = expectedLabel.match(/^Move through the (east|west|northeast|northwest|southeast|southwest) gate$/)?.[1];
+  return { clarify, retry: fixed[expectedLabel] ?? (direction ? `Please go through the ${direction} gate if the opening is clear.` : `Please ${expectedLabel.toLowerCase()} if its local conditions are satisfied.`) };
+}
