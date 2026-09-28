@@ -1,0 +1,109 @@
+{
+  "label": "PRACTICE \u2014 deterministic simulation + UI confirmation",
+  "sourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "runtimeSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "recordedAt": "2026-09-28T14:19:45.049Z",
+  "completed": true,
+  "confirmations": 9,
+  "galleryRoute": "Lower platform route; local northeast inspection reported clear.",
+  "providerRequests": 0,
+  "externalRequests": 0,
+  "webSockets": 0,
+  "cleanup": "Owned browser and local production server closed; no external/provider request.",
+  "screenshots": [
+    {
+      "path": "submission/local-deliverables/screenshots/action-strip.png",
+      "bytes": 10443,
+      "sha256": "a5f1aa1782f939efc286e6a21e1561d42c87aeba8d848037194c555d3bf62794",
+      "recordingElapsedMs": 11228,
+      "captureType": "actual element screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/cargo.png",
+      "bytes": 167209,
+      "sha256": "b23f8f4ea9eef1d5c036ccb49d68f555a869b78b824d5a056e0351742e928443",
+      "recordingElapsedMs": 9649,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/committed.png",
+      "bytes": 150117,
+      "sha256": "c628e58c250a28aa0c714abadd8efd63dff2ae9e78ac4325f25689e76e28d44e",
+      "recordingElapsedMs": 19630,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/declined.png",
+      "bytes": 147996,
+      "sha256": "73546394c5d21b1acf440ed7b201b79eef6d25456eecc1cae43b986d6ae7ca4d",
+      "recordingElapsedMs": 14711,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/dock-ready.png",
+      "bytes": 154162,
+      "sha256": "7be44817cb9d3da594c42f1d4921c01470f498bc0ce18ac40cf74a741a9886cc",
+      "recordingElapsedMs": 74610,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/dock.png",
+      "bytes": 155669,
+      "sha256": "c319096cfa8ae1d5073ae6de8be321ce17fbb965f81f7a0fa6b28c5216d4fedf",
+      "recordingElapsedMs": 56644,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/gallery.png",
+      "bytes": 163312,
+      "sha256": "19e027a4b51bac538e7588984e00e2ee06597a89d4bee824feb602da4bd314ba",
+      "recordingElapsedMs": 28482,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/history.png",
+      "bytes": 178483,
+      "sha256": "d9e510f8e6ba8fa44a9ccd03b84bdf2ded68ec4ec154986db4fe0ca8e170bc5c",
+      "recordingElapsedMs": 38764,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/home.png",
+      "bytes": 168276,
+      "sha256": "143da6cd05d4ddbb930a9d087db635fc0b5e00f04852ca69328095c1248e525d",
+      "recordingElapsedMs": 81981,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/next-proposal.png",
+      "bytes": 157034,
+      "sha256": "d3a0ca4cec2d60baa9e93471f8136d37fb763dd437cbc64f48ed44078464488b",
+      "recordingElapsedMs": 22662,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/pending.png",
+      "bytes": 154684,
+      "sha256": "948a106477f292969abfb6268b49593a4c8bf238c0a3db824f91097f0657c6d4",
+      "recordingElapsedMs": 11228,
+      "captureType": "actual full viewport screenshot"
+    },
+    {
+      "path": "submission/local-deliverables/screenshots/title.png",
+      "bytes": 174566,
+      "sha256": "4dc2fbf004ed08da70d0a9982883a9fc127dce9ecb9b9ecf536215f11dc0a270",
+      "recordingElapsedMs": 2967,
+      "captureType": "actual full viewport screenshot"
+    }
+  ],
+  "localRawVideo": {
+    "path": ".validation/goal-004e-follow-up-media/practice-source.webm",
+    "bytes": 6435111,
+    "sha256": "b1041e706bf1a5b2ee4739ddd456a4a434db40b340c331726cc58febd627a594"
+  },
+  "localRecordingReceipt": {
+    "path": ".validation/goal-004e-follow-up-media/practice-recording.json",
+    "bytes": 6876,
+    "sha256": "74b65d1b7134d029cc3aabcaf0509bae3a34c277f4a617ac54f88f3fe9f64025"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "durationTargetSeconds": 166.739,
+  "historicalSourceSha256": "0d8a672b786ee56f16673016ba9205682a179db547722c3db6fa530f1e743dfe",
+  "segments": [
+    {
+      "name": "title",
+      "kind": "still",
+      "source": ".validation/goal-004e-follow-up-media/rendered-slides/slide-1.png",
+      "duration": 12,
+      "label": "LOCAL DEMO DRAFT",
+      "caption": "Voice-led cooperation, with deliberate on-screen action confirmation.",
+      "editedStart": 0,
+      "editedEnd": 12
+    },
+    {
+      "name": "premise",
+      "kind": "still",
+      "source": ".validation/goal-004e-follow-up-media/rendered-slides/slide-2.png",
+      "duration": 10,
+      "label": "THE GAME PREMISE",
+      "caption": "The map is a reference. Pip describes what is nearby.",
+      "editedStart": 12,
+      "editedEnd": 22
+    },
+    {
+      "name": "historical-context",
+      "kind": "still",
+      "source": ".validation/goal-004e-follow-up-media/real-context.png",
+      "duration": 7,
+      "label": null,
+      "caption": null,
+      "editedStart": 22,
+      "editedEnd": 29
+    },
+    {
+      "name": "real-failed-cargo",
+      "kind": "video",
+      "source": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-video.mp4",
+      "start": 50,
+      "duration": 44.6,
+      "audio": true,
+      "label": "RETAINED REAL VOICE | synthetic input + UI confirmation | bb6dfd2 | FAILED CARGO",
+      "caption": "Original same-session audio. No full Rescue was completed.",
+      "editedStart": 29,
+      "editedEnd": 73.6
+    },
+    {
+      "name": "mode-transition",
+      "kind": "still",
+      "source": ".validation/goal-004e-follow-up-media/mode-transition.png",
+      "duration": 9,
+      "label": null,
+      "caption": null,
+      "editedStart": 73.6,
+      "editedEnd": 82.6
+    },
+    {
+      "name": "practice-cargo",
+      "kind": "video",
+      "source": ".validation/goal-004e-follow-up-media/practice-source.webm",
+      "start": 9.103,
+      "duration": 14.606,
+      "audio": false,
+      "label": "NEW PRACTICE | deterministic typed simulation | fcbd513 | OFFLINE",
+      "caption": "Cargo Bay: discuss shared Power, inspect the proposal, and choose Confirm or Not yet.",
+      "editedStart": 82.6,
+      "editedEnd": 97.206
+    },
+    {
+      "name": "practice-gallery",
+      "kind": "video",
+      "source": ".validation/goal-004e-follow-up-media/practice-source.webm",
+      "start": 27.937,
+      "duration": 22,
+      "audio": false,
+      "label": "NEW PRACTICE | deterministic typed simulation | fcbd513 | OFFLINE",
+      "caption": "Relay Gallery: compare Pip's reports with the atlas. Edited selections, not Live continuation.",
+      "editedStart": 97.20599999999999,
+      "editedEnd": 119.206
+    },
+    {
+      "name": "practice-dock",
+      "kind": "video",
+      "source": ".validation/goal-004e-follow-up-media/practice-source.webm",
+      "start": 56.1,
+      "duration": 23.533,
+      "audio": false,
+      "label": "NEW PRACTICE | deterministic typed simulation | fcbd513 | OFFLINE",
+      "caption": "Return Dock: coordinate contact and stored energy. Human return authorization remains separate.",
+      "editedStart": 119.20599999999999,
+      "editedEnd": 142.739
+    },
+    {
+      "name": "practice-home",
+      "kind": "video",
+      "source": ".validation/goal-004e-follow-up-media/practice-source.webm",
+      "start": 81.441,
+      "duration": 10,
+      "audio": false,
+      "label": "PRACTICE ENDING | same offline mission | fcbd513",
+      "caption": "Server-confirmed Practice home. This is not a real Voice clear.",
+      "editedStart": 142.73899999999998,
+      "editedEnd": 152.739
+    },
+    {
+      "name": "availability",
+      "kind": "still",
+      "source": ".validation/goal-004e-follow-up-media/rendered-slides/slide-6.png",
+      "duration": 14,
+      "label": "LOCAL EXPLANATORY DRAFT | NO PUBLIC DEMO URL",
+      "caption": "Full Live Rescue remains unverified. Upload and event submission are still pending.",
+      "editedStart": 152.73899999999998,
+      "editedEnd": 166.739
+    }
+  ],
+  "audioBoundary": "Retained real excerpt uses its original mixed digital audio. All Practice and explanatory sections use silence; no Pip reply or owner narration was generated or replaced. Cuts distinguish modes/builds. Historical audio/video alignment remains approximate."
+}

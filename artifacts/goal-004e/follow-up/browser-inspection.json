@@ -1,0 +1,66 @@
+{
+  "label": "ACTUAL COMPILED UI; CONSTRUCTED OFFLINE PEER; NO REAL PROVIDER",
+  "sourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "captures": [
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1280/pending.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/pending-1280.png",
+      "sha256": "d5c5419ffa3c37855e7d7b5c6a559ce9db1c0bf0002ce94a37ba2a43f7bfdc13"
+    },
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1280/committed.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/committed-1280.png",
+      "sha256": "de8e703cf04b50309da33530047f21d7e977523e1729e4b835a8a686217b13da"
+    },
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1280/next-proposal-history.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/next-proposal-history-1280.png",
+      "sha256": "2e4c9c5d013724e9f869ceba32c5c5025242bbb749c553cb39c5fbc8c0e62899"
+    },
+    {
+      "source": "test-results/qa-mission-player-Shared-Q-4c708--with-an-unfunded-fake-peer-chromium-1280/synthetic-player-b-home.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/home-profile-b-1280.png",
+      "sha256": "c0f1734c33f624cacb12f2251aced214e2901e901e652a64b792dea09f1a867c"
+    },
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1440/pending.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/pending-1440.png",
+      "sha256": "9452dfeb8b32bca4ba18a60bcad654034863b696898a2337db822b9cd40c8111"
+    },
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1440/committed.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/committed-1440.png",
+      "sha256": "dbee1a128ac273c9fdaee0afb22b14336a2fa64f9e3fa030df258b694e0e619d"
+    },
+    {
+      "source": "test-results/confirmation-continuity-co-cb562-preserves-the-next-proposal-chromium-1440/next-proposal-history.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/next-proposal-history-1440.png",
+      "sha256": "d45983c2d2e707b51e49ebc0f9deff2e1e0fc7c9b9bb1961356245bc0add9495"
+    },
+    {
+      "source": "test-results/qa-mission-player-Shared-Q-30109--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-a-home.png",
+      "path": "artifacts/goal-004e/follow-up/screenshots/home-profile-a-1440.png",
+      "sha256": "90dbcadae16e64d9926d47fe345b05d44524e5c7f60efa93ec8fdb54bda5d3dc"
+    }
+  ],
+  "review": "Each listed image was viewed directly. Pending exact action, committed receipt, distinct next movement proposal and Game event history remain readable with end controls available. Full-page captures include ordinary vertical scrolling; no overlapping content or hidden-state art was observed. Home captures require authoritative completion and remain visibly labelled as constructed offline peers.",
+  "before": "artifacts/goal-004e/follow-up/player-before.json",
+  "after": "One bounded clarification plus one rephrased request discovers the next exact proposal; the old committed Latch is retained as history, not reconfirmed.",
+  "coverageLimits": [
+    "Fake socket/audio and scripted peer output are not real model behavior or physical-device evidence.",
+    "Microphone buffering/expiry/overflow are adapter-level proofs.",
+    "The missing-closing-response browser watchdog uses Training and the shared eight-second timer; no separate withheld-ACK Rescue browser proof is claimed."
+  ],
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}

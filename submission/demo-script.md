@@ -1,20 +1,22 @@
-# Owner recording plan — approximately 2 minutes 40 seconds
+# Produced local demo draft
 
-This is a recording plan, not a completed video or evidence of a Live playthrough. Video link: **NOT PROVIDED**. Record a real human speaking and Pip's actual output. Use the shipped release branch and an explicitly enabled, bounded Live allowance from `OWNER_ACTIONS.md`. Use `work/goal-004e-confirmed-actions` only after its current validation is reviewed. **RELEASE_NOT_LIVE_VERIFIED** remains; the conditional automated E attempt does not authorize additional recording calls.
+File: **`submission/Talk_Me_Home_Demo_Draft.mp4`**. Duration: **166.79 seconds**, 1280x720 H.264 with AAC audio. This is a labelled explanatory/editing draft, not a human-play recording, a continuous Live clear, an uploaded video, or proof of event compliance. Public video link: **NOT PROVIDED**. **RELEASE_NOT_LIVE_VERIFIED**.
 
-Capture the browser at 1440×900 or 1280×720 with the mode badge, captions, proposed-action strip, remote control, and Pause/End controls visible. Check microphone and output locally before connecting. Use headphones; record human voice and browser output with the owner's external recording tool. The game does not record microphone audio. Never capture an access code, provider credential, or hosting environment panel.
+| Edited time | Actual material |
+| --- | --- |
+| 0:00.0-0:12.0 | Title, original Pip artwork and cooperation premise |
+| 0:12.0-0:22.0 | Human/Pip information split from the editable deck |
+| 0:22.0-0:29.0 | Historical synthetic-input real Voice context, build bb6dfd2, failed Cargo |
+| 0:29.0-1:13.6 | Original real source 50.0-94.6s: Latch proposal/confirmation, status doubt and failed crossing continuation, original digital audio |
+| 1:13.6-1:22.6 | Explicit mode/build change to deterministic typed Practice on fcbd513 |
+| 1:22.6-1:37.2 | Practice Cargo: inspect and confirm the exact proposed action |
+| 1:37.2-1:59.2 | Practice Gallery: atlas, reported route and movement confirmation |
+| 1:59.2-2:22.7 | Practice Dock: contact, stored energy and separate return authorization |
+| 2:22.7-2:32.7 | Actual server-confirmed ending footage from the same Practice mission |
+| 2:32.7-2:46.7 | Accurate availability and remaining Live/public submission scope |
 
-| Edited time | Picture and real interaction | Optional human narration |
-| --- | --- | --- |
-| 0:00–0:15 | Show the illustrated title and choose Rescue Mission. Keep the image's illustration label visible. | “I have the map. Pip has eyes and hands. Neither of us can get home alone.” |
-| 0:15–0:30 | Show the local readiness check and actual Live Voice mode, then connect intentionally. Preserve Pip's real greeting. Omit access-code entry from the recording. | “My documents are a reference. I need Pip to tell me what is actually there.” |
-| 0:30–1:05 | Cargo Bay: ask Pip to look around and inspect relevant equipment. Show one real spoken request and its pending proposal. Read the descriptor, choose **Confirm this action**, and retain the verified Game event. Show the human Power command and separately confirm the crossing proposal. | Let the conversation explain why both partners are needed; do not narrate over Pip. |
-| 1:05–1:40 | Relay Gallery: compare Pip's reported emblem/direction with the atlas, select a Relay circuit, and request a movement proposal. Show that the exact movement waits for the console confirmation. If a plan needs changing, show **Not yet**, discuss the correction, and confirm only the replacement proposal. Include an actual recoverable rejection if one occurs. Show a private map annotation only if the player actually makes it. | “That is my route guess, not a tracking marker. I can change the plan when Pip finds an obstacle.” |
-| 1:40–2:15 | Return Dock: retain the exchange around holding contact, human Charge/Store, preparation, and human return authorization. Show a separate console confirmation for each local action, including final return. A spoken "yes" is not the confirmation control. | “The last decision still needs both of us.” |
-| 2:15–2:40 | Show the server-confirmed homecoming and small chapter recap. Keep the actual closing reply and call-ended state. End on the replay choices without starting a second call. | “A shared plan brought a small robot home.” |
+Mode and build labels remain visible throughout footage. The real excerpt preserves the continuation failure; raw historical media remains unchanged. It showed one confirmed action, not a completed Cargo or Rescue. Original digital audio/video alignment remains approximate. No Pip speech, successful reply or owner narration was generated or substituted. All new Practice/explanatory sections are silent, and the AAC track retains the original excerpt's audio.
 
-Within a separately approved recording allowance, record genuine play to obtain these moments, then edit to the target length. If the mission does not complete, retain that outcome instead of manufacturing an ending. If the Gallery does not produce a useful recovery, use a real Cargo or Dock recovery from the same run. Do not invent an error, successful action, or spoken response for the script. Identify time jumps with a brief “Later in this mission” or “Edited for length” caption; preserve complete meaningful exchanges and never imply edits measure Live latency.
+The Practice recording uses ordinary typed UI actions and exact visible confirmations on the compiled production game. No forced Gallery profile, robot-tool execution by the player, token request, external request or WebSocket was used. Its selected cuts are editing, not latency measurements. The home footage belongs to that same completed offline run.
 
-Keep raw recognition captions, including corrections. Do not replace the human voice, synthesize a playthrough, script every Pip reply, or present a planned line as an observed result. If any segment uses Practice, display **“Practice — deterministic simulation”** throughout it. Label injected fake-provider footage **“Simulated provider UI”**; it is not Live evidence. Label any automated real-provider clip **Synthetic voice + UI confirmation - automated test**; it does not demonstrate human speech or physical speaker playback. Private QA footage is not the submitted demo. The existing packaged gameplay screenshots are historical Practice.
-
-The [general LABLAB submission guide](https://lablab.ai/ai-articles/hackathon-guidelines), checked September 24, 2026, specifies a video within five minutes and under 300 MB. Export this shorter plan within those limits, then check the event form for its own requirements. Uploading and final submission remain owner actions.
+See [exact edit timeline](local-deliverables/edit-timeline.json), [file sizes/hashes, codecs and inspection](local-deliverables/provenance.json), and [local generation recipe](local-deliverables/README.md). The MP4 remains local and ignored; small sources, screenshots and receipts are committed. Upload and any future human Live recording require separate owner action and applicable authorization. The current exhausted QA campaign permits no further calls.

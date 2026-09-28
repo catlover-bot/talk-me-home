@@ -39,15 +39,22 @@ scope_card=card('mode-transition','MODE AND BUILD CHANGE','Next: offline Practic
   f'Next footage uses deterministic typed Practice on build {SHORT}.',
   'Selected moments from one offline mission; no new provider connection.'])
 chapters={x['name']:x['atMs']/1000 for x in record['chapters']}
+cargo_start=max(0,chapters['cargo']-.5)
+dock_start=max(0,chapters['dock']-.5)
+def before_confirmation(label,start,maximum):
+    boundary=next(item['atMs']/1000 for item in record['confirmations'] if item['label']==label)
+    duration=round(min(maximum,boundary-start-.7),3)
+    assert duration>1
+    return duration
 segments=[
   {'name':'title','kind':'still','source':RENDER/'slide-1.png','duration':12,'label':'LOCAL DEMO DRAFT','caption':'Voice-led cooperation, with deliberate on-screen action confirmation.'},
   {'name':'premise','kind':'still','source':RENDER/'slide-2.png','duration':10,'label':'THE GAME PREMISE','caption':'The map is a reference. Pip describes what is nearby.'},
   {'name':'historical-context','kind':'still','source':live_card,'duration':7,'label':None,'caption':None},
   {'name':'real-failed-cargo','kind':'video','source':LIVE,'start':50,'duration':44.6,'audio':True,'label':'RETAINED REAL VOICE | synthetic input + UI confirmation | bb6dfd2 | FAILED CARGO','caption':'Original same-session audio. No full Rescue was completed.'},
   {'name':'mode-transition','kind':'still','source':scope_card,'duration':9,'label':None,'caption':None},
-  {'name':'practice-cargo','kind':'video','source':PRACTICE,'start':max(0,chapters['cargo']-.5),'duration':22,'audio':False,'label':f'NEW PRACTICE | deterministic typed simulation | {SHORT} | OFFLINE','caption':'Cargo Bay: discuss shared Power, inspect the proposal, and choose Confirm or Not yet.'},
+  {'name':'practice-cargo','kind':'video','source':PRACTICE,'start':cargo_start,'duration':before_confirmation('Move to the far-side platform',cargo_start,22),'audio':False,'label':f'NEW PRACTICE | deterministic typed simulation | {SHORT} | OFFLINE','caption':'Cargo Bay: discuss shared Power, inspect the proposal, and choose Confirm or Not yet.'},
   {'name':'practice-gallery','kind':'video','source':PRACTICE,'start':max(0,chapters['gallery']-.5),'duration':22,'audio':False,'label':f'NEW PRACTICE | deterministic typed simulation | {SHORT} | OFFLINE','caption':'Relay Gallery: compare Pip\'s reports with the atlas. Edited selections, not Live continuation.'},
-  {'name':'practice-dock','kind':'video','source':PRACTICE,'start':max(0,chapters['dock']-.5),'duration':24,'audio':False,'label':f'NEW PRACTICE | deterministic typed simulation | {SHORT} | OFFLINE','caption':'Return Dock: coordinate contact and stored energy. Human return authorization remains separate.'},
+  {'name':'practice-dock','kind':'video','source':PRACTICE,'start':dock_start,'duration':before_confirmation('Confirm the authorized return',dock_start,24),'audio':False,'label':f'NEW PRACTICE | deterministic typed simulation | {SHORT} | OFFLINE','caption':'Return Dock: coordinate contact and stored energy. Human return authorization remains separate.'},
   {'name':'practice-home','kind':'video','source':PRACTICE,'start':max(0,chapters['home']-.5),'duration':10,'audio':False,'label':f'PRACTICE ENDING | same offline mission | {SHORT}','caption':'Server-confirmed Practice home. This is not a real Voice clear.'},
   {'name':'availability','kind':'still','source':RENDER/'slide-6.png','duration':14,'label':'LOCAL EXPLANATORY DRAFT | NO PUBLIC DEMO URL','caption':'Full Live Rescue remains unverified. Upload and event submission are still pending.'},
 ]

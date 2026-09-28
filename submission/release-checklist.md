@@ -1,30 +1,25 @@
 # Release and submission checklist
 
-Updated for Goal 004E, September 28, 2026. This is local release preparation, not a submitted entry.
+Updated for the Goal 004E offline follow-up, September 28, 2026. Branch: **`work/goal-004e-confirmed-actions`**. **OFFLINE_REPAIR_PASS / RELEASE_NOT_LIVE_VERIFIED**. This is local delivery, not a submitted entry.
 
-Current branch: **`work/goal-004e-confirmed-actions`**. The product now uses voice-led cooperation with explicit confirmation of each proposed local action. See the [E implementation and validation report](../docs/goal-004e-confirmed-actions.md). **OFFLINE_REPAIR_PASS**: 342 unit tests and 100 browser cases passed on clean candidate `bb6dfd2181503415a14c440c52dd762db88f5e3c`. The final synthetic Voice + UI confirmation attempt failed to complete Cargo; **RELEASE_NOT_LIVE_VERIFIED** remains. Historical C/D failed Text results and unused-slot restrictions remain recorded in their original reports; a new implementation does not turn those failures into passes.
-
-| Item | Honest status and next action |
+| Item | Actual status |
 | --- | --- |
-| Game source | Goal 004E feature branch in `catlover-bot/talk-me-home`, based on delivered D head `52d8c6d4cc68d136890ffa4dfb39c4060602ffb0`. Frozen execution candidate: `bb6dfd2181503415a14c440c52dd762db88f5e3c` ([manifest](../artifacts/goal-004e/candidate.json)). Exact final pushed-head CI is linked in the delivery report. Starter-only `main` is not the game. |
-| Repository access | **OWNER CHECK REQUIRED.** Visibility has not changed. Confirm judges can access the selected feature branch; preserve upstream notices and art provenance. |
-| Production build | One Node service serves the compiled game and API through `build:game` / `start:game`. The current E production build and 100 offline browser cases passed; see the [offline receipt](../artifacts/goal-004e/offline-validation.json). |
-| Public demo URL | **NOT PROVIDED - NOT DEPLOYED.** `OWNER_ACTIONS.md` and `render.game.yaml` prepare the E branch with automatic deployment off. Verify an actual HTTPS URL after an owner-approved deployment. |
-| Judge Live access | **NOT ENABLED PUBLICLY.** Hosting, secrets, explicit enablement, and a separate durable finite public allowance remain owner actions. The private QA amendment is not a judges' allowance. |
-| Descriptions | **PREPARED.** `project-description.md`: title 12 characters, short description 172 characters, long description 236 words. Describes spoken coordination plus console confirmation, without a hands-free claim. |
-| Cover and app icon | **GAME ART PREPARED.** Preserve exports and provenance in `assets/`; the cover is an illustration. |
-| Gameplay screenshots | Existing `assets/` captures are **historical Practice**. E validation captures in `artifacts/goal-004e/screenshots/` show confirmation states and Practice home; offline captures cannot establish real conversation or physical audio. |
-| Demo video | **NOT PROVIDED.** `demo-script.md` is an owner recording plan. Private automated test footage is not a finished submission video; synthetic input must be labelled. |
-| Presentation | **OUTLINE PREPARED; DECK/LINK NOT PROVIDED.** `pitch-outline.md` is six-slide source copy, not a finished deck. |
-| Local and CI evidence | Current E results belong in `docs/goal-004e-confirmed-actions.md`. The clean candidate and complete local results are recorded; exact final pushed-head CI is linked in the delivery report. Preserve historical Goal 001-004D evidence. |
-| Real Live verification | **FAILED TO COMPLETE CARGO.** Three unconfirmed inputs caused no physical change, then one UI decision committed one action. Pip asked to check status instead of proposing the crossing; the strict player stopped before recovery. Ending ACK was received. [Actual conversation](../artifacts/goal-004e/live/2026-09-28T10-24-13-651Z-voice-mission-conversation.md). No full real rescue is claimed. Physical microphone capture and human-audible playback remain separate owner checks. |
-| Remaining real allowance | **EXHAUSTED.** Linked C/D/E: 4/4 attempts, 2,680 reserved seconds, USD 3.35 estimated reservation cost. Zero remaining; no retry, replenishment, or further real call is authorized. |
-| Human play and enjoyment | Earlier basic verification is historical. No new natural human Live clear, enjoyment study, or measured audience outcome is claimed. |
-| Event form and deadline | **OWNER CHECK REQUIRED.** Verify the logged-in form, precise cutoff, mandatory fields, uploads, and access. |
-| Submission completion | **NOT SUBMITTED.** The owner must complete submission and retain its confirmation. |
+| Source and CI | Clean frozen source `fcbd513effb17d8c90e612c28aa92ed76c070b7e`; final delivery adds docs/media. Exact final pushed-head CI is linked in the delivery report. Starter `main` is not the game. |
+| Production and offline coverage | **PASSED**: 358 unit tests, 124 browser cases, typecheck, build, whitespace and fresh production Practice. Both Gallery variants, Dock/home and Training covered. [Receipt](../artifacts/goal-004e/follow-up/offline-validation.json). |
+| Public HTTPS | **NOT PROVIDED / NOT DEPLOYED.** One prepared Render Node service + disk decision in [OWNER_ACTIONS](../OWNER_ACTIONS.md); initial Live disabled. |
+| Judge Live access | **NOT ENABLED.** Needs separate hosting/access/spending authorization and a finite durable public allowance. Exhausted private QA is not that allowance. |
+| Repository access | **OWNER DECISION PENDING.** Feature-branch access must be deliberate; visibility unchanged. |
+| Descriptions | **PRODUCED.** Title 12 characters, short description 172 characters, long description 242 words. |
+| Cover/icon | **PRODUCED.** Existing original art and source/license provenance preserved in `assets/`. Cover is illustration, not gameplay. |
+| Current UI images | **CAPTURED / INSPECTED.** New Practice images in `local-deliverables/screenshots/`; constructed-provider confirmation/history/home images in `../artifacts/goal-004e/follow-up/screenshots/`. Modes are labelled. |
+| Presentation | **PRODUCED LOCALLY.** [Editable six-slide PPTX](Talk_Me_Home_Pitch.pptx) and [native-rendered PDF](Talk_Me_Home_Pitch.pdf); every slide inspected. Public link **NOT PROVIDED**. |
+| Video | **PRODUCED LOCALLY.** `submission/Talk_Me_Home_Demo_Draft.mp4`, 166.79s, H.264/AAC. Retained failed synthetic Voice and new completed Practice are explicitly separated. Local ignored file; upload/link **NOT PROVIDED**. |
+| Media provenance | [Exact paths/sizes/hashes and rendering checks](local-deliverables/provenance.json), [edit timeline](local-deliverables/edit-timeline.json), small editable sources retained. Historical originals unchanged. |
+| Real Voice result | **FAILED TO COMPLETE CARGO**, unchanged: zero commits during three unconfirmed inputs; one exact Latch confirmation committed once; then status-question/crossing gap. Remote End ACK observed. [Original conversation](../artifacts/goal-004e/live/2026-09-28T10-24-13-651Z-voice-mission-conversation.md). |
+| Follow-up real usage | **ZERO** new token requests or provider connections. Offline peer success does not establish real model comprehension or completion. |
+| QA allowance | **EXHAUSTED**, unchanged: 4/4 attempts, 2,680 seconds reserved, USD 3.35 planning estimate, zero remaining. No reset/refund/replenishment. |
+| Physical audio / human play | **UNVERIFIED.** No new physical microphone/speaker result, natural human clear or enjoyment claim. |
+| Event form / cutoff | **OWNER CHECK PENDING.** Verify current logged-in requirements and precise cutoff; previous listing dates are historical, not a refreshed deadline. |
+| Uploads / final submission | **NOT UPLOADED / NOT SUBMITTED.** Local draft is not event compliance or submission confirmation. |
 
-The [official live listing](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/live), checked September 24, lists September 1–30, 2026 and “Live · Submissions open.” The exact cutoff time remains unverified. A JavaScript countdown displaying zeros does not establish that submission is closed. **September 29 is our internal owner-submission target**, leaving a buffer; it is not an organizer deadline.
-
-The [general submission guide](https://lablab.ai/ai-articles/hackathon-guidelines) lists the project title, descriptions, recommended 16:9 cover, video, repository, and deployed demo URL. It does not replace validation in the logged-in event form.
-
-Current work stops at this documented result. Review the failed continuation and exact final CI when delivered. Public deployment, additional recording calls, finished deck/video, and submission remain incomplete and are not authorized by this exhausted QA campaign.
+The [general submission guide](https://lablab.ai/ai-articles/hackathon-guidelines) was referenced in prior preparation; the actual logged-in event form remains authoritative for this entry. No public link is invented. Review the completed local artifacts and decide hosting/access/upload scope; no further ordinary implementation/browser work is pending for the owner.

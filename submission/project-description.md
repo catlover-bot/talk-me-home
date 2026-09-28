@@ -22,6 +22,6 @@ Cargo Bay introduces shared machinery and remote Power. Relay Gallery asks you t
 
 AssemblyAI's Voice Agent API supplies Live speech recognition, spoken replies, and function calls. Captions preserve what was said; private notes and map annotations stay out of Pip's context. Players can also choose provider-backed Live Text or deterministic Practice without provider calls.
 
-Original illustrations, readable documents, and a responsive Pip portrait frame the experience. Offline validation passed. The final synthetic Voice-and-UI test confirmed one action safely but did not complete Cargo; no full real rescue or human enjoyment result is claimed. Public deployment, a finished presentation, and an owner-recorded submission video remain pending.
+Original illustrations, readable documents, and a responsive Pip portrait frame the experience. Offline validation passed. The final synthetic Voice-and-UI test confirmed one action safely but did not complete Cargo; no full real rescue or human enjoyment result is claimed. An editable presentation and labelled local video draft are produced. Public deployment, uploads, and final submission remain pending.
 
-Count: **236 words**, counting whitespace-separated words (Goal 004 range: 150-250). Counts exclude headings and count notes. Validation and deployment statements must change only after the corresponding result is observed.
+Count: **242 words**, counting whitespace-separated words (Goal 004 range: 150-250). Counts exclude headings and count notes. Validation and deployment statements must change only after the corresponding result is observed.

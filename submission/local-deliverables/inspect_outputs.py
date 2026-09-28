@@ -34,7 +34,13 @@ original_checks=[]
 for item in original['files']:
     path=ROOT/item['path']; matches=sha(path)==item['sha256'] and path.stat().st_size==item['bytes'];assert matches
     original_checks.append({'path':item['path'],'sha256':item['sha256'],'unchanged':matches})
+recipes=[]
+for name in ['record_practice.mjs','make_pitch.py','make_video.py','inspect_outputs.py','requirements.txt','README.md']:
+    path=DEST/name
+    frozen=subprocess.check_output(['git','show',f"{record['commit']}:{path.relative_to(ROOT)}"],cwd=ROOT)
+    recipes.append({**metadata(path),'matchesRuntimeFreeze':sha(path)==hashlib.sha256(frozen).hexdigest()})
 receipt={'status':'LOCAL_DELIVERABLES_RENDERED','releaseStatus':'RELEASE_NOT_LIVE_VERIFIED','practice':{key:record[key] for key in ['commit','runtimeSha256','recordedAt','browser','providerRequests','externalRequests','webSockets','completed','galleryRoute','cleanup']},
+ 'mediaRecipeSources':recipes,'postFreezeEditingChanges':'The video recipe trims chapter footage before its recorded transition confirmation; the receipt records actual executed recipe hashes. Application runtime is the unchanged captured commit.',
  'practiceConfirmations':len(record['confirmations']),'outputs':[metadata(pptx),metadata(pdf),metadata(video)],'slides':slides,'video':media,
  'toolchain':{'pythonPptx':'1.0.2','pillow':'12.3.0','libreoffice':command(['libreoffice','--version']).strip(),'pdftoppm':command(['pdftoppm','-v']).splitlines()[0],'ffmpeg':command(['ffmpeg','-version']).splitlines()[0]},
  'historicalMediaPreservation':original_checks,'sourceModeBoundary':timeline['audioBoundary'],

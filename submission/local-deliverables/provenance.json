@@ -1,0 +1,223 @@
+{
+  "status": "LOCAL_DELIVERABLES_RENDERED",
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "practice": {
+    "commit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+    "runtimeSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+    "recordedAt": "2026-09-28T14:19:45.049Z",
+    "browser": "153.0.8010.12",
+    "providerRequests": 0,
+    "externalRequests": 0,
+    "webSockets": 0,
+    "completed": true,
+    "galleryRoute": "Lower platform route; local northeast inspection reported clear.",
+    "cleanup": "Owned browser and local production server closed; no external/provider request."
+  },
+  "mediaRecipeSources": [
+    {
+      "path": "submission/local-deliverables/record_practice.mjs",
+      "bytes": 9580,
+      "sha256": "2dae34e4ded773f9e9898ccbbd5f3a2e0a1c42791d91183529def941e340b20d",
+      "matchesRuntimeFreeze": true
+    },
+    {
+      "path": "submission/local-deliverables/make_pitch.py",
+      "bytes": 10475,
+      "sha256": "dcdb23dabd2fb37bbb8017d86998f5fa143af2fbbae61f5355e986eaa9caf6e0",
+      "matchesRuntimeFreeze": true
+    },
+    {
+      "path": "submission/local-deliverables/make_video.py",
+      "bytes": 7535,
+      "sha256": "2afe9e51cc10f19f19183ac6fef1deb3fff6fe4498779cb92fb26128a4af00bb",
+      "matchesRuntimeFreeze": false
+    },
+    {
+      "path": "submission/local-deliverables/inspect_outputs.py",
+      "bytes": 4811,
+      "sha256": "48bdfd84fea0bf0f543267d1911d6aae971494eee38b59e14a76cd6a73ebc086",
+      "matchesRuntimeFreeze": false
+    },
+    {
+      "path": "submission/local-deliverables/requirements.txt",
+      "bytes": 90,
+      "sha256": "f1e60cbd5ffdf0a8776890eb619ffbc68f492822c8ab32d83fb689a210fbfbb7",
+      "matchesRuntimeFreeze": true
+    },
+    {
+      "path": "submission/local-deliverables/README.md",
+      "bytes": 4637,
+      "sha256": "3c23f7b1dcad127814ebe7374196d8d8f929f443e7215218624198ef882ad3d1",
+      "matchesRuntimeFreeze": true
+    }
+  ],
+  "postFreezeEditingChanges": "The video recipe trims chapter footage before its recorded transition confirmation; the receipt records actual executed recipe hashes. Application runtime is the unchanged captured commit.",
+  "practiceConfirmations": 9,
+  "outputs": [
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pptx",
+      "bytes": 1331075,
+      "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pdf",
+      "bytes": 810438,
+      "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+      "bytes": 4526386,
+      "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c"
+    }
+  ],
+  "slides": [
+    {
+      "slide": 1,
+      "editableTextShapes": 5,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-1.png",
+        "bytes": 233929,
+        "sha256": "5b2dd5c5de3a4771377b37cd11b3d6c177006b25f036c6f251da6b5b57b81902"
+      }
+    },
+    {
+      "slide": 2,
+      "editableTextShapes": 12,
+      "pictureShapes": 0,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-2.png",
+        "bytes": 100442,
+        "sha256": "25aed1135b8256fb09ef7a04aca3783f16c77b4f9d35778f96a962b9aa2bead5"
+      }
+    },
+    {
+      "slide": 3,
+      "editableTextShapes": 14,
+      "pictureShapes": 3,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-3.png",
+        "bytes": 196891,
+        "sha256": "1acf4a92c757f3ef3f26d2e4964137f9989076a9a7bb4f6a3f38ffffb7cab822"
+      }
+    },
+    {
+      "slide": 4,
+      "editableTextShapes": 17,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-4.png",
+        "bytes": 267720,
+        "sha256": "1f4f73054e701cc0a25ddf4f4e256f5e9b002ab4bc6f6d1c4e455fd9ee866a21"
+      }
+    },
+    {
+      "slide": 5,
+      "editableTextShapes": 14,
+      "pictureShapes": 0,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-5.png",
+        "bytes": 123461,
+        "sha256": "ffbfcbda1f3b3d93d03a31a378ec770ec2d6c1181a62cbc8529508838a9fb0e6"
+      }
+    },
+    {
+      "slide": 6,
+      "editableTextShapes": 9,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "nativeRender": {
+        "path": ".validation/goal-004e-follow-up-media/rendered-slides/slide-6.png",
+        "bytes": 216590,
+        "sha256": "4c9bcb294be6cb9952b9ca1b917f37e7b19e4deb9eeaf02b6e7cedc99bc7acc2"
+      }
+    }
+  ],
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2
+      }
+    ],
+    "format": {
+      "duration": "166.788021",
+      "size": "4526386"
+    }
+  },
+  "toolchain": {
+    "pythonPptx": "1.0.2",
+    "pillow": "12.3.0",
+    "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+    "pdftoppm": "pdftoppm version 24.02.0",
+    "ffmpeg": "ffmpeg version N-126390-g9fc8c785e2-20260903 Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "historicalMediaPreservation": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/input-digital.wav",
+      "sha256": "ed6f78e7b0c11c68c7ca46ba83d855f305663d3d41d5b9bafbcaf8221e18be71",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/rendered-digital.wav",
+      "sha256": "7ac1dd7223da6a44efe117c4996127254ecea96dcf9ca916a555bc9c1fd7a1af",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/postVolume-digital.wav",
+      "sha256": "bbed37956b7714523da8f8fee4ef1fda913ead31601cd883a1c362f79fdc9541",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/browser-silent.webm",
+      "sha256": "81011138b5e6cad5eda369c735cc5a36f4679628df3cb64ae458b0a3fbff6cff",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-digital.wav",
+      "sha256": "1ccb4ade31ef6fe7317c74fefd3d2b8a846e984ff8f8a595a0c3c6efdd38b1c2",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-28T10-24-13-651Z-voice-mission/qa-combined-video.mp4",
+      "sha256": "0d8a672b786ee56f16673016ba9205682a179db547722c3db6fa530f1e743dfe",
+      "unchanged": true
+    }
+  ],
+  "sourceModeBoundary": "Retained real excerpt uses its original mixed digital audio. All Practice and explanatory sections use silence; no Pip reply or owner narration was generated or replaced. Cuts distinguish modes/builds. Historical audio/video alignment remains approximate.",
+  "inspection": {
+    "nativePowerPointRenderedWith": "LibreOffice Impress PDF export; every slide then rasterized by Poppler for visual review",
+    "allSixSlidesInspected": true,
+    "repairedIssues": [
+      "Evidence slide body wrapping/overflow corrected before final render."
+    ],
+    "videoFrames": "Representative frames at every mode/chapter transition and the final availability card inspected; labels persist in footage.",
+    "physicalDevicesOrHumanEnjoyment": "Not tested; no claim."
+  },
+  "localRawPractice": {
+    "path": ".validation/goal-004e-follow-up-media/practice-source.webm",
+    "bytes": 6435111,
+    "sha256": "b1041e706bf1a5b2ee4739ddd456a4a434db40b340c331726cc58febd627a594"
+  },
+  "links": {
+    "publicDemo": null,
+    "uploadedVideo": null,
+    "uploadedPresentation": null,
+    "eventSubmission": null
+  }
+}

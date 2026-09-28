@@ -1,0 +1,191 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-28T14:19:12.878Z",
+  "commit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "branch": "work/goal-004e-confirmed-actions",
+  "dirty": false,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 443,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 13827,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 358
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1022,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "compiled-production browser tests",
+      "status": "passed",
+      "durationMs": 151716,
+      "exitCode": 0,
+      "timedOut": false,
+      "passedCases": 124
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "durationMs": 6,
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "label": "Fresh-context compiled-production Practice, all-route ownership, settings/history, narrow/zoom, confirmed home and replay",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    ".validation/goal-004e-followup-offline/screenshots/title.png",
+    ".validation/goal-004e-followup-offline/screenshots/action-pending.png",
+    ".validation/goal-004e-followup-offline/screenshots/action-declined.png",
+    ".validation/goal-004e-followup-offline/screenshots/action-confirmed.png",
+    ".validation/goal-004e-followup-offline/screenshots/gallery.png",
+    ".validation/goal-004e-followup-offline/screenshots/gallery-narrow.png",
+    ".validation/goal-004e-followup-offline/screenshots/gallery-zoom-200.png",
+    ".validation/goal-004e-followup-offline/screenshots/dock.png",
+    ".validation/goal-004e-followup-offline/screenshots/home.png"
+  ],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "localBuildSha256": "bef7fc740286fce0a06b58c689dd15eede389aa8a2f54a876d43d85825421959",
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "runtimeBuildSha256": "bef7fc740286fce0a06b58c689dd15eede389aa8a2f54a876d43d85825421959",
+  "confirmedActions": {
+    "confirmations": 11,
+    "confirmedHome": true,
+    "screenshots": [
+      "pending",
+      "declined",
+      "committed",
+      "home"
+    ]
+  },
+  "access": {
+    "liveEnabled": false,
+    "authorized": false,
+    "available": false
+  },
+  "confirmations": [
+    {
+      "proposalId": "80e85716-acb7-49b4-8645-736722dc79f8",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1085.699999988079,
+      "confirmedAtMs": 1232.7999999523163,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5a59d520-3307-4433-9cc9-d6c5a366bfef",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1465.2999999523163,
+      "confirmedAtMs": 1612.8999999761581,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "d990aebc-2b5f-4ebc-871c-ebc4758306a6",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1858.0999999642372,
+      "confirmedAtMs": 1992.7999999523163,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "ea56a33f-db5e-483c-ae38-50ecf9dcd0fd",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2650.699999988079,
+      "confirmedAtMs": 2793.2999999523163,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "67480702-a933-43b1-9036-b836c6644849",
+      "label": "Move through the northwest gate",
+      "intendedRequest": "Go through the northwest gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2934.199999988079,
+      "confirmedAtMs": 3076.599999964237,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "e3d75c75-bbf8-49b9-9b34-09de464f95d8",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3200.899999976158,
+      "confirmedAtMs": 3343.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "63d3d747-2e9e-40c8-8277-bb0a9acf17ea",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3565.5,
+      "confirmedAtMs": 3708.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5ce8e3b7-f1d1-4fcf-8f47-def20a0aa69b",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3932,
+      "confirmedAtMs": 4073.599999964237,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5f44039c-fa56-437b-bd7e-0458f2492d3d",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 4285,
+      "confirmedAtMs": 4425.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "e8e84760-c34c-4867-b0c5-66d77261fe43",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 4499.399999976158,
+      "confirmedAtMs": 4645,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "ef17870b-8679-44b8-a53c-052381604946",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 4920.199999988079,
+      "confirmedAtMs": 5314.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    }
+  ],
+  "route": "Fork to lower platform; obstruction reported; backtracked through Fork and upper platform.",
+  "browser": "153.0.8010.12",
+  "chromiumSandbox": true,
+  "origin": "http://127.0.0.1:37045",
+  "finishedAt": "2026-09-28T14:22:05.846Z",
+  "status": "passed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened."
+}

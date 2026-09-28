@@ -1,0 +1,94 @@
+{
+  "status": "LOCAL_DELIVERABLES_RENDERED",
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "practiceSourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "practiceRuntimeSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "practiceConfirmationCount": 9,
+  "newProviderRequests": 0,
+  "outputs": [
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pptx",
+      "bytes": 1331075,
+      "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pdf",
+      "bytes": 810438,
+      "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+      "bytes": 4526386,
+      "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c"
+    }
+  ],
+  "editableSlides": 6,
+  "editableTextShapes": 71,
+  "sourceNotesPresentOnAllSlides": true,
+  "nativeRender": "Actual PPTX rendered by LibreOffice Impress to PDF, then Poppler PNG; all six final slides visually inspected.",
+  "actualVideoSeconds": 166.788021,
+  "plannedEditSeconds": 166.739,
+  "timingNote": "The edit decision list gives source cuts and planned section times; final container duration includes frame and audio packet rounding. It is explanatory editing, not latency evidence.",
+  "videoInspection": {
+    "sampleTimesSeconds": [
+      1,
+      17,
+      24,
+      29.2,
+      42,
+      66,
+      73.8,
+      82.8,
+      90.5,
+      97.05,
+      97.5,
+      109,
+      119,
+      119.5,
+      132,
+      142.5,
+      143.1,
+      150,
+      153.1,
+      163
+    ],
+    "reviewed": "Twenty final edited frames across all sections plus full-resolution mode/chapter boundary, retained failure, final return proposal and actual home frames; chapter UI matches captions.",
+    "originalAudioRetained": true,
+    "newSpeechGenerated": false,
+    "digitalVolumeDb": {
+      "mean_volume": -38.0,
+      "max_volume": -9.0
+    },
+    "hardwareOrHumanSpeechTest": false
+  },
+  "historicalMediaFilesVerifiedUnchanged": 6,
+  "provenance": {
+    "path": "submission/local-deliverables/provenance.json",
+    "bytes": 8066,
+    "sha256": "6366c5a500e15a8b8b93441b6da593840e3d06b5abfae3287c266a5719352785"
+  },
+  "captureProvenance": {
+    "path": "submission/local-deliverables/capture-provenance.json",
+    "bytes": 4370,
+    "sha256": "42c1313d2dfc6129138dc526b79edac0a57aa81f27f64d0a92b01d336e5638d8"
+  },
+  "editTimeline": {
+    "path": "submission/local-deliverables/edit-timeline.json",
+    "bytes": 4344,
+    "sha256": "5ca1a8512152bf7f5e05b901f13fbe264eb6b4f3a6c5e1f0c6d7d4f04f8ea9a2"
+  },
+  "contactSheets": [
+    {
+      "path": "artifacts/goal-004e/follow-up/pitch-contact-sheet.png",
+      "bytes": 359913,
+      "sha256": "32d597cf523ff9d8c147821558330bce91e0ba18d5b01d586c6b64d25b08bf72"
+    },
+    {
+      "path": "artifacts/goal-004e/follow-up/demo-contact-sheet.png",
+      "bytes": 752258,
+      "sha256": "1cc5b51fb4d47ad8b25c1f54df7626029fd789e07e8e55059b8d312ff9a412b1"
+    }
+  ],
+  "localOnlyVideo": true,
+  "uploadOrSubmissionPerformed": false
+}

@@ -1,0 +1,51 @@
+{
+  "label": "FROZEN OFFLINE FOLLOW-UP CANDIDATE; NO REAL PROVIDER",
+  "sourceCommit": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "baseCommit": "7139bb5b2f41e3f3730fed46a884439e829756df",
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "localBuildSha256": "bef7fc740286fce0a06b58c689dd15eede389aa8a2f54a876d43d85825421959",
+  "files": {
+    "dist/client/art/mission-control.svg": "54da597091f4ad38d191b71e1b8e142a891fd4d11de6cac6c65cb609dddd88af",
+    "dist/client/assets/Debrief-iYI4bR5j.js": "f05233ed2fb420b58bc6baea0bd45faac2e8679d1c086fb55a929a5d7948d311",
+    "dist/client/assets/index-BMWv5jcH.css": "2f5c77ac771319b2fd21f6b2b4c7430c8765e5073820615acee697a5e436a4ee",
+    "dist/client/assets/index-c4oFDsR2.js": "14f373626e5e7d416d56196ffded10e1da08f5a60096ade9b7ffa32178b2ccac",
+    "dist/client/icon.svg": "6f098e496bb47fb81f972fb1d471a9bfe4c27b33d7cc55989aa3a766afbcc872",
+    "dist/client/index.html": "2b60d96becea7cc10a40fe5956db948c33e766d8bb3d49f9cac9eb8f440b4838",
+    "dist/server/agent/config.js": "793094c88b806dac1b94d06abc0a1660e15bde1f27128ae1d0e1e5317bda8be1",
+    "dist/server/agent/prompt.js": "bc48b7657d5ac00915725e3fdf5ab0074a9d133bd0330492178e4b49124d4eca",
+    "dist/server/server/admission.js": "f6c94bfbe72370e0e84e1116fcd06e87f2c8d7654e88756d9887e4775636ceb4",
+    "dist/server/server/browser-access.js": "10caa171ff3dc67701fa2f05317f24ca9db2854326284d4ca3b87afeeb7f4b78",
+    "dist/server/server/errors.js": "77e4d8bb0e55e0f23d56703fe065d1fc6b35f9593d3e8888902f24a6b837f850",
+    "dist/server/server/gallery.js": "eceaaeb8cd4e901440af3f5ed7f3b4eef92a1f0e38e5885f5f3a3e0cce06b753",
+    "dist/server/server/http.js": "e83bbd96dccc4f6da5c7189dbdbace349f0e338d11b610447dd83784be0da8e1",
+    "dist/server/server/index.js": "cea0d0f2a2a3c44cd49e7ce504f1f0ee2ad28983f8ec0e3c7d793df743136b3e",
+    "dist/server/server/production.js": "ee0d45d3e39988ba0e926ec65f69500ef024dc0d8e23bdbad45f8be7c9fdfaed",
+    "dist/server/server/proposals.js": "ed96d6d2a3db4752f8190679b22123e3b960856d422756275caf574fbbb839f7",
+    "dist/server/server/records.js": "8cd29a04b41903d65611cb7daf409adb274727dd3b839b62cbea3e7648a001e8",
+    "dist/server/server/return-dock.js": "6bd7056bf9bfce20714b698a426b2adb735c642fe531efa5ffb334476bd17420",
+    "dist/server/server/sessions.js": "96a2352f53e003cddb51c8ac40ab1075c35692c45e4a620f48526196219399da",
+    "dist/server/server/state.js": "7f99f73d4c1310c4332468aa93d7890667a598b2f09c18dcd34613df1c95e23a",
+    "dist/server/server/static.js": "1fa9dca25221866297de2646b12cd52bd26332d4d24a690a770589a0aabea196",
+    "dist/server/shared/contracts.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+  },
+  "compressedAssets": [
+    {
+      "path": "dist/client/assets/Debrief-iYI4bR5j.js",
+      "bytes": 10775,
+      "gzipBytes": 3588
+    },
+    {
+      "path": "dist/client/assets/index-BMWv5jcH.css",
+      "bytes": 79844,
+      "gzipBytes": 16762
+    },
+    {
+      "path": "dist/client/assets/index-c4oFDsR2.js",
+      "bytes": 334212,
+      "gzipBytes": 99371
+    }
+  ],
+  "compressionMeasurement": "Python gzip level6 mtime0, Linux local build; not Windows performance",
+  "realProviderCalls": 0,
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+}
