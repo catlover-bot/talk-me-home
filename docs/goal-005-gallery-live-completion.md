@@ -88,7 +88,7 @@ Aggregate linked accounting is now seven attempts and seven production admission
 
 The second raw run remains local at `.validation/goal-004c-live/2026-09-29T09-28-09-963Z-voice-mission/`. Its immutable manifest is `.validation/goal-004c-live/goal-005-attempt-7-8351617b1202d78c3f173cca4835d22ccf148f27.json`; its clean validation receipt is `.validation/goal-005-offline/8351617b1202d78c3f173cca4835d22ccf148f27-2026-09-29T09-24-18-069Z.json`. Original ledgers, browser media and audio remain local and preserved.
 
-Goal 005 currently has **two failed real Voice attempts and zero of the two required final-candidate passes**. `RELEASE_NOT_LIVE_VERIFIED` remains the release status. Defaults and CI remain provider-disabled.
+After the second sample, Goal 005 had two failed real Voice attempts and zero of the two required final-candidate passes. `RELEASE_NOT_LIVE_VERIFIED` remained the release status.
 
 ### Split-speech recovery repair after attempt 7
 
@@ -97,6 +97,34 @@ The final failed calls used the correct `inspect_object` / `propose_interaction`
 A constructed replay of the observed event order verifies that a late request from an interrupted reply never executes, while a fresh request can create the intended proposal. The product now displays a recoverable cancellation explanation, keeps the microphone/controls/Pause available, and clears that notice after a fresh successful check. Cancellation, proposal matching and current return authorization remain unchanged. The four final-return utterances are now single ordinary sentences of 9–10 words. Existing longer utterances and their actual ASR remain preserved in the failed attempt. The evaluator recognizes the new explicit Return proposal synonym without changing safety thresholds. Future sanitized evidence retains only an allowlisted local outcome code, so cancellation and precondition failures can be distinguished without exposing arguments or private tool payloads.
 
 Focused policy/protocol tests passed 53 cases, focused voice/evidence tests passed 84 cases (overlapping suites, not additive), and the actual compiled cancellation-notice browser test passed at both viewports. `.validation/goal-005-return-split-before.log` preserves the old multi-sentence fixture failure and a corrected test expectation about clearing the warning; `goal-005-return-split-after.log` preserves the repaired checks. Product-browser evidence is `.validation/goal-005/attempt-8-recovery-notice-browser.log`. The relevant [official interruption documentation](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/turn-detection-and-interruptions) was rechecked; no provider event, interrupt setting, or paid service was added.
+
+### Third Goal 005 Voice attempt — empty completed reply in Gallery
+
+Aggregate attempt 8 used clean frozen commit `61fdcbb5fda115ce63835d13762a5fd7592c64b0`, after typecheck, 422 unit tests, production build, all 140 compiled-browser tests, whitespace checks and the fresh-context production Practice check passed. Its runtime SHA-256 is `172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee`; its harness SHA-256 is `77153bc118a133c5096a67037e728819b86fc7aefe57358192745c4d314df31c`. [Frozen identity, accounting and preservation receipt](../artifacts/goal-005/live/attempt-08-accounting.json).
+
+This ordinary sample committed three exactly confirmed actions: engage the Latch, cross Cargo and pass through the east Gallery gate. The player then asked to inspect the northeast gate. Real ASR finalized that tenth input correctly. A matching `reply.started` and `reply.done` with status `completed` followed, with no recorded tool, audio or transcript events between them and no new visible Pip answer. The turn waiter continued to treat the final response as pending until its bounded wait failed with `QA turn stalled: final_response_pending`. The behavior report was `blocked` for this unresolved turn. The provider's empty content has no established cause; it must not be relabelled as a successful inspection. [Actual conversation](../artifacts/goal-005/live/2026-09-29T09-46-23-539Z-voice-mission-conversation.md) and [compact metrics](../artifacts/goal-005/live/2026-09-29T09-46-23-539Z-voice-mission-metrics.json).
+
+| Observed measure | Third sample result |
+| --- | --- |
+| Token requests / provider sockets / synthetic turns | 1 / 1 / 10 |
+| Exact UI confirmations / physical commits | 3 / 3; matching receipts in both directions |
+| Local socket-open to remote ACK | 205.4826 seconds |
+| Provider-reported session duration | 205.216512 seconds |
+| Ending and cleanup | Explicit end and remote ACK; clean socket close; zero audio resources and supervisor survivors; browser/server closure observed |
+| Goal 005 consumed after this result | 3 slots, 2,910 reserved seconds, USD 3.6375 estimated |
+| Same-batch capacity remaining | 5 slots, 4,850 reserved seconds, USD 6.0625 estimated |
+
+Aggregate linked accounting is now eight attempts and eight production admissions, 6,260 reserved seconds and USD 7.825 estimated. No account-refusal stop was recorded. The failed attempt remains consumed; a future offline pacing repair cannot resume or refund it. All 15 historical accounting/cleanup journals, 53 checked raw/accounting files and six prior-attempt compact evidence files were preserved. Nonzero digital audio was observed earlier in the session; that does not imply audio existed for the empty tenth reply.
+
+Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T09-46-23-539Z-voice-mission/`. The immutable manifest is `.validation/goal-004c-live/goal-005-attempt-8-61fdcbb5fda115ce63835d13762a5fd7592c64b0.json`; the clean validation receipt is `.validation/goal-005-offline/61fdcbb5fda115ce63835d13762a5fd7592c64b0-2026-09-29T09-42-31-355Z.json`.
+
+Goal 005 currently has **three failed real Voice attempts and zero of the two required final-candidate passes**. The five remaining slots require the existing supervised admission and a new clean validated freeze after any repair. Defaults and CI remain provider-disabled, and `RELEASE_NOT_LIVE_VERIFIED` remains the release status. **Return Dock was not reached in this sample, so the return repair remains unverified by Live.**
+
+### Empty-response recovery after attempt 8
+
+The retained tenth-turn event sequence reproduced `final_response_pending` offline. Scheduling now explicitly recognizes a matching, completed reply with no transcript, tool activity or audio as `empty_completed_response` with `usefulReply: false`. It passes an empty answer into the existing four-exchange/120-second acquisition policy, which must obtain new communicated information before progressing. It does not borrow the previous caption or manufacture an inspection. Open input, unmatched or interrupted replies, pending tool continuations, provider errors and undrained playback remain blocking; the existing 450 ms late-event observation window is unchanged. A prior decision acknowledgement cannot trap a subsequent empty user response or count as its answer. The shipped UI was already listening with controls and Pause available in the actual failed-run screenshot; no additional runtime timer or automatic action was introduced.
+
+Focused pacing/preflight/recovery checks passed 28 cases. A compiled-production browser case exercises actual empty wire events, the real shared player and its next purposeful survey, while checking visible controls and preservation of the old committed strip as history. The browser test also exposed two shared-player gaps: its diagnostic reply reused the last old caption, and an empty proposal exchange stopped immediately. The repaired player selects only newly finalized eligible reports; an explicitly empty exchange with no new Pip report may use the existing bounded proposal recovery. Partial, wrong-chapter and unsafe responses do not gain that exception. The failing-first logs and screenshot/context remain in `.validation/goal-005-empty-reply-*` and `.validation/goal-005-empty-action-before.log`; initial fixture failures concerned locator/mode assumptions and are retained separately. These constructed results do not establish that a subsequent real provider answer will be useful. The short final-return utterances and all game/runtime authority remain unchanged from attempt 8.
 
 ## Delivery checklist
 

@@ -120,11 +120,13 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
       const oldIdentities = new Set(oldReports.map(identity));
       const exchangeRecord = { kind, text, outcome: 'pending', proposal: null, replies: [] };
       diagnostic.exchanges.push(exchangeRecord);
-      await exchange(text, { ...options, deadlineAt });
+      const exchangedReply = await exchange(text, { ...options, deadlineAt });
       if (performance.now() > deadlineAt) throw new Error(`QA action recovery exceeded 120 seconds for ${expectedLabel}`);
       await checkActionScope();
       const current = await visibleProposal(page);
-      const replies = (await readVisiblePlayerReports(page, 'current uninterrupted QA invocation')).filter(item => item.speaker === 'Pip' && item.chapter === actionChapter && item.final && !item.interrupted && !item.historical && !oldIdentities.has(identity(item)));
+      const newReports = (await readVisiblePlayerReports(page, 'current uninterrupted QA invocation')).filter(item => item.speaker === 'Pip' && !oldIdentities.has(identity(item)));
+      const replies = newReports.filter(item => item.chapter === actionChapter && item.final && !item.interrupted && !item.historical);
+      const emptyCompletedExchange = exchangedReply === '' && newReports.length === 0;
       const outcome = classifyProposalResponse({ expectedLabel, before, current, reply: replies.map(item => item.text).join(' '), terminalIds: [...terminalIds], confirmedIds: report.confirmations.filter(item => item.status === 'committed').map(item => item.proposalId) });
       Object.assign(exchangeRecord, { outcome: outcome.kind, proposal: current, replies });
       if (outcome.kind === 'matching_pending') {
@@ -148,7 +150,7 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
         return receipt;
       }
       if (!['verified_committed_receipt', 'relevant_clarification', 'rejected_or_unresolved', 'no_relevant_reply'].includes(outcome.kind)
-        || current?.status === 'confirming' || replies.length === 0) throw new Error(`QA action stopped: ${outcome.kind} for ${expectedLabel}`);
+        || current?.status === 'confirming' || replies.length === 0 && !emptyCompletedExchange) throw new Error(`QA action stopped: ${outcome.kind} for ${expectedLabel}`);
       if (attempt === 3) throw new Error(`QA action recovery exhausted after 4 exchanges for ${expectedLabel}`);
       if (attempt === 0) {
         const phrases = proposalRecoveryPhrases(expectedLabel, current);
@@ -195,6 +197,8 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
   async function say(text, options = {}) {
     await consume();
     if (await home() || chapter !== phase) return '';
+    const identity = item => JSON.stringify([item.messageId, item.displayedAt, item.sourceLabel, item.speaker, item.text]);
+    const priorReports = new Set((await readVisiblePlayerReports(page, round)).filter(item => item.final).map(identity));
     const expectedLabel = proposalLabelForRequest(text);
     if (expectedLabel) {
       await requestConfirmedAction({ page, request: text, exchange, report, options, checkScope: consume });
@@ -203,7 +207,7 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
     } else await exchange(text, options);
     if (options.terminal) await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
     await consume(options.context);
-    return (await readVisiblePlayerReports(page, round)).filter(item => item.speaker === 'Pip' && item.chapter === chapter && item.final && !item.interrupted && !item.historical).at(-1)?.text ?? '';
+    return (await readVisiblePlayerReports(page, round)).filter(item => item.speaker === 'Pip' && item.chapter === chapter && item.final && !item.interrupted && !item.historical && !priorReports.has(identity(item))).at(-1)?.text ?? '';
   }
   await consume();
   if (!await atGallery()) {

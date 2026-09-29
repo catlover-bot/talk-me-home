@@ -3,6 +3,8 @@ import type { Page } from '@playwright/test';
 import { test, expect } from './rescue-fixture';
 import { fakeProvider, confirmLocalReadiness, fixtureScreenshot } from './fake-provider';
 import { PHRASES, runRescuePlayer, confirmProposalForRequest, proposalLabelForRequest } from '../../scripts/qa-mission-player.mjs';
+import { audioSnapshot, installAudioInstrumentation } from '../../scripts/qa-browser-instrumentation.mjs';
+import { waitForTurn, waitBeforePlayerTurn } from '../../scripts/qa-turn-pacing.mjs';
 
 test.use({ compiledProduction: true });
 
@@ -252,6 +254,60 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
     throw new Error(`Unhandled synthetic peer input: ${request}`);
   };
 }
+
+test('actual shared player recovers after an empty completed Gallery reply without borrowing an old caption', async ({ page, rescueServer }, info) => {
+  test.setTimeout(45_000);
+  expect(process.env.GAME_DISABLE_LIVE).toBe('1'); expect(rescueServer.compiledProduction).toBe(true);
+  await installAudioInstrumentation(page, { label: 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO' });
+  const provider = await fakeProvider(page, { acknowledgeDecisions: true });
+  const events: PeerEvent[] = []; const peer = syntheticPeer(provider, events);
+  // Typed inputs in an injected Voice session exercise the real UI boundary;
+  // the unit replay separately preserves the observed ASR event ordering.
+  await page.goto('/'); await page.getByRole('radio', { name: /Live Voice/ }).check();
+  await page.getByRole('button', { name: 'Start with Voice', exact: true }).click(); await confirmLocalReadiness(page, 'Voice');
+  let empty = false; let emptyAction = false; let replies = 0;
+  const requests: string[] = [];
+  const say = async (text: string) => {
+    requests.push(text);
+    if (empty || emptyAction) await waitBeforePlayerTurn(page, { mode: 'text', timeoutMs: 3000 });
+    const before = await audioSnapshot(page);
+    await page.getByLabel('Type a message').fill(text); await page.getByRole('button', { name: 'Send message', exact: true }).click();
+    await expect.poll(() => provider.sent.some(event => event.type === 'conversation.message' && event.content === text)).toBe(true);
+    const reply_id = `empty-recovery-${++replies}`;
+    if (!empty && text === 'Please look around and report the emblem in your current room.' || !emptyAction && text === 'Please cross to the far side.') {
+      if (text === 'Please cross to the far side.') emptyAction = true; else empty = true;
+      const reports = await page.locator('.history-message').filter({ hasText: 'Live Voice' }).count();
+      provider.emit({ type: 'reply.started', reply_id }); provider.emit({ type: 'reply.done', reply_id, status: 'completed' });
+      const status = await waitForTurn(page, { mode: 'text', afterMs: before.elapsedMs, timeoutMs: 3000 });
+      expect(status).toMatchObject({ settled: true, reason: 'empty_completed_response', usefulReply: false });
+      expect(await page.locator('.history-message').filter({ hasText: 'Live Voice' }).count()).toBe(reports);
+      await expect(page.getByLabel('Type a message')).toBeEnabled();
+      await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeEnabled();
+      await expect(page.getByRole('figure', { name: 'Pip, UNIT 04. Listening.', exact: true })).toBeVisible();
+      await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'committed');
+      await fixtureScreenshot(page, info.outputPath('empty-completed-reply-listening.png'));
+      return '';
+    }
+    const response = await peer(text);
+    provider.emit({ type: 'reply.started', reply_id }); provider.emit({ type: 'transcript.agent', reply_id, text: response });
+    provider.emit({ type: 'reply.done', reply_id, status: 'completed' });
+    if (text !== PHRASES.home) await expect(page.locator('.history-message').filter({ has: page.locator('p', { hasText: response }) }).last().getByRole('button', { name: 'Pin report', exact: true })).toBeEnabled();
+    return response;
+  };
+  const report = { route: [] as string[], steps: [] as unknown[], actionRequests: [] as Array<{ expectedLabel: string; recovered: boolean; strictFirstResponse: boolean; exchanges: Array<{ replies: unknown[] }> }>, acquisitions: [] as Array<{ recovered: boolean; strictFirstResponse: boolean; value?: string; exchanges: Array<{ text: string; reply: string }> }> };
+  await runRescuePlayer({ page, say, report, waitForReady: () => waitForPeerDecision(page, provider) });
+  expect(empty).toBe(true);
+  const acquisition = report.acquisitions.find(item => item.exchanges.some(exchange => exchange.reply === ''))!;
+  expect(acquisition).toMatchObject({ value: 'ring', recovered: true, strictFirstResponse: false });
+  expect(acquisition.exchanges).toHaveLength(2); expect(acquisition.exchanges[0]!.reply).toBe('');
+  expect(acquisition.exchanges[1]!.text).toMatch(/observe the room now/);
+  const action = report.actionRequests.find(item => item.expectedLabel === 'Move to the far-side platform')!;
+  expect(action).toMatchObject({ recovered: true, strictFirstResponse: false });
+  expect(action.exchanges).toHaveLength(3); expect(action.exchanges[0]!.replies).toEqual([]);
+  expect(requests.filter(text => text === 'Please look around and report the emblem in your current room.')).not.toHaveLength(0);
+  await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible();
+  await expect.poll(() => provider.ended).toBe(1);
+});
 
 for (const profile of ['a', 'b'] as const) {
   test.describe(`Shared QA player / synthetic Gallery ${profile.toUpperCase()}`, () => {

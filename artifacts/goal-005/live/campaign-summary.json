@@ -1,10 +1,10 @@
 {
   "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
-  "attempts": 7,
-  "productionAttempts": 7,
-  "remainingAttempts": 6,
-  "reservedSeconds": 5290,
-  "estimatedReservedDollars": 6.6125,
+  "attempts": 8,
+  "productionAttempts": 8,
+  "remainingAttempts": 5,
+  "reservedSeconds": 6260,
+  "estimatedReservedDollars": 7.825,
   "verifiedRateDollarsPerHour": 4.5,
   "localConnectedSeconds": [
     71.08180000000074,
@@ -13,9 +13,11 @@
     89.61630000001192,
     163.96640000003578,
     562.6221000000238,
-    509.6797999999523
+    509.6797999999523,
+    205.48260000002384
   ],
   "endAcknowledgements": [
+    true,
     true,
     true,
     true,
@@ -26,22 +28,22 @@
   ],
   "nextPermittedAt": null,
   "admissionStatus": "requires_current_frozen_candidate_batch_admission",
-  "inspectedAt": "2026-09-29T09:39:08.332Z",
+  "inspectedAt": "2026-09-29T09:52:22.991Z",
   "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "amendmentId": "goal-005-gallery-live-completion-2026-09-29",
   "historicalAttempts": 5,
-  "newAttempts": 2,
+  "newAttempts": 3,
   "historicalReservedSeconds": 3350,
-  "newReservedSeconds": 1940,
+  "newReservedSeconds": 2910,
   "historicalProductionAttempts": 5,
-  "newProductionAttempts": 2,
-  "remainingReservedCapacitySeconds": 5820,
+  "newProductionAttempts": 3,
+  "remainingReservedCapacitySeconds": 4850,
   "maximumAggregatePlanningDollars": 13.8875,
   "approvedAggregatePlanningCeiling": 14.1875,
   "originalCampaignSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "originalAllowanceSha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
-  "amendmentLedgerSha256": "63f2c8b04727f4267774e3e8a81c715c0787695fda109170e8bc43b11bc76e45",
-  "amendedAllowanceSha256": "1122f8c3811a31da1354051a0039479331617795d4d38f64240ef6be3ccd300b",
+  "amendmentLedgerSha256": "eabadeee45826d6186163ed744981bd14d826b5292e2ba6ab0732e5f33895471",
+  "amendedAllowanceSha256": "28c69ca0708e3f14a878dac1b5d04ce633508869d5115a93fce6b655591e1909",
   "amendedSequence": {
     "mode": "voice_or_reasoned_text_diagnostic",
     "passed": false,
@@ -53,7 +55,7 @@
   "approvedNewReservedSeconds": 7760,
   "approvedNewDollars": 10,
   "permanentStop": null,
-  "estimatedNewReservedDollars": 2.425,
+  "estimatedNewReservedDollars": 3.6375,
   "historicalEvidence": "Five unchanged historical attempts remain linked through the fixed predecessor hashes; their compact exports are not duplicated.",
   "results": [
     {
@@ -100,6 +102,29 @@
         "browserClosedObserved": true,
         "serverClosedObserved": true,
         "supervisorClosedAt": "2026-09-29T09:36:51.299Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-29T09-46-23-539Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "failure": "QA turn stalled: final_response_pending",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 8,
+      "historical": false,
+      "behaviorStatus": "blocked",
+      "materialDefects": 1,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-29T09:49:56.511Z"
       }
     }
   ],

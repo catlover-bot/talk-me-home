@@ -38,12 +38,20 @@ export function turnCycleStatus(snapshot, { afterMs = -1, mode = 'voice', requir
   if (reply && (!done || done.atMs < reply.atMs || reply.replyRef !== undefined && done.replyRef !== undefined && done.replyRef !== reply.replyRef)) return pending('reply_pending');
   const boundary = Math.max(user?.atMs ?? afterMs, last('tool.result')?.atMs ?? afterMs);
   const final = events.findLast(event => event.type === 'transcript.agent' && event.final && !event.interrupted && event.atMs > boundary);
-  if (requireReply && (!final || !done || done.atMs < final.atMs || ['interrupted', 'cancelled', 'failed'].includes(done.status) || final.reference !== undefined && done.replyRef !== undefined && final.reference !== done.replyRef)) return pending('final_response_pending');
+  // A positively correlated completed reply can contain no information. This
+  // permits only ordinary bounded re-asking; it never manufactures a report.
+  // The pre-submit ACK check has no user event, whereas a submitted turn must.
+  const activity = events.filter(event => event.atMs > (afterMs >= 0 ? afterMs : user?.atMs ?? afterMs));
+  const empty = Boolean((user || afterMs < 0) && reply && done && reply.atMs > (user?.atMs ?? afterMs)
+    && reply.replyRef !== undefined && reply.replyRef === done.replyRef && done.atMs >= reply.atMs && done.status === 'completed'
+    && !activity.some(event => /^(?:tool\.|transcript\.agent|reply\.audio|audio\.(?:provider|rendered|postVolume)\.|playback\.(?:queued|started))/.test(event.type)));
+  if (requireReply && !empty && (!final || !done || done.atMs < final.atMs || ['interrupted', 'cancelled', 'failed'].includes(done.status) || final.reference !== undefined && done.replyRef !== undefined && final.reference !== done.replyRef)) return pending('final_response_pending');
   if (snapshot.playbackPending) return pending('playback_not_drained');
   if (events.some(event => event.type === 'session.error')) return pending('provider_error');
   const relevant = events.filter(event => /^(?:input\.speech|transcript\.|reply\.|tool\.|playback\.|synthetic\.speech\.|conversation\.message)/.test(event.type));
   const latest = Math.max(afterMs, ...relevant.map(event => event.atMs));
   if (snapshot.elapsedMs - latest < quietMs) return pending('late_event_observation_window');
+  if (requireReply && empty) return { settled: true, reason: 'empty_completed_response', usefulReply: false, asrItems: events.filter(event => event.type === 'transcript.user').length };
   return { settled: true, reason: requireReply ? 'response_and_playback_drained' : 'wait_input_drained', asrItems: events.filter(event => event.type === 'transcript.user').length };
 }
 
@@ -73,7 +81,7 @@ export function preSubmitStatus(snapshot, { mode = 'voice', confirmation } = {})
   }
   const acknowledgements = snapshot.events.filter(event => event.type === 'reply.create' && event.purpose === 'decision_acknowledgement');
   const acknowledgement = acknowledgements.at(-1);
-  let cancelled = false; let expired = false;
+  let cancelled = false; let expired = false; let emptyResponse = false;
   if (acknowledgement) {
     const events = snapshot.events.filter(event => event.atMs > acknowledgement.atMs);
     const started = events.findLast(event => event.type === 'reply.started');
@@ -85,6 +93,7 @@ export function preSubmitStatus(snapshot, { mode = 'voice', confirmation } = {})
     // tool continuations and actual playback, without inventing provider ACKs.
     const response = turnCycleStatus({ ...snapshot, events }, { mode, requireReply: !cancelled });
     if (!response.settled) return response;
+    emptyResponse = response.usefulReply === false;
   }
   if (confirmation) {
     const receipt = snapshot.events.findLast(event => event.type === 'conversation.message' && event.purpose === 'decision_receipt' && event.atMs >= confirmation.confirmationRequestedAtMs);
@@ -92,7 +101,7 @@ export function preSubmitStatus(snapshot, { mode = 'voice', confirmation } = {})
     if (!requested && snapshot.elapsedMs < confirmation.confirmedAtMs + 4000) return { settled: false, reason: 'acknowledgement_opportunity_pending' };
     expired = !requested;
   }
-  return { ...status, reason: expired ? 'acknowledgement_opportunity_expired' : acknowledgement ? cancelled ? 'acknowledgement_cancelled_and_drained' : 'acknowledgement_and_playback_drained' : status.reason };
+  return { ...status, ...(emptyResponse ? { usefulReply: false } : {}), reason: expired ? 'acknowledgement_opportunity_expired' : emptyResponse ? 'empty_completed_response' : acknowledgement ? cancelled ? 'acknowledgement_cancelled_and_drained' : 'acknowledgement_and_playback_drained' : status.reason };
 }
 
 export async function waitBeforePlayerTurn(page, { timeoutMs = 40_000, ...options } = {}) {
