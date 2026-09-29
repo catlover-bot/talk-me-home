@@ -1,0 +1,492 @@
+{
+  "label": "Actual compiled Practice — no provider connection",
+  "source": "/home/mhirotaka/workspace/talk-me-home",
+  "sourceCommit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+  "sourceDirty": false,
+  "runtimeManifestSha256": "200ab0cd0b6af152dd4b34eff8984ef6f243b66082d4dec6e2b730c00a238ab7",
+  "recorderSelected": false,
+  "screenshots": [
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/title-1280.png",
+      "name": "title",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 0.308
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/cargo-1280.png",
+      "name": "cargo",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 0.589
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/gallery-1280.png",
+      "name": "gallery",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 1.489
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/dock-1280.png",
+      "name": "dock",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 2.74
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/home-1280.png",
+      "name": "home",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 4.141
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/title-1440.png",
+      "name": "title",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 0.17
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/cargo-1440.png",
+      "name": "cargo",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 0.383
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/gallery-1440.png",
+      "name": "gallery",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 1.259
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/dock-1440.png",
+      "name": "dock",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 2.512
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/before/home-1440.png",
+      "name": "home",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 3.915
+    }
+  ],
+  "conversations": [
+    {
+      "width": 1280,
+      "request": "Look around",
+      "response": "I am on the near-side safe platform. The Door is open. The Conveyor is running. A Latch lever stands within reach on my safe platform, connected to the Door by a mechanical rod.",
+      "atSeconds": 0.534
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the latch",
+      "response": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from my safe platform.",
+      "atSeconds": 0.646
+    },
+    {
+      "width": 1280,
+      "request": "Keep the door open",
+      "response": "Engage the Latch: completed after your confirmation.",
+      "atSeconds": 0.879
+    },
+    {
+      "width": 1280,
+      "request": "Cross to the far side",
+      "response": "Move to the far-side platform: completed after your confirmation.",
+      "atSeconds": 1.177
+    },
+    {
+      "width": 1280,
+      "request": "Go through the east gate",
+      "response": "Move through the east gate: completed after your confirmation.",
+      "atSeconds": 1.439
+    },
+    {
+      "width": 1280,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 1.725
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the northeast gate",
+      "response": "Northeast gate is closed. Cargo blocks this gate opening. I remain in the safe room. The other reachable gates can still be checked.",
+      "atSeconds": 1.793
+    },
+    {
+      "width": 1280,
+      "request": "Go through the northwest gate",
+      "response": "Move through the northwest gate: completed after your confirmation.",
+      "atSeconds": 2.025
+    },
+    {
+      "width": 1280,
+      "request": "Go through the northeast gate",
+      "response": "Move through the northeast gate: completed after your confirmation.",
+      "atSeconds": 2.292
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the southeast gate",
+      "response": "Southeast gate is closed. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch.",
+      "atSeconds": 2.36
+    },
+    {
+      "width": 1280,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 2.64
+    },
+    {
+      "width": 1280,
+      "request": "Look around",
+      "response": "I am on the Return Dock's safe platform. A spring-loaded contact and recovery capsule are within reach. I am not holding the contact. The capsule entrance is within reach.",
+      "atSeconds": 2.694
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the contact",
+      "response": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained.",
+      "atSeconds": 2.794
+    },
+    {
+      "width": 1280,
+      "request": "Hold the contact",
+      "response": "Hold the charging contact: completed after your confirmation.",
+      "atSeconds": 3.005
+    },
+    {
+      "width": 1280,
+      "request": "Release the contact",
+      "response": "Release the charging contact: completed after your confirmation.",
+      "atSeconds": 3.34
+    },
+    {
+      "width": 1280,
+      "request": "Board the capsule",
+      "response": "Board the recovery capsule: completed after your confirmation.",
+      "atSeconds": 3.558
+    },
+    {
+      "width": 1280,
+      "request": "Confirm return",
+      "response": "Confirm the authorized return: completed after your confirmation.",
+      "atSeconds": 4.075
+    },
+    {
+      "width": 1440,
+      "request": "Look around",
+      "response": "I am on the near-side safe platform. The Door is open. The Conveyor is running. A Latch lever stands within reach on my safe platform, connected to the Door by a mechanical rod.",
+      "atSeconds": 0.324
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the latch",
+      "response": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from my safe platform.",
+      "atSeconds": 0.44
+    },
+    {
+      "width": 1440,
+      "request": "Keep the door open",
+      "response": "Engage the Latch: completed after your confirmation.",
+      "atSeconds": 0.668
+    },
+    {
+      "width": 1440,
+      "request": "Cross to the far side",
+      "response": "Move to the far-side platform: completed after your confirmation.",
+      "atSeconds": 0.936
+    },
+    {
+      "width": 1440,
+      "request": "Go through the east gate",
+      "response": "Move through the east gate: completed after your confirmation.",
+      "atSeconds": 1.203
+    },
+    {
+      "width": 1440,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 1.489
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the northeast gate",
+      "response": "Northeast gate is closed. Cargo blocks this gate opening. I remain in the safe room. The other reachable gates can still be checked.",
+      "atSeconds": 1.556
+    },
+    {
+      "width": 1440,
+      "request": "Go through the northwest gate",
+      "response": "Move through the northwest gate: completed after your confirmation.",
+      "atSeconds": 1.786
+    },
+    {
+      "width": 1440,
+      "request": "Go through the northeast gate",
+      "response": "Move through the northeast gate: completed after your confirmation.",
+      "atSeconds": 2.05
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the southeast gate",
+      "response": "Southeast gate is closed. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch.",
+      "atSeconds": 2.108
+    },
+    {
+      "width": 1440,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 2.401
+    },
+    {
+      "width": 1440,
+      "request": "Look around",
+      "response": "I am on the Return Dock's safe platform. A spring-loaded contact and recovery capsule are within reach. I am not holding the contact. The capsule entrance is within reach.",
+      "atSeconds": 2.456
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the contact",
+      "response": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained.",
+      "atSeconds": 2.574
+    },
+    {
+      "width": 1440,
+      "request": "Hold the contact",
+      "response": "Hold the charging contact: completed after your confirmation.",
+      "atSeconds": 2.801
+    },
+    {
+      "width": 1440,
+      "request": "Release the contact",
+      "response": "Release the charging contact: completed after your confirmation.",
+      "atSeconds": 3.117
+    },
+    {
+      "width": 1440,
+      "request": "Board the capsule",
+      "response": "Board the recovery capsule: completed after your confirmation.",
+      "atSeconds": 3.318
+    },
+    {
+      "width": 1440,
+      "request": "Confirm return",
+      "response": "Confirm the authorized return: completed after your confirmation.",
+      "atSeconds": 3.838
+    }
+  ],
+  "confirmations": [
+    {
+      "proposalId": "3a4ec3d1-b66c-4edd-8185-e0528d78212e",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 716.1999999880791,
+      "confirmedAtMs": 870.6999999880791,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "bb20fdae-449e-4c5d-9438-c2e4b3aa4e6b",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1013.6999999880791,
+      "confirmedAtMs": 1168.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "71b3d6b3-0e44-4095-aff3-f6a71105e9f0",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1292,
+      "confirmedAtMs": 1432,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "e7ce51b1-3f24-41ea-947c-b2f07ad62f58",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1563.5999999642372,
+      "confirmedAtMs": 1717.0999999642372,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "b13f6e37-bf3d-4457-b1d6-d7346cdc9ae7",
+      "label": "Move through the northwest gate",
+      "intendedRequest": "Go through the northwest gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1863.199999988079,
+      "confirmedAtMs": 2017.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "a728460f-9a5c-45d0-b946-110ffce2d393",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2128.599999964237,
+      "confirmedAtMs": 2283.7999999523163,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "8a195f81-1463-428b-960c-708aa1bb6937",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2477.7999999523163,
+      "confirmedAtMs": 2631.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "513185be-7633-45a6-a9a8-291a34c86264",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2861.599999964237,
+      "confirmedAtMs": 2998.099999964237,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "671da5b9-cf97-4122-9cd8-5b546e3702b2",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3178.2999999523163,
+      "confirmedAtMs": 3331.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "a0a54f16-655f-403a-b3ca-6aa6b441950b",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3395.7999999523163,
+      "confirmedAtMs": 3548.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "a156c725-f7cb-4422-b735-b514764d55bb",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3663.5,
+      "confirmedAtMs": 4065.899999976158,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "dc610217-db81-40cb-b93e-bd5cc667b23d",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 509.80000001192093,
+      "confirmedAtMs": 661.8000000119209,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "95084e15-227a-4584-b7cc-f21126e285c2",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 775.5,
+      "confirmedAtMs": 929.4000000357628,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "c3b0f6df-d01a-49c2-b000-1c8620789826",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1043.1000000238419,
+      "confirmedAtMs": 1195.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5d347b80-5502-4a60-98ff-8691f9f2fd43",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1325.1000000238419,
+      "confirmedAtMs": 1482.300000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "ae722ae0-c150-4886-bf67-ddd90bbccbd6",
+      "label": "Move through the northwest gate",
+      "intendedRequest": "Go through the northwest gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1626.1000000238419,
+      "confirmedAtMs": 1778.7000000476837,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "982ebf91-c4fe-4fc6-ad16-fbd1ba6af562",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1893.4000000357628,
+      "confirmedAtMs": 2043.300000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "1db5d164-c845-4024-ab41-1082e740f55e",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2242.400000035763,
+      "confirmedAtMs": 2394.800000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "b3d77dd6-0a0d-4c85-8fb5-4a299af5210b",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2642.800000011921,
+      "confirmedAtMs": 2795.2000000476837,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "901b6488-ba65-4725-89f0-ab48655d5edd",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2975.5,
+      "confirmedAtMs": 3110.800000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "eef41076-9edb-43bb-a351-d7de6b90daa8",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3173.800000011921,
+      "confirmedAtMs": 3312.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "8b362f91-54c1-4199-aa67-2d133c0bc4a6",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3425.100000023842,
+      "confirmedAtMs": 3831.900000035763,
+      "source": "Visible action strip and normal owner confirmation button"
+    }
+  ],
+  "realProviderCalls": 0,
+  "videos": [],
+  "startedAt": "2026-09-29T14:49:28.183Z",
+  "status": "passed",
+  "cleanup": true,
+  "finishedAt": "2026-09-29T14:49:36.988Z"
+}

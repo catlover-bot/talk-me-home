@@ -1,0 +1,19 @@
+{
+    "screenshots":  [
+                        {
+                            "path":  "artifacts/goal-006/ui/training-layout/corrected-1440.png",
+                            "sha256":  "8be8aa5462036c3e0e53b083aa48cecd74497ced4e0ff1309e032c009ccb32cf",
+                            "inspected":  true
+                        },
+                        {
+                            "path":  "artifacts/goal-006/ui/training-layout/corrected-1280.png",
+                            "sha256":  "a02caf82fb223df4824f9c54dd1619cbf0e1398412bafe11996f95494f1f402a",
+                            "inspected":  true
+                        }
+                    ],
+    "label":  "SIMULATED PROVIDER / FAKE AUDIO DEVICES / OFFLINE TEST",
+    "providerCalls":  0,
+    "correction":  "Render the disclosure only for Rescue; Training keeps its full record in a neutral div. Rescue DOM and CSS are unchanged.",
+    "issue":  "The Rescue record disclosure also wrapped Training, adding vertical spacing and clipping its replay button at 1280x720.",
+    "validation":  "Both simulated-success and closing-watchdog tests passed at both viewport sizes (4/4). Existing full-visibility assertions were unchanged."
+}

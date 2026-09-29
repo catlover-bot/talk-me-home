@@ -1,0 +1,114 @@
+{
+  "status": "COMPLETE_TRACK_A_PRESERVED_BEFORE_NEW_PRACTICE_INSERT",
+  "createdUTC": "2026-09-29T14:55:29.663121+00:00",
+  "archive": ".validation/goal-006-media/baseline-track-a",
+  "videoDurationSeconds": 202.921354,
+  "videoBytes": 9484346,
+  "actualGameplayFraction": 0.8915722030556925,
+  "slides": 6,
+  "pdfPages": 6,
+  "subtitleCues": 31,
+  "sourcePreserved": true,
+  "fullDecode": "PASS",
+  "allSixSlidesVisuallyInspected": true,
+  "actualVideoFramesInspected": true,
+  "waveformAndDigitalSamplesInspected": true,
+  "humanListening": false,
+  "files": [
+    {
+      "path": "Talk_Me_Home_Submission_Package.zip",
+      "bytes": 14904216,
+      "sha256": "ce8211beb089d8591dadecce78eacebf1d1b6bb9068a25fc26546c93495c06a6"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 13,
+      "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+    },
+    {
+      "path": "video-subtitles.srt",
+      "bytes": 3086,
+      "sha256": "f9cf085f4514fb2d380d7cbf2edcf8e1972e074f696e3547a80564fcbf274909"
+    },
+    {
+      "path": "make_media.py",
+      "bytes": 16927,
+      "sha256": "fde5779cde5a4c3b4f596dce513dd7424de3940532fc5225810e4d0ed8d9bfe1"
+    },
+    {
+      "path": "inspect_and_package.py",
+      "bytes": 11829,
+      "sha256": "58fc1d97b703547ee18e97157ce873e99bc69b3b99feb63978c86411f35bcdb3"
+    },
+    {
+      "path": "Talk_Me_Home_Pitch.pdf",
+      "bytes": 825651,
+      "sha256": "7f9a2085277836c88bd778c0b8d75bc257d16b680e1f725ccef6d6469f1121d0"
+    },
+    {
+      "path": "media-manifest.json",
+      "bytes": 4515,
+      "sha256": "765e5eea0739f7dbd8ccf90c014923b0fe0a561ab47bd9232c7e9140c2733806"
+    },
+    {
+      "path": "edit-plan.json",
+      "bytes": 8267,
+      "sha256": "4a5ad31e2a479dfd8c8f37f4070d4202cb8464e85afd95333c8c5c422531af80"
+    },
+    {
+      "path": "cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "path": "Talk_Me_Home_Pitch.pptx",
+      "bytes": 2481774,
+      "sha256": "edfb642e87973ecf37ff4aef020e90fe26b497b131b547d0973cb7bfeb2d5587"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2839,
+      "sha256": "cc5a892a55f4bc5519ca57d40c0ecb1400ad2d67071db8ab3de0b4c1b9b8b96c"
+    },
+    {
+      "path": "submission-checklist.md",
+      "bytes": 1419,
+      "sha256": "d728729d5e2c3200fbb7e407a6010de48c84096fbf7c169580841b51afde655e"
+    },
+    {
+      "path": "Talk_Me_Home_Submission.mp4",
+      "bytes": 9484346,
+      "sha256": "c4db7303cbe1c78f22a29bc426896d56de5ccb6371ad6dcbd99c7fc6d4dd385d"
+    },
+    {
+      "path": "submission-form.md",
+      "bytes": 1983,
+      "sha256": "f682600032984c573d70be36b278bca0bf2f335d0067a232a7b89cc82925eb6c"
+    },
+    {
+      "path": "screenshots/historical-dock.png",
+      "bytes": 575690,
+      "sha256": "61d736af59b9cd04785d7f19f8ed51edbf31c1ee08f87f4854384df15f791297"
+    },
+    {
+      "path": "screenshots/historical-gallery.png",
+      "bytes": 607944,
+      "sha256": "4fab8bf7d80f0f9e819e76e0c581019318f3681b0d5d1513f598503f477bad3b"
+    },
+    {
+      "path": "screenshots/mode-build-manifest.json",
+      "bytes": 1615,
+      "sha256": "42d59001678c395709dc27f44e69aa48a27ac7e26c22cbcdfca62ac5380d9969"
+    },
+    {
+      "path": "screenshots/historical-cargo.png",
+      "bytes": 517664,
+      "sha256": "18d1be242c0ef4be701f33c3a2dee0968b3105bd23327741b9656655471efd63"
+    },
+    {
+      "path": "screenshots/historical-home.png",
+      "bytes": 490964,
+      "sha256": "ea7e35f66351bd74cee6f8215211e4b29535686809f9d7c75e1f54bcf4fde534"
+    }
+  ]
+}

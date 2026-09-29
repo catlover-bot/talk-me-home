@@ -1,0 +1,142 @@
+1
+00:00:00,448 --> 00:00:05,976
+Pip: Mission Control, this is Pip. Can you hear me? I need
+your help getting out.
+
+2
+00:00:14,141 --> 00:00:17,748
+Player (synthetic): My diagram says the door and conveyor share one power
+supply.
+
+3
+00:00:20,620 --> 00:00:23,694
+Pip: I have proposed to engage the latch. Please confirm
+
+4
+00:00:23,694 --> 00:00:26,466
+Pip: this action on the console when you are ready.
+
+5
+00:00:27,987 --> 00:00:31,447
+Pip: The latch is engaged and the door is being held open.
+
+6
+00:00:33,001 --> 00:00:34,127
+Player (synthetic): Power is now off.
+
+7
+00:00:35,805 --> 00:00:38,609
+Pip: The conveyor stopped moving when the power went out.
+
+8
+00:00:38,609 --> 00:00:41,252
+Pip: Should I try moving to the far side platform now?
+
+9
+00:00:43,435 --> 00:00:45,034
+Player (synthetic): Please cross to the far side.
+
+10
+00:00:47,223 --> 00:00:52,125
+Pip: I have proposed to move to the far side platform.
+Please confirm this on the console.
+
+11
+00:00:54,428 --> 00:00:58,104
+Pip: I have arrived at the Ring emblem. The gate to the
+east is
+
+12
+00:00:58,104 --> 00:01:01,589
+Pip: closed and unpowered. Do you want me to check the
+gate?
+
+13
+00:01:03,283 --> 00:01:06,809
+Player (synthetic): Please inspect the southeast gate and tell me whether
+anything blocks it.
+
+14
+00:01:11,512 --> 00:01:14,695
+Pip: The southeast gate is open, but there is cargo
+blocking
+
+15
+00:01:14,695 --> 00:01:17,878
+Pip: the opening. Should I check the southwest gate
+instead?
+
+16
+00:01:22,061 --> 00:01:25,628
+Player (synthetic): Please inspect the southwest gate and tell me whether
+anything blocks it.
+
+17
+00:01:31,223 --> 00:01:36,975
+Pip: The southwest gate is open and the passage is clear
+of any cargo. Should I move through it?
+
+18
+00:01:38,297 --> 00:01:40,167
+Player (synthetic): Please go through the southwest gate.
+
+19
+00:01:45,764 --> 00:01:48,587
+Pip: I have proposed to move through the southwest gate.
+
+20
+00:01:48,587 --> 00:01:51,576
+Pip: Please confirm this on the console when you are
+ready.
+
+21
+00:01:55,185 --> 00:01:59,508
+Pip: I have arrived at the Fork emblem. The northeast gate
+is open, but
+
+22
+00:01:59,508 --> 00:02:03,635
+Pip: the west and southeast gates are closed. Which way
+should I go?
+
+23
+00:02:05,313 --> 00:02:06,715
+Player (synthetic): Please hold the contact.
+
+24
+00:02:11,037 --> 00:02:13,587
+Pip: I have proposed to hold the charging contact. Please
+
+25
+00:02:13,587 --> 00:02:16,236
+Pip: confirm this action on the console when you are
+ready.
+
+26
+00:02:21,258 --> 00:02:23,149
+Pip: I am holding the contact steadily.
+
+27
+00:02:28,453 --> 00:02:32,921
+Pip: I have boarded the recovery capsule, and the return
+panel is within reach.
+
+28
+00:02:34,174 --> 00:02:38,003
+Player (synthetic): Please propose confirming the return with the
+inspected capsule operation.
+
+29
+00:02:42,651 --> 00:02:45,956
+Pip: I have proposed to confirm the authorized return.
+Please
+
+30
+00:02:45,956 --> 00:02:49,319
+Pip: confirm this action on the console to finish the
+process.
+
+31
+00:02:53,957 --> 00:02:57,778
+Pip: The return is confirmed and the capsule has brought
+me home.

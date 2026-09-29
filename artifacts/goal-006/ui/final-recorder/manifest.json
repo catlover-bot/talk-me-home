@@ -1,0 +1,876 @@
+{
+  "label": "Actual compiled Practice — no provider connection",
+  "source": "/home/mhirotaka/workspace/talk-me-home-goal-006",
+  "sourceCommit": "7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95",
+  "sourceDirty": true,
+  "runtimeManifestSha256": "83851a8ed21d3d14055d6241bd6907e38006bfb850c780becb4c1abbd46ee492",
+  "recorderSelected": true,
+  "screenshots": [
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/title-1280.png",
+      "name": "title",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 0.199
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/cargo-1280.png",
+      "name": "cargo",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 0.441
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/gallery-1280.png",
+      "name": "gallery",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 1.325
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/recorder-observed-1280.png",
+      "name": "recorder-observed",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 1.644
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/recorder-secured-1280.png",
+      "name": "recorder-secured",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 1.909
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/dock-1280.png",
+      "name": "dock",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 2.906
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/home-1280.png",
+      "name": "home",
+      "width": 1280,
+      "height": 720,
+      "atSeconds": 4.297
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/title-1440.png",
+      "name": "title",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 0.2
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/cargo-1440.png",
+      "name": "cargo",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 0.415
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/gallery-1440.png",
+      "name": "gallery",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 1.274
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/recorder-observed-1440.png",
+      "name": "recorder-observed",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 1.614
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/recorder-secured-1440.png",
+      "name": "recorder-secured",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 1.891
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/dock-1440.png",
+      "name": "dock",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 2.88
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/artifacts/goal-006/ui/final-recorder/home-1440.png",
+      "name": "home",
+      "width": 1440,
+      "height": 900,
+      "atSeconds": 4.243
+    }
+  ],
+  "conversations": [
+    {
+      "width": 1280,
+      "request": "Look around",
+      "response": "I am on the near-side safe platform. The Door is open. The Conveyor is running. A Latch lever stands within reach on my safe platform, connected to the Door by a mechanical rod.",
+      "atSeconds": 0.388
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the latch",
+      "response": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from my safe platform.",
+      "atSeconds": 0.499
+    },
+    {
+      "width": 1280,
+      "request": "Keep the door open",
+      "response": "Engage the Latch: completed after your confirmation.",
+      "atSeconds": 0.731
+    },
+    {
+      "width": 1280,
+      "request": "Cross to the far side",
+      "response": "Move to the far-side platform: completed after your confirmation.",
+      "atSeconds": 1.014
+    },
+    {
+      "width": 1280,
+      "request": "Go through the east gate",
+      "response": "Move through the east gate: completed after your confirmation.",
+      "atSeconds": 1.277
+    },
+    {
+      "width": 1280,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 1.543
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the flight recorder",
+      "response": "The flight recorder is a palm-sized case, worn smooth at the edges. Its label reads: \"Pip / flight notes.\" It is loose in the archive cradle. I can propose securing it, if you choose. Bringing it home is optional.",
+      "atSeconds": 1.599
+    },
+    {
+      "width": 1280,
+      "request": "Pick up the flight recorder",
+      "response": "Secure the flight recorder: completed after your confirmation.",
+      "atSeconds": 1.862
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the northeast gate",
+      "response": "Northeast gate is closed. Cargo blocks this gate opening. I remain in the safe room. The other reachable gates can still be checked.",
+      "atSeconds": 1.965
+    },
+    {
+      "width": 1280,
+      "request": "Go through the northwest gate",
+      "response": "Move through the northwest gate: completed after your confirmation.",
+      "atSeconds": 2.195
+    },
+    {
+      "width": 1280,
+      "request": "Go through the northeast gate",
+      "response": "Move through the northeast gate: completed after your confirmation.",
+      "atSeconds": 2.461
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the southeast gate",
+      "response": "Southeast gate is closed. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch.",
+      "atSeconds": 2.533
+    },
+    {
+      "width": 1280,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 2.81
+    },
+    {
+      "width": 1280,
+      "request": "Look around",
+      "response": "I am on the Return Dock's safe platform. A spring-loaded contact and recovery capsule are within reach. I am not holding the contact. The capsule entrance is within reach.",
+      "atSeconds": 2.864
+    },
+    {
+      "width": 1280,
+      "request": "Inspect the contact",
+      "response": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained.",
+      "atSeconds": 2.966
+    },
+    {
+      "width": 1280,
+      "request": "Hold the contact",
+      "response": "Hold the charging contact: completed after your confirmation.",
+      "atSeconds": 3.195
+    },
+    {
+      "width": 1280,
+      "request": "Release the contact",
+      "response": "Release the charging contact: completed after your confirmation.",
+      "atSeconds": 3.527
+    },
+    {
+      "width": 1280,
+      "request": "Board the capsule",
+      "response": "Board the recovery capsule: completed after your confirmation.",
+      "atSeconds": 3.725
+    },
+    {
+      "width": 1280,
+      "request": "Confirm return",
+      "response": "Confirm the authorized return: completed after your confirmation.",
+      "atSeconds": 4.231
+    },
+    {
+      "width": 1440,
+      "request": "Look around",
+      "response": "I am on the near-side safe platform. The Door is open. The Conveyor is running. A Latch lever stands within reach on my safe platform, connected to the Door by a mechanical rod.",
+      "atSeconds": 0.357
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the latch",
+      "response": "The Latch is not engaged. Its plate reads: \"Holds an open Door in place. Engage only while the Door is open.\" The lever is reachable from my safe platform.",
+      "atSeconds": 0.473
+    },
+    {
+      "width": 1440,
+      "request": "Keep the door open",
+      "response": "Engage the Latch: completed after your confirmation.",
+      "atSeconds": 0.703
+    },
+    {
+      "width": 1440,
+      "request": "Cross to the far side",
+      "response": "Move to the far-side platform: completed after your confirmation.",
+      "atSeconds": 0.947
+    },
+    {
+      "width": 1440,
+      "request": "Go through the east gate",
+      "response": "Move through the east gate: completed after your confirmation.",
+      "atSeconds": 1.218
+    },
+    {
+      "width": 1440,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 1.487
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the flight recorder",
+      "response": "The flight recorder is a palm-sized case, worn smooth at the edges. Its label reads: \"Pip / flight notes.\" It is loose in the archive cradle. I can propose securing it, if you choose. Bringing it home is optional.",
+      "atSeconds": 1.556
+    },
+    {
+      "width": 1440,
+      "request": "Pick up the flight recorder",
+      "response": "Secure the flight recorder: completed after your confirmation.",
+      "atSeconds": 1.836
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the northeast gate",
+      "response": "Northeast gate is closed. Cargo blocks this gate opening. I remain in the safe room. The other reachable gates can still be checked.",
+      "atSeconds": 1.957
+    },
+    {
+      "width": 1440,
+      "request": "Go through the northwest gate",
+      "response": "Move through the northwest gate: completed after your confirmation.",
+      "atSeconds": 2.188
+    },
+    {
+      "width": 1440,
+      "request": "Go through the northeast gate",
+      "response": "Move through the northeast gate: completed after your confirmation.",
+      "atSeconds": 2.452
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the southeast gate",
+      "response": "Southeast gate is closed. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch.",
+      "atSeconds": 2.505
+    },
+    {
+      "width": 1440,
+      "request": "Go through the southeast gate",
+      "response": "Move through the southeast gate: completed after your confirmation.",
+      "atSeconds": 2.769
+    },
+    {
+      "width": 1440,
+      "request": "Look around",
+      "response": "I am on the Return Dock's safe platform. A spring-loaded contact and recovery capsule are within reach. I am not holding the contact. The capsule entrance is within reach.",
+      "atSeconds": 2.822
+    },
+    {
+      "width": 1440,
+      "request": "Inspect the contact",
+      "response": "The spring-loaded contact is released. Its plaque says it must be held locally during transfer and cannot be carried aboard. Releasing an unstored charge loses it; stored energy is retained.",
+      "atSeconds": 2.938
+    },
+    {
+      "width": 1440,
+      "request": "Hold the contact",
+      "response": "Hold the charging contact: completed after your confirmation.",
+      "atSeconds": 3.152
+    },
+    {
+      "width": 1440,
+      "request": "Release the contact",
+      "response": "Release the charging contact: completed after your confirmation.",
+      "atSeconds": 3.467
+    },
+    {
+      "width": 1440,
+      "request": "Board the capsule",
+      "response": "Board the recovery capsule: completed after your confirmation.",
+      "atSeconds": 3.67
+    },
+    {
+      "width": 1440,
+      "request": "Confirm return",
+      "response": "Confirm the authorized return: completed after your confirmation.",
+      "atSeconds": 4.173
+    }
+  ],
+  "confirmations": [
+    {
+      "proposalId": "41987475-64cf-46b4-8e6d-0197e0af8420",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 569.6999999880791,
+      "confirmedAtMs": 725.1000000238419,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "9615a0e4-7104-4fcb-84b2-5c6309faa2dc",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 851.5,
+      "confirmedAtMs": 1005.6999999880791,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "92e3dfcb-9013-4f59-b441-8a88fa6275ed",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1131.800000011921,
+      "confirmedAtMs": 1270.9000000357628,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "fd9f0aeb-bae4-4729-bfbc-c3d02c49b6a3",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1386.199999988079,
+      "confirmedAtMs": 1536.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "c9b9c007-b1b7-4c00-82de-e500621ac6d6",
+      "label": "Secure the flight recorder",
+      "intendedRequest": "Pick up the flight recorder",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1701.6000000238419,
+      "confirmedAtMs": 1855.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "25fbcc49-6ad6-48de-909b-cbe65777b444",
+      "label": "Move through the northwest gate",
+      "intendedRequest": "Go through the northwest gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2035,
+      "confirmedAtMs": 2186.100000023842,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "fbf6f87f-1040-4c7e-b1b5-158d8c22aeab",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2304.5,
+      "confirmedAtMs": 2455.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "f5fc2b97-d190-4909-a4f7-79eea8e42e62",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2666.699999988079,
+      "confirmedAtMs": 2802.800000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "a57b7737-a6de-4c25-bb81-f19c35a947cd",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3034.699999988079,
+      "confirmedAtMs": 3187.5,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "51fe6502-f26c-4745-90c6-b392883ead65",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3368.800000011921,
+      "confirmedAtMs": 3520.400000035763,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "794835fb-cbfe-4049-893e-5f27ac594c5e",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3583.400000035763,
+      "confirmedAtMs": 3717.100000023842,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "c2ecd293-e96f-4c7e-ad00-cd1e613d0b27",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3833,
+      "confirmedAtMs": 4224.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "ee9177a1-3fe2-4212-b9f4-411371fba217",
+      "label": "Engage the Latch",
+      "intendedRequest": "Keep the door open",
+      "status": "committed",
+      "confirmationRequestedAtMs": 542.1999999880791,
+      "confirmedAtMs": 696.1000000238419,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "3d1dda40-d94a-4f54-a00b-6ad13afb31a0",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Cross to the far side",
+      "status": "committed",
+      "confirmationRequestedAtMs": 806.5,
+      "confirmedAtMs": 940.8000000119209,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "db852842-7d72-4ce0-a562-7c1670fea5ff",
+      "label": "Move through the east gate",
+      "intendedRequest": "Go through the east gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1058.1000000238419,
+      "confirmedAtMs": 1209.9000000357628,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "b11f746a-900b-4784-a495-3db4f9914d91",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1340.5,
+      "confirmedAtMs": 1479.4000000357628,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "e4991d5f-e62b-4600-8ac2-f992a86ffb6f",
+      "label": "Secure the flight recorder",
+      "intendedRequest": "Pick up the flight recorder",
+      "status": "committed",
+      "confirmationRequestedAtMs": 1676.199999988079,
+      "confirmedAtMs": 1828.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "3fa872be-df54-4109-88a4-30d07e1ebd45",
+      "label": "Move through the northwest gate",
+      "intendedRequest": "Go through the northwest gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2025.6000000238419,
+      "confirmedAtMs": 2180.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "10f3a75f-9b48-4ad5-a018-cd11484c47b2",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Go through the northeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2291.300000011921,
+      "confirmedAtMs": 2444.699999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "050c87b4-ff6a-4f53-9a7c-930a849b6e0d",
+      "label": "Move through the southeast gate",
+      "intendedRequest": "Go through the southeast gate",
+      "status": "committed",
+      "confirmationRequestedAtMs": 2624.400000035763,
+      "confirmedAtMs": 2761.400000035763,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "f9f23565-1b3c-4cda-bfdd-30995936f738",
+      "label": "Hold the charging contact",
+      "intendedRequest": "Hold the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3007.300000011921,
+      "confirmedAtMs": 3143.400000035763,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "d1971ed4-5244-4fee-bab8-52020ef40440",
+      "label": "Release the charging contact",
+      "intendedRequest": "Release the contact",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3323.400000035763,
+      "confirmedAtMs": 3460.800000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "620245cf-9e6e-44e6-9d41-4ed9d36d6cca",
+      "label": "Board the recovery capsule",
+      "intendedRequest": "Board the capsule",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3524.699999988079,
+      "confirmedAtMs": 3661.800000011921,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "921382e9-cf82-48a2-9e30-51ec4eb2dc60",
+      "label": "Confirm the authorized return",
+      "intendedRequest": "Confirm return",
+      "status": "committed",
+      "confirmationRequestedAtMs": 3774.900000035763,
+      "confirmedAtMs": 4165.199999988079,
+      "source": "Visible action strip and normal owner confirmation button"
+    }
+  ],
+  "events": [
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Keep the door open",
+      "atSeconds": 0.561
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Keep the door open",
+      "ok": true,
+      "atSeconds": 0.728
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Cross to the far side",
+      "atSeconds": 0.845
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Cross to the far side",
+      "ok": true,
+      "atSeconds": 1.009
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Go through the east gate",
+      "atSeconds": 1.111
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Go through the east gate",
+      "ok": true,
+      "atSeconds": 1.274
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Go through the southeast gate",
+      "atSeconds": 1.378
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Go through the southeast gate",
+      "ok": true,
+      "atSeconds": 1.54
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Pick up the flight recorder",
+      "atSeconds": 1.694
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Pick up the flight recorder",
+      "ok": true,
+      "atSeconds": 1.858
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Go through the northwest gate",
+      "atSeconds": 2.028
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Go through the northwest gate",
+      "ok": true,
+      "atSeconds": 2.19
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Go through the northeast gate",
+      "atSeconds": 2.296
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Go through the northeast gate",
+      "ok": true,
+      "atSeconds": 2.458
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Go through the southeast gate",
+      "atSeconds": 2.661
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Go through the southeast gate",
+      "ok": true,
+      "atSeconds": 2.806
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Hold the contact",
+      "atSeconds": 3.028
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Hold the contact",
+      "ok": true,
+      "atSeconds": 3.191
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Release the contact",
+      "atSeconds": 3.362
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Release the contact",
+      "ok": true,
+      "atSeconds": 3.524
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Board the capsule",
+      "atSeconds": 3.578
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Board the capsule",
+      "ok": true,
+      "atSeconds": 3.72
+    },
+    {
+      "width": 1280,
+      "type": "proposal-visible",
+      "request": "Confirm return",
+      "atSeconds": 3.828
+    },
+    {
+      "width": 1280,
+      "type": "confirmation-result",
+      "request": "Confirm return",
+      "ok": true,
+      "atSeconds": 4.228
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Keep the door open",
+      "atSeconds": 0.536
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Keep the door open",
+      "ok": true,
+      "atSeconds": 0.7
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Cross to the far side",
+      "atSeconds": 0.802
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Cross to the far side",
+      "ok": true,
+      "atSeconds": 0.944
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Go through the east gate",
+      "atSeconds": 1.053
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Go through the east gate",
+      "ok": true,
+      "atSeconds": 1.213
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Go through the southeast gate",
+      "atSeconds": 1.336
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Go through the southeast gate",
+      "ok": true,
+      "atSeconds": 1.483
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Pick up the flight recorder",
+      "atSeconds": 1.67
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Pick up the flight recorder",
+      "ok": true,
+      "atSeconds": 1.832
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Go through the northwest gate",
+      "atSeconds": 2.019
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Go through the northwest gate",
+      "ok": true,
+      "atSeconds": 2.184
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Go through the northeast gate",
+      "atSeconds": 2.286
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Go through the northeast gate",
+      "ok": true,
+      "atSeconds": 2.448
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Go through the southeast gate",
+      "atSeconds": 2.62
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Go through the southeast gate",
+      "ok": true,
+      "atSeconds": 2.764
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Hold the contact",
+      "atSeconds": 3.002
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Hold the contact",
+      "ok": true,
+      "atSeconds": 3.146
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Release the contact",
+      "atSeconds": 3.319
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Release the contact",
+      "ok": true,
+      "atSeconds": 3.463
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Board the capsule",
+      "atSeconds": 3.519
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Board the capsule",
+      "ok": true,
+      "atSeconds": 3.665
+    },
+    {
+      "width": 1440,
+      "type": "proposal-visible",
+      "request": "Confirm return",
+      "atSeconds": 3.77
+    },
+    {
+      "width": 1440,
+      "type": "confirmation-result",
+      "request": "Confirm return",
+      "ok": true,
+      "atSeconds": 4.168
+    }
+  ],
+  "realProviderCalls": 0,
+  "videos": [],
+  "startedAt": "2026-09-29T15:09:50.912Z",
+  "status": "passed",
+  "cleanup": true,
+  "finishedAt": "2026-09-29T15:09:59.842Z"
+}

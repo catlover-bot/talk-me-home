@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-09-29T15:01:21.049Z",
+  "sourceWorkspace": "/home/mhirotaka/workspace/talk-me-home",
+  "outputWorkspace": "/home/mhirotaka/workspace/talk-me-home-goal-006",
+  "baselinePath": ".validation/goal-005b/preservation-baseline.json",
+  "baselineSha256": "189351cb52bb860f6883487fb304a31b9c64cc000b9c42afda051e9828ee57fd",
+  "historicalBudgetAnchor": "artifacts/goal-005b/historical-budget-anchor.json",
+  "historicalBudgetAnchorSha256": "f6eb49a5cfca9e1c47c04fc29acaa81c999575b037604647954330383eb041ea",
+  "checkedFiles": 496,
+  "unchangedFiles": 496,
+  "checkedBytes": 1211861676,
+  "missing": [],
+  "changed": [],
+  "excludedPaths": [],
+  "originalRefs": {
+    "before": {
+      "branch": "work/goal-005b-targeted-stabilization",
+      "head": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "deliveredGoal005Branch": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6"
+    },
+    "after": {
+      "branch": "work/goal-005b-targeted-stabilization",
+      "head": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "deliveredGoal005Branch": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6"
+    }
+  },
+  "originalRefsUnchangedDuringAudit": true,
+  "deliveredBranchPreserved": true,
+  "demonstratedRuntime": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "media": [
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Demo.mp4",
+      "bytes": 11872746,
+      "sha256": "74d9dcbf24c5778c231e7718bed88c87b1168ae0f0374cc5d64700b4efecea3e",
+      "matches": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pptx",
+      "bytes": 1213455,
+      "sha256": "adea18b75ef494a375f90e3e9edc9b4df466bd97c5ff2dec25706c325f453adb",
+      "matches": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pdf",
+      "bytes": 778771,
+      "sha256": "2546dac4dafc8031c300dfde5080422970a1c99c3ad56dc2b77fb9bff699a7d5",
+      "matches": true
+    },
+    {
+      "path": ".validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+      "bytes": 27913490,
+      "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812",
+      "matches": true
+    }
+  ],
+  "finalAttempts": [
+    {
+      "attempt": 12,
+      "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/report.json",
+      "sha256": "ee15f44547487e297d0c903f0184b98f60d78e9e4391137d992bf6d8a24db974",
+      "matches": true
+    },
+    {
+      "attempt": 13,
+      "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+      "sha256": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764",
+      "matches": true
+    }
+  ],
+  "passed": true,
+  "newProviderRequests": 0,
+  "tokenRequests": 0,
+  "originalWorkspaceWrites": 0,
+  "accountingWrites": 0,
+  "credentials": "No .env or credential content was read, copied, logged or compared by this audit. The historical baseline does not establish credential-byte identity.",
+  "scope": "Rehashed every one of the 495 protected Goal005B historical paths plus the separately anchored Goal001 cumulative ledger at the ORIGINAL paths. Four delivered media hashes and both final attempt report hashes were also compared explicitly. No baseline was reset."
+}

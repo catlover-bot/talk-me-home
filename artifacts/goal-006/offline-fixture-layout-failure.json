@@ -1,0 +1,61 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-29T15:12:21.191Z",
+  "commit": "fc0f8d831a6b786f083114169eb01fc21576d60d",
+  "branch": "work/goal-006-gameplay-and-submission",
+  "dirty": true,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 593,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/typecheck.log"
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 14284,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/unit-tests.log",
+      "passedCases": 470
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1110,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/production-build.log"
+    },
+    {
+      "label": "compiled browser chromium-1280 shard 1/2",
+      "status": "passed",
+      "durationMs": 72632,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/compiled-browser-chromium-1280-shard-1-2.log",
+      "passedCases": 40
+    },
+    {
+      "label": "compiled browser chromium-1280 shard 2/2",
+      "status": "failed",
+      "durationMs": 57347,
+      "exitCode": 1,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/compiled-browser-chromium-1280-shard-2-2.log",
+      "passedCases": 29
+    }
+  ],
+  "screenshots": [],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "failure": "compiled browser chromium-1280 shard 2/2 failed; inspect .validation/goal-006-offline/fc0f8d831a6b786f083114169eb01fc21576d60d-2026-09-29T15-12-21-190Z/compiled-browser-chromium-1280-shard-2-2.log.\n\n'failed' !== 'passed'\n",
+  "finishedAt": "2026-09-29T15:14:47.178Z",
+  "status": "failed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened."
+}

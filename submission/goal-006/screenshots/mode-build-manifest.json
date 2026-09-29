@@ -1,0 +1,45 @@
+{
+  "stage": "TRACK_B_CURRENT_PRACTICE",
+  "screenshots": [
+    {
+      "path": "screenshots/practice-cargo.png",
+      "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/cargo-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-gallery.png",
+      "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/gallery-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-dock.png",
+      "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/dock-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-home.png",
+      "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/home-1440.png",
+      "currentGoal006Build": true
+    }
+  ]
+}

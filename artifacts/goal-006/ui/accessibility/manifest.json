@@ -1,0 +1,120 @@
+{
+  "createdAt": "2026-09-29T15:00:27.757Z",
+  "label": "Actual compiled Practice — baseline Rescue, recorder off, no provider connection",
+  "source": "/home/mhirotaka/workspace/talk-me-home-goal-006",
+  "sourceCommit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+  "sourceDirty": true,
+  "runtimeManifestSha256": "76f8eff4be64ab76d7a085b53bfa4c7deef6203c58d0dfde950c5e9a88c4f811",
+  "testSource": "tests/e2e/goal006-cooperation.spec.ts",
+  "testSourceSha256": "ea1334ebc1091f78a07153f9cbb011a56d442a413c909eaf4197a8485dc35ab6",
+  "validation": {
+    "uniqueCases": 3,
+    "viewports": 2,
+    "passed": 6,
+    "providerCalls": 0,
+    "tokensIssued": 0,
+    "captureFollowup": "The two already-passing Dock cases were repeated only to capture the stored-state screenshots after the visual correction."
+  },
+  "visualReview": {
+    "inspectedAllScreens": true,
+    "findings": [
+      "The acknowledged Dock state sequence is fully visible with caption, exact committed proposal and Pause at both desktop sizes.",
+      "At 390 CSS pixels the atlas has its own labelled horizontal scrolling region; the document itself does not overflow horizontally.",
+      "At 200 percent CSS zoom the desk and console reflow into a vertical reading order. Caption scrolling and Pause remain reachable.",
+      "Keyboard planning and room quote-focus work at both widths. No robot position is inferred from the player marks.",
+      "These are renderer/accessibility observations, not human enjoyment or physical speech/audio measurements."
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "artifacts/goal-006/ui/accessibility/dock-stored-chromium-1280.png",
+      "sha256": "4adeea7e2f164ecc2ba15e58e66a3c45a4ea7874d1a358ac75daef1ead8f7f2a",
+      "width": 1280,
+      "height": 720,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cssZoom": 1,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": false,
+      "inspected": true
+    },
+    {
+      "path": "artifacts/goal-006/ui/accessibility/dock-stored-chromium-1440.png",
+      "sha256": "b3345f0e5f59c1391f114c54c86b327727eadb944ac9098c27820eda8525de07",
+      "width": 1440,
+      "height": 900,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "cssZoom": 1,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": false,
+      "inspected": true
+    },
+    {
+      "path": "artifacts/goal-006/ui/accessibility/gallery-390-chromium-1280.png",
+      "sha256": "ed409bd6f187859b848ae4d3e832711b1349554d57d1042184c53aa3f4250d3b",
+      "width": 390,
+      "height": 2637,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cssZoom": 1,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": true,
+      "inspected": true
+    },
+    {
+      "path": "artifacts/goal-006/ui/accessibility/gallery-390-chromium-1440.png",
+      "sha256": "1fc597991e371b882df8a46c7373267f7bffb4e260ac4e989b4bc0ba4ba49186",
+      "width": 390,
+      "height": 2637,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cssZoom": 1,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": true,
+      "inspected": true
+    },
+    {
+      "path": "artifacts/goal-006/ui/accessibility/gallery-zoom-200-chromium-1280.png",
+      "sha256": "92ea65f5006d60f9ce06f59974be5f285d376a326235e3c7ea1e883e868ed0f7",
+      "width": 1280,
+      "height": 4059,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cssZoom": 2,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": true,
+      "inspected": true
+    },
+    {
+      "path": "artifacts/goal-006/ui/accessibility/gallery-zoom-200-chromium-1440.png",
+      "sha256": "9907cc578c292c2872354d498977a7d51d2efc5e947f5fb70d415bcf6c692873",
+      "width": 1280,
+      "height": 4059,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cssZoom": 2,
+      "mode": "Practice",
+      "optionalObjective": null,
+      "fullPage": true,
+      "inspected": true
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "video": {
+    "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/submission/goal-006/Talk_Me_Home_Submission.mp4",
+    "bytes": 10363105,
+    "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+    "durationSeconds": 209.5
+  },
+  "zip": {
+    "path": "/home/mhirotaka/workspace/talk-me-home-goal-006/submission/goal-006/Talk_Me_Home_Submission_Package.zip",
+    "bytes": 13312397,
+    "sha256": "faf2705d8c6c763636c094657b4bb987fb51bb3e897cbbfe68d2cac83fb7f9ff",
+    "members": [
+      "Talk_Me_Home_Submission.mp4",
+      "Talk_Me_Home_Pitch.pptx",
+      "Talk_Me_Home_Pitch.pdf",
+      "cover-1920x1080.png",
+      "submission-form.md",
+      "video-subtitles.srt",
+      "README.md",
+      "submission-checklist.md",
+      "media-manifest.json",
+      "edit-plan.json",
+      "screenshots/practice-dock.png",
+      "screenshots/practice-gallery.png",
+      "screenshots/practice-cargo.png",
+      "screenshots/practice-home.png",
+      "screenshots/mode-build-manifest.json",
+      "practice-source.json",
+      "baseline-track-a-receipt.json"
+    ]
+  },
+  "nativeTextShapesPerSlide": [
+    5,
+    12,
+    11,
+    17,
+    28,
+    11
+  ],
+  "subtitleCues": 31,
+  "selectedOriginalUtterances": 23,
+  "originalWordsPreserved": true,
+  "partialUtteranceCuts": [],
+  "baselineFilesVerified": 19,
+  "originalSourcePreserved": true,
+  "titleCharacters": 12,
+  "summaryCharacters": 159,
+  "descriptionWords": 248,
+  "allFourCurrentScreensHashVerified": true,
+  "allZipMembersHashVerified": true,
+  "newProviderCalls": 0
+}

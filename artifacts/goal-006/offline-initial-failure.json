@@ -1,0 +1,52 @@
+{
+  "label": "AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY",
+  "startedAt": "2026-09-29T15:03:54.113Z",
+  "commit": "7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95",
+  "branch": "work/goal-006-gameplay-and-submission",
+  "dirty": true,
+  "node": "v24.20.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "durationMs": 597,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95-2026-09-29T15-03-54-111Z/typecheck.log"
+    },
+    {
+      "label": "unit tests",
+      "status": "passed",
+      "durationMs": 14467,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95-2026-09-29T15-03-54-111Z/unit-tests.log",
+      "passedCases": 470
+    },
+    {
+      "label": "production build",
+      "status": "passed",
+      "durationMs": 1178,
+      "exitCode": 0,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95-2026-09-29T15-03-54-111Z/production-build.log"
+    },
+    {
+      "label": "compiled browser chromium-1280 shard 1/2",
+      "status": "failed",
+      "durationMs": 79680,
+      "exitCode": 1,
+      "timedOut": false,
+      "diagnosticLog": ".validation/goal-006-offline/7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95-2026-09-29T15-03-54-111Z/compiled-browser-chromium-1280-shard-1-2.log",
+      "passedCases": 39
+    }
+  ],
+  "screenshots": [],
+  "realProviderCalls": 0,
+  "publicHost": "Blocked only by absent deployment; local production exercised.",
+  "failure": "compiled browser chromium-1280 shard 1/2 failed; inspect .validation/goal-006-offline/7221a1aaef4fbcf20ef8a5924e8bd3bfdd017a95-2026-09-29T15-03-54-111Z/compiled-browser-chromium-1280-shard-1-2.log.\n\n'failed' !== 'passed'\n",
+  "finishedAt": "2026-09-29T15:05:30.054Z",
+  "status": "failed",
+  "cleanup": "Owned browser contexts and child process groups stopped; no provider connection opened."
+}

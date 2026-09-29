@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "status": "FINAL_LOCAL_MEDIA_RENDERED_AND_INSPECTED",
+  "historicalSource": {
+    "path": ".validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+    "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812",
+    "build": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+    "attempt": 12,
+    "remoteEndingAck": true,
+    "syntheticMicrophone": true
+  },
+  "currentCandidateLiveVerified": false,
+  "acceptance": "RELEASE_NOT_LIVE_VERIFIED",
+  "narrationUsed": false,
+  "newProviderRequests": 0,
+  "video": {
+    "durationSeconds": 209.5,
+    "bytes": 10363105,
+    "width": 1920,
+    "height": 1080,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "frameRate": 30,
+    "actualGameplaySeconds": 187.5,
+    "gameplayFraction": 0.8949880668257757,
+    "historicalVoiceSeconds": 175.5,
+    "practiceSeconds": 12.0
+  },
+  "inspection": {
+    "fullDecode": "PASS",
+    "digitalAudio": {
+      "sampleRate": 48000,
+      "seconds": 209.5,
+      "peak": 20817,
+      "fullScaleSamples": 0,
+      "rms": 1462.5094461991546
+    },
+    "nativeEditableSlides": 6,
+    "nativePdfPages": 6,
+    "renderedSlidePages": 6,
+    "allSlidePagesVisuallyInspected": true,
+    "videoFramesVisuallyInspected": true,
+    "humanListening": false,
+    "physicalAudioVerified": false,
+    "subtitles": "Original digital-channel speech bounds, balanced phrases, one continuous PCM timeline and one AAC encode; retained approximate source synchronization",
+    "audioAssembly": {
+      "method": "Sample-exact 48 kHz PCM, source decoded once, one final AAC encode",
+      "pcmSamples": 10056000,
+      "fixedGain": 1.6849066305818672,
+      "perSegmentAacConcatenation": false,
+      "practice": "Silent browser capture; no historical Voice audio underneath"
+    },
+    "visualReview": {
+      "sha256": {
+        "Talk_Me_Home_Submission.mp4": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+        "Talk_Me_Home_Pitch.pptx": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+        "Talk_Me_Home_Pitch.pdf": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+        "cover-1920x1080.png": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+      },
+      "allSixSlidesInspected": true,
+      "practiceTransitionPickupAndHomeInspected": true,
+      "allFourDeliveryScreensInspected": true,
+      "slideRenders": [
+        ".validation/goal-006-media/slides/final-slide-1.png",
+        ".validation/goal-006-media/slides/final-slide-2.png",
+        ".validation/goal-006-media/slides/final-slide-3.png",
+        ".validation/goal-006-media/slides/final-slide-4.png",
+        ".validation/goal-006-media/slides/final-slide-5.png",
+        ".validation/goal-006-media/slides/final-slide-6.png"
+      ],
+      "notes": [
+        "All six native-exported pages viewed at 1440 px. Text, diagrams and screenshot labels are legible and contained.",
+        "Current delivery screens cargo, gallery, dock and home separately inspected. Slide 4 uses the delivery home screenshot.",
+        "Final edited frames show historical mode from the opening, separate silent Practice selection, waiting pickup proposal, confirmed pickup, and secured-recorder home.",
+        "Cover uses existing original product illustration; it is not represented as gameplay.",
+        "Digital decode/sample checks do not constitute human listening or physical audio verification."
+      ]
+    }
+  },
+  "outputs": [
+    {
+      "path": "Talk_Me_Home_Submission.mp4",
+      "bytes": 10363105,
+      "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd"
+    },
+    {
+      "path": "Talk_Me_Home_Pitch.pptx",
+      "bytes": 1566200,
+      "sha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a"
+    },
+    {
+      "path": "Talk_Me_Home_Pitch.pdf",
+      "bytes": 615023,
+      "sha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f"
+    },
+    {
+      "path": "cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "path": "submission-form.md",
+      "bytes": 2452,
+      "sha256": "8afe75e2ee1a98c036b8958126934555764c29bf352664abc5b5e143c4bf3f35"
+    },
+    {
+      "path": "video-subtitles.srt",
+      "bytes": 3085,
+      "sha256": "1b365c0740a8d85801a3700e6f722c7580387ecfa8fa5b9829e1d29468783d0a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4427,
+      "sha256": "4ebe80c60ccc50c528a75b7e7bc9c5b5e566fde4a6ff1c51469b99f8247aa2bf"
+    },
+    {
+      "path": "submission-checklist.md",
+      "bytes": 1550,
+      "sha256": "aafaa59f7f7f7cf9dfd5323f8dcbbd7d73a1e8fecdf9c95674bcc22a73b19e70"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "screenshots/practice-cargo.png",
+      "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/cargo-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-gallery.png",
+      "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/gallery-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-dock.png",
+      "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/dock-1440.png",
+      "currentGoal006Build": true
+    },
+    {
+      "path": "screenshots/practice-home.png",
+      "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+      "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+      "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389",
+      "source": "artifacts/goal-006/ui/delivery-recorder/home-1440.png",
+      "currentGoal006Build": true
+    }
+  ],
+  "limitations": [
+    "One demonstrated real completion is not the two-pass reliability target.",
+    "Attempt13 stalled with no remote ending ACK.",
+    "New optional recorder and presentation are demonstrated only in deterministic Practice, not new real Voice.",
+    "Public hosting, upload and submission are separate owner decisions."
+  ],
+  "practiceSource": {
+    "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+    "build": "fc0f8d831a6b786f083114169eb01fc21576d60d",
+    "sourceDirty": true,
+    "runtimeManifestSha256": "83851a8ed21d3d14055d6241bd6907e38006bfb850c780becb4c1abbd46ee492",
+    "recorderSecuredAtHome": true,
+    "realProviderCalls": 0,
+    "video": {
+      "path": ".validation/goal-006-capture/practice-film/page@c911e07dbc1864581639fdeee7e7c935.webm",
+      "sha256": "a095ca9ff382d17813c5e9948560ed2ef4562e4b9d5170800d80cabde268ade6",
+      "bytes": 7972716
+    },
+    "captureReceipt": {
+      "path": "artifacts/goal-006/ui/practice-film/manifest.json",
+      "sha256": "849b0f4c6b8f31751c73a30d3a2faf2b1115470d6e50d875fa9602bd8fecaa47",
+      "bytes": 12575
+    },
+    "screenshotCaptureReceipt": {
+      "path": "artifacts/goal-006/ui/delivery-recorder/manifest.json",
+      "sha256": "7f88be171624c074b4900745bb58f2bf298077638740f45a0ec09f2f9a09f9d8",
+      "bytes": 24167
+    },
+    "screenshots": [
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/cargo-1440.png",
+        "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+        "bytes": 234764,
+        "name": "cargo",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/gallery-1440.png",
+        "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+        "bytes": 216188,
+        "name": "gallery",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/dock-1440.png",
+        "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+        "bytes": 205005,
+        "name": "dock",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/home-1440.png",
+        "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+        "bytes": 175973,
+        "name": "home",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      }
+    ],
+    "audio": "Silent native browser recording. No original provider audio is copied underneath.",
+    "runtimeRelationship": "The Practice film is the actual fc0f8d8 snapshot with runtime 83851a8e. Current standalone screenshots and the slide 4 image are the later 2a08aef delivery snapshot with runtime a34a43f4. The only game source difference is the Training debrief wrapper in game/client/components/Debrief.tsx; the Rescue branch still renders details/summary. Fixture-origin and capture-label changes do not change the recorded Rescue behavior. The film is not relabelled as the later runtime. Both capture receipts retain sourceDirty=true.",
+    "cuts": [
+      {
+        "start": 0.1,
+        "duration": 3,
+        "chapter": "NEW BUILD / YOUR OPTIONAL OBJECTIVE",
+        "caption": "Separate Practice run: choose the optional archive trip, or rescue Pip directly."
+      },
+      {
+        "start": 42.35,
+        "duration": 4.4,
+        "chapter": "NEW BUILD / CONFIRM THE PICKUP",
+        "caption": "After a local inspection, confirm the exact flight-recorder pickup."
+      },
+      {
+        "start": 94.8,
+        "duration": 4.6,
+        "chapter": "NEW BUILD / WHAT YOU BROUGHT HOME",
+        "caption": "Only a secured recorder appears on the shelf after confirmed home."
+      }
+    ],
+    "inspection": "Actual source film frames at 0.3, 44.0 and 96.0 seconds inspected before selecting cuts; final edited transitions and pickup/home frames inspected. Four later delivery screenshots are reviewed separately.",
+    "subsequentDelta": {
+      "fromVideoCommit": "fc0f8d831a6b786f083114169eb01fc21576d60d",
+      "toScreenshotCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "gameFiles": [
+        "game/client/components/Debrief.tsx"
+      ],
+      "description": "Training debrief container changed from open details to div; Rescue retains its details container, summary and content.",
+      "verification": "Read git diff of game/ between the exact commits; delivery screenshot capture passed with zero provider calls."
+    }
+  },
+  "baselinePreservationReceipt": "baseline-track-a-receipt.json"
+}

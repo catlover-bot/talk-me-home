@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "label": "Offline Practice trace review; no human performance or enjoyment measurement",
+  "sources": [
+    {
+      "label": "before",
+      "path": "artifacts/goal-006/ui/before/manifest.json",
+      "sha256": "3e5798d36e81e383763322e6816adc4b9be0931e1b33e7e97093d17af2b9d35f",
+      "sourceCommit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "sourceDirty": false,
+      "runtimeManifestSha256": "200ab0cd0b6af152dd4b34eff8984ef6f243b66082d4dec6e2b730c00a238ab7"
+    },
+    {
+      "label": "after-recorder",
+      "path": "artifacts/goal-006/ui/after-recorder/manifest.json",
+      "sha256": "8c30a757d19c7aadd82e5458569b5b15958e4e6f7bd8bf313ceea24ceb017f28",
+      "sourceCommit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "sourceDirty": true,
+      "runtimeManifestSha256": "732664c568669ee0b6400667033b070f69643f329dff0b20e04996b5e1c14275"
+    }
+  ],
+  "rows": [
+    {
+      "capture": "before",
+      "width": 1280,
+      "requests": 17,
+      "surveys": 2,
+      "inspections": 4,
+      "repeatedIdenticalInspectionRequests": 0,
+      "confirmedActions": 11,
+      "pickups": 0,
+      "observedRouteRevisions": 1,
+      "routeObjectiveChoiceTypes": [
+        "initial_gallery_branch",
+        "revise_branch_after_obstruction"
+      ],
+      "routeObjectiveChoiceTypeCount": 2,
+      "retainedFinalCaptionsWithQuestionMarks": 0,
+      "firstUsefulReplySeconds": 0.534,
+      "firstSharedSuccessSeconds": 1.177,
+      "homeResponseSeconds": 4.075,
+      "providerCalls": 0
+    },
+    {
+      "capture": "before",
+      "width": 1440,
+      "requests": 17,
+      "surveys": 2,
+      "inspections": 4,
+      "repeatedIdenticalInspectionRequests": 0,
+      "confirmedActions": 11,
+      "pickups": 0,
+      "observedRouteRevisions": 1,
+      "routeObjectiveChoiceTypes": [
+        "initial_gallery_branch",
+        "revise_branch_after_obstruction"
+      ],
+      "routeObjectiveChoiceTypeCount": 2,
+      "retainedFinalCaptionsWithQuestionMarks": 0,
+      "firstUsefulReplySeconds": 0.324,
+      "firstSharedSuccessSeconds": 0.936,
+      "homeResponseSeconds": 3.838,
+      "providerCalls": 0
+    },
+    {
+      "capture": "after-recorder",
+      "width": 1280,
+      "requests": 19,
+      "surveys": 2,
+      "inspections": 5,
+      "repeatedIdenticalInspectionRequests": 0,
+      "confirmedActions": 12,
+      "pickups": 1,
+      "observedRouteRevisions": 1,
+      "routeObjectiveChoiceTypes": [
+        "initial_gallery_branch",
+        "revise_branch_after_obstruction",
+        "select_optional_objective",
+        "collect_after_local_discovery"
+      ],
+      "routeObjectiveChoiceTypeCount": 4,
+      "retainedFinalCaptionsWithQuestionMarks": 0,
+      "firstUsefulReplySeconds": 0.438,
+      "firstSharedSuccessSeconds": 1.093,
+      "homeResponseSeconds": 4.38,
+      "providerCalls": 0
+    },
+    {
+      "capture": "after-recorder",
+      "width": 1440,
+      "requests": 16,
+      "surveys": 2,
+      "inspections": 4,
+      "repeatedIdenticalInspectionRequests": 0,
+      "confirmedActions": 10,
+      "pickups": 1,
+      "observedRouteRevisions": 0,
+      "routeObjectiveChoiceTypes": [
+        "initial_gallery_branch",
+        "select_optional_objective",
+        "collect_after_local_discovery"
+      ],
+      "routeObjectiveChoiceTypeCount": 3,
+      "retainedFinalCaptionsWithQuestionMarks": 0,
+      "firstUsefulReplySeconds": 0.378,
+      "firstSharedSuccessSeconds": 0.971,
+      "homeResponseSeconds": 3.712,
+      "providerCalls": 0
+    }
+  ],
+  "definitions": {
+    "readRequests": "Look around surveys plus Inspect requests; repeated inspections count duplicate identical Inspect request strings within one capture only.",
+    "confirmedActions": "Final game-event caption says completed after your confirmation; aggregate totals cross-checked against the manifest confirmation receipts.",
+    "routeObjectiveChoiceTypes": "Four explicitly defined script choice categories, not a count of human mental decisions or a complete taxonomy: initial Gallery branch; revise after obstruction; select optional objective; collect after discovery.",
+    "conversationScope": "Manifests retain one final caption per scripted request, often a game-event receipt. They do not retain all intermediate Practice permission wording. No claim of zero redundant real-model questions is supported.",
+    "timingScope": "Seconds from the per-viewport capture clock; includes local UI/server/automation work. Human reading/reasoning and first-session comprehension were not measured. These non-video captures use no deliberate presentation pauses. Local time is not decomposed into processing and waiting."
+  },
+  "waiting": {
+    "realProviderRequests": 0,
+    "providerWaitSeconds": 0,
+    "intentionalPresentationPauseSecondsInTheseCaptures": 0,
+    "humanReasoningSeconds": null,
+    "localProcessingVersusWaitingSeconds": null,
+    "videoPauseNote": "Separate video mode deliberately pauses for reading; its elapsed time is not a performance comparison."
+  },
+  "gestureComparison": {
+    "unit": "Activated controls, not OS pointer events; source comparison plus compiled browser cases.",
+    "initialRouteMark": {
+      "before": 2,
+      "after": 1
+    },
+    "crossOutOneCorridor": {
+      "beforeShortestCheckboxPath": 2,
+      "afterModeAndCorridor": 2
+    },
+    "restoreErasedTwoMarkPlan": {
+      "beforeManualReconstruction": 2,
+      "afterUndo": 1
+    },
+    "attachExactQuote": {
+      "before": 3,
+      "after": 3
+    },
+    "confirmVisibleExactProposal": {
+      "before": 1,
+      "after": 1
+    },
+    "pauseVisibleMission": {
+      "before": 1,
+      "after": 1
+    },
+    "desktopNavigationToViewMapCurrentCaptionProposalAndPause": {
+      "before": 0,
+      "after": 0,
+      "scope": "Reviewed desktop Gallery captures only; narrow screens may require scrolling."
+    }
+  },
+  "browserEvidence": {
+    "cooperation": "tests/e2e/goal006-cooperation.spec.ts: direct ink; two-mark erase/undo; failed save; exact quote freshness; Pause; narrow and CSS-zoom checks.",
+    "recorder": "tests/e2e/flight-recorder.spec.ts: both layouts and desktop sizes, selected pickup declined then reproposed/confirmed, selected but skipped, both home outcomes, setup reset.",
+    "knownFocusedCases": {
+      "cooperation": 6,
+      "recorder": 8
+    },
+    "humanParticipants": 0
+  },
+  "limitations": [
+    "Different encountered obstruction routes prevent treating total requests or time as a matched speed comparison.",
+    "A safe blocked passage and successful backtrack are purposeful exploration, not a conversation dead end.",
+    "All four capture scripts reached home. Natural-language dead-end rates and redundant real-model permissions remain unmeasured."
+  ]
+}

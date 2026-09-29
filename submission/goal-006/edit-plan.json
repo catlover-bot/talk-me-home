@@ -1,0 +1,472 @@
+{
+  "source": "/home/mhirotaka/workspace/talk-me-home/.validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+  "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812",
+  "build": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "practice": {
+    "mode": "Practice \u2014 deterministic simulation \u2014 new gameplay build",
+    "build": "fc0f8d831a6b786f083114169eb01fc21576d60d",
+    "sourceDirty": true,
+    "runtimeManifestSha256": "83851a8ed21d3d14055d6241bd6907e38006bfb850c780becb4c1abbd46ee492",
+    "recorderSecuredAtHome": true,
+    "realProviderCalls": 0,
+    "video": {
+      "path": ".validation/goal-006-capture/practice-film/page@c911e07dbc1864581639fdeee7e7c935.webm",
+      "sha256": "a095ca9ff382d17813c5e9948560ed2ef4562e4b9d5170800d80cabde268ade6",
+      "bytes": 7972716
+    },
+    "captureReceipt": {
+      "path": "artifacts/goal-006/ui/practice-film/manifest.json",
+      "sha256": "849b0f4c6b8f31751c73a30d3a2faf2b1115470d6e50d875fa9602bd8fecaa47",
+      "bytes": 12575
+    },
+    "screenshotCaptureReceipt": {
+      "path": "artifacts/goal-006/ui/delivery-recorder/manifest.json",
+      "sha256": "7f88be171624c074b4900745bb58f2bf298077638740f45a0ec09f2f9a09f9d8",
+      "bytes": 24167
+    },
+    "screenshots": [
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/cargo-1440.png",
+        "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+        "bytes": 234764,
+        "name": "cargo",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/gallery-1440.png",
+        "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+        "bytes": 216188,
+        "name": "gallery",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/dock-1440.png",
+        "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+        "bytes": 205005,
+        "name": "dock",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      },
+      {
+        "path": "artifacts/goal-006/ui/delivery-recorder/home-1440.png",
+        "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+        "bytes": 175973,
+        "name": "home",
+        "sourceCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+        "sourceDirty": true,
+        "runtimeManifestSha256": "a34a43f4b24615d7651daa74f922992550a6ad1594b27e8e0de0933969063389"
+      }
+    ],
+    "audio": "Silent native browser recording. No original provider audio is copied underneath.",
+    "runtimeRelationship": "The Practice film is the actual fc0f8d8 snapshot with runtime 83851a8e. Current standalone screenshots and the slide 4 image are the later 2a08aef delivery snapshot with runtime a34a43f4. The only game source difference is the Training debrief wrapper in game/client/components/Debrief.tsx; the Rescue branch still renders details/summary. Fixture-origin and capture-label changes do not change the recorded Rescue behavior. The film is not relabelled as the later runtime. Both capture receipts retain sourceDirty=true.",
+    "cuts": [
+      {
+        "start": 0.1,
+        "duration": 3,
+        "chapter": "NEW BUILD / YOUR OPTIONAL OBJECTIVE",
+        "caption": "Separate Practice run: choose the optional archive trip, or rescue Pip directly."
+      },
+      {
+        "start": 42.35,
+        "duration": 4.4,
+        "chapter": "NEW BUILD / CONFIRM THE PICKUP",
+        "caption": "After a local inspection, confirm the exact flight-recorder pickup."
+      },
+      {
+        "start": 94.8,
+        "duration": 4.6,
+        "chapter": "NEW BUILD / WHAT YOU BROUGHT HOME",
+        "caption": "Only a secured recorder appears on the shelf after confirmed home."
+      }
+    ],
+    "inspection": "Actual source film frames at 0.3, 44.0 and 96.0 seconds inspected before selecting cuts; final edited transitions and pickup/home frames inspected. Four later delivery screenshots are reviewed separately.",
+    "subsequentDelta": {
+      "fromVideoCommit": "fc0f8d831a6b786f083114169eb01fc21576d60d",
+      "toScreenshotCommit": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+      "gameFiles": [
+        "game/client/components/Debrief.tsx"
+      ],
+      "description": "Training debrief container changed from open details to div; Rescue retains its details container, summary and content.",
+      "verification": "Read git diff of game/ between the exact commits; delivery screenshot capture passed with zero provider calls."
+    }
+  },
+  "segments": [
+    {
+      "kind": "voice",
+      "start": 3.7,
+      "duration": 6.5,
+      "chapter": "A PARTNER NEEDS YOUR HELP",
+      "cut": "Original greeting",
+      "outputStart": 0,
+      "outputEnd": 6.5,
+      "videoFrames": 195,
+      "outputStartSample": 0,
+      "audioSamples": 312000
+    },
+    {
+      "kind": "card",
+      "card": "premise",
+      "duration": 7,
+      "outputStart": 6.5,
+      "outputEnd": 13.5,
+      "videoFrames": 210,
+      "outputStartSample": 312000,
+      "audioSamples": 336000
+    },
+    {
+      "kind": "voice",
+      "start": 38.1,
+      "duration": 14,
+      "chapter": "01  CARGO / A SHARED SUPPLY",
+      "cut": "Cut to Cargo: read the document, agree on the Latch",
+      "outputStart": 13.5,
+      "outputEnd": 27.5,
+      "videoFrames": 420,
+      "outputStartSample": 648000,
+      "audioSamples": 672000
+    },
+    {
+      "kind": "voice",
+      "start": 62.3,
+      "duration": 7.7,
+      "chapter": "01  CARGO / ONE SHARED SUCCESS",
+      "cut": "Cut forward: Latch confirmed \u2192 Mission Control turns Power off",
+      "outputStart": 27.5,
+      "outputEnd": 35.2,
+      "videoFrames": 231,
+      "outputStartSample": 1320000,
+      "audioSamples": 369600
+    },
+    {
+      "kind": "voice",
+      "start": 72.7,
+      "duration": 11.3,
+      "chapter": "01  CARGO / ONE SHARED SUCCESS",
+      "cut": "Waiting shortened: the Conveyor stops; choose the crossing",
+      "outputStart": 35.2,
+      "outputEnd": 46.5,
+      "videoFrames": 339,
+      "outputStartSample": 1689600,
+      "audioSamples": 542400
+    },
+    {
+      "kind": "voice",
+      "start": 86.7,
+      "duration": 16,
+      "chapter": "01  CARGO / ONE SHARED SUCCESS",
+      "cut": "Waiting shortened: exact crossing proposal, confirmation and arrival",
+      "outputStart": 46.5,
+      "outputEnd": 62.5,
+      "videoFrames": 480,
+      "outputStartSample": 2232000,
+      "audioSamples": 768000
+    },
+    {
+      "kind": "voice",
+      "start": 222.2,
+      "duration": 35.1,
+      "chapter": "02  GALLERY / A ROUTE IS A HYPOTHESIS",
+      "cut": "Later: an open gate is blocked; check the alternative",
+      "outputStart": 62.5,
+      "outputEnd": 97.6,
+      "videoFrames": 1053,
+      "outputStartSample": 3000000,
+      "audioSamples": 1684800
+    },
+    {
+      "kind": "voice",
+      "start": 259.5,
+      "duration": 27,
+      "chapter": "02  GALLERY / CHANGE THE PLAN",
+      "cut": "Same conversation: choose southwest and confirm the backtrack",
+      "outputStart": 97.6,
+      "outputEnd": 124.6,
+      "videoFrames": 810,
+      "outputStartSample": 4684800,
+      "audioSamples": 1296000
+    },
+    {
+      "kind": "voice",
+      "start": 428.3,
+      "duration": 19.3,
+      "chapter": "03  DOCK / TWO PARTNERS, ONE TRANSFER",
+      "cut": "Later at Dock: Pip holds the contact after exact confirmation",
+      "outputStart": 124.6,
+      "outputEnd": 143.9,
+      "videoFrames": 579,
+      "outputStartSample": 5980800,
+      "audioSamples": 926400
+    },
+    {
+      "kind": "voice",
+      "start": 462.1,
+      "duration": 4.2,
+      "chapter": "03  DOCK / STORE THE ENERGY",
+      "cut": "Cut forward: Mission Control charges and stores energy",
+      "outputStart": 143.9,
+      "outputEnd": 148.1,
+      "videoFrames": 126,
+      "outputStartSample": 6907200,
+      "audioSamples": 201600
+    },
+    {
+      "kind": "voice",
+      "start": 507.8,
+      "duration": 5.4,
+      "chapter": "03  DOCK / READY TO RETURN",
+      "cut": "Later: contact released and boarding confirmed",
+      "outputStart": 148.1,
+      "outputEnd": 153.5,
+      "videoFrames": 162,
+      "outputStartSample": 7108800,
+      "audioSamples": 259200
+    },
+    {
+      "kind": "voice",
+      "start": 555.25,
+      "duration": 29,
+      "chapter": "HOME / THE CONFIRMED RETURN",
+      "cut": "Later: owner grants return; one final exact confirmation",
+      "outputStart": 153.5,
+      "outputEnd": 182.5,
+      "videoFrames": 870,
+      "outputStartSample": 7368000,
+      "audioSamples": 1392000
+    },
+    {
+      "kind": "practice",
+      "start": 0.1,
+      "duration": 3,
+      "chapter": "NEW BUILD / YOUR OPTIONAL OBJECTIVE",
+      "cut": "Separate Practice run: choose the optional archive trip, or rescue Pip directly.",
+      "source": ".validation/goal-006-capture/practice-film/page@c911e07dbc1864581639fdeee7e7c935.webm",
+      "outputStart": 182.5,
+      "outputEnd": 185.5,
+      "videoFrames": 90,
+      "outputStartSample": 8760000,
+      "audioSamples": 144000
+    },
+    {
+      "kind": "practice",
+      "start": 42.35,
+      "duration": 4.4,
+      "chapter": "NEW BUILD / CONFIRM THE PICKUP",
+      "cut": "After a local inspection, confirm the exact flight-recorder pickup.",
+      "source": ".validation/goal-006-capture/practice-film/page@c911e07dbc1864581639fdeee7e7c935.webm",
+      "outputStart": 185.5,
+      "outputEnd": 189.9,
+      "videoFrames": 132,
+      "outputStartSample": 8904000,
+      "audioSamples": 211200
+    },
+    {
+      "kind": "practice",
+      "start": 94.8,
+      "duration": 4.6,
+      "chapter": "NEW BUILD / WHAT YOU BROUGHT HOME",
+      "cut": "Only a secured recorder appears on the shelf after confirmed home.",
+      "source": ".validation/goal-006-capture/practice-film/page@c911e07dbc1864581639fdeee7e7c935.webm",
+      "outputStart": 189.9,
+      "outputEnd": 194.5,
+      "videoFrames": 138,
+      "outputStartSample": 9115200,
+      "audioSamples": 220800
+    },
+    {
+      "kind": "card",
+      "card": "technology",
+      "duration": 8,
+      "outputStart": 194.5,
+      "outputEnd": 202.5,
+      "videoFrames": 240,
+      "outputStartSample": 9336000,
+      "audioSamples": 384000
+    },
+    {
+      "kind": "card",
+      "card": "status",
+      "duration": 7,
+      "outputStart": 202.5,
+      "outputEnd": 209.5,
+      "videoFrames": 210,
+      "outputStartSample": 9720000,
+      "audioSamples": 336000
+    }
+  ],
+  "durationSeconds": 209.5,
+  "actualGameplaySeconds": 187.5,
+  "historicalVoiceSeconds": 175.5,
+  "practiceSeconds": 12.0,
+  "narration": false,
+  "speedChanges": false,
+  "audioAssembly": {
+    "method": "Sample-exact 48 kHz PCM, source decoded once, one final AAC encode",
+    "pcmSamples": 10056000,
+    "fixedGain": 1.6849066305818672,
+    "perSegmentAacConcatenation": false,
+    "practice": "Silent browser capture; no historical Voice audio underneath"
+  },
+  "subtitleTiming": "Original digital channel speech boundaries, using captured onset windows and retained 80.2 ms source alignment. Balanced phrase chunks, not word-level forced alignment.",
+  "subtitles": [
+    {
+      "start": 0.4477416666666665,
+      "end": 5.976116666666665,
+      "text": "Pip: Mission Control, this is Pip. Can you hear me? I need\nyour help getting out."
+    },
+    {
+      "start": 14.141033333333333,
+      "end": 17.748199999999997,
+      "text": "Player (synthetic): My diagram says the door and conveyor share one power\nsupply."
+    },
+    {
+      "start": 20.620449999999998,
+      "end": 23.693638144329896,
+      "text": "Pip: I have proposed to engage the latch. Please confirm"
+    },
+    {
+      "start": 23.693638144329896,
+      "end": 26.465533333333333,
+      "text": "Pip: this action on the console when you are ready."
+    },
+    {
+      "start": 27.987241666666662,
+      "end": 31.447283333333345,
+      "text": "Pip: The latch is engaged and the door is being held open."
+    },
+    {
+      "start": 33.00057500000001,
+      "end": 34.12740833333335,
+      "text": "Player (synthetic): Power is now off."
+    },
+    {
+      "start": 35.80474166666667,
+      "end": 38.60911625412541,
+      "text": "Pip: The conveyor stopped moving when the power went out."
+    },
+    {
+      "start": 38.60911625412541,
+      "end": 41.2517,
+      "text": "Pip: Should I try moving to the far side platform now?"
+    },
+    {
+      "start": 43.43511666666667,
+      "end": 45.034283333333335,
+      "text": "Player (synthetic): Please cross to the far side."
+    },
+    {
+      "start": 47.223325,
+      "end": 52.12499166666667,
+      "text": "Pip: I have proposed to move to the far side platform.\nPlease confirm this on the console."
+    },
+    {
+      "start": 54.428241666666665,
+      "end": 58.10360671091446,
+      "text": "Pip: I have arrived at the Ring emblem. The gate to the\neast is"
+    },
+    {
+      "start": 58.10360671091446,
+      "end": 61.588866666666675,
+      "text": "Pip: closed and unpowered. Do you want me to check the\ngate?"
+    },
+    {
+      "start": 63.283075,
+      "end": 66.80869999999999,
+      "text": "Player (synthetic): Please inspect the southeast gate and tell me whether\nanything blocks it."
+    },
+    {
+      "start": 71.51182499999999,
+      "end": 74.69474166666669,
+      "text": "Pip: The southeast gate is open, but there is cargo\nblocking"
+    },
+    {
+      "start": 74.69474166666669,
+      "end": 77.87765833333339,
+      "text": "Pip: the opening. Should I check the southwest gate\ninstead?"
+    },
+    {
+      "start": 82.06078333333335,
+      "end": 85.6277833333333,
+      "text": "Player (synthetic): Please inspect the southwest gate and tell me whether\nanything blocks it."
+    },
+    {
+      "start": 91.22340833333334,
+      "end": 96.97457499999996,
+      "text": "Pip: The southwest gate is open and the passage is clear\nof any cargo. Should I move through it?"
+    },
+    {
+      "start": 98.2971583333333,
+      "end": 100.16661666666664,
+      "text": "Player (synthetic): Please go through the southwest gate."
+    },
+    {
+      "start": 105.76390833333335,
+      "end": 108.58673809523805,
+      "text": "Pip: I have proposed to move through the southwest gate."
+    },
+    {
+      "start": 108.58673809523805,
+      "end": 111.57561666666663,
+      "text": "Pip: Please confirm this on the console when you are\nready."
+    },
+    {
+      "start": 115.18461666666667,
+      "end": 119.50804302325582,
+      "text": "Pip: I have arrived at the Fork emblem. The northeast gate\nis open, but"
+    },
+    {
+      "start": 119.50804302325582,
+      "end": 123.63495,
+      "text": "Pip: the west and southeast gates are closed. Which way\nshould I go?"
+    },
+    {
+      "start": 125.31290833333327,
+      "end": 126.71532499999995,
+      "text": "Player (synthetic): Please hold the contact."
+    },
+    {
+      "start": 131.0367833333333,
+      "end": 133.5872974842767,
+      "text": "Pip: I have proposed to hold the charging contact. Please"
+    },
+    {
+      "start": 133.5872974842767,
+      "end": 136.23590833333327,
+      "text": "Pip: confirm this action on the console when you are\nready."
+    },
+    {
+      "start": 141.25790833333332,
+      "end": 143.14878333333326,
+      "text": "Pip: I am holding the contact steadily."
+    },
+    {
+      "start": 148.45290833333326,
+      "end": 152.92124166666662,
+      "text": "Pip: I have boarded the recovery capsule, and the return\npanel is within reach."
+    },
+    {
+      "start": 154.17415833333337,
+      "end": 158.00290833333327,
+      "text": "Player (synthetic): Please propose confirming the return with the\ninspected capsule operation."
+    },
+    {
+      "start": 162.6512416666667,
+      "end": 165.9558404867256,
+      "text": "Pip: I have proposed to confirm the authorized return.\nPlease"
+    },
+    {
+      "start": 165.9558404867256,
+      "end": 169.31944999999996,
+      "text": "Pip: confirm this action on the console to finish the\nprocess."
+    },
+    {
+      "start": 173.9571166666667,
+      "end": 177.77761666666663,
+      "text": "Pip: The return is confirmed and the capsule has brought\nme home."
+    }
+  ]
+}
