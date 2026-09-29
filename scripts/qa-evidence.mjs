@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url'
 import { inspectCampaign } from './qa-budget.mjs'
 import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE,
   QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE,
-  QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
+  QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE,
+  QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
 import { assertGoal004CAmendedNextAttempt, assertGoal004DNextAttempt } from './qa-live-authorization.mjs'
 import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
@@ -37,6 +38,28 @@ const visibleMessage = item => ({
   ...(item.provenance !== undefined ? { provenance: text(item.provenance) } : {}),
 })
 const turnIdentity = value => typeof value === 'string' ? text(value) : count(value)
+const choice = (value, allowed) => allowed.includes(value) ? value : 'unknown'
+const proposalSummary = proposal => proposal ? {
+  proposalId: text(proposal.proposalId), label: text(proposal.label),
+  status: choice(proposal.status, ['awaiting_confirmation', 'confirming', 'committed', 'declined', 'expired', 'invalidated', 'failed']),
+} : null
+const actionRequestSummary = request => ({
+  intendedRequest: text(request.intendedRequest), expectedLabel: text(request.expectedLabel), sourceChapter: text(request.sourceChapter),
+  strictFirstResponse: request.strictFirstResponse === true, recovered: request.recovered === true,
+  outcome: choice(request.outcome, ['pending', 'committed', 'failed']), failure: text(request.failure),
+  exchanges: (request.exchanges ?? []).map(exchange => ({
+    kind: choice(exchange.kind, ['initial', 'clarification', 'rephrased_request']), text: text(exchange.text),
+    outcome: choice(exchange.outcome, ['pending', 'matching_pending', 'verified_committed_receipt', 'relevant_clarification', 'stale_pending', 'wrong_pending', 'false_completion', 'unconfirmed_commit', 'rejected_or_unresolved', 'no_relevant_reply']),
+    proposal: proposalSummary(exchange.proposal),
+    replies: (exchange.replies ?? []).map(reply => ({ ...visibleMessage({ ...reply, chapterLabel: reply.chapter, speaker: 'Pip' }), messageId: text(reply.messageId) })),
+  })),
+})
+const preSubmitSummary = wait => ({
+  beforeTurnId: turnIdentity(wait.beforeTurnId), settled: wait.settled === true,
+  ...(typeof wait.fatal === 'boolean' ? { fatal: wait.fatal } : {}),
+  reason: choice(wait.reason, ['input_waveform_not_drained', 'input_not_observed', 'asr_turn_open', 'asr_final_pending', 'tool_result_pending', 'reply_pending', 'final_response_pending', 'playback_not_drained', 'provider_error', 'late_event_observation_window', 'response_and_playback_drained', 'wait_input_drained', 'session_ended', 'tool_continuation_pending', 'acknowledgement_response_pending', 'acknowledgement_failed', 'acknowledgement_opportunity_pending', 'acknowledgement_opportunity_expired', 'acknowledgement_cancelled_and_drained', 'acknowledgement_and_playback_drained']),
+  startedAtMs: round(wait.startedAtMs), endedAtMs: round(wait.endedAtMs), waitedMs: round(wait.waitedMs),
+})
 const stepProvenance = step => ({
   ...(step.turnId !== undefined ? { turnId: turnIdentity(step.turnId) } : {}),
   ...(step.startedAtMs !== undefined ? { startedAtMs: Number.isFinite(step.startedAtMs) ? step.startedAtMs : null } : {}),
@@ -166,6 +189,8 @@ export function summarizeAttempt(report, evidence, reservation) {
       fixture: text(step.fixture), ...stepProvenance(step), failureLayer: text(step.failureLayer), reason: text(step.reason),
     })) } : {}),
     ...(report.behavior ? { behavior: summarizeBehavior(report.behavior) } : {}),
+    ...(Array.isArray(report.actionRequests) ? { actionRequests: report.actionRequests.map(actionRequestSummary) } : {}),
+    ...(Array.isArray(report.preSubmitWaits) ? { preSubmitWaits: report.preSubmitWaits.map(preSubmitSummary) } : {}),
     ...(Array.isArray(report.confirmations) ? { confirmations: report.confirmations.map(receipt => ({ proposalId: text(receipt.proposalId), label: text(receipt.label), intendedRequest: text(receipt.intendedRequest), status: text(receipt.status),
       confirmationRequestedAtMs: round(receipt.confirmationRequestedAtMs), confirmedAtMs: round(receipt.confirmedAtMs), source: text(receipt.source) })) } : {}),
     ...(report.confirmationAudit ? { confirmationAudit: { commits: count(report.confirmationAudit.commits), confirmations: count(report.confirmationAudit.confirmations), everyCommitHasExactConfirmation: report.confirmationAudit.everyCommitHasExactConfirmation === true,
@@ -272,6 +297,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   // A partial/corrupt supplement must never silently fall back to the old ledger.
   let amendment
   for (const candidate of [
+    { id: QA_RECHECK_AMENDMENT_ID, ledger: QA_RECHECK_AMENDMENT_LEDGER, allowance: QA_RECHECK_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004e/recheck-live' },
     { id: QA_CONFIRMED_AMENDMENT_ID, ledger: QA_CONFIRMED_AMENDMENT_LEDGER, allowance: QA_CONFIRMED_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004e/live' },
     { id: QA_RUNTIME_AMENDMENT_ID, ledger: QA_RUNTIME_AMENDMENT_LEDGER, allowance: QA_RUNTIME_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004d/retest/live' },
     { id: QA_AMENDMENT_ID, ledger: QA_AMENDMENT_LEDGER, allowance: QA_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004c/final-acceptance/live' },
@@ -283,7 +309,8 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   output = resolve(output ?? amendment?.output ?? 'artifacts/goal-004b/live')
   const historicalOutputs = ['artifacts/goal-004b/live', 'artifacts/goal-004c/live',
     ...(amendment?.id !== QA_AMENDMENT_ID ? ['artifacts/goal-004c/final-acceptance/live'] : []),
-    ...(amendment?.id === QA_CONFIRMED_AMENDMENT_ID ? ['artifacts/goal-004d/retest/live'] : [])]
+    ...([QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID].includes(amendment?.id) ? ['artifacts/goal-004d/retest/live'] : []),
+    ...(amendment?.id === QA_RECHECK_AMENDMENT_ID ? ['artifacts/goal-004e/live'] : [])]
   if (amended && historicalOutputs.some(path => output === resolve(path))) throw new Error('Amended exports must use a new evidence directory; historical compact exports remain unchanged.')
   if (mux) {
     const location = relative(resolve('.validation'), directory)
@@ -342,13 +369,16 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt'
   let amendedSequence
   if (amended) {
-    const finalVoice = amendment.id === QA_CONFIRMED_AMENDMENT_ID
+    const recheckVoice = amendment.id === QA_RECHECK_AMENDMENT_ID
+    const finalVoice = recheckVoice || amendment.id === QA_CONFIRMED_AMENDMENT_ID
     const candidate = reports.find(report => report.reservation?.attempt === state.historicalAttempts + 1)?.identity
     amendedSequence = { mode: finalVoice || state.newAttempts !== 0 ? 'voice' : 'text', passed: false,
       reason: remainingAttempts === 0 ? 'The aggregate campaign allowance is exhausted.' : 'No new frozen candidate report is available for a prospective sequencing check.',
       boundary: 'Read-only pure sequencing check against recorded reports and their candidate, not spending authorization or a current-worktree identity check.' }
     if (remainingAttempts > 0 && finalVoice) {
-      amendedSequence.reason = 'The existing final Voice slot requires the compiled Goal 004E gate, exact frozen candidate and complete offline release receipt; historical failed Text is not a new pass.'
+      amendedSequence.reason = recheckVoice
+        ? 'The single additional Voice slot requires the compiled Goal 004E recheck gate, exact frozen candidate and preserved offline validation receipts; the four historical failures remain consumed.'
+        : 'The existing final Voice slot requires the compiled Goal 004E gate, exact frozen candidate and complete offline release receipt; historical failed Text is not a new pass.'
     } else if (remainingAttempts > 0 && candidate) {
       try {
         const guard = amendment.id === QA_RUNTIME_AMENDMENT_ID ? assertGoal004DNextAttempt : assertGoal004CAmendedNextAttempt
@@ -357,7 +387,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
         amendedSequence.reason = 'Recorded Text evidence satisfies the pure sequence guard for this recorded candidate; production admission still requires the unchanged frozen candidate and the aggregate supervisor lock.'
       } catch (error) { amendedSequence.reason = text(error instanceof Error ? error.message : 'The amended sequence guard rejected these reports.') }
     }
-    admissionStatus = remainingAttempts === 0 ? 'exhausted' : finalVoice ? 'requires_final_voice_frozen_candidate_admission' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
+    admissionStatus = remainingAttempts === 0 ? 'exhausted' : recheckVoice ? 'requires_recheck_voice_frozen_candidate_admission' : finalVoice ? 'requires_final_voice_frozen_candidate_admission' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
       : amendedSequence.passed ? 'requires_identical_frozen_candidate_voice_admission' : 'conditional_voice_blocked'
   }
   const summary = {

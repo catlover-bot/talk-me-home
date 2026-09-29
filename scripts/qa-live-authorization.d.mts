@@ -30,6 +30,14 @@ export const GOAL_004E_CANARY_INPUTS: readonly string[]
 export function assertGoal004ELiveAuthorized(): void
 export function assertGoal004ENextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; offline: unknown }): void
 export function assertGoal004EReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown }): void
+export const GOAL_004E_RECHECK_AMENDMENT: Readonly<Record<string, unknown>>
+export const GOAL_004E_RECHECK_FROZEN_FILE: string
+export const GOAL_004E_RECHECK_RUNTIME_SHA256: string
+export const GOAL_004E_RECHECK_SESSION_UPDATE_SHA256: string
+export const GOAL_004E_RECHECK_FIXTURE_SHA256: string
+export function assertGoal004ERecheckLiveAuthorized(): void
+export function assertGoal004ERecheckNextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; activation: unknown }): void
+export function assertGoal004ERecheckReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown }): void
 export function assertGoal004CNextAttempt(input: {
   campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[];
 }): void

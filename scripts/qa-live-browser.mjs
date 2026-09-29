@@ -10,8 +10,8 @@ import { resolve, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { release } from 'node:os';
 import { inspectCampaign } from './qa-budget.mjs';
-import { QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
-import { assertGoal004ELiveAuthorized, assertGoal004EReservationAuthorized, GOAL_004E_AMENDMENT, GOAL_004E_FROZEN_FILE, GOAL_004E_RUNTIME_SHA256, GOAL_004E_SESSION_UPDATE_SHA256, GOAL_004E_CANARY_INPUTS } from './qa-live-authorization.mjs';
+import { QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
+import { assertGoal004ERecheckLiveAuthorized, assertGoal004ERecheckReservationAuthorized, GOAL_004E_RECHECK_AMENDMENT, GOAL_004E_RECHECK_FROZEN_FILE, GOAL_004E_RECHECK_RUNTIME_SHA256, GOAL_004E_RECHECK_SESSION_UPDATE_SHA256, GOAL_004E_CANARY_INPUTS } from './qa-live-authorization.mjs';
 import { evaluateAcceptanceBehavior } from './qa-acceptance-behavior.mjs';
 import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, assertSupervisedParent } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
@@ -83,14 +83,14 @@ async function persistReport(directory, report) {
 }
 
 async function checkNextAttempt(mode, identity) {
-  assertGoal004EReservationAuthorized({ directory: DIRECTORY, mode, identity });
+  assertGoal004ERecheckReservationAuthorized({ directory: DIRECTORY, mode, identity });
 }
 
 async function worker(scenario, mode) {
-  assertGoal004ELiveAuthorized();
+  assertGoal004ERecheckLiveAuthorized();
   if (process.env.QA_SUPERVISED_WORKER !== '1' || !process.send) throw new Error('An independently supervised worker is required.');
   assertSupervisedParent(DIRECTORY);
-  if (scenario !== 'mission' || mode !== 'voice') throw new Error('The final slot permits only mission Voice with UI confirmation.');
+  if (scenario !== 'mission' || mode !== 'voice') throw new Error('The recheck slot permits only mission Voice with UI confirmation.');
   const identity = await buildIdentity();
   await checkNextAttempt(mode, identity);
   await validateFrozenPlayerSpeech(identity.fixtureFiles);
@@ -100,7 +100,7 @@ async function worker(scenario, mode) {
   if (!key) throw new Error('The local provider credential is unavailable.');
   const port = await availablePort(); const origin = `http://127.0.0.1:${port}`;
   const accessCode = randomBytes(24).toString('base64url');
-  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_CONFIRMED_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '1' };
+  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_RECHECK_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '1' };
   delete productionEnv.GAME_DISABLE_LIVE; delete productionEnv.NODE_OPTIONS;
   const server = spawn(process.execPath, ['scripts/qa-production-observer.mjs'], { env: productionEnv, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
   await registerOwnedProcess(server.pid);
@@ -160,7 +160,7 @@ async function worker(scenario, mode) {
         void response.json().then(view => { sessionId = view.sessionId; }).catch(() => {});
       }
     });
-    await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: GOAL_004E_SESSION_UPDATE_SHA256, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
+    await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: GOAL_004E_RECHECK_SESSION_UPDATE_SHA256, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
     await page.addInitScript(label => {
       document.addEventListener('DOMContentLoaded', () => {
         const badge = document.createElement('div'); badge.textContent = label;
@@ -209,7 +209,7 @@ async function worker(scenario, mode) {
     report.runtimePolicyDelivery = { ...deliveries[0], messageCount: policySnapshot.configurationUpdatesSent };
     await persistReport(directory, report);
     if (deliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
-      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
       throw new Error('The actual serialized session.update did not match the frozen repaired runtime policy.');
     }
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
@@ -332,7 +332,7 @@ async function worker(scenario, mode) {
     const finalDeliveries = events.filter(event => event.type === 'configuration.delivery');
     report.runtimePolicyDelivery = { ...finalDeliveries[0], messageCount: evidence?.configurationUpdatesSent ?? null };
     if (finalDeliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
-      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
       failure ??= 'The actual session configuration delivery was missing, changed or repeated.';
     }
     if (report.regressionCanary?.status !== 'passed' || !report.regressionCanary.explicitLatchRequest) {
@@ -351,7 +351,7 @@ async function worker(scenario, mode) {
     if (!['activeTracks', 'activeSources', 'openApplicationContexts'].every(key => report.cleanup?.[key] === 0)) failure ??= 'Application audio cleanup was missing or incomplete.';
     report.failure = failure ?? 'Cleanup pending; this is not a final acceptance result.';
     report.lifecycle = journal.snapshot();
-    report.watchdogCleanup = 'Independent supervisor amendment-confirmed-actions-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
+    report.watchdogCleanup = 'Independent supervisor amendment-candidate-recheck-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
     if (directory) await persistReport(directory, report);
     const video = page?.video();
     await context?.close().catch(() => {});
@@ -386,7 +386,7 @@ const args = process.argv.slice(2);
 // No flag, environment variable or locally generated file supplies owner approval.
 // This gate executes before fixtures, credentials, allowance reads or child processes.
 if (args.includes('--live') || args.includes('--worker')) {
-  try { assertGoal004ELiveAuthorized(); }
+  try { assertGoal004ERecheckLiveAuthorized(); }
   catch (error) { console.error(error.message); process.exitCode = 1; if (process.connected) process.disconnect(); }
 }
 if (process.exitCode) {
@@ -394,27 +394,27 @@ if (process.exitCode) {
 } else if (args.includes('--worker')) {
   try { await worker(args[args.indexOf('--scenario') + 1], args[args.indexOf('--mode') + 1]); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
 } else if (args.includes('--freeze')) {
-  await prepareFixtures();
   if (execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()) throw new Error('Commit activation and clean the worktree before freezing.');
   const identity = await buildIdentity();
-  if (identity.runtimeSha256 !== GOAL_004E_RUNTIME_SHA256 || identity.sessionUpdateSha256 !== GOAL_004E_SESSION_UPDATE_SHA256) throw new Error('Compiled runtime differs from the approved confirmed-action candidate.');
-  const frozenPath = join(DIRECTORY, GOAL_004E_FROZEN_FILE);
+  await validateFrozenPlayerSpeech(identity.fixtureFiles);
+  if (identity.runtimeSha256 !== GOAL_004E_RECHECK_RUNTIME_SHA256 || identity.sessionUpdateSha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256) throw new Error('Compiled runtime differs from the approved recheck candidate.');
+  const frozenPath = join(DIRECTORY, GOAL_004E_RECHECK_FROZEN_FILE);
   let existing;
   try { existing = JSON.parse(await readFile(frozenPath, 'utf8')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   if (existing) {
-    if (existing.amendmentId !== QA_CONFIRMED_AMENDMENT_ID || JSON.stringify(existing.identity) !== JSON.stringify(identity)) throw new Error('The one-time frozen runtime candidate already exists with a different identity.');
-  } else await writeFile(frozenPath, JSON.stringify({ amendmentId: QA_CONFIRMED_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
+    if (existing.amendmentId !== QA_RECHECK_AMENDMENT_ID || JSON.stringify(existing.identity) !== JSON.stringify(identity)) throw new Error('The one-time frozen runtime candidate already exists with a different identity.');
+  } else await writeFile(frozenPath, JSON.stringify({ amendmentId: QA_RECHECK_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
   console.log(JSON.stringify({ status: 'OFFLINE_CANDIDATE_FROZEN', commit: identity.commit, runtimeSha256: identity.runtimeSha256, harnessSha256: identity.harnessSha256, fixtureSha256: identity.fixtureSha256 }));
 } else if (args.includes('--inspect')) {
   const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
   if (!args.includes('--live')) await prepareFixtures();
-  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 004E final Voice test only; aggregate sequencing gates apply.', campaignLimits: GOAL_004E_AMENDMENT }));
+  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 004E candidate recheck Voice test only; aggregate sequencing gates apply.', campaignLimits: GOAL_004E_RECHECK_AMENDMENT }));
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];
-    if (scenario !== 'mission' || mode !== 'voice') throw new Error('Explicit --scenario mission --mode voice required for the final slot.');
+    if (scenario !== 'mission' || mode !== 'voice') throw new Error('Explicit --scenario mission --mode voice required for the recheck slot.');
     // An approved campaign must already exist. Missing accounting never initializes one.
     await checkNextAttempt(mode, await buildIdentity());
-    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_CONFIRMED_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
+    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_RECHECK_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
   }
 }

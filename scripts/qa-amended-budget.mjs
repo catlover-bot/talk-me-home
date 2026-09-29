@@ -27,6 +27,16 @@ export const QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES = Object.freeze({
   campaign: 'f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae',
   allowance: '5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5',
 })
+export const QA_RECHECK_AMENDMENT_ID = 'goal-004e-candidate-recheck-2026-09-29'
+export const QA_RECHECK_AMENDMENT_LEDGER = 'amendment-candidate-recheck.jsonl'
+export const QA_RECHECK_AMENDMENT_ALLOWANCE = 'amendment-candidate-recheck-allowance.jsonl'
+export const QA_RECHECK_AMENDMENT_CLEANUP = 'amendment-candidate-recheck-cleanup.jsonl'
+// One additional owner-approved Voice attempt, linked to all four consumed attempts.
+export const QA_RECHECK_AMENDMENT_LIMITS = Object.freeze({ ...QA_LIMITS, maxAttempts: 5, capacitySeconds: 3350, planningDollars: 4.1875 })
+export const QA_RECHECK_AMENDMENT_ORIGINAL_HASHES = Object.freeze({
+  campaign: 'c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c',
+  allowance: '1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb',
+})
 const integer = value => Number.isSafeInteger(value) && value >= 0
 const keys = value => Object.keys(value).sort().join(',')
 const digest = value => createHash('sha256').update(value).digest('hex')
@@ -36,6 +46,9 @@ const headerKeys = 'capacitySeconds,createdAt,disconnectGraceSeconds,historicalA
 
 // Only these compiled, owner-approved amendments exist. A caller cannot supply limits.
 function profile(amendmentId) {
+  if (amendmentId === QA_RECHECK_AMENDMENT_ID) return { id: amendmentId, ledger: QA_RECHECK_AMENDMENT_LEDGER, allowance: QA_RECHECK_AMENDMENT_ALLOWANCE,
+    historicalAttempts: 4, limits: QA_RECHECK_AMENDMENT_LIMITS, originalHashes: QA_RECHECK_AMENDMENT_ORIGINAL_HASHES,
+    precedingAllowance: QA_CONFIRMED_AMENDMENT_ALLOWANCE, previousAmendmentId: QA_CONFIRMED_AMENDMENT_ID, finalVoiceOnly: true }
   if (amendmentId === QA_AMENDMENT_ID) return { id: amendmentId, ledger: QA_AMENDMENT_LEDGER, allowance: QA_AMENDMENT_ALLOWANCE,
     historicalAttempts: 1, limits: QA_LIMITS, originalHashes: QA_AMENDMENT_ORIGINAL_HASHES, precedingAllowance: 'allowance.jsonl' }
   if (amendmentId === QA_RUNTIME_AMENDMENT_ID) return { id: amendmentId, ledger: QA_RUNTIME_AMENDMENT_LEDGER, allowance: QA_RUNTIME_AMENDMENT_ALLOWANCE,
@@ -47,7 +60,10 @@ function profile(amendmentId) {
   throw new Error('Unknown fixed campaign amendment.')
 }
 function assertCurrentWriter(directory, amendmentId) {
-  if (amendmentId !== QA_CONFIRMED_AMENDMENT_ID && [QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
+  if (amendmentId !== QA_RECHECK_AMENDMENT_ID && [QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
+    throw new Error('Earlier amendments are preserved history; only the linked candidate recheck writer may consume the additional Voice slot.')
+  }
+  if (![QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID].includes(amendmentId) && [QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
     throw new Error('Earlier amendments are preserved history; only the linked Goal 004E writer may consume the existing final slot.')
   }
   if (amendmentId === QA_AMENDMENT_ID && [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE].some(file => existsSync(join(directory, file)))) {
@@ -84,6 +100,17 @@ function originalCampaign(directory) {
 
 function precedingCampaign(directory, amendmentId) {
   if (amendmentId === QA_AMENDMENT_ID) return originalCampaign(directory)
+  if (amendmentId === QA_RECHECK_AMENDMENT_ID) {
+    const previous = inspectAmendedCampaign(directory, QA_CONFIRMED_AMENDMENT_ID)
+    if (digest(readFileSync(join(directory, QA_CONFIRMED_AMENDMENT_LEDGER))) !== QA_RECHECK_AMENDMENT_ORIGINAL_HASHES.campaign
+      || digest(readFileSync(join(directory, QA_CONFIRMED_AMENDMENT_ALLOWANCE))) !== QA_RECHECK_AMENDMENT_ORIGINAL_HASHES.allowance
+      || previous.attempts.length !== 4 || previous.productionAttempts !== 4
+      || previous.attempts.some((attempt, index) => attempt.name !== (index < 3 ? 'text-mission' : 'voice-mission') || attempt.result?.outcome !== 'failed'
+        || attempt.result.endAcknowledged !== true || !integer(attempt.closedAt) || attempt.closedAt < attempt.result.finishedAt)) {
+      throw new Error('The candidate recheck requires all four exact preserved failed and closed attempts; consumed attempts cannot be reassigned.')
+    }
+    return previous
+  }
   if (amendmentId === QA_CONFIRMED_AMENDMENT_ID) {
     const previous = inspectAmendedCampaign(directory, QA_RUNTIME_AMENDMENT_ID)
     if (digest(readFileSync(join(directory, QA_RUNTIME_AMENDMENT_LEDGER))) !== QA_CONFIRMED_AMENDMENT_ORIGINAL_HASHES.campaign
@@ -115,7 +142,7 @@ export function initializeAmendment(directory, { hourlyRate = 4.5, now = Date.no
   const ledger = join(directory, selected.ledger)
   const allowance = join(directory, selected.allowance)
   // Repeated delivery reuses this exact linked amendment, including consumed attempts.
-  if ([QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID].includes(amendmentId) && existsSync(ledger) && existsSync(allowance)) return inspectAmendedCampaign(directory, amendmentId)
+  if ([QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID].includes(amendmentId) && existsSync(ledger) && existsSync(allowance)) return inspectAmendedCampaign(directory, amendmentId)
   if (existsSync(ledger) || existsSync(allowance)) throw new Error('This fixed amendment already exists or is incomplete; it can never be initialized again.')
   const createdAt = now()
   if (!integer(createdAt) || createdAt < original.attempts.at(-1).closedAt) throw new Error('Invalid amendment creation time.')

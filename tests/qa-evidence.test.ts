@@ -4,9 +4,9 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
-import { writeGoal004CHistory, writeGoal004DRetestHistory } from './fixtures/goal-004c-history.ts'
+import { writeGoal004CHistory, writeGoal004DRetestHistory, writeGoal004EConfirmedHistory } from './fixtures/goal-004c-history.ts'
 // @ts-expect-error This local accounting helper is intentionally a native Node module.
-import { initializeAmendment, AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
+import { initializeAmendment, AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
 import { approximateVideoAlignment, summarizeAttempt, exportCampaign } from '../scripts/qa-evidence.mjs'
 
@@ -55,6 +55,28 @@ test('Text export keeps typed UI input separate from provider finals and retains
   assert.equal(fallback.typedTurns[0].recordedAfterTurnAtMs, null)
   assert.throws(() => summarizeAttempt(report, { ...evidence, label }), /consistently labelled/)
   assert.throws(() => summarizeAttempt({ ...report, steps: [{ inputMode: 'text', utterance: 'Authorization: Bearer private-fixture' }] }, evidence), /Credential-like/)
+})
+
+test('recheck evidence keeps strict-first and recovered diagnostics separate from pre-submit waiting', () => {
+  const report = { label, mode: 'voice', identity: {}, actionRequests: [{
+    intendedRequest: 'Please cross to the far side.', expectedLabel: 'Move to the far-side platform', sourceChapter: 'Cargo Bay', strictFirstResponse: false, recovered: true, outcome: 'committed', hiddenState: 'excluded-private-fixture',
+    exchanges: [{ kind: 'initial', text: 'Please cross to the far side.', outcome: 'verified_committed_receipt',
+      proposal: { proposalId: 'old-latch', label: 'Engage the Latch', status: 'committed', rawPayload: 'excluded-private-fixture' },
+      replies: [{ speaker: 'Pip', text: 'May I check the status of that proposal?', chapter: 'Cargo Bay', sourceLabel: 'Live Voice', final: true, interrupted: false, messageId: 'message-one', displayedAt: '2026-09-29T00:00:00.000Z', hiddenState: 'excluded-private-fixture' }] },
+    { kind: 'clarification', text: 'Please report the proposal status.', outcome: 'matching_pending', proposal: { proposalId: 'crossing', label: 'Move to the far-side platform', status: 'awaiting_confirmation' }, replies: [] }],
+  }], preSubmitWaits: [{ beforeTurnId: 7, settled: true, reason: 'acknowledgement_opportunity_expired', startedAtMs: 2000, endedAtMs: 6000, waitedMs: 4000, confirmation: { rawPayload: 'excluded-private-fixture' } },
+  { beforeTurnId: 8, settled: false, fatal: true, reason: 'provider_error', startedAtMs: 7000, endedAtMs: 7010, waitedMs: 10 }] }
+  const summary = summarizeAttempt(report, { label, events: [] })
+  assert.equal(summary.actionRequests[0].strictFirstResponse, false); assert.equal(summary.actionRequests[0].recovered, true)
+  assert.equal(summary.actionRequests[0].exchanges[0].proposal.proposalId, 'old-latch')
+  assert.equal(summary.actionRequests[0].exchanges[0].replies[0].messageId, 'message-one')
+  assert.equal(summary.actionRequests[0].exchanges[0].replies[0].chapterLabel, 'Cargo Bay')
+  assert.equal(summary.actionRequests[0].exchanges[1].outcome, 'matching_pending')
+  assert.equal(summary.preSubmitWaits[0].beforeTurnId, 7); assert.equal(summary.preSubmitWaits[0].waitedMs, 4000)
+  assert.equal(summary.preSubmitWaits[0].reason, 'acknowledgement_opportunity_expired')
+  assert.equal(summary.preSubmitWaits[1].fatal, true); assert.equal(summary.preSubmitWaits[1].settled, false)
+  assert.equal(summary.typedTurns.length, 0); assert.equal(summary.utterances.length, 0)
+  assert.doesNotMatch(JSON.stringify(summary), /excluded-private-fixture|hiddenState|rawPayload/)
 })
 
 test('campaign export discovers Text/Voice directories and binds their explicit reservation without guessing from absent socket events', async () => {
@@ -307,8 +329,8 @@ test('newest linked export counts all preserved attempts, the single final slot 
   } finally { await rm(directory, { recursive: true, force: true }) }
 })
 
-test('partial newest runtime or final supplement never silently exports an older profile', async () => {
-  for (const file of [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE]) {
+test('partial newest runtime, final or recheck supplement never silently exports an older profile', async () => {
+  for (const file of [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE]) {
     const directory = await mkdtemp(join(tmpdir(), 'qa-newest-export-corrupt-'))
     try {
       writeGoal004CHistory(directory)
@@ -316,4 +338,44 @@ test('partial newest runtime or final supplement never silently exports an older
       await assert.rejects(exportCampaign({ directory, output: join(directory, 'export') }))
     } finally { await rm(directory, { recursive: true, force: true }) }
   }
+})
+
+test('recheck export retains all four consumed attempts and isolates the single fifth reservation', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'qa-recheck-export-offline-'))
+  try {
+    writeGoal004EConfirmedHistory(directory)
+    const historicalFiles = ['campaign.jsonl', 'allowance.jsonl', QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE]
+    const preserved = await Promise.all(historicalFiles.map(file => readFile(join(directory, file))))
+    initializeAmendment(directory, { amendmentId: QA_RECHECK_AMENDMENT_ID, now: () => 2_000_000_000_000 })
+    const unused = await exportCampaign({ directory, output: join(directory, 'unused-export') })
+    assert.equal(unused.amendmentId, QA_RECHECK_AMENDMENT_ID)
+    assert.equal(unused.attempts, 4); assert.equal(unused.historicalAttempts, 4); assert.equal(unused.productionAttempts, 4)
+    assert.equal(unused.remainingAttempts, 1); assert.equal(unused.reservedSeconds, 2680)
+    assert.equal(unused.newAttempts, 0); assert.equal(unused.newReservedSeconds, 0)
+    assert.equal(unused.amendedSequence.mode, 'voice'); assert.equal(unused.amendedSequence.passed, false)
+    assert.equal(unused.admissionStatus, 'requires_recheck_voice_frozen_candidate_admission')
+    for (const output of ['artifacts/goal-004b/live', 'artifacts/goal-004c/live', 'artifacts/goal-004c/final-acceptance/live', 'artifacts/goal-004d/retest/live', 'artifacts/goal-004e/live']) {
+      await assert.rejects(exportCampaign({ directory, output }), /historical compact exports remain unchanged/)
+    }
+    const identity = { commit: 'c'.repeat(40), runtimeSha256: 'a'.repeat(64), harnessSha256: 'b'.repeat(64) }
+    const budget = new AmendedCampaignBudget(directory, () => 2_000_000_000_100, QA_RECHECK_AMENDMENT_ID)
+    const reservation = budget.reserve({ name: 'voice-mission', identity })
+    const allowancePath = join(directory, QA_RECHECK_AMENDMENT_ALLOWANCE)
+    await writeFile(allowancePath, await readFile(allowancePath, 'utf8') + JSON.stringify({ reservedAt: reservation.reservedAt, leaseUntil: reservation.leaseUntil }) + '\n')
+    budget.finish(5, { outcome: 'failed', endAcknowledged: true, connectedSeconds: 20 }); budget.closed(5)
+    const confirmedLabel = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI'
+    const name = '2033-05-18T03-33-20-100Z-voice-mission'; const attemptPath = join(directory, name)
+    await mkdir(attemptPath)
+    await writeFile(join(attemptPath, 'report.json'), JSON.stringify({ label: confirmedLabel, mode: 'voice', scenario: 'mission', reservation, identity, failure: 'Constructed offline exporter fixture.' }))
+    await writeFile(join(attemptPath, 'audio-evidence.json'), JSON.stringify({ label: confirmedLabel, events: [] }))
+    const summary = await exportCampaign({ directory, output: join(directory, 'recheck-export') })
+    assert.equal(summary.amendmentId, QA_RECHECK_AMENDMENT_ID)
+    assert.equal(summary.attempts, 5); assert.equal(summary.productionAttempts, 5)
+    assert.equal(summary.historicalAttempts, 4); assert.equal(summary.newAttempts, 1)
+    assert.equal(summary.reservedSeconds, 3350); assert.equal(summary.newReservedSeconds, 670)
+    assert.equal(summary.remainingAttempts, 0); assert.equal(summary.admissionStatus, 'exhausted')
+    assert.equal(summary.results[0].accountingAttempt, 5); assert.equal(summary.results[0].historical, false)
+    assert.equal(summary.amendmentLedgerSha256, createHash('sha256').update(await readFile(join(directory, QA_RECHECK_AMENDMENT_LEDGER))).digest('hex'))
+    for (const [index, file] of historicalFiles.entries()) assert.deepEqual(await readFile(join(directory, file)), preserved[index])
+  } finally { await rm(directory, { recursive: true, force: true }) }
 })

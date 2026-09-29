@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID } from './qa-amended-budget.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 export const GOAL_004C_PROPOSAL = Object.freeze({
   status: 'AUTHORIZED_BOUNDED_CAMPAIGN',
@@ -68,6 +68,90 @@ export const GOAL_004E_FROZEN_FILE = 'confirmed-actions-execution-candidate.json
 export const GOAL_004E_RUNTIME_SHA256 = 'cacfeef453ca4ad49e6aa3317fd61a77b3a55f4cbfdb8c2eeae95e2ae96ccbce'
 export const GOAL_004E_SESSION_UPDATE_SHA256 = '7504148459f16110e193f54db94007f82d83d53b9bdb80f5f14829f924104dfc'
 export const GOAL_004E_CANARY_INPUTS = GOAL_004D_CANARY_INPUTS
+
+// Separate explicit owner instruction on September 29 supplies exactly one new
+// attempt. The displayed credit is owner-provided evidence, not an account query.
+export const GOAL_004E_RECHECK_AMENDMENT = Object.freeze({
+  id: QA_RECHECK_AMENDMENT_ID, approvedOnJst: '2026-09-29', reviewedCommit: 'c38a10c1567e55d93eb00e07136646258a37d5f0',
+  runtimeSourceCommit: 'fcbd513effb17d8c90e612c28aa92ed76c070b7e',
+  historicalAttempts: 4, maxNewAttempts: 1, maxAttempts: 5, reservationSeconds: 670,
+  capacitySeconds: 3350, maxSessionSeconds: 600, concurrentConnections: 1,
+  hourlyRate: 4.5, planningDollars: 4.1875, maxNewDollars: 0.84,
+  existingBalanceOnly: true, automaticReplenishment: false, contract: 'synthetic_voice_plus_ui_confirmation',
+})
+export const GOAL_004E_RECHECK_FROZEN_FILE = 'candidate-recheck-execution-candidate.json'
+export const GOAL_004E_RECHECK_RUNTIME_SHA256 = 'f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb'
+export const GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 = '2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1'
+export const GOAL_004E_RECHECK_FIXTURE_SHA256 = '7e2f4f97a8363251196ebbbfc4efc43e12a3277c7aa24abeb8794ed29e0045fc'
+const recheckHistoricalReceipt = 'd98af583a942d65434e18d4c74cc93421e46000c31d2c12af8086600eff04216'
+const recheckPreparedReceipt = 'bb1a0a5053c89ff8ee81f357693b492a8fac49ab73ae9a29b70a46d1038d2187'
+
+export function assertGoal004ERecheckLiveAuthorized() {
+  if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE prohibit the candidate recheck.')
+  let campaign
+  try {
+    const directory = lstatSync(campaignDirectory)
+    if (!directory.isDirectory() || directory.isSymbolicLink()) throw new Error('Invalid directory')
+    campaign = inspectAmendedCampaign(campaignDirectory, QA_RECHECK_AMENDMENT_ID)
+  } catch { throw new Error('APPROVED_CAMPAIGN_UNAVAILABLE: The separately approved fixed fifth-attempt amendment must already exist; nothing was initialized.') }
+  if (campaign.attempts.length !== 4 || campaign.productionAttempts !== 4) throw new Error('APPROVED_CAMPAIGN_EXHAUSTED: The one additional attempt is consumed or unavailable; no retry or reconnect is authorized.')
+}
+
+/** Reuse the exact delivered runtime evidence and verify only new activation work. */
+export function assertGoal004ERecheckNextAttempt({ campaign, mode, identity, activation }) {
+  const header = campaign?.header
+  if (mode !== 'voice' || header?.id !== QA_RECHECK_AMENDMENT_ID
+    || header.maxAttempts !== 5 || header.historicalAttempts !== 4 || header.maxNewAttempts !== 1
+    || header.capacitySeconds !== 3350 || header.newCapacitySeconds !== 670 || header.reservationSeconds !== 670
+    || header.maxSessionSeconds !== 600 || header.disconnectGraceSeconds !== 30 || header.hourlyRate !== 4.5 || header.planningDollars !== 4.1875
+    || campaign.attempts?.length !== 4 || campaign.productionAttempts !== 4
+    || campaign.attempts.some((attempt, index) => attempt.attempt !== index + 1 || attempt.name !== (index < 3 ? 'text-mission' : 'voice-mission')
+      || attempt.result?.outcome !== 'failed' || attempt.result.endAcknowledged !== true
+      || !Number.isSafeInteger(attempt.closedAt) || !Number.isSafeInteger(attempt.result.finishedAt) || attempt.closedAt < attempt.result.finishedAt)
+    || !validIdentity(identity) || identity.runtimeSha256 !== GOAL_004E_RECHECK_RUNTIME_SHA256
+    || Object.keys(identity.files).length !== 22 || identity.sessionUpdateSha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256
+    || !identity.fixtureFiles || Object.keys(identity.fixtureFiles).length === 0 || digest(identity.fixtureFiles) !== identity.fixtureSha256
+    || identity.browserExecutableSha256 !== '8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e'
+    || identity.node !== 'v24.20.0') throw new Error('The fifth attempt requires four preserved failures and the unchanged delivered runtime, configuration, speech and browser; only one Voice attempt is permitted.')
+  if (!activation || activation.status !== 'passed' || activation.dirty !== false || activation.commit !== identity.commit
+    || activation.branch !== 'work/goal-004e-confirmed-actions' || activation.preparedCommit !== GOAL_004E_RECHECK_AMENDMENT.reviewedCommit
+    || activation.runtimeSha256 !== identity.runtimeSha256 || activation.harnessSha256 !== identity.harnessSha256
+    || activation.fixtureSha256 !== identity.fixtureSha256 || activation.sessionUpdateSha256 !== identity.sessionUpdateSha256
+    || activation.realProviderCalls !== 0 || activation.historicalOfflineSha256 !== recheckHistoricalReceipt
+    || activation.preparedPreflightSha256 !== recheckPreparedReceipt
+    || activation.pricing?.hourlyRate !== 4.5 || activation.pricing.reservationEstimateDollars !== 0.8375
+    || activation.pricing.reservationEstimateDollars > GOAL_004E_RECHECK_AMENDMENT.maxNewDollars
+    || !['focused activation tests', 'typecheck', 'diff whitespace'].every(label => activation.checks?.some(check => check.label === label && check.status === 'passed' && check.exitCode === 0))
+    || activation.checks.some(check => check.status !== 'passed' || check.exitCode !== 0)) {
+    throw new Error('The clean activation candidate needs focused passing checks and unchanged historical runtime/preflight evidence; prior full-suite results must not be relabelled.')
+  }
+}
+
+/** The existing independent supervisor repeats this proof under the original lock. */
+export function assertGoal004ERecheckReservationAuthorized({ directory, mode, identity }) {
+  assertGoal004ERecheckLiveAuthorized()
+  if (resolve(directory) !== resolve(campaignDirectory)) throw new Error('The fifth attempt cannot be redirected to a replacement campaign.')
+  const readRegular = path => {
+    const stat = lstatSync(path)
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Recheck evidence must be ordinary files.')
+    return readFileSync(path)
+  }
+  const frozen = JSON.parse(readRegular(join(campaignDirectory, GOAL_004E_RECHECK_FROZEN_FILE)).toString('utf8'))
+  const activation = JSON.parse(readRegular(fileURLToPath(new URL('../.validation/goal-004e-recheck-activation.json', import.meta.url))).toString('utf8'))
+  if (frozen.amendmentId !== QA_RECHECK_AMENDMENT_ID || JSON.stringify(frozen.identity) !== JSON.stringify(identity)
+    || Object.keys(identity?.fixtureFiles ?? {}).length !== 652 || identity.fixtureSha256 !== GOAL_004E_RECHECK_FIXTURE_SHA256) throw new Error('The recheck identity and prepared speech catalog must match the one-time frozen execution candidate exactly.')
+  const historical = readRegular(fileURLToPath(new URL('../artifacts/goal-004e/follow-up/offline-validation.json', import.meta.url)))
+  const prepared = readRegular(fileURLToPath(new URL('../artifacts/goal-004e/recheck-preflight/validation.json', import.meta.url)))
+  if (createHash('sha256').update(historical).digest('hex') !== recheckHistoricalReceipt
+    || createHash('sha256').update(prepared).digest('hex') !== recheckPreparedReceipt) throw new Error('Historical runtime and prepared preflight receipts must remain unchanged.')
+  const allowedActivationChanges = new Set(['qa-live-browser.mjs', 'qa-live-authorization.mjs', 'qa-amended-budget.mjs', 'qa-supervisor.mjs', 'qa-evidence.mjs'])
+  const priorHarness = JSON.parse(prepared.toString('utf8')).harnessFiles
+  if (!identity?.harnessFiles || Object.keys(identity.harnessFiles).length !== Object.keys(priorHarness).length
+    || Object.entries(priorHarness).some(([path, hash]) => !identity.harnessFiles[path] || !allowedActivationChanges.has(path) && identity.harnessFiles[path] !== hash)) {
+    throw new Error('Prepared player, pacing, fixtures, evaluator and instrumentation must be unchanged; activation is narrowly scoped.')
+  }
+  assertGoal004ERecheckNextAttempt({ campaign: inspectAmendedCampaign(campaignDirectory, QA_RECHECK_AMENDMENT_ID), mode, identity, activation })
+}
 
 export function assertGoal004ELiveAuthorized() {
   if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE prohibit real Goal 004E calls.')

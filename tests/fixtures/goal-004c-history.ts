@@ -36,3 +36,17 @@ export function writeGoal004DRetestHistory(directory: string) {
     + '{"reservedAt":1790468663487,"leaseUntil":1790469333487}\n'
     + '{"reservedAt":1790586887067,"leaseUntil":1790587557067}\n')
 }
+
+// Exact fourth failed Voice attempt; sanitized fixtures remain isolated and unfunded.
+export function writeGoal004EConfirmedHistory(directory: string) {
+  writeGoal004DRetestHistory(directory)
+  writeFileSync(join(directory, 'amendment-confirmed-actions.jsonl'), '{"type":"amendment","version":1,"id":"goal-004e-confirmed-actions-2026-09-28","originalCampaignSha256":"f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae","originalAllowanceSha256":"5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5","historicalAttempts":3,"maxNewAttempts":1,"newCapacitySeconds":670,"maxAttempts":4,"reservationSeconds":670,"capacitySeconds":2680,"maxSessionSeconds":600,"planningDollars":3.35,"disconnectGraceSeconds":30,"hourlyRate":4.5,"createdAt":1790590682334,"previousAmendmentId":"goal-004d-runtime-retest-2026-09-28"}\n'
+    + '{"type":"reserved","attempt":4,"name":"voice-mission","reservedAt":1790591054786,"reservedSeconds":670,"gracefulAt":1790591624786,"hardAt":1790591634786,"leaseUntil":1790591724786,"identitySha256":"3e3c4212696c07d597276f5ccce3ec4014f7a1970f706673da80483757e3703c"}\n'
+    + '{"type":"result","attempt":4,"finishedAt":1790591149107,"endAcknowledged":true,"connectedSeconds":89.61630000001192,"outcome":"failed"}\n'
+    + '{"type":"closed","attempt":4,"closedAt":1790591150737}\n')
+  writeFileSync(join(directory, 'amendment-confirmed-actions-allowance.jsonl'), '{"version":1,"allowanceSessions":4,"maxSessionSeconds":600}\n'
+    + '{"reservedAt":1790359091852,"leaseUntil":1790359761852}\n'
+    + '{"reservedAt":1790468663487,"leaseUntil":1790469333487}\n'
+    + '{"reservedAt":1790586887067,"leaseUntil":1790587557067}\n'
+    + '{"reservedAt":1790591054802,"leaseUntil":1790591724802}\n')
+}

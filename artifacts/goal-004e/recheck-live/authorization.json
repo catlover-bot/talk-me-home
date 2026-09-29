@@ -1,0 +1,35 @@
+{
+  "label": "EXPLICIT OWNER-APPROVED FIFTH ATTEMPT",
+  "approvedOnJst": "2026-09-29",
+  "source": "Owner's direct execution-approval message following prepared commit c38a10c; not the earlier attachment alone.",
+  "amendmentId": "goal-004e-candidate-recheck-2026-09-29",
+  "preparedCommit": "c38a10c1567e55d93eb00e07136646258a37d5f0",
+  "branch": "work/goal-004e-confirmed-actions",
+  "newAttempts": 1,
+  "reservationSeconds": 670,
+  "maxConnectedSeconds": 600,
+  "maxConcurrentConnections": 1,
+  "maxNewEstimateDollars": 0.84,
+  "retryOrReconnect": false,
+  "separateTextOrCanary": false,
+  "existingBalanceOnly": true,
+  "balanceEvidence": {
+    "source": "Owner-provided Billing screenshot values reported in the explicit execution approval",
+    "plan": "Free",
+    "freeCreditsSpentDollars": 1.02,
+    "freeCreditsRemainingDollars": 48.98,
+    "automatedAccountLookup": false,
+    "autoPay": "Not shown; not checked or changed"
+  },
+  "accountingInspectionBeforeActivation": {
+    "attempts": 4,
+    "productionAttempts": 4,
+    "reservedSeconds": 2680,
+    "allFailedAcknowledgedAndClosed": true,
+    "fifthAmendmentFound": false,
+    "campaignSha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+    "allowanceSha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb"
+  },
+  "stopConditions": ["Applicable estimate exceeds USD 0.84", "Provider reports insufficient credit", "Actual account or workspace mismatch", "Material gameplay or termination failure", "Attempt already reserved or issued"],
+  "externalActions": "No purchase, billing change, replenishment, deployment, public allowance, upload, visibility change, PR/main merge or event submission."
+}

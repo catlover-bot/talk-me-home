@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-09-29T03:10:14Z",
+  "hourlyRate": 4.5,
+  "billingBasis": "Per connected second; idle connected time counts",
+  "reservationSeconds": 670,
+  "reservationEstimateDollars": 0.8375,
+  "maximumAuthorizedNewEstimateDollars": 0.84,
+  "linkedReservedSecondsAfterFifthAttempt": 3350,
+  "linkedEstimateDollarsAfterFifthAttempt": 4.1875,
+  "sources": [
+    "https://www.assemblyai.com/pricing",
+    "https://www.assemblyai.com/docs/llms.txt",
+    "https://www.assemblyai.com/docs/billing-and-pricing",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/connect-your-own-llm",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration",
+    "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/voices"
+  ],
+  "configuration": "Unchanged managed default stack, anna voice and local function tools; no custom LLM/Gateway, agent_id, paid HTTP integration or telephony configured.",
+  "additionalChargeInference": "Zero separately configured integration charges, based on the managed-stack documentation and current local configuration.",
+  "providerModelBoundary": "Local paid configuration is unchanged; no claim is made that the provider's managed internal model version is unchanged.",
+  "freeCreditEligibility": "Official billing documentation includes the Voice Agent API among free-credit products; the owner-reported Free plan does not itself show a mismatch.",
+  "balanceAndAutoPay": "Use the owner's reported screenshot balance. No automated balance lookup; Auto-pay was not shown, checked or changed.",
+  "ending": "Explicit session.end and independently received session.ended are required; socket closure alone is not ending acknowledgement."
+}

@@ -1,0 +1,89 @@
+{
+  "label": "FOCUSED OFFLINE ACTIVATION CHECKS",
+  "checkedAt": "2026-09-29T03:18:15.615Z",
+  "baseCommit": "c38a10c1567e55d93eb00e07136646258a37d5f0",
+  "status": "passed",
+  "realProviderCalls": 0,
+  "unchangedRuntimeSource": "fcbd513effb17d8c90e612c28aa92ed76c070b7e",
+  "checks": [
+    {
+      "label": "focused activation tests",
+      "status": "passed",
+      "exitCode": 0,
+      "passedCases": 88,
+      "failedCases": 0,
+      "files": [
+        "qa-recheck-authorization.test.ts",
+        "qa-live-authorization.test.ts",
+        "qa-amended-budget.test.ts",
+        "qa-budget.test.ts",
+        "qa-evidence.test.ts",
+        "qa-live-preflight.test.ts",
+        "qa-turn-pacing.test.ts",
+        "qa-audio.test.ts"
+      ],
+      "raw": ".validation/goal-004e-recheck-activation-tests.log"
+    },
+    {
+      "label": "typecheck",
+      "status": "passed",
+      "exitCode": 0,
+      "command": "GAME_DISABLE_LIVE=1 npm run typecheck"
+    },
+    {
+      "label": "diff whitespace",
+      "status": "passed",
+      "exitCode": 0,
+      "command": "git diff --check"
+    }
+  ],
+  "harnessFiles": {
+    "qa-live-browser.mjs": "06d59b15febef3d536f54e242e473af2597cc6e1245d14e2f7bce4192a97f8b8",
+    "qa-live-speech.mjs": "2b906060687c52d2516d873685308ce8c675fbd7215e61d5fa8be69ec4c289e8",
+    "qa-production-observer.mjs": "909b8c48102d7f0f8214fa2c6dd4cd362c87de4d622a5e5aa6fdfa9c48cda548",
+    "qa-player-policy.mjs": "a8304c1863c4d4da010938b487c29b13bda13611f233a42b973b8c40ea338aff",
+    "qa-player-memory.mjs": "67e81bc6acecdd0193af11539c7835495b99e5d26c1603c9a770c87a8cbdf3f6",
+    "qa-mission-player.mjs": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1",
+    "qa-turn-pacing.mjs": "ceac25abf4a42b84c21688eb05c498261da38a4eb2901763fe7eb472ffd81c7c",
+    "qa-browser-instrumentation.mjs": "04fc636d3e25e8403cdbf989d06f87ee93be977da62a98480c93bc05fa6fc38a",
+    "qa-lifecycle.mjs": "77c865e249be707c5a27de9cfec75e8ad45e97dc34fbaf77f6a2e6d3a532e7ce",
+    "qa-live-authorization.mjs": "8942b1b22d0d4b7718c9c030434896c47d770db301f608be919857ed9cb7ff32",
+    "qa-budget.mjs": "3a90e4b3e51c5a490f323adacca71fc618020c2d82a2c1990bc66c91eb6db706",
+    "qa-supervisor.mjs": "7edaee7025a2124fd77e5a3d3e7373198510fac9a38857aabfa39440e0449f5d",
+    "qa-speech-fixtures.mjs": "e42268b22dd0a64018129fcbecb81fa6375d7b0c1243d72e2cc82ff176ca2ef7",
+    "qa-evidence.mjs": "0d5af5c936dcc44b1f695b8431d8e8712922c02ead650ead872ee2e177b3b1bc",
+    "qa-amended-budget.mjs": "5e442e5cb5dcd1c7fd03989209212c74a25fb0a59c7a7e6bfc21e773aa5aff89",
+    "qa-acceptance-behavior.mjs": "f441c1c60ad43d7d35560786054c9af096671de9a5a649a84b19d18d6b7205e9"
+  },
+  "harnessSha256": "0ca2dbca6c7260b9b2668be95408533d74080c58b752cf9971f16fed1da454d9",
+  "codeFiles": {
+    "scripts/qa-live-browser.mjs": "06d59b15febef3d536f54e242e473af2597cc6e1245d14e2f7bce4192a97f8b8",
+    "scripts/qa-live-speech.mjs": "2b906060687c52d2516d873685308ce8c675fbd7215e61d5fa8be69ec4c289e8",
+    "scripts/qa-production-observer.mjs": "909b8c48102d7f0f8214fa2c6dd4cd362c87de4d622a5e5aa6fdfa9c48cda548",
+    "scripts/qa-player-policy.mjs": "a8304c1863c4d4da010938b487c29b13bda13611f233a42b973b8c40ea338aff",
+    "scripts/qa-player-memory.mjs": "67e81bc6acecdd0193af11539c7835495b99e5d26c1603c9a770c87a8cbdf3f6",
+    "scripts/qa-mission-player.mjs": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1",
+    "scripts/qa-turn-pacing.mjs": "ceac25abf4a42b84c21688eb05c498261da38a4eb2901763fe7eb472ffd81c7c",
+    "scripts/qa-browser-instrumentation.mjs": "04fc636d3e25e8403cdbf989d06f87ee93be977da62a98480c93bc05fa6fc38a",
+    "scripts/qa-lifecycle.mjs": "77c865e249be707c5a27de9cfec75e8ad45e97dc34fbaf77f6a2e6d3a532e7ce",
+    "scripts/qa-live-authorization.mjs": "8942b1b22d0d4b7718c9c030434896c47d770db301f608be919857ed9cb7ff32",
+    "scripts/qa-budget.mjs": "3a90e4b3e51c5a490f323adacca71fc618020c2d82a2c1990bc66c91eb6db706",
+    "scripts/qa-supervisor.mjs": "7edaee7025a2124fd77e5a3d3e7373198510fac9a38857aabfa39440e0449f5d",
+    "scripts/qa-speech-fixtures.mjs": "e42268b22dd0a64018129fcbecb81fa6375d7b0c1243d72e2cc82ff176ca2ef7",
+    "scripts/qa-evidence.mjs": "0d5af5c936dcc44b1f695b8431d8e8712922c02ead650ead872ee2e177b3b1bc",
+    "scripts/qa-amended-budget.mjs": "5e442e5cb5dcd1c7fd03989209212c74a25fb0a59c7a7e6bfc21e773aa5aff89",
+    "scripts/qa-acceptance-behavior.mjs": "f441c1c60ad43d7d35560786054c9af096671de9a5a649a84b19d18d6b7205e9",
+    "tests/qa-recheck-authorization.test.ts": "ccc93a48f15ee04bdb26f81e5e87512afedf641b5cedbde80218129f84071ced",
+    "tests/qa-live-authorization.test.ts": "485c9ef0239dcf3801e333e4a9a31e506e210b62b2bde3f4cf1c84b7959212c4",
+    "tests/qa-amended-budget.test.ts": "cc68658f14b1c8bdf064ed520dda73bbbd95330d0e23ca8716d020a4842375d2",
+    "tests/qa-budget.test.ts": "64b394d99178ab004f71e76a2a365267bc4e0e7e8a459a4a41591aba7f4934e1",
+    "tests/qa-evidence.test.ts": "3328de385464f38fe0161d11617332afb61134bd4f43af8ad74ddc74abf34d27",
+    "tests/qa-live-preflight.test.ts": "c057bec8a372ea542431a1ea97ba03859ea2a617ac9a130990137bc20ee1e732",
+    "tests/qa-turn-pacing.test.ts": "2162983faf10eecd411c970f742e25db985f016cdfbf6f2d81effc1d5ebac6e0",
+    "tests/qa-audio.test.ts": "27547fa000ed7d86e505bfcab2dba98e1f313b3abd1606b7c75624b572ed1cdc",
+    "tests/fixtures/goal-004c-history.ts": "ff35258440c878a1a62b4b69ac8a18a242d0c3a85e96f5492da6338daac2699d",
+    "scripts/qa-live-authorization.d.mts": "6380a9aa2286777932ba42f667389201f3fd86b62bf989af2b35fa075c8274b2"
+  },
+  "preservedFiles": 1294,
+  "boundary": "New activation tests only; previous 358-unit/124-browser runtime suite and 22-unit/3-browser preparation results remain their original historical evidence. No runtime rebuild or new Live result."
+}
