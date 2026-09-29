@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-09-29T03:29:21.747Z",
+  "status": "ALL_BASELINE_PATHS_UNCHANGED",
+  "baseline": {
+    "path": ".validation/goal-004e-approved-recheck-preservation-before.json",
+    "sha256": "aac42662cf52dafdf5c4da706d4d17dcd39983a510dc7ef82d6db4b5bb091d80",
+    "bytes": 172109
+  },
+  "scope": "Every entry in the supplied baseline was compared without exclusions; this includes operational files, historical accounting/evidence/media and credential-file bytes without disclosing their contents.",
+  "baselinePathCount": 1294,
+  "checkedPathCount": 1294,
+  "unchangedPathCount": 1294,
+  "changedPaths": [],
+  "missingPaths": [],
+  "excludedPaths": [],
+  "operationalFileDeltas": [],
+  "oldAccounting": [
+    {
+      "path": ".validation/goal-004b-live/allowance.jsonl",
+      "sha256": "b58817b207ddbc3862fae891099e6f96899774f9ebb7d2a3eff453fd7de535a0",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004b-live/campaign.jsonl",
+      "sha256": "3b2d47300b8afdfd52dc8d8a96e1b59ec4b6eb9c82506d488ac7e917d78277fe",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004b-live/cleanup.jsonl",
+      "sha256": "eb95dc42bcb1948108ba12f5e50c039e25bd27317f1f5cb2165a1d4b8423b5e8",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/allowance.jsonl",
+      "sha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions.jsonl",
+      "sha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions-allowance.jsonl",
+      "sha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions-cleanup.jsonl",
+      "sha256": "411308dbabe0c58a11741dd37143017965c3fc09657718b01e37d7d6a45c660e",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance.jsonl",
+      "sha256": "8c9c0f4c94c8f8e400769fdbc62aa20a7b6c232fcf4bf5cfffc992bd28ef70d0",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance-allowance.jsonl",
+      "sha256": "4cc324d8dc43d7bd4ff57986e43dc5f0d37ead592117b53d49fff7bf6a455152",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance-cleanup.jsonl",
+      "sha256": "3aecb080749e467b9281fb4752b4a17e2d57f4c0461c90d3fc65d0e582314806",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest.jsonl",
+      "sha256": "f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest-allowance.jsonl",
+      "sha256": "5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest-cleanup.jsonl",
+      "sha256": "73baecd607491fd4958ea05b5ba669fa71b629425b0e69a5993dcdfff8c1a281",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/campaign.jsonl",
+      "sha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+      "unchanged": true
+    },
+    {
+      "path": ".validation/goal-004c-live/cleanup.jsonl",
+      "sha256": "c227660c0d0b54f1641f624a19e02cc47cddecd567c3dc98ce20f4a93e72e11d",
+      "unchanged": true
+    }
+  ],
+  "retainedSubmittedMedia": [
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pptx",
+      "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08",
+      "unchanged": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pdf",
+      "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea",
+      "unchanged": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+      "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c",
+      "unchanged": true
+    }
+  ]
+}

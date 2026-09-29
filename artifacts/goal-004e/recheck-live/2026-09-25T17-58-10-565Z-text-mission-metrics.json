@@ -1,0 +1,644 @@
+{
+  "label": "AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI",
+  "mode": "text",
+  "scenario": "mission",
+  "commit": "e436e230268e3c2afaa0469a127d80987fbe611e",
+  "runtimeSha256": "e1e681dc447c6a7c64d92153fa6706b44b8a3033b23191de48425c3dbac87a5e",
+  "harnessSha256": "d9218f8b76c22ae3df2f1157a404320d79c69187cb4a49273a3080e9e9e7a752",
+  "nodeVersion": "v24.20.0",
+  "browserVersion": "153.0.8010.12",
+  "inputMode": "normal UI typed messages; microphone off",
+  "completion": false,
+  "route": [],
+  "failure": "Player oracle: Latch completion remained unconfirmed after bounded recovery.",
+  "tokenRequests": 1,
+  "ending": {
+    "explicitEndSent": true,
+    "endAcknowledged": true,
+    "endSentAtMs": 72500.7,
+    "endAcknowledgedAtMs": 72725.8,
+    "endAcknowledgementDelayMs": 225.1,
+    "socketCloseCode": 1000,
+    "socketCloseWasClean": true,
+    "localConnectedSeconds": 71.1,
+    "providerSessionSeconds": 69.202676
+  },
+  "durationBounds": {
+    "observedSocketOpenToEndSentLowerBoundSeconds": 70.9,
+    "observedSocketOpenToCloseSeconds": 71.2,
+    "socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds": 72.8,
+    "localConnectionUpperBoundSeconds": 71.2,
+    "documentedDisconnectGraceSeconds": 0,
+    "remoteSecondsWithDocumentedGraceUpperEstimate": 71.2,
+    "supervisorClosedAt": "2026-09-25T17:59:25.690Z",
+    "accountingBoundary": "Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation."
+  },
+  "checkpoints": [
+    {
+      "title": "Cargo Bay",
+      "observedAtMs": 593.3,
+      "source": "Human-visible chapter/completion heading observed by the browser driver"
+    }
+  ],
+  "audio": {
+    "input": {
+      "chunks": 0,
+      "samples": 0,
+      "nonzeroSamples": 0,
+      "energy": 0,
+      "lastNonzeroMarkerAtMs": null
+    },
+    "provider": {
+      "chunks": 5561,
+      "samples": 1334640,
+      "nonzeroSamples": 1242894,
+      "energy": 15611.1,
+      "lastNonzeroMarkerAtMs": 71201.4
+    },
+    "rendered": {
+      "chunks": 719,
+      "samples": 1725600,
+      "nonzeroSamples": 1242894,
+      "energy": 15611.1,
+      "lastNonzeroMarkerAtMs": 71163.9
+    },
+    "postVolume": {
+      "chunks": 843,
+      "samples": 1726464,
+      "nonzeroSamples": 1242766,
+      "energy": 15609.9,
+      "lastNonzeroMarkerAtMs": 71401.2
+    }
+  },
+  "utterances": [],
+  "typedTurns": [
+    {
+      "source": "QA player UI submission record; not ASR or proof of provider delivery",
+      "text": "Pip, please look around.",
+      "recordedAfterTurnAtMs": 20464.9,
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Pip, please look around.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am on the near-side safe platform and the door is open. The conveyor is running and there is a latch lever right here. Where should we start?",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        }
+      ]
+    },
+    {
+      "source": "QA player UI submission record; not ASR or proof of provider delivery",
+      "text": "Please inspect the Latch.",
+      "recordedAfterTurnAtMs": 37496,
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the Latch.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I will inspect the latch lever to see how it works. I need to know if it can control the door.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The latch is not engaged, but the plate says it holds the door open. I can use the lever to engage it if you want. Should I do that?",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        }
+      ]
+    },
+    {
+      "source": "QA player UI submission record; not ASR or proof of provider delivery",
+      "text": "My diagram says the Door and Conveyor share one Power supply.",
+      "recordedAfterTurnAtMs": 48715.9,
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "My diagram says the Door and Conveyor share one Power supply.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        }
+      ]
+    },
+    {
+      "source": "QA player UI submission record; not ASR or proof of provider delivery",
+      "text": "Please engage the Latch.",
+      "recordedAfterTurnAtMs": 59467.4,
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please engage the Latch.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I tried to move across the conveyor but it is unsafe while it is running. Do you have any way to stop the conveyor from your end?",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        }
+      ]
+    },
+    {
+      "source": "QA player UI submission record; not ASR or proof of provider delivery",
+      "text": "Is the Latch engaged now?",
+      "recordedAfterTurnAtMs": 72201.1,
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Is the Latch engaged now?",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am still on the near-side platform and the conveyor is still running. I cannot cross until we find a way to shut it down. Please let me know if you can see any controls.",
+          "sourceLabel": null,
+          "chapterLabel": null,
+          "final": null,
+          "interrupted": null
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "observe_room",
+      "callRef": 5,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 9588.7,
+      "resultAtMs": 9914.7,
+      "callToResultMs": 326,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 10,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 21321.2,
+      "resultAtMs": 27790.3,
+      "callToResultMs": 6469.1,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "interact_object",
+      "callRef": 15,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 38424,
+      "resultAtMs": 38670.9,
+      "callToResultMs": 246.9,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "move_to",
+      "callRef": 20,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 49583.7,
+      "resultAtMs": 49814.1,
+      "callToResultMs": 230.4,
+      "succeeded": false,
+      "status": "error"
+    },
+    {
+      "name": "observe_room",
+      "callRef": 25,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 60397.2,
+      "resultAtMs": 60642.2,
+      "callToResultMs": 245,
+      "succeeded": true,
+      "status": "success"
+    }
+  ],
+  "finalTranscripts": [
+    {
+      "atMs": 7863.1,
+      "source": "Real provider agent transcript",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "reference": 1,
+      "interrupted": false
+    },
+    {
+      "atMs": 19604.6,
+      "source": "Real provider agent transcript",
+      "text": "I am on the near-side safe platform and the door is open. The conveyor is running and there is a latch lever right here. Where should we start?",
+      "reference": 6,
+      "interrupted": false
+    },
+    {
+      "atMs": 27376,
+      "source": "Real provider agent transcript",
+      "text": "I will inspect the latch lever to see how it works. I need to know if it can control the door.",
+      "reference": 8,
+      "interrupted": false
+    },
+    {
+      "atMs": 36483.7,
+      "source": "Real provider agent transcript",
+      "text": "The latch is not engaged, but the plate says it holds the door open. I can use the lever to engage it if you want. Should I do that?",
+      "reference": 11,
+      "interrupted": false
+    },
+    {
+      "atMs": 47578.4,
+      "source": "Real provider agent transcript",
+      "text": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?",
+      "reference": 16,
+      "interrupted": false
+    },
+    {
+      "atMs": 57939.8,
+      "source": "Real provider agent transcript",
+      "text": "I tried to move across the conveyor but it is unsafe while it is running. Do you have any way to stop the conveyor from your end?",
+      "reference": 21,
+      "interrupted": false
+    },
+    {
+      "atMs": 71200.5,
+      "source": "Real provider agent transcript",
+      "text": "I am still on the near-side platform and the conveyor is still running. I cannot cross until we find a way to shut it down. Please let me know if you can see any controls.",
+      "reference": 26,
+      "interrupted": false
+    }
+  ],
+  "visibleHistory": [
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:19.100Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Pip, please look around.",
+      "sourceLabel": "Live Text · Typed",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:20.357Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am on the near-side safe platform and the door is open. The conveyor is running and there is a latch lever right here. Where should we start?",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:30.838Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the Latch.",
+      "sourceLabel": "Live Text · Typed",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:31.996Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I will inspect the latch lever to see how it works. I need to know if it can control the door.",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:38.610Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is not engaged, but the plate says it holds the door open. I can use the lever to engage it if you want. Should I do that?",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:46.921Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "My diagram says the Door and Conveyor share one Power supply.",
+      "sourceLabel": "Live Text · Typed",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:48.393Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have engaged the latch and the door is now being held open. I can see the conveyor is still running. Should I try moving to the far side platform?",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:58.016Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please engage the Latch.",
+      "sourceLabel": "Live Text · Typed",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:58:59.667Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I tried to move across the conveyor but it is unsafe while it is running. Do you have any way to stop the conveyor from your end?",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:59:08.377Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Is the Latch engaged now?",
+      "sourceLabel": "Live Text · Typed",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:59:10.546Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am still on the near-side platform and the conveyor is still running. I cannot cross until we find a way to shut it down. Please let me know if you can see any controls.",
+      "sourceLabel": "Live Text",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "displayedAt": "2026-09-25T17:59:20.900Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    }
+  ],
+  "visibleHistoryBoundary": "These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "lifecycle": [
+    {
+      "type": "socket.open",
+      "observedAt": "2026-09-25T17:58:12.877Z",
+      "elapsedMs": 2311.085179,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 1644
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-25T17:59:22.111Z",
+      "elapsedMs": 73130.512934,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-25T17:59:22.146Z",
+      "elapsedMs": 73166.055244,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 72500.39999999851
+    },
+    {
+      "type": "session.end",
+      "observedAt": "2026-09-25T17:59:22.151Z",
+      "elapsedMs": 73170.62712199999,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 72500.69999999925
+    },
+    {
+      "type": "session.ended",
+      "observedAt": "2026-09-25T17:59:22.371Z",
+      "elapsedMs": 73390.890703,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 72725.80000000075,
+      "durationSeconds": 69.202676
+    },
+    {
+      "type": "socket.close",
+      "observedAt": "2026-09-25T17:59:22.520Z",
+      "elapsedMs": 73540.196664,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 72874.30000000075,
+      "code": 1000,
+      "clean": true
+    },
+    {
+      "type": "browser.close.requested",
+      "observedAt": "2026-09-25T17:59:23.990Z",
+      "elapsedMs": 75009.599435,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "browser.closed",
+      "observedAt": "2026-09-25T17:59:24.024Z",
+      "elapsedMs": 75043.588695,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "server.close.requested",
+      "observedAt": "2026-09-25T17:59:24.028Z",
+      "elapsedMs": 75048.135059,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "server.closed",
+      "observedAt": "2026-09-25T17:59:24.042Z",
+      "elapsedMs": 75061.464496,
+      "source": "driver",
+      "outcome": "observed",
+      "code": 0
+    }
+  ],
+  "timingNotes": [
+    "Measurements describe this small synthetic sample, not a production SLA or human latency study.",
+    "Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.",
+    "Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.",
+    "Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.",
+    "Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.",
+    "Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.",
+    "A clean WebSocket close without session.ended does not confirm remote termination."
+  ],
+  "boundary": "Player text was submitted through the normal UI; provider replies and digital output are separate evidence. No ASR, physical microphone, loudspeaker routing, human listening, or enjoyment pass is inferred from Text.",
+  "accountingAttempt": 1,
+  "evidenceDirectory": "2026-09-25T17-58-10-565Z-text-mission",
+  "sourceHashes": {
+    "report": "4e439cad3240feb1aeeea12fc8a78aa76dc59f6be09f05378560745e1beb0099",
+    "audioEvidence": "f06d271b059610526ab8dca5e7f73465df4c9814ecb3174b3ea354b6d8ec8295"
+  },
+  "media": {
+    "files": [
+      {
+        "file": "browser-silent.webm",
+        "durationSeconds": 72.16,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "vp8",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      },
+      {
+        "file": "input-digital.wav",
+        "durationSeconds": 72.888333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 72.888333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 72.888333,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      }
+    ],
+    "videoStatus": "Source video is silent; separate captured digital WAV files retain the test audio.",
+    "mux": "Original synthetic input and actual rendered output combined on their shared recorded QA timeline, at half gain each. No generated or replaced Pip answer. Video synchronization is approximate from the reported page-creation interval; it is not sample accurate.",
+    "combinedDigitalAudio": {
+      "file": "qa-combined-digital.wav",
+      "durationSeconds": 72.888333,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "pcm_s16le",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "muxedVideo": {
+      "file": "qa-combined-video.mp4",
+      "durationSeconds": 73.012833,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sampleRate": 24000,
+          "channels": 1
+        }
+      ]
+    },
+    "videoAlignment": {
+      "offsetMs": 95.5,
+      "creationIntervalHalfWidthMs": 35.5,
+      "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate."
+    }
+  }
+}

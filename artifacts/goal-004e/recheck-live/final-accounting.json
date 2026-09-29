@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-09-29T03:29:21.747Z",
+  "status": "FIFTH_ATTEMPT_CONSUMED_EXHAUSTED",
+  "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "campaignAmendmentId": "goal-004e-candidate-recheck-2026-09-29",
+  "sourceCommit": "0d21f7cd30cbb4d4b59a9710a53228cd7bad8b4d",
+  "identity": {
+    "runtimeSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+    "harnessSha256": "bd6d753ab84775f7f60c4cfa28da865438706294ca2dc126cef99696c9a6fea1",
+    "fixtureSha256": "7e2f4f97a8363251196ebbbfc4efc43e12a3277c7aa24abeb8794ed29e0045fc",
+    "sessionUpdateSha256": "ef98ba9725b19da4c616e9f25f692bfaeb373796ca3221d1b3b5141da2e6cf2e",
+    "frozen": {
+      "path": ".validation/goal-004c-live/candidate-recheck-execution-candidate.json",
+      "sha256": "b7686478d5577bf6398a650b84119038ff16039347f619a3e933299ea88e333c",
+      "bytes": 73864
+    },
+    "observedMatchesFrozen": true,
+    "currentManifestChecks": [
+      {
+        "name": "runtime",
+        "filesChecked": 22,
+        "mismatches": []
+      },
+      {
+        "name": "harness",
+        "filesChecked": 16,
+        "mismatches": []
+      },
+      {
+        "name": "speech fixtures",
+        "filesChecked": 652,
+        "mismatches": []
+      }
+    ]
+  },
+  "aggregate": {
+    "attemptLimit": 5,
+    "attemptsConsumed": 5,
+    "productionReservations": 5,
+    "reservedSeconds": 3350,
+    "reservedPlanningUsd": 4.1875,
+    "remainingAttempts": 0,
+    "remainingReservedSeconds": 0,
+    "retryEligible": false
+  },
+  "approvedAdditionalAttempt": {
+    "attemptsConsumed": 1,
+    "reservedSeconds": 670,
+    "reservedPlanningUsd": 0.8375,
+    "remainingAttempts": 0,
+    "productionReservationsAdded": 1
+  },
+  "fifthAttempt": {
+    "attempt": 5,
+    "mode": "voice",
+    "outcome": "failed",
+    "failure": "Current emblem remained ambiguous after one clarification.",
+    "completion": false,
+    "tokenRequests": 1,
+    "reservedAt": 1790652159512,
+    "reservedSeconds": 670,
+    "gracefulDeadlineSeconds": 570,
+    "hardDeadlineSeconds": 580,
+    "leaseUntil": 1790652829512,
+    "finishedAt": 1790652327174,
+    "closedAt": 1790652328833,
+    "localConnectedSeconds": 163.96640000003578,
+    "providerReportedDurationSeconds": 163.862032,
+    "explicitEndSent": true,
+    "endAcknowledged": true,
+    "confirmations": 3,
+    "physicalCommits": 3
+  },
+  "termination": {
+    "sessionEndObserved": 1,
+    "sessionEndedObserved": 1,
+    "socketCloseCode": 1000,
+    "socketCloseClean": true,
+    "applicationCleanup": {
+      "activeTracks": 0,
+      "activeSources": 0,
+      "openApplicationContexts": 0
+    },
+    "browserClosedObserved": true,
+    "serverClosedObserved": true,
+    "serverExitCode": 0,
+    "supervisorSurvivors": 0,
+    "supervisorCleanupTime": 1790652328736,
+    "supervisorDriverPidAbsent": true,
+    "activeMatchingOwnedRoleProcesses": [],
+    "conservativeUnexpiredProductionLeases": 1,
+    "leaseNote": "A conservative production lease can remain until its fixed timestamp after acknowledged termination. Its expiry never refunds the consumed attempt or authorizes a retry."
+  },
+  "accountingFiles": [
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck.jsonl",
+      "sha256": "ca4a824f15550f7622c5984490101243d9b7cf2277cd0686eba53cded991685c",
+      "bytes": 1035
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck-allowance.jsonl",
+      "sha256": "468ebf6236dff2513fe15714e1b816bd49422adf52cf49de054de20c6026d866",
+      "bytes": 340
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck-cleanup.jsonl",
+      "sha256": "edfdf39036c414199e620ee572874ae4cd056f5fd64ec4a6f5155d9845617e5c",
+      "bytes": 56
+    }
+  ],
+  "evidence": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/report.json",
+      "sha256": "e05d72c4a209b85f0eab723e4279ec2671ff715f70d86eb64a5a5d741efc8904",
+      "bytes": 138780
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/lifecycle.jsonl",
+      "sha256": "84afe2b0532fb3f4eb71fe23bc57a0733b88e34482e0ed5dea2461bfbd90b595",
+      "bytes": 1824
+    }
+  ],
+  "historicalProductionPrefixUnchanged": true,
+  "planningBoundary": "Reservation estimates use the recorded USD4.50/hour rate. These values are conservative planning amounts, not an invoice or refreshed credit balance.",
+  "auditActions": "Read-only accounting, lifecycle, process and hash inspection; only these two new evidence files were written. No new initialization, reservation, provider call, refund or retry."
+}

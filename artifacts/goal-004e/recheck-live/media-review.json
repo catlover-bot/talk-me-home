@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "kind": "Independent local media inspection of the fifth real-provider synthetic Voice attempt",
+  "reviewedAt": "2026-09-29T03:31:05.383692+00:00",
+  "attemptDirectory": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission",
+  "status": "CAPTURED_MEDIA_VERIFIED; FAILED_FULL_RESCUE_RETAINED",
+  "provenance": {
+    "label": "AUTOMATED QA - SYNTHETIC VOICE + UI CONFIRMATION - REAL ASSEMBLYAI",
+    "sourceVideo": "Existing browser-silent.webm capture; no original audio stream.",
+    "inputAudio": "Existing digital capture of installed Windows System.Speech synthetic player fixtures injected through the browser microphone path.",
+    "outputAudio": "Existing actual rendered Pip PCM capture from this recorded attempt. No generated or replacement answer.",
+    "derivedAudio": "Existing qa-combined-digital.wav combines input-digital.wav and rendered-digital.wav at half gain each on their recorded QA timeline.",
+    "derivedVideo": "Existing qa-combined-video.mp4 encodes the source video as H.264 and muxes the combined audio as AAC with the recorded approximate offset.",
+    "reviewActions": "Read local files, ran ffprobe, decoded WAV samples, and decoded four video frames to memory. No app/server/provider run, media rewrite, listening claim, or upload.",
+    "binariesRemainPrivate": true
+  },
+  "sources": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/report.json",
+      "bytes": 138780,
+      "sha256": "e05d72c4a209b85f0eab723e4279ec2671ff715f70d86eb64a5a5d741efc8904"
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/audio-evidence.json",
+      "bytes": 1170279,
+      "sha256": "f484305319b23017c2ae96a8315547e6074eaf3a0f70bab3a1bd6ba70babf955"
+    },
+    {
+      "path": "artifacts/goal-004e/recheck-live/2026-09-29T03-22-38-226Z-voice-mission-metrics.json",
+      "bytes": 75184,
+      "sha256": "f1bd2d6b47e0aa2285ed79965a469e907a9d4270eecda872361e66741a59a70b"
+    }
+  ],
+  "probeTool": "ffprobe version N-126390-g9fc8c785e2-20260903 Copyright (c) 2007-2026 the FFmpeg developers",
+  "media": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/browser-silent.webm",
+      "bytes": 11262023,
+      "sha256": "14f48f6fc8bf15a65558f67929f57ad497686f59035d59ed06494e2bab9098c0",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "vp8",
+            "codec_type": "video",
+            "width": 1440,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000"
+          }
+        ],
+        "format": {
+          "format_name": "matroska,webm",
+          "duration": "167.560000"
+        }
+      }
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/input-digital.wav",
+      "bytes": 7970124,
+      "sha256": "8735cb292ee9bf2e22993c8608fe8ffc4701f2294c01dc8f8fa7c80962f00769",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "pcm_s16le",
+            "codec_type": "audio",
+            "sample_rate": "24000",
+            "channels": 1,
+            "r_frame_rate": "0/0",
+            "duration": "166.043333"
+          }
+        ],
+        "format": {
+          "format_name": "wav",
+          "duration": "166.043333"
+        }
+      },
+      "pcm": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "samples": 3985040,
+        "durationSeconds": 166.04333333333332,
+        "nonzeroSamples": 236260,
+        "peakAbsolutePcm16": 32767,
+        "peakNormalized": 0.999969482421875,
+        "rmsNormalized": 0.04121154084628407,
+        "fullScaleSamples": 67,
+        "firstNonzeroAtSeconds": 9.463291666666667,
+        "lastNonzeroAtSeconds": 152.893625
+      }
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/rendered-digital.wav",
+      "bytes": 7970124,
+      "sha256": "21915d9e72d508d8f4ffae1b2e1a6ec8acb24a15933df1301f1977d565db62b9",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "pcm_s16le",
+            "codec_type": "audio",
+            "sample_rate": "24000",
+            "channels": 1,
+            "r_frame_rate": "0/0",
+            "duration": "166.043333"
+          }
+        ],
+        "format": {
+          "format_name": "wav",
+          "duration": "166.043333"
+        }
+      },
+      "pcm": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "samples": 3985040,
+        "durationSeconds": 166.04333333333332,
+        "nonzeroSamples": 1965671,
+        "peakAbsolutePcm16": 29695,
+        "peakNormalized": 0.906219482421875,
+        "rmsNormalized": 0.07557653839621173,
+        "fullScaleSamples": 0,
+        "firstNonzeroAtSeconds": 2.5452916666666665,
+        "lastNonzeroAtSeconds": 163.91291666666666
+      }
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/postVolume-digital.wav",
+      "bytes": 7970124,
+      "sha256": "f6765c99be11b52a8565a0a18742507e22492928051d785f1d087fa5a87b89e0",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "pcm_s16le",
+            "codec_type": "audio",
+            "sample_rate": "24000",
+            "channels": 1,
+            "r_frame_rate": "0/0",
+            "duration": "166.043333"
+          }
+        ],
+        "format": {
+          "format_name": "wav",
+          "duration": "166.043333"
+        }
+      },
+      "pcm": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "samples": 3985040,
+        "durationSeconds": 166.04333333333332,
+        "nonzeroSamples": 1800926,
+        "peakAbsolutePcm16": 32767,
+        "peakNormalized": 0.999969482421875,
+        "rmsNormalized": 0.07629919919879474,
+        "fullScaleSamples": 25,
+        "firstNonzeroAtSeconds": 2.7542916666666666,
+        "lastNonzeroAtSeconds": 164.087375
+      }
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/qa-combined-digital.wav",
+      "bytes": 7970158,
+      "sha256": "52b77cc44b1c23afa55dde8a303ac6bd572fdc56e7443adc1e62515499cccad0",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "pcm_s16le",
+            "codec_type": "audio",
+            "sample_rate": "24000",
+            "channels": 1,
+            "r_frame_rate": "0/0",
+            "duration": "166.043333"
+          }
+        ],
+        "format": {
+          "format_name": "wav",
+          "duration": "166.043333"
+        }
+      },
+      "pcm": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "samples": 3985040,
+        "durationSeconds": 166.04333333333332,
+        "nonzeroSamples": 2170639,
+        "peakAbsolutePcm16": 16384,
+        "peakNormalized": 0.5,
+        "rmsNormalized": 0.0430412790209266,
+        "fullScaleSamples": 0,
+        "firstNonzeroAtSeconds": 2.5988333333333333,
+        "lastNonzeroAtSeconds": 163.82945833333332
+      }
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/qa-combined-video.mp4",
+      "bytes": 7972190,
+      "sha256": "7e0edd50d800897d21a2deea76cd2e5887ea621952bca3be3881d091b9ab6f2d",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1440,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "167.560000",
+            "nb_frames": "4189"
+          },
+          {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "24000",
+            "channels": 1,
+            "r_frame_rate": "0/0",
+            "start_time": "0.065333",
+            "duration": "166.101333",
+            "nb_frames": "3893"
+          }
+        ],
+        "format": {
+          "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": "167.560000"
+        }
+      }
+    }
+  ],
+  "mixVerification": {
+    "method": "Compared every decoded PCM16 sample with 0.5 * synthetic input + 0.5 * captured rendered output.",
+    "sampleCount": 3985040,
+    "maximumErrorPcm16Lsb": 0.5,
+    "samplesOutsideOneLsb": 0,
+    "pass": true
+  },
+  "capturedCounters": {
+    "input": {
+      "chunks": 30592,
+      "samples": 3915776,
+      "nonzeroSamples": 424541,
+      "energy": 5223.161537713371,
+      "lastChunkMs": 165590.96666667858,
+      "lastNonzeroMs": 152888.36666665474
+    },
+    "provider": {
+      "chunks": 8728,
+      "samples": 2094720,
+      "nonzeroSamples": 1935268,
+      "energy": 22761.80389995966,
+      "lastChunkMs": 163905,
+      "lastNonzeroMs": 163650
+    },
+    "rendered": {
+      "chunks": 1649,
+      "samples": 3957600,
+      "nonzeroSamples": 1935268,
+      "energy": 22761.80389995966,
+      "lastChunkMs": 165420.80000001195,
+      "lastNonzeroMs": 163820.80000001195
+    },
+    "postVolume": {
+      "chunks": 1933,
+      "samples": 3958784,
+      "nonzeroSamples": 1934294,
+      "energy": 22743.10442183446,
+      "lastChunkMs": 165692.89999997616,
+      "lastNonzeroMs": 164002.2333333095
+    }
+  },
+  "counterBoundary": "Capture-tap counters and saved WAV sample counts measure different representations. WAV files reconstruct sparse timestamped chunks, retain gaps, resample where needed, add overlapping samples and clamp to PCM16; they are not a sample-for-sample provider stream.",
+  "recordedAudioMedia": {
+    "input": {
+      "file": "input-digital.wav",
+      "chunks": 3371,
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 166.04330000001193
+    },
+    "rendered": {
+      "file": "rendered-digital.wav",
+      "chunks": 842,
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 166.04330000001193
+    },
+    "postVolume": {
+      "file": "postVolume-digital.wav",
+      "chunks": 989,
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 166.04330000001193
+    }
+  },
+  "audioElapsedMs": 166043.30000001192,
+  "cleanup": {
+    "playbackPending": false,
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "videoAlignment": {
+    "offsetMs": 108,
+    "creationIntervalHalfWidthMs": 64,
+    "source": "Approximation from QA audio wall-clock origin minus the midpoint of the browser page creation interval. The interval does not bound additional recording-pipeline delay; synchronization is not sample accurate.",
+    "inputs": {
+      "videoPageCreationStartedAt": 1790652158661,
+      "videoPageCreatedAt": 1790652158789,
+      "audioTimeOriginWallMs": 1790652158833
+    },
+    "recomputedOffsetMs": 108,
+    "recomputedCreationIntervalHalfWidthMs": 64,
+    "claim": "Approximate synchronization only; the creation interval does not bound browser recording-pipeline delay. Container AAC timing can also include encoder priming. No sample-accurate or perceptually verified lip-sync claim."
+  },
+  "visualReview": {
+    "method": "Decoded local MP4 frames with FFmpeg to in-memory JPEG images at 1152x720 for direct inspection; no frame files written.",
+    "sourceResolution": {
+      "width": 1440,
+      "height": 900
+    },
+    "frames": [
+      {
+        "atVideoSeconds": 46,
+        "observed": "Cargo Bay, Shared Power manual, Live Voice label and synthetic QA footer visible. Pip caption asks whether to propose engaging the Latch; marked Partial transcript. No action strip visible in this frame."
+      },
+      {
+        "atVideoSeconds": 64.8,
+        "observed": "Cargo Bay shows Game event provenance and Engage the Latch completed after confirmation; matching completed action strip and Pause / End call control visible."
+      },
+      {
+        "atVideoSeconds": 127,
+        "observed": "Relay Gallery current, Cargo Bay cleared, Return Dock ahead. Static atlas and Relay controls visible; completed far-side platform receipt retained. Current Pip caption marked Partial transcript."
+      },
+      {
+        "atVideoSeconds": 165,
+        "observed": "Relay Gallery remains current and Return Dock ahead. Move through the east gate has a completed server-confirmed strip. Pip caption says it cannot see an emblem and asks whether to observe the room; no Home completion is visible."
+      }
+    ],
+    "assessment": "Sampled frames are readable and consistently labelled as synthetic Voice with UI confirmation. They support a captured partial mission, not a successful rescue or submission-ready success demo.",
+    "scopeLimit": "Four frames reviewed, not every frame. No audio listening or physical playback inspection performed."
+  },
+  "submissionPreservation": {
+    "baseline": {
+      "path": ".validation/goal-004e-approved-recheck-preservation-before.json",
+      "bytes": 172109,
+      "sha256": "aac42662cf52dafdf5c4da706d4d17dcd39983a510dc7ef82d6db4b5bb091d80"
+    },
+    "files": [
+      {
+        "path": "submission/Talk_Me_Home_Pitch.pptx",
+        "bytes": 1331075,
+        "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08",
+        "baselineSha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08",
+        "unchanged": true
+      },
+      {
+        "path": "submission/Talk_Me_Home_Pitch.pdf",
+        "bytes": 810438,
+        "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea",
+        "baselineSha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea",
+        "unchanged": true
+      },
+      {
+        "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+        "bytes": 4526386,
+        "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c",
+        "baselineSha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c",
+        "unchanged": true
+      }
+    ],
+    "allUnchanged": true
+  },
+  "limitations": [
+    "Synthetic input and digital output are evidence of this local test only; no physical microphone, room acoustics, loudspeaker routing, human listening or human play proof.",
+    "Input reconstructed WAV has 67 full-scale samples and post-volume reconstructed WAV has 25; rendered output and combined mix have zero full-scale samples. These file-level measurements do not establish whether physical playback clipped.",
+    "The video/audio mux is approximate; no replacement, regenerated speech, retiming or new media creation occurred during this review.",
+    "PPTX, PDF and draft submission MP4 exactly match the supplied pre-attempt baseline and were not replaced with this failed attempt."
+  ]
+}

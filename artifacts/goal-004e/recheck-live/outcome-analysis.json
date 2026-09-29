@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "kind": "Independent read-only review of one recorded real-provider synthetic Voice attempt",
+  "createdAt": "2026-09-29T03:29:04.204Z",
+  "attemptDirectory": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission",
+  "sources": {
+    ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/report.json": {
+      "bytes": 138780,
+      "sha256": "e05d72c4a209b85f0eab723e4279ec2671ff715f70d86eb64a5a5d741efc8904"
+    },
+    ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/audio-evidence.json": {
+      "bytes": 1170279,
+      "sha256": "f484305319b23017c2ae96a8315547e6074eaf3a0f70bab3a1bd6ba70babf955"
+    },
+    ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/lifecycle.jsonl": {
+      "bytes": 1824,
+      "sha256": "84afe2b0532fb3f4eb71fe23bc57a0733b88e34482e0ed5dea2461bfbd90b595"
+    },
+    ".validation/goal-004c-live/candidate-recheck-execution-candidate.json": {
+      "bytes": 73864,
+      "sha256": "b7686478d5577bf6398a650b84119038ff16039347f619a3e933299ea88e333c"
+    }
+  },
+  "verdict": {
+    "overall": "FAILED_FULL_RESCUE",
+    "recordedFailure": "Current emblem remained ambiguous after one clarification.",
+    "completed": false,
+    "furthestObservedChapter": "Relay Gallery",
+    "lastCommunicatedEmblem": "Ring before the confirmed east-gate move; destination emblem was not established",
+    "returnDockReached": false,
+    "homeReached": false,
+    "coarseActionControl": "pass",
+    "remoteEnd": "REMOTE_END_CONFIRMED",
+    "newAttemptOrRetryConductedByThisReview": false
+  },
+  "candidate": {
+    "commit": "0d21f7cd30cbb4d4b59a9710a53228cd7bad8b4d",
+    "runtimeSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+    "harnessSha256": "bd6d753ab84775f7f60c4cfa28da865438706294ca2dc126cef99696c9a6fea1",
+    "fixtureSha256": "7e2f4f97a8363251196ebbbfc4efc43e12a3277c7aa24abeb8794ed29e0045fc",
+    "sessionUpdateSha256": "ef98ba9725b19da4c616e9f25f692bfaeb373796ca3221d1b3b5141da2e6cf2e",
+    "deliveredSessionUpdateSha256": "ef98ba9725b19da4c616e9f25f692bfaeb373796ca3221d1b3b5141da2e6cf2e",
+    "configurationUpdatesSent": 1,
+    "matchesFrozenIdentity": true,
+    "preparedPlayerSha256": "1043125bd813d455c620c40096f899fb4247bde10f74e81aaf264641720d5ff1",
+    "preparedPacingSha256": "ceac25abf4a42b84c21688eb05c498261da38a4eb2901763fe7eb472ffd81c7c"
+  },
+  "canary": {
+    "status": "passed",
+    "inputs": [
+      "Pip, please look around.",
+      "Please inspect the Latch.",
+      "My diagram says the Door and Conveyor share one Power supply."
+    ],
+    "physicalUnchanged": true,
+    "confirmationsBeforeCompletion": 0,
+    "informationTurn": 3,
+    "informationReply": "That is good to know. If the door and conveyor share power, using the latch might affect the belt. Shall I propose to engage the latch?",
+    "toolCallsInInformationTurn": 0,
+    "explicitLatchRequestTurn": 4
+  },
+  "actionContinuation": {
+    "observedActionRequests": 3,
+    "strictFirstResponses": 3,
+    "recoveredRequests": 0,
+    "additionalActionRecoveryExchanges": 0,
+    "actions": [
+      {
+        "requestTurnId": 4,
+        "label": "Engage the Latch",
+        "proposalId": "2b06cf33-23c4-4191-88b5-dce1078c55e9",
+        "proposalRef": 22,
+        "status": "committed",
+        "strictFirstResponse": true,
+        "recovered": false,
+        "confirmationRequestedAtMs": 64285.9,
+        "confirmedAtMs": 64419.9,
+        "decisionReceiptSentAtMs": 64321.1,
+        "acknowledgementRequestedAtMs": 64471.6,
+        "replyRef": 25,
+        "providerFinalAtMs": 66600.9,
+        "providerFinal": "The latch has been engaged.",
+        "replyDoneAtMs": 66929.4,
+        "replyStatus": "completed",
+        "nextTurnId": 5,
+        "nextTurnStartedAtMs": 67713.2,
+        "preSubmitWait": {
+          "startedAtMs": 64529.9,
+          "endedAtMs": 67581.8,
+          "waitedMs": 3051.9,
+          "reason": "acknowledgement_and_playback_drained"
+        },
+        "acknowledgementDoneBeforeNextInput": true
+      },
+      {
+        "requestTurnId": 6,
+        "label": "Move to the far-side platform",
+        "proposalId": "abcb69ef-ebe0-46fd-8b7a-5818e2e6089a",
+        "proposalRef": 34,
+        "status": "committed",
+        "strictFirstResponse": true,
+        "recovered": false,
+        "confirmationRequestedAtMs": 95555.4,
+        "confirmedAtMs": 95686.4,
+        "decisionReceiptSentAtMs": 95587.2,
+        "acknowledgementRequestedAtMs": 95738.1,
+        "replyRef": 37,
+        "providerFinalAtMs": 98410.5,
+        "providerFinal": "I have moved to the far side platform.",
+        "replyDoneAtMs": 98700.5,
+        "replyStatus": "completed",
+        "nextTurnId": 7,
+        "nextTurnStartedAtMs": 99364.7,
+        "preSubmitWait": {
+          "startedAtMs": 95841.9,
+          "endedAtMs": 99182.7,
+          "waitedMs": 3340.8,
+          "reason": "acknowledgement_and_playback_drained"
+        },
+        "acknowledgementDoneBeforeNextInput": true
+      },
+      {
+        "requestTurnId": 9,
+        "label": "Move through the east gate",
+        "proposalId": "16788cf7-751b-4d6f-b0c4-153099dc0b84",
+        "proposalRef": 55,
+        "status": "committed",
+        "strictFirstResponse": true,
+        "recovered": false,
+        "confirmationRequestedAtMs": 146648.9,
+        "confirmedAtMs": 146785.6,
+        "decisionReceiptSentAtMs": 146684,
+        "acknowledgementRequestedAtMs": 146933.6,
+        "replyRef": 58,
+        "providerFinalAtMs": 149228.3,
+        "providerFinal": "I have moved through the East gate.",
+        "replyDoneAtMs": 149547.4,
+        "replyStatus": "completed",
+        "nextTurnId": 10,
+        "nextTurnStartedAtMs": 150667.5,
+        "preSubmitWait": {
+          "startedAtMs": 146834.1,
+          "endedAtMs": 150401.6,
+          "waitedMs": 3567.5,
+          "reason": "acknowledgement_and_playback_drained"
+        },
+        "acknowledgementDoneBeforeNextInput": true
+      }
+    ],
+    "conclusion": "This sample proceeded through confirmed Latch engagement, Cargo crossing and a Gallery gate move. Each proposal awaited the exact UI decision; each observed decision acknowledgement completed before the next synthetic input. The previously observed retained-Latch/status-question stopping chain did not recur.",
+    "limit": "No real action request required the targeted clarification or rephrased-request branches. This attempt is not real-provider evidence that those recovery branches succeed generally. Pre-submit entries on later turns may refer to a previously drained acknowledgement; there were exactly three acknowledgement requests, not one per turn."
+  },
+  "galleryFailure": {
+    "precedingObservation": {
+      "turnId": 7,
+      "callRef": 42,
+      "tool": "observe_room",
+      "reply": "I am in a safe room with a Ring emblem and a compass mark pointing north. The East gate is closed, so should I inspect it?"
+    },
+    "gateInspection": {
+      "turnId": 8,
+      "callRef": 48,
+      "tool": "inspect_object",
+      "reply": "The East gate is actually open and the opening is clear of any cargo. Since there is no local switch, would you like to operate the remote circuit to use it?"
+    },
+    "lastTurn": {
+      "turnId": 10,
+      "request": "What emblem is beside you now?",
+      "providerAsr": "What emblem is beside you now?",
+      "providerFinal": "I cannot see an emblem right now, as I have just arrived through the gate. Should I observe the room to see what is around me?",
+      "providerFinalAtMs": 163596.1,
+      "replyRef": 61,
+      "replyDoneAtMs": 163905.1,
+      "replyStatus": "completed",
+      "settledAtMs": 164854.9,
+      "toolCalls": 0
+    },
+    "interpretation": "After the confirmed east-gate move, the player invalidated the earlier Ring location and issued its single current-emblem clarification. Pip reported no emblem and asked whether to observe the room; it did not call observe_room. The unchanged player then stopped at its location-clarification bound. The text supplies no current emblem for the parser to accept.",
+    "causalLimit": "The final response and normal reply.done were observed, and the turn settled. The evidence does not support an ACK/playback scheduling timeout, ASR loss, tool transport error, or a parser rejecting a clearly stated emblem. It shows a read-only observation/clarification gap and the scripted player limit; it does not establish whether a subsequent human request would have succeeded."
+  },
+  "actionControlReview": {
+    "materialDefects": [],
+    "observedUnconfirmedCommits": false,
+    "observedWrongPendingConfirmation": false,
+    "observedFalseExecutionClaim": false,
+    "commitConfirmationAudit": {
+      "commits": 3,
+      "confirmations": 3,
+      "everyCommitHasExactConfirmation": true,
+      "everyCommittedConfirmationHasCommit": true,
+      "uniqueCommitIds": true,
+      "boundary": "Evaluator-only server commit receipts matched against exact UI confirmation IDs; no physical state steers player decisions."
+    },
+    "readOnlyCalls": 4,
+    "nonexecutingProposalCalls": 3,
+    "toolResults": 7,
+    "toolErrors": 0,
+    "providerErrors": 0,
+    "privateInformationLeak": "No hidden map, private annotation or future-clue disclosure was identified in the retained visible/final transcripts. Turn 2 spoke the local action identifier latch_open; this is an implementation detail, not evidence of hidden-map exposure.",
+    "boundary": "Coarse action-control pass and exact confirmation matching do not establish full Rescue success or comprehensive semantic correctness. Tool arguments and raw result payloads were deliberately not retained."
+  },
+  "correlation": {
+    "toolCallToResult": "All seven call/result pairs share stable numeric callRef aliases. Tool.call records omit replyRef, so assigning them to submitted user requests remains temporal association.",
+    "proposalAndDecision": "Pending tool result, sent decision receipt and sent acknowledgement request share the same numeric proposalRef per action. Exact UI confirmation IDs also match the independent server commit audit. These are stronger associations than matching prose alone.",
+    "replyAndTranscript": "Agent finals carry reference aliases matching reply.started/reply.done for each observed acknowledgement and the final question response. Raw provider IDs and context bodies are absent by design.",
+    "visibleHistory": "Final, uninterrupted DOM messages have chapter/source labels and displayed timestamps. messageId is null; historyIndex and snapshot order are not provider identifiers.",
+    "uncertainties": [
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 1,
+        "callRef": 6,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 2,
+        "callRef": 12,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 4,
+        "callRef": 21,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 6,
+        "callRef": 33,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 7,
+        "callRef": 42,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 8,
+        "callRef": 48,
+        "replyRef": null
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "blocking": false,
+        "turnId": 9,
+        "callRef": 54,
+        "replyRef": null
+      }
+    ],
+    "limit": "Sent metadata plus the matching provider acknowledgement supports the observed continuation. It cannot independently reconstruct the full receipt body or prove internal model reasoning."
+  },
+  "ending": {
+    "tokenRequests": 1,
+    "socketOpenCount": 1,
+    "explicitEndSentAtMs": 165605.5,
+    "sessionEndedAtMs": 165871.5,
+    "endAcknowledgementDelayMs": 266,
+    "localOpenToAckSeconds": 163.96640000003578,
+    "providerReportedSeconds": 163.862032,
+    "socketCloseAtMs": 166016.6,
+    "socketCloseCode": 1000,
+    "socketCloseClean": true,
+    "cleanup": {
+      "activeTracks": 0,
+      "activeSources": 0,
+      "openApplicationContexts": 0
+    },
+    "ownedBrowserClosed": true,
+    "ownedServerClosed": true,
+    "reservedSeconds": 670,
+    "boundary": "Observed termination and provider-reported duration are not an invoice or a refund of the durable reservation."
+  },
+  "modality": {
+    "syntheticMicrophoneOnly": true,
+    "actualAsrFinalObserved": true,
+    "nonzeroInput": true,
+    "nonzeroProviderAudio": true,
+    "nonzeroRenderedAudio": true,
+    "nonzeroPostVolumeAudio": true,
+    "source": "Installed offline synthetic speech through the normal microphone path; real provider ASR/replies and digital output capture",
+    "humanMicrophone": false,
+    "physicalLoudspeakerVerified": false,
+    "humanListeningVerified": false,
+    "enjoymentMeasured": false
+  },
+  "reviewBoundary": "Evidence-only review. No source, prompt, fixture, player, acceptance criterion, historical report or accounting file was modified. No provider call, new token, retry, or repair was performed."
+}
