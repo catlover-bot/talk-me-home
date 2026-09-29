@@ -295,7 +295,14 @@ test('actual shared player recovers after an empty completed Gallery reply witho
     return response;
   };
   const report = { route: [] as string[], steps: [] as unknown[], actionRequests: [] as Array<{ expectedLabel: string; recovered: boolean; strictFirstResponse: boolean; exchanges: Array<{ replies: unknown[] }> }>, acquisitions: [] as Array<{ recovered: boolean; strictFirstResponse: boolean; value?: string; exchanges: Array<{ text: string; reply: string }> }> };
-  await runRescuePlayer({ page, say, report, waitForReady: () => waitForPeerDecision(page, provider) });
+  await runRescuePlayer({ page, say, report, waitForReady: async () => {
+    await waitForPeerDecision(page, provider);
+    // Reproduce the terminal driver's fatal end guard without adding a second
+    // quiet wait to ordinary decisions already covered by pacing regressions.
+    if (await page.getByRole('heading', { name: 'You brought Pip home.', exact: true }).isVisible()) {
+      await waitBeforePlayerTurn(page, { mode: 'text', timeoutMs: 3000 });
+    }
+  } });
   expect(empty).toBe(true);
   const acquisition = report.acquisitions.find(item => item.exchanges.some(exchange => exchange.reply === ''))!;
   expect(acquisition).toMatchObject({ value: 'ring', recovered: true, strictFirstResponse: false });
@@ -307,6 +314,9 @@ test('actual shared player recovers after an empty completed Gallery reply witho
   expect(requests.filter(text => text === 'Please look around and report the emblem in your current room.')).not.toHaveLength(0);
   await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible();
   await expect.poll(() => provider.ended).toBe(1);
+  // The fix does not teach the input waiter to ignore session end, even at
+  // home. The player simply has no next input after its exact terminal commit.
+  await expect(waitBeforePlayerTurn(page, { mode: 'text', timeoutMs: 3000 })).rejects.toThrow(/session_ended/);
 });
 
 for (const profile of ['a', 'b'] as const) {

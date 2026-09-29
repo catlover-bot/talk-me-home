@@ -165,6 +165,24 @@
       "sha256": "85de85ca38289821c7bb2827db624834e348c1e08905f041f6dd7047cee7ca81"
     },
     {
+      "id": "speech-5241f3b04c9fac89",
+      "text": "Please go through the southwest gate.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-5241f3b04c9fac89.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 3.2195,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 2.130333333333333,
+      "nonzeroSamples": 40321,
+      "rms": 0.07813335935776468,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "704efe07f5dde1eb10c4c6b99a12f0e16ce66a60f3bf4342a691baec6b9dbd75"
+    },
+    {
       "id": "speech-53096f2dea894462",
       "text": "Please inspect the Latch.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -235,6 +253,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "e7fd36e9840e2a589961efdb0dcb3f3032e2c286a9d49e48e32f2ce2da4ab488"
+    },
+    {
+      "id": "speech-74fcdb6c821e056d",
+      "text": "Please inspect the southwest gate and tell me whether anything blocks it.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-74fcdb6c821e056d.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.8995,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 3.81025,
+      "nonzeroSamples": 78332,
+      "rms": 0.09459833672675809,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "c1c32218b06d43437eef5dc89d39e8d743e0e8077035b65076c9dc6751a9c1eb"
     },
     {
       "id": "speech-80258e211d320633",
@@ -469,6 +505,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "6ae755a25a65f27e4e3cbe92032bb150ea12b808e0c4b67742a0147d819d507a"
+    },
+    {
+      "id": "speech-d2e5f6fc1b8dcece",
+      "text": "Please inspect the capsule and propose confirming the return.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-d2e5f6fc1b8dcece.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.5095,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 3.428375,
+      "nonzeroSamples": 69908,
+      "rms": 0.08636617472005662,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "7737221b1a49afded56d44dc80c0d170caa428d1d5051ac211ad8e1ad8ba2220"
     },
     {
       "id": "speech-dfb78c6c17045b3c",

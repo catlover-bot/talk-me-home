@@ -201,9 +201,13 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
     const priorReports = new Set((await readVisiblePlayerReports(page, round)).filter(item => item.final).map(identity));
     const expectedLabel = proposalLabelForRequest(text);
     if (expectedLabel) {
-      await requestConfirmedAction({ page, request: text, exchange, report, options, checkScope: consume });
+      const receipt = await requestConfirmedAction({ page, request: text, exchange, report, options, checkScope: consume });
       if (expectedLabel.startsWith('Move ')) memory.depart(new Date().toISOString());
-      await waitForReady();
+      if (options.terminal && expectedLabel === 'Confirm the authorized return' && receipt.status === 'committed') {
+        // Verified home expects automatic call ending, not another player input.
+        // The driver separately requires termination ACK and cleanup evidence.
+        await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
+      } else await waitForReady();
     } else await exchange(text, options);
     if (options.terminal) await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
     await consume(options.context);
