@@ -429,7 +429,7 @@ test('live end fallback: missing acknowledgement has a finite deadline and never
   await tick(); h.socket.open(); h.socket.emit({ type: 'session.ready' }); await starting;
   let settled = false;
   const ending = h.live.end().then(() => { settled = true; });
-  t.mock.timers.tick(4999); await tick();
+  t.mock.timers.tick(9999); await tick();
   assert.equal(settled, false);
   assert.equal(h.audio.closed, 1);
   t.mock.timers.tick(1); await ending;

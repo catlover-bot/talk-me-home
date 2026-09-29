@@ -34,8 +34,9 @@ test('Goal005 arrival perception survives the shipped adapter and requests one o
   assert.match(String(peer.acknowledgements()[0]?.instructions), /emblem/);
   const responseFacts = JSON.parse(String(peer.acknowledgements()[0]?.instructions).split('\nVerified response facts: ')[1]);
   assert.equal(responseFacts.arrival.emblem, 'Fork', 'The one-shot request must carry actual facts, not require an opaque proposal lookup.');
-  assert.deepEqual(responseFacts.arrival.gates, [{ direction: 'West', power: 'powered', door: 'open', passage: 'unchecked' }]);
-  assert.doesNotMatch(JSON.stringify(responseFacts), /gallery\.g1|hiddenTopology/);
+  assert.deepEqual(responseFacts.arrival.gates, [{ handle: 'gallery.g1', direction: 'West', power: 'powered', door: 'open', passage: 'unchecked' }], 'The same scoped arrival must retain the observed direction-to-handle mapping for later tool arguments.');
+  assert.doesNotMatch(JSON.stringify(responseFacts), /hiddenTopology/);
+  assert.match(String(peer.acknowledgements()[0]?.instructions), /handles only in tool arguments, never in speech/);
   assert.equal(peer.live.sendGameEvent(receipt), true);
   await pause();
   assert.equal(peer.acknowledgements().length, 1);
@@ -51,7 +52,7 @@ test('arrival scope changes retain the committed receipt but suppress stale loca
   assert.equal(peer.acknowledgements().length, 1);
   assert.match(String(peer.acknowledgements()[0].instructions), /historical/);
   assert.doesNotMatch(String(peer.acknowledgements()[0].instructions), /say the current emblem/);
-  assert.doesNotMatch(String(peer.acknowledgements()[0].instructions), /Fork|West|unchecked/);
+  assert.doesNotMatch(String(peer.acknowledgements()[0].instructions), /Fork|West|unchecked|gallery\.g1/);
   const stale = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision: 8, actionEpoch: 4, status: 'active' }) });
   stale.live.sendGameEvent(galleryArrivalReceipt());
   assert.doesNotMatch(String(stale.sent.find(event => event.type === 'conversation.message')?.content), /"perception":/);

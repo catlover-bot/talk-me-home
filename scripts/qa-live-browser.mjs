@@ -19,7 +19,7 @@ import { playerSpeechTexts, readFrozenSpeechFixture, validateFrozenPlayerSpeech 
 import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
 import { runRescuePlayer, PHRASES } from './qa-mission-player.mjs';
 import { waitForTurn, waitBeforePlayerTurn, submitPlayerTurn } from './qa-turn-pacing.mjs';
-import { createLifecycleJournal } from './qa-lifecycle.mjs';
+import { createLifecycleJournal, waitForTerminalObservation } from './qa-lifecycle.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const DIRECTORY = resolve('.validation/goal-004c-live');
@@ -140,7 +140,7 @@ async function worker(scenario, mode, options) {
     try { if (page && !page.isClosed()) {
       const button = page.getByRole('button', { name: 'Pause / End call', exact: true });
       if (await button.count() && await button.isVisible()) await button.click({ timeout: 2000 }).catch(() => {});
-      await page.waitForFunction(() => globalThis.__qaAudio?.snapshot().events.some(event => event.type === 'socket.close'), null, { timeout: 6500 }).catch(() => {});
+      await waitForTerminalObservation(page, { timeoutMs: 12_000 }).catch(() => {});
     } } catch { /* The independent watchdog still owns every browser/server process. */ }
     })();
     return endPromise;
@@ -299,7 +299,7 @@ async function worker(scenario, mode, options) {
       catch (error) { report.boundaryWaits.push(error.preSubmit ?? { status: 'failed' }); throw error; }
     } });
     report.finalPhysicalTruth = await physicalTruth();
-    await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ended'), null, { timeout: 12000 });
+    report.terminalObservation = await waitForTerminalObservation(page);
   } catch (error) {
     // Playwright errors can contain transport URLs: retain only the first safe line.
     failure = String(error?.message ?? error).split('\n')[0].replace(/(?:https?|wss?):\/\/\S+/g, '[URL omitted]');

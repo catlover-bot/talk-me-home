@@ -35,7 +35,7 @@ class LifecycleAudio implements VoiceAudio {
   async close(): Promise<void> { this.closed = true; }
 }
 
-async function pendingWorkFixture() {
+async function pendingWorkFixture(maxSessionSeconds: 600 | 900 = 600, endGraceMs?: number) {
   const socket = new LifecycleSocket();
   const audio = new LifecycleAudio();
   const cancellation = deferred<void>();
@@ -48,9 +48,9 @@ async function pendingWorkFixture() {
   const live = new LiveVoice({
     onError: () => {}, onStatus: status => statuses.push(status),
     onTranscript: entry => captions.push(entry.text), onMicrophone: active => microphone.push(active),
-  }, { createAudio: () => audio, createSocket: () => { socketCount++; return socket; } });
+  }, { createAudio: () => audio, createSocket: () => { socketCount++; return socket; }, endGraceMs });
   const starting = live.start({
-    token: 'offline-temporary-placeholder', config: {}, microphone: true,
+    token: async () => ({ token: 'offline-temporary-placeholder', config: {}, maxSessionSeconds }), microphone: true,
     executeTool: (_call, signal) => { actionSignal = signal; return physicalWork.promise; },
     cancelPending: () => cancellation.promise,
   });
@@ -64,8 +64,8 @@ async function pendingWorkFixture() {
 }
 
 for (const acknowledgement of ['delayed', 'absent'] as const) {
-  test(`synthetic adversarial shutdown: ${acknowledgement} ACK and hung cancellation cannot extend the existing end deadline`, async t => {
-    // New Goal 004C reproduction, not a claim about the historical missing-ACK cause.
+  test(`synthetic adversarial shutdown: ${acknowledgement} ACK and hung cancellation cannot extend the ten-second end deadline`, async t => {
+    // The new bounded policy does not establish the historical missing-ACK cause.
     t.mock.timers.enable({ apis: ['setTimeout'] });
     const h = await pendingWorkFixture();
     let settled = false;
@@ -88,8 +88,10 @@ for (const acknowledgement of ['delayed', 'absent'] as const) {
         assert.equal(h.live.endAcknowledged, true);
         await tick();
       }
-      t.mock.timers.tick(3000); await tick();
-      assert.equal(settled, true, 'A hung action-cancellation hook must not hold End beyond the five-second local deadline.');
+      t.mock.timers.tick(7999); await tick();
+      assert.equal(settled, false, 'The hung cleanup shares the finite observation deadline.');
+      t.mock.timers.tick(1); await tick();
+      assert.equal(settled, true, 'A hung action-cancellation hook must not hold End beyond the ten-second local deadline.');
       await ending;
       assert.equal(h.live.endAcknowledged, acknowledgement === 'delayed');
       assert.equal(h.socket.readyState, 3);
@@ -106,6 +108,90 @@ for (const acknowledgement of ['delayed', 'absent'] as const) {
     }
   });
 }
+
+test('ending policy: a six-second ACK remains receivable after immediate local teardown', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const h = await pendingWorkFixture();
+  let settled = false;
+  const ending = h.live.end().then(() => { settled = true; });
+  h.cancellation.resolve();
+  try {
+    assert.equal(h.audio.closed, true);
+    assert.equal(h.audio.stopped, true);
+    assert.equal(h.actionSignal.aborted, true);
+    assert.equal(h.microphone.at(-1), false);
+    t.mock.timers.tick(6000); await tick();
+    assert.equal(settled, false);
+    assert.equal(h.socket.readyState, 1);
+    h.socket.emit({ type: 'session.ended', session_duration_seconds: 6 });
+    await ending;
+    assert.equal(h.live.endAcknowledged, true);
+    assert.equal(h.socket.readyState, 3);
+    assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+    assert.equal(h.socketCount, 1);
+  } finally {
+    h.physicalWork.resolve({ ok: false, message: 'Offline fixture cleanup.' });
+    h.cancellation.resolve();
+    t.mock.timers.tick(10_000); await tick(); await ending;
+  }
+});
+
+for (const cap of [600, 900] as const) {
+  for (const manualEnd of [true, false]) {
+    test(`ending policy: ${manualEnd ? 'manual End near' : 'automatic End at'} the ${cap}-second socket deadline cannot extend it`, async t => {
+      t.mock.timers.enable({ apis: ['setTimeout'] });
+      let clock = 123_456;
+      t.mock.method(performance, 'now', () => clock);
+      const h = await pendingWorkFixture(cap);
+      let settled = false;
+      const advance = async (ms: number) => { clock += ms; t.mock.timers.tick(ms); await tick(); };
+      await advance(cap * 1000 - 3000);
+      const ending = manualEnd ? h.live.end().then(() => { settled = true; }) : undefined;
+      try {
+        await advance(2999);
+        assert.equal(settled, false);
+        assert.equal(h.socket.readyState, 1);
+        await advance(1);
+        const capEnding = h.live.end().then(() => { settled = true; });
+        await tick();
+        assert.equal(settled, true, 'The ending handshake and hung cleanup must finish by the original socket deadline.');
+        await capEnding;
+        assert.equal(h.socket.readyState, 3);
+        assert.equal(h.live.endAcknowledged, false);
+        assert.equal(h.audio.closed, true);
+        assert.equal(h.actionSignal.aborted, true);
+        assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+        assert.equal(h.statuses.filter(status => status === 'ended').length, 1);
+        await advance(10_000);
+        assert.equal(h.socketCount, 1);
+        assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+      } finally {
+        h.physicalWork.resolve({ ok: false, message: 'Offline fixture cleanup.' });
+        h.cancellation.resolve();
+        await advance(10_000); await h.live.end(); await ending;
+      }
+    });
+  }
+}
+
+test('ending policy: an injected longer grace cannot exceed the ten-second maximum', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const h = await pendingWorkFixture(600, 30_000);
+  let settled = false;
+  const ending = h.live.end().then(() => { settled = true; });
+  try {
+    t.mock.timers.tick(9999); await tick();
+    assert.equal(settled, false);
+    t.mock.timers.tick(1); await tick();
+    assert.equal(settled, true);
+    assert.equal(h.live.endAcknowledged, false);
+    assert.equal(h.socket.readyState, 3);
+  } finally {
+    h.physicalWork.resolve({ ok: false, message: 'Offline fixture cleanup.' });
+    h.cancellation.resolve();
+    t.mock.timers.tick(30_000); await tick(); await ending;
+  }
+});
 
 test('historical end boundary retained: clean socket closure is not session.ended confirmation', async t => {
   t.mock.timers.enable({ apis: ['setTimeout'] });

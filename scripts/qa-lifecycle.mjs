@@ -1,6 +1,21 @@
 import { openSync, writeSync, fsyncSync, closeSync } from 'node:fs';
 
 const TYPES = new Set(['worker.started', 'end.requested', 'session.end', 'session.ended', 'socket.open', 'socket.close', 'browser.disconnected', 'browser.close.requested', 'browser.closed', 'server.close.requested', 'server.closed', 'watchdog.stop.requested']);
+
+// Observe the existing close protocol only: up to 8s closing + 10s End + 2s
+// processing. Local close finishes observation, but never confirms remote end.
+export async function waitForTerminalObservation(page, { timeoutMs = 20_000 } = {}) {
+  const timeout = Number.isFinite(timeoutMs) ? Math.max(1, Math.min(20_000, timeoutMs)) : 20_000;
+  const handle = await page.waitForFunction(() => {
+    const events = globalThis.__qaAudio?.snapshot().events ?? [];
+    const ended = events.find(event => event.type === 'session.ended');
+    if (ended) return { observation: 'provider_ack', endAcknowledged: true, atMs: ended.atMs };
+    const closed = events.find(event => event.type === 'socket.close');
+    return closed ? { observation: 'socket_close_without_ack', endAcknowledged: false, atMs: closed.atMs } : false;
+  }, null, { timeout });
+  try { return await handle.jsonValue(); } finally { await handle.dispose(); }
+}
+
 /** Append and sync each narrow lifecycle record before another action can throw. */
 export function createLifecycleJournal(path) {
   const start = performance.now(); const events = [];

@@ -72,6 +72,7 @@ export class LiveVoice {
   private cleanEnd = false;
   private handshakeTimer?: ReturnType<typeof setTimeout>;
   private durationTimer?: ReturnType<typeof setTimeout>;
+  private connectionDeadline?: number;
   private warningTimer?: ReturnType<typeof setTimeout>;
   private connectionLimitWarning = false;
   private resolveReady?: () => void;
@@ -141,6 +142,7 @@ export class LiveVoice {
       stage = 'connection';
       const url = new URL('wss://agents.assemblyai.com/v1/ws');
       url.searchParams.set('token', credentials.token);
+      this.connectionDeadline = performance.now() + cap * 1000;
       const socket = this.dependencies.createSocket(url);
       this.socket = socket;
       const established = new Promise<void>((resolve, reject) => { this.resolveReady = resolve; this.rejectReady = reject; });
@@ -149,13 +151,13 @@ export class LiveVoice {
       this.warningTimer = setTimeout(() => {
         this.connectionLimitWarning = true;
         this.callbacks.onWarning?.(`This Live connection will end in ${Math.min(60, Math.ceil(cap))} seconds. Your mission checkpoint will remain available; reconnect explicitly to continue.`);
-      }, Math.max(0, cap - 60) * 1000);
+      }, Math.max(0, this.connectionDeadline - performance.now() - 60_000));
       this.durationTimer = setTimeout(() => {
         this.connectionLimitWarning = true;
         this.callbacks.onWarning?.('The Live connection limit was reached. Your mission checkpoint is preserved. Reconnect to continue.');
         this.callbacks.onSessionLimit?.();
         void this.stop();
-      }, cap * 1000);
+      }, Math.max(0, this.connectionDeadline - performance.now()));
       socket.onopen = () => {
         if (this.ended) { socket.send(JSON.stringify({ type: 'session.end' })); socket.close(); return; }
         this.send({ type: 'session.update', session: credentials.config });
@@ -309,11 +311,11 @@ export class LiveVoice {
         status: receipt.proposal.status, succeeded: receipt.result.ok,
         chapter: receipt.checkpoint.chapter, missionCompleted: receipt.checkpoint.completed,
         ...(arrival ? { arrival: { emblem: arrival.emblem, compass: arrival.compass,
-          gates: arrival.gates.map(({ direction, power, door, passage }) => ({ direction, power, door, passage })) } }
+          gates: arrival.gates.map(({ handle, direction, power, door, passage }) => ({ handle, direction, power, door, passage })) } }
           : !receipt.perception ? { result: receipt.result.message } : {}),
       };
       const instruction = arrival
-        ? `Give one concise arrival and orientation report for the verified movement proposal ${receipt.proposal.id}, using only the verified response facts below: say the current emblem and useful visible gate directions. Distinguish unchecked passage from open gate. Use at most two short sentences, with one map-related question if useful. Do not call tools, ask permission to observe, propose another action, or infer a destination from its label.`
+        ? `Give one concise arrival and orientation report for the verified movement proposal ${receipt.proposal.id}, using only the verified response facts below: say the current emblem and useful visible gate directions. Distinguish unchecked passage from open gate. Use these observed handles only in tool arguments, never in speech; say ordinary gate directions instead. Use at most two short sentences, with one map-related question if useful. Do not call tools, ask permission to observe, propose another action, or infer a destination from its label.`
         : `Briefly acknowledge only the verified result for proposal ${receipt.proposal.id} in one short sentence. Use player-facing terms, not identifiers. Do not call tools, request permission, invent current conditions, propose another action, or continue a plan.${receipt.checkpoint.completed ? ' The mission is complete; this is the single closing acknowledgement.' : ''}${receipt.perception ? ' Its room observation is historical; do not describe it as your current surroundings.' : ''}`;
       this.send({ type: 'reply.create', instructions: `${instruction}\nVerified response facts: ${JSON.stringify(facts)}` });
     }, this.dependencies.acknowledgementIdleMs ?? 150);
@@ -351,6 +353,7 @@ export class LiveVoice {
 
   stop(): Promise<void> {
     if (this.stopping) return this.stopping;
+    const endingStartedAt = performance.now();
     this.ended = true;
     this.ready = false;
     this.cancelAcknowledgement();
@@ -368,11 +371,13 @@ export class LiveVoice {
     const socket = this.socket;
     this.stopping = (async () => {
       // One shared deadline bounds both the ending handshake and local cleanup.
-      // A pending server cancellation must not hold End after the socket closes.
+      // Ten seconds is a local policy, not a provider ACK guarantee. Ending never
+      // extends the socket's original cap, even when cancellation does not settle.
       let timer: ReturnType<typeof setTimeout> | undefined;
-      const deadline = new Promise<void>(resolve => {
-        timer = setTimeout(resolve, this.dependencies.endGraceMs ?? 5000);
-      });
+      const requestedGrace = this.dependencies.endGraceMs ?? 10_000;
+      const grace = Number.isFinite(requestedGrace) ? Math.max(0, Math.min(10_000, requestedGrace)) : 10_000;
+      const waitMs = Math.max(0, Math.min(endingStartedAt + grace, this.connectionDeadline ?? Infinity) - performance.now());
+      const deadline = waitMs === 0 ? Promise.resolve() : new Promise<void>(resolve => { timer = setTimeout(resolve, waitMs); });
       const cleanup = Promise.allSettled([this.protocol?.stop(), this.audio?.close()]);
       if (socket?.readyState === 1) {
         // session.end terminates billing without the ordinary 30-second resume grace.

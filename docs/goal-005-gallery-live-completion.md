@@ -173,7 +173,7 @@ Aggregate linked accounting is now ten attempts and ten production admissions, 8
 
 Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T10-24-48-370Z-voice-mission/`. The immutable manifest is `.validation/goal-004c-live/goal-005-attempt-10-78fa583af5a4c17c7eda53ae07873deacaf46836.json`; the clean validation receipt is `.validation/goal-005-offline/78fa583af5a4c17c7eda53ae07873deacaf46836-2026-09-29T10-20-34-926Z.json`.
 
-Goal 005 currently has **one verified functional home from attempt 9, five recorded failed automated runs, and zero of the two required final-harness acceptance passes**. Three slots remain under the same grant and admission checks. This sample did not reach Return Dock or home. Defaults and CI remain provider-disabled; `RELEASE_NOT_LIVE_VERIFIED` remains the release status.
+After the fifth sample, Goal 005 had one verified functional home from attempt 9, five recorded failed automated runs and zero of the two required final-harness acceptance passes, with three slots remaining. That sample did not reach Return Dock or home.
 
 ### Current-room language and initial arrival repair
 
@@ -182,6 +182,45 @@ The two retained Ring replies failed before the repair in direct policy and scop
 The initial arrival was also processed before the player had read the visible atlas labels. The player now reads those rendered human labels before first consuming Gallery reports. It does not clear history eligibility, reprocess stale reports or obtain a location from the map. A failing-first compiled-browser probe checks that the already communicated Ring arrival leads directly to a gate inspection rather than an unnecessary location survey. Existing A/B full-player cases exercise the new natural wording and continued recovery. The first updated browser run retained fixture failures: an obsolete wording assertion and a redundant click on an already selected Relay. No runtime, tool protocol, speech fixture or paid service changes are part of this repair.
 
 The corrected compiled arrival and A/B shared-player cases passed 3/3 in 25.2 seconds; typecheck and whitespace checks passed. Final focused logs are `.validation/goal-005-location-browser-final.log` and `goal-005-location-grammar-final.log`. No real attempt was open during these changes.
+
+### Sixth Goal 005 Voice attempt — home reached, remote ending unconfirmed
+
+Aggregate attempt 11 used clean frozen commit `cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8`, after typecheck, 428 unit tests, production build, all 142 compiled-browser tests, whitespace checks and the fresh-context production Practice check passed. The application runtime remained `172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee`; the harness SHA-256 was `aa4606c1242bca540284c4b9f1d9db33a44a1188a6579127b53522fa81d643fd`. [Attempt 11 identity, accounting, preservation and lease audit](../artifacts/goal-005/live/attempt-11-accounting.json).
+
+This ordinary sample reached functional home after 34 synthetic turns and 11 exactly confirmed, unique physical commits. The final authorized return committed, and the `You brought Pip home.` checkpoint appeared at browser time 872,670.4 ms. The [byte-identical home screenshot](../artifacts/goal-005/live/attempt-11-observed-home.png) was inspected. Raw `completion: true` is preserved.
+
+The automated run still failed with `page.waitForFunction: Timeout 12000ms exceeded.` Explicit `session.end` was observed, but **no `session.ended` ACK or provider duration was received**. The browser later reported a clean socket close with code 1005 during local fallback closure. The 883.0585 seconds recorded in this case measure local socket-open to close; they are neither acknowledged remote duration nor confirmed billing duration. The last observed peer event was 879.6824 seconds after opening. Browser/server closure, zero audio resources and zero supervisor survivors establish local cleanup only. They do not establish remote termination or indefinite continued billing. The raw missing-ACK result and `review_required` behavior report remain unchanged. [Actual conversation](../artifacts/goal-005/live/2026-09-29T10-39-24-021Z-voice-mission-conversation.md) and [compact metrics](../artifacts/goal-005/live/2026-09-29T10-39-24-021Z-voice-mission-metrics.json).
+
+| Observed measure | Sixth sample result |
+| --- | --- |
+| Token requests / provider sockets / synthetic turns | 1 / 1 / 34 |
+| Exact UI confirmations / physical commits | 11 / 11; final authorized return committed |
+| Functional home / automated acceptance | Verified / failed |
+| Local socket-open to close | 883.0585 seconds; remote/billing duration unconfirmed |
+| Explicit end / remote ACK | Sent / **not observed** |
+| Local cleanup | Zero audio resources and supervisor survivors; browser/server closure observed |
+| Goal 005 consumed after this result | 6 slots, 5,820 reserved seconds, USD 7.275 estimated |
+| Same-batch capacity remaining | 2 slots, 1,940 reserved seconds, USD 2.425 estimated |
+
+Missing ACK retained the full conservative leases despite local cleanup. The supervisor lease ended at **2026-09-29 10:55:36.475 UTC**; the production admission lease ended 19 ms later at **10:55:36.494 UTC**. Independent read-only checks confirmed that the pure sequence guard rejects immediately before its expiry, and production admission remains busy immediately before its later expiry. The ACK-based early-release exemption remains false. Both time boundaries had elapsed when the audit finished; expiration removes only that waiting restriction, without confirming remote end, refunding capacity or replacing clean frozen-candidate and supervisor checks.
+
+Aggregate linked accounting is now eleven attempts and eleven production admissions, 9,170 reserved seconds and USD 11.4625 estimated, including the USD 4.1875 historical reservations. The additional Goal 005 batch remains at USD 7.275 of its USD 10 ceiling. No permanent account-refusal stop was recorded. All 15 historical accounting/cleanup journals, 89 checked raw/accounting files and 16 prior compact evidence files were preserved.
+
+Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/`. The immutable manifest is `.validation/goal-004c-live/goal-005-attempt-11-cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8.json`; the clean validation receipt is `.validation/goal-005-offline/cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8-2026-09-29T10-34-55-314Z.json`.
+
+Goal 005 currently has **two verified functional homes (attempts 9 and 11), six recorded failed automated runs, and zero of the two required final-harness acceptance passes**. Two slots remain under the existing grant. Attempt 11 has no `REMOTE_END_CONFIRMED` result. Defaults and CI remain provider-disabled; `RELEASE_NOT_LIVE_VERIFIED` remains the release status.
+
+### Current-handle grounding and bounded ending hardening
+
+Attempt 11 correctly consumed all Gallery arrivals without extra location surveys. Five first gate inspections nevertheless returned `precondition_failed`; each was followed by a fresh survey with another permission question and then a successful inspection. Those five rejected-inspection/survey pairs occupied 199.3652 seconds. There was one ASR final per input, no split-input cancellation pattern, and all 32 calls received results. The omitted tool arguments prevent identifying the exact invalid identifier; the data does not prove a provider or transport cause.
+
+The system decision context already carried eligible local handles, but the one-shot arrival instruction said to use its facts while omitting those handles. Both documented paths now retain the same dispatch-validated current gate handles, marked for tool arguments only and never spoken. Stale observations and their handles remain omitted. This is a consistency/grounding hypothesis, not proof of provider ingestion or persistence beyond a one-shot reply. The failing-first acknowledgement check and 20 passing repaired checks are retained in `.validation/goal-005-arrival-handles-{before,after}.log`.
+
+The official [browser integration](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration) and [message sequence](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/message-sequence) describe an ending ACK before normal socket closure, without a numeric ACK deadline. Attempt 11's handler had no reproduced ACK-processing defect: it continued receiving farewell events, then its five-second local fallback closed the connection. The driver's twelve-second observation could not recover an ACK after that listener/socket was gone. A bounded ending-policy hardening is being verified; it cannot establish that the missing historical ACK existed.
+
+The client now observes ending for up to ten seconds, clamped to the original monotonic socket-created 600/900-second deadline. Microphone, playback and tools still stop immediately, and only one End is sent. Constructed tests cover a six-second ACK, no ACK with hung cancellation, repeated End, oversized injected grace, and manual/automatic ending at both caps. The focused lifecycle/voice suite passed 87 checks after the failing baseline. This is a local bounded policy, not a provider latency guarantee.
+
+The driver observes at most twenty seconds after home (the existing eight-second closing phase plus ten-second End window and processing margin), or twelve seconds after explicit Pause. Either ACK or socket closure finishes observation; closure without ACK remains a failed independent final audit. Fourteen focused lifecycle/pacing checks passed, including a fourteen-second home-to-ACK sequence, prompt unacknowledged closure, and finite absence of both events. The original 900-second supervisor and 970-second accounting reservation are unchanged. The combined arrival browser checks passed 2/2 and their rendered screenshot was inspected; no spoken identifiers or human projection leak appeared in the constructed peer. A new frozen real sample is still needed.
 
 ## Delivery checklist
 
