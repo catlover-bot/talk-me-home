@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "startedAt": "2026-09-29T16-09-14-471514Z",
+  "checks": [
+    {
+      "label": "Actual YAML parsed and bounded publication settings matched",
+      "status": "passed",
+      "parser": "PyYAML 6.0.1",
+      "manifestSha256": "e1de245e95e1a924be90bf2ca4c9326ed9262f681f5b66adffa1a673a86585c8",
+      "serviceCount": 1,
+      "nodeVersion": "24.20.0",
+      "liveDisabled": true,
+      "secretValuesInManifest": false,
+      "schemaAcceptance": "not evaluated"
+    },
+    {
+      "label": "Existing game production build command",
+      "status": "passed",
+      "log": ".validation/goal-006-publication-prep/2026-09-29T16-09-14-471514Z/build.log"
+    },
+    {
+      "label": "Three existing production cases: static files, origin checks, all-route ownership and disabled Live",
+      "status": "passed",
+      "cases": 3,
+      "log": ".validation/goal-006-publication-prep/2026-09-29T16-09-14-471514Z/production-focused.log",
+      "fundedOrInjectedTokenCasesSelected": false
+    },
+    {
+      "label": "Actual start:game process and health endpoint",
+      "status": 200,
+      "loopbackOnly": true
+    },
+    {
+      "label": "Actual compiled title, referenced JS/CSS, CSP/cache headers and private-path rejection",
+      "status": "passed",
+      "assets": 2
+    },
+    {
+      "label": "Actual production rejects unconfigured Host, foreign/missing Origin and cross-site writes",
+      "status": "passed"
+    },
+    {
+      "label": "Public access reports Live unavailable and rejects access exchange",
+      "status": "passed",
+      "tokenIssued": false
+    },
+    {
+      "label": "Actual owner-bound Rescue API and all-route outsider rejection",
+      "status": "passed",
+      "outsiders": 2,
+      "protectedReadRoutes": 3,
+      "protectedWriteRoutes": 15
+    },
+    {
+      "label": "Owner token route fails before reservation or issuance; mission unchanged; unused ledger absent",
+      "status": 503
+    },
+    {
+      "label": "Original render.game.yaml preserved",
+      "status": "passed",
+      "sha256": "7cbb07cd0de9669f56b84d8c5b081caa7d9c0b7d5ee28375fa0835cd6994b4a0"
+    },
+    {
+      "label": "Accepted application, tests, harness and package/build configuration unchanged",
+      "status": "passed",
+      "acceptedCommit": "5cbca538c80748c6944a43b9d886e9e74c50ce36"
+    }
+  ],
+  "newProviderRequests": 0,
+  "issuedTokens": 0,
+  "allowanceCreated": false,
+  "deploymentPerformed": false,
+  "externalRequests": 0,
+  "logs": ".validation/goal-006-publication-prep/2026-09-29T16-09-14-471514Z",
+  "limitations": [
+    "Local YAML parsing and explicit setting assertions are not Render schema or account acceptance.",
+    "No service, disk, DNS, HTTPS certificate, public URL or hosting charge was created or verified.",
+    "The networked npm ci install step was not executed; existing installed dependencies were used.",
+    "Loopback HTTP cookies omit Secure; the existing focused HTTPS-origin test separately checks Secure cookies.",
+    "No browser interaction or real provider session is part of this focused publication check."
+  ],
+  "commit": "5cbca538c80748c6944a43b9d886e9e74c50ce36",
+  "localOverrides": {
+    "bind": "127.0.0.1 instead of manifest 0.0.0.0",
+    "origin": "http://127.0.0.1:45299",
+    "port": 45299,
+    "allowancePath": ".validation/goal-006-publication-prep/2026-09-29T16-09-14-471514Z/unused-allowance-must-remain-absent.jsonl",
+    "reason": "No LAN exposure or access to a historical/provider allowance."
+  },
+  "verifierSha256": "6acffa9345a291f3e52acda2d30b1328f39ea6e55c29829e40c6cfdea7d4cb8e",
+  "ownedProcessExited": true,
+  "ownedPortClosed": true,
+  "finishedAt": "2026-09-29T16:09:16.327506+00:00"
+}

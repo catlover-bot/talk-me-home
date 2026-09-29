@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "Publication preparation preservation verification only; no media regeneration, upload, provider use, or edits to prior artifacts.",
+  "checkedAtUTC": "2026-09-29T16:08:45.993109+00:00",
+  "acceptedDeliveryCommit": "5cbca538c80748c6944a43b9d886e9e74c50ce36",
+  "observedHead": "5cbca538c80748c6944a43b9d886e9e74c50ce36",
+  "existingAudit": {
+    "path": ".validation/goal-006-media/review/final-package-audit.json",
+    "bytes": 1574,
+    "sha256": "4461ce170aba32e1c6e5eb96a0c0be6349d9181476f9a2073dd2b53b0ef7568d",
+    "status": "PASS"
+  },
+  "primaryDeliverables": [
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Submission.mp4",
+      "bytes": 10363105,
+      "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+      "expectedSha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+      "match": true
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Pitch.pptx",
+      "bytes": 1566200,
+      "sha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+      "expectedSha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+      "match": true
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Pitch.pdf",
+      "bytes": 615023,
+      "sha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+      "expectedSha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+      "match": true
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Submission_Package.zip",
+      "bytes": 13312397,
+      "sha256": "faf2705d8c6c763636c094657b4bb987fb51bb3e897cbbfe68d2cac83fb7f9ff",
+      "expectedSha256": "faf2705d8c6c763636c094657b4bb987fb51bb3e897cbbfe68d2cac83fb7f9ff",
+      "match": true
+    }
+  ],
+  "package": {
+    "memberCount": 17,
+    "membersMatchExistingAudit": true,
+    "zipMatchesExistingAudit": true,
+    "allCurrentFilesByteIdenticalToAuditedZipMembers": true,
+    "members": [
+      {
+        "path": "submission/goal-006/Talk_Me_Home_Submission.mp4",
+        "bytes": 10363105,
+        "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+        "zipMemberSha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/Talk_Me_Home_Pitch.pptx",
+        "bytes": 1566200,
+        "sha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+        "zipMemberSha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/Talk_Me_Home_Pitch.pdf",
+        "bytes": 615023,
+        "sha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+        "zipMemberSha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/cover-1920x1080.png",
+        "bytes": 485383,
+        "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91",
+        "zipMemberSha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/submission-form.md",
+        "bytes": 2452,
+        "sha256": "8afe75e2ee1a98c036b8958126934555764c29bf352664abc5b5e143c4bf3f35",
+        "zipMemberSha256": "8afe75e2ee1a98c036b8958126934555764c29bf352664abc5b5e143c4bf3f35",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "8afe75e2ee1a98c036b8958126934555764c29bf352664abc5b5e143c4bf3f35",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/video-subtitles.srt",
+        "bytes": 3085,
+        "sha256": "1b365c0740a8d85801a3700e6f722c7580387ecfa8fa5b9829e1d29468783d0a",
+        "zipMemberSha256": "1b365c0740a8d85801a3700e6f722c7580387ecfa8fa5b9829e1d29468783d0a",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "1b365c0740a8d85801a3700e6f722c7580387ecfa8fa5b9829e1d29468783d0a",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/README.md",
+        "bytes": 4427,
+        "sha256": "4ebe80c60ccc50c528a75b7e7bc9c5b5e566fde4a6ff1c51469b99f8247aa2bf",
+        "zipMemberSha256": "4ebe80c60ccc50c528a75b7e7bc9c5b5e566fde4a6ff1c51469b99f8247aa2bf",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "4ebe80c60ccc50c528a75b7e7bc9c5b5e566fde4a6ff1c51469b99f8247aa2bf",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/submission-checklist.md",
+        "bytes": 1550,
+        "sha256": "aafaa59f7f7f7cf9dfd5323f8dcbbd7d73a1e8fecdf9c95674bcc22a73b19e70",
+        "zipMemberSha256": "aafaa59f7f7f7cf9dfd5323f8dcbbd7d73a1e8fecdf9c95674bcc22a73b19e70",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "aafaa59f7f7f7cf9dfd5323f8dcbbd7d73a1e8fecdf9c95674bcc22a73b19e70",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/media-manifest.json",
+        "bytes": 12079,
+        "sha256": "92786d778d9f405bf9d9d2b1baef46992651555ef18630305573571fd77ad27e",
+        "zipMemberSha256": "92786d778d9f405bf9d9d2b1baef46992651555ef18630305573571fd77ad27e",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json"
+      },
+      {
+        "path": "submission/goal-006/edit-plan.json",
+        "bytes": 16626,
+        "sha256": "feb6892d2dd69aaa4689e55c319b387e994dddc55994957d51b01ff766b60593",
+        "zipMemberSha256": "feb6892d2dd69aaa4689e55c319b387e994dddc55994957d51b01ff766b60593",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json"
+      },
+      {
+        "path": "submission/goal-006/screenshots/practice-dock.png",
+        "bytes": 205005,
+        "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+        "zipMemberSha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/screenshots/practice-gallery.png",
+        "bytes": 216188,
+        "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+        "zipMemberSha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/screenshots/practice-cargo.png",
+        "bytes": 234764,
+        "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+        "zipMemberSha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/screenshots/practice-home.png",
+        "bytes": 175973,
+        "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+        "zipMemberSha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json",
+        "manifestExpectedSha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a",
+        "matchesExistingMediaManifest": true
+      },
+      {
+        "path": "submission/goal-006/screenshots/mode-build-manifest.json",
+        "bytes": 2181,
+        "sha256": "a4900bd998909cec7cd29b61339d23b63345d3e721a025d5d5b5c12acc5481fb",
+        "zipMemberSha256": "a4900bd998909cec7cd29b61339d23b63345d3e721a025d5d5b5c12acc5481fb",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json"
+      },
+      {
+        "path": "submission/goal-006/practice-source.json",
+        "bytes": 4581,
+        "sha256": "8c8810715c1177f8e07afbce18907293e4eabf16ee015e41adc5dbe577e2325c",
+        "zipMemberSha256": "8c8810715c1177f8e07afbce18907293e4eabf16ee015e41adc5dbe577e2325c",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json"
+      },
+      {
+        "path": "submission/goal-006/baseline-track-a-receipt.json",
+        "bytes": 3593,
+        "sha256": "3ee9bec4eb8af17b6e8130888b268027fdde17f10133d483a9df4a6f95d462ce",
+        "zipMemberSha256": "3ee9bec4eb8af17b6e8130888b268027fdde17f10133d483a9df4a6f95d462ce",
+        "matchesAuditedZipMember": true,
+        "existingAuditReference": "ZIP SHA-256 and exact member list in .validation/goal-006-media/review/final-package-audit.json"
+      }
+    ]
+  },
+  "frozenSubmissionTrackedTree": {
+    "path": "submission/goal-006",
+    "acceptedTree": "4aede05b63a9917195825fca163a79ccabab31c8",
+    "observedHeadTree": "4aede05b63a9917195825fca163a79ccabab31c8",
+    "treeMatch": true,
+    "trackedFiles": 19,
+    "allTrackedWorkingFilesByteIdenticalToAcceptedCommit": true,
+    "workingTreeDiffExitCode": 0,
+    "unexpectedUntrackedFiles": []
+  },
+  "deploymentConfiguration": {
+    "path": "render.game.yaml",
+    "bytes": 1153,
+    "sha256": "7cbb07cd0de9669f56b84d8c5b081caa7d9c0b7d5ee28375fa0835cd6994b4a0",
+    "acceptedCommitSha256": "7cbb07cd0de9669f56b84d8c5b081caa7d9c0b7d5ee28375fa0835cd6994b4a0",
+    "byteIdenticalToAcceptedCommit": true
+  },
+  "ownerHistoryArchive": {
+    "originalPath": "OWNER_ACTIONS.md",
+    "originalCommit": "5cbca538c80748c6944a43b9d886e9e74c50ce36",
+    "archivedPath": "OWNER_ACTIONS_GOAL005_HISTORY.md",
+    "bytes": 7608,
+    "originalSha256": "b709219c26fadb3457e97c21cc2a6205da0fe2c3c38df30d32eff50a8ab58816",
+    "archivedSha256": "b709219c26fadb3457e97c21cc2a6205da0fe2c3c38df30d32eff50a8ab58816",
+    "byteIdentical": true
+  },
+  "newProviderCalls": 0,
+  "mediaRegenerated": false,
+  "uploads": 0
+}

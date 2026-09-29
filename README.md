@@ -71,7 +71,7 @@ See [architecture](docs/architecture.md), [rescue design](docs/goal-003-design.m
 
 ## Upstream starter
 
-The game deployment uses [render.game.yaml](render.game.yaml), `build:game`, and `start:game`. The original root `render.yaml` and `npm start` below continue to launch starter diagnostics. Never use them as the Rescue release service. Public Live defaults off, and fails closed without its durable allowance and access configuration. See [OWNER_ACTIONS.md](OWNER_ACTIONS.md).
+The accepted Goal 006 candidate uses [render.goal-006.yaml](render.goal-006.yaml), `build:game`, and `start:game`. See the [publication handoff](docs/goal-006-publication-handoff.md) for the frozen source, deployment settings and ready submission files. Public Live and automatic deploys are disabled; no service has been created. [render.game.yaml](render.game.yaml) preserves Goal 005. The original root `render.yaml` and `npm start` below continue to launch starter diagnostics. Never use them as the Rescue release service. Future public Live fails closed without its durable allowance and access configuration. See [OWNER_ACTIONS.md](OWNER_ACTIONS.md).
 
 The original starter and its history are preserved below. Its dependency-free description and telephone examples refer to the original diagnostic commands, not the React game. No telephone functionality was added to Talk Me Home.
 

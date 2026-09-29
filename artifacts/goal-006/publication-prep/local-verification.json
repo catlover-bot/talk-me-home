@@ -1,0 +1,33 @@
+{
+  "status": "failed",
+  "startedAt": "2026-09-29T16-08-19-101954Z",
+  "checks": [
+    {
+      "label": "Actual YAML parsed and bounded publication settings matched",
+      "status": "passed",
+      "parser": "PyYAML 6.0.1",
+      "manifestSha256": "e1de245e95e1a924be90bf2ca4c9326ed9262f681f5b66adffa1a673a86585c8",
+      "serviceCount": 1,
+      "nodeVersion": "24.20.0",
+      "liveDisabled": true,
+      "secretValuesInManifest": false,
+      "schemaAcceptance": "not evaluated"
+    }
+  ],
+  "newProviderRequests": 0,
+  "issuedTokens": 0,
+  "allowanceCreated": false,
+  "deploymentPerformed": false,
+  "externalRequests": 0,
+  "logs": ".validation/goal-006-publication-prep/2026-09-29T16-08-19-101954Z",
+  "limitations": [
+    "Local YAML parsing and explicit setting assertions are not Render schema or account acceptance.",
+    "No service, disk, DNS, HTTPS certificate, public URL or hosting charge was created or verified.",
+    "The networked npm ci install step was not executed; existing installed dependencies were used.",
+    "Loopback HTTP cookies omit Secure; the existing focused HTTPS-origin test separately checks Secure cookies.",
+    "No browser interaction or real provider session is part of this focused publication check."
+  ],
+  "commit": "5cbca538c80748c6944a43b9d886e9e74c50ce36",
+  "failure": "AssertionError: build.log failed; inspect its local log.",
+  "finishedAt": "2026-09-29T16:08:19.279602+00:00"
+}
