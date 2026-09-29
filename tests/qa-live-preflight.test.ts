@@ -7,6 +7,8 @@ import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { playerSpeechTexts, readFrozenSpeechFixture, speechFixtureId } from '../scripts/qa-live-speech.mjs';
 import { proposalRecoveryPhrases } from '../scripts/qa-player-policy.mjs';
+import { PHRASES } from '../scripts/qa-mission-player.mjs';
+import { LOCATION_REQUESTS, passageRequests } from '../scripts/qa-player-recovery.mjs';
 import { preSubmitStatus, turnCycleStatus, waitBeforePlayerTurn } from '../scripts/qa-turn-pacing.mjs';
 import { encodePcmWav } from '../scripts/qa-speech-fixtures.mjs';
 import { sanitizeWireEvent } from '../scripts/qa-browser-instrumentation.mjs';
@@ -34,9 +36,12 @@ test('all finite delivered action-label pairs and no-receipt recovery variants a
   const texts = new Set(playerSpeechTexts());
   for (const expectedLabel of labels) for (const previousLabel of [null, ...labels]) {
     const phrases = proposalRecoveryPhrases(expectedLabel, previousLabel ? { proposalId: 'synthetic-only', label: previousLabel, status: 'committed' } : null);
-    assert.ok(texts.has(phrases.clarify)); assert.ok(texts.has(phrases.retry));
+    assert.ok(texts.has(phrases.clarify)); assert.ok(texts.has(phrases.retry)); assert.ok(texts.has(phrases.propose));
   }
-  assert.ok(texts.size < 320, 'The catalog stays finite, with no model text or identifier interpolation.');
+  for (const request of [...LOCATION_REQUESTS, ...passageRequests('east')]) assert.ok(texts.has(request.text));
+  const finiteUpperBound = labels.length * (labels.length + 1) + labels.length * 2 + Object.keys(PHRASES).length + 4 + 3 + 6 * 6;
+  assert.ok(texts.size <= finiteUpperBound, 'Only finite label pairs, fixed subgoal recovery and static requests enter the catalog.');
+  assert.equal([...texts].some(text => /synthetic-only/.test(text)), false, 'Proposal IDs never become synthetic player input.');
 });
 
 test('frozen speech reader refuses unknown, absent, changed or mismatched files without synthesis or repair', async () => {

@@ -58,7 +58,7 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
           <summary>Quick guide <span>Optional</span></summary>
           <p>The remote sensors are damaged. You have the plans; Pip supplies the local checks.</p>
           <ol>
-            <li><strong>Your map</strong><p>Read the reference documents. Ask Pip to look around and compare what you know.</p></li>
+            <li><strong>Your map</strong><p>Ask Pip for the nearby emblem and passages. Compare the report with your atlas, mark a route, and revise it if a passage is blocked. Marks are your notes, not live sensors.</p></li>
             <li><strong>Your controls</strong><p>You handle remote equipment. Pip has local eyes and hands.</p></li>
             <li><strong>Talk with Pip</strong><p>Speak or type, then confirm Pip’s exact proposed action on the console. Looking and inspecting need no confirmation.</p></li>
             <li><strong>Pause when needed</strong><p>Pause keeps progress and ends any Live call. Resume explicitly. Refresh or server restart loses this mission.</p></li>

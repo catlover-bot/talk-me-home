@@ -1,0 +1,94 @@
+import { test, expect, type Page } from '@playwright/test';
+import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';
+
+async function enterGallery(page: Page) {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Start Practice', exact: true }).click();
+  const say = async (text: string) => {
+    await page.getByLabel('Type a message').fill(text);
+    await page.getByRole('button', { name: 'Send message', exact: true }).click();
+    await expect(page.getByTestId('caption')).not.toHaveText(text);
+    await confirmProposalForRequest(page, text);
+  };
+  await say('Inspect the latch');
+  await say('Keep the door open');
+  await page.getByRole('button', { name: 'Power OFF', exact: true }).click();
+  await expect(page.getByTestId('acknowledged-power')).toHaveText('OFF');
+  await say('Cross to the far side');
+  await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Check surroundings', exact: true }).click();
+  await expect(page.getByTestId('gallery-report-excerpt')).toContainText(/Ring/i);
+}
+
+test('Gallery private planning, report associations and selected requests preserve source and freshness', async ({ page }) => {
+  await enterGallery(page);
+  const exactQuote = await page.getByTestId('gallery-report-excerpt').textContent();
+  await expect(page.locator('.private-location-mark')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Plan route', exact: true }).click();
+  await page.getByRole('button', { name: 'Mark planned route on Ring – Fork', exact: true }).click();
+  await expect(page.locator('.atlas-plan-mark')).toHaveCount(1);
+  await page.getByText('Mark your map', { exact: false }).click();
+  await page.getByLabel('Map click marks').selectOption('explored_gate');
+  await page.getByRole('button', { name: 'Mark explored route on Ring – Fork', exact: true }).click();
+  await expect(page.locator('.atlas-explored-mark')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Erase plan', exact: true }).click();
+  await expect(page.locator('.atlas-plan-mark')).toHaveCount(0);
+  await expect(page.locator('.atlas-explored-mark')).toHaveCount(1);
+  await page.locator('.private-map-notes > summary').click();
+  await page.locator('.report-association > summary').click();
+  await expect(page.locator('.report-association article blockquote')).toHaveText(exactQuote!);
+  await page.getByLabel('Attach report to', { exact: true }).selectOption('g1');
+  await page.getByRole('button', { name: 'Attach exact quote', exact: true }).click();
+  await page.locator('.associated-reports > summary').click();
+  await expect(page.locator('.associated-reports')).toContainText('Gate report — not live');
+  await page.getByLabel('Attach report to', { exact: true }).selectOption('ring');
+  await page.getByLabel('Gate conditions · recheck after Relay changes').uncheck();
+  await page.getByRole('button', { name: 'Attach exact quote', exact: true }).click();
+  await page.getByRole('button', { name: 'Relay Beacon', exact: true }).click();
+  await expect(page.getByTestId('acknowledged-relay')).toHaveText('Beacon');
+  await expect(page.locator('.associated-reports')).toContainText('Historical gate report — recheck');
+  await page.getByRole('button', { name: 'Relay Off', exact: true }).click();
+  await expect(page.getByTestId('acknowledged-relay')).toHaveText('Off');
+  await expect(page.locator('.associated-reports')).toContainText('Historical gate report — recheck');
+  await expect(page.locator('.associated-reports')).toContainText('Stable clue — reported then');
+  await expect(page.getByTestId('gallery-report-excerpt')).toHaveText(exactQuote!);
+  await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
+  await expect(page.locator('.history-message .source-label').filter({ hasText: 'Selected request' })).toHaveCount(1);
+  await expect(page.locator('.private-location-mark')).toHaveCount(0);
+});
+
+test('Gallery map and recovery controls reflow with readable source history and keyboard planning', async ({ page }) => {
+  await enterGallery(page);
+  await page.getByRole('button', { name: 'Presentation layout', exact: true }).click();
+  await page.getByRole('button', { name: 'Plan route', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'Mark planned route on Fork – Sail', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.atlas-plan-mark')).toHaveCount(1);
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(page.locator('.gallery-map')).toBeInViewport();
+  await expect(page.getByTestId('caption')).toBeInViewport();
+  await expect(page.getByRole('button', { name: 'Pause mission', exact: true })).toBeInViewport({ ratio: 1 });
+  await expect(page.getByTestId('acknowledged-relay')).toBeInViewport();
+  await page.screenshot({ path: `test-results/goal-005-gallery-${test.info().project.name}.png`, animations: 'disabled' });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
+  await page.getByRole('button', { name: 'Relay Harbor', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByTestId('acknowledged-relay')).toHaveText('Harbor');
+  const atlas = await page.locator('.mission-documents').boundingBox();
+  const consolePanel = await page.locator('.companion-console').boundingBox();
+  expect(consolePanel!.y).toBeGreaterThan(atlas!.y + atlas!.height);
+  await page.getByRole('button', { name: 'Check surroundings', exact: true }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: `test-results/goal-005-gallery-zoom-${test.info().project.name}.png`, animations: 'disabled' });
+  await page.evaluate(() => { document.documentElement.style.zoom = '1'; });
+  await page.setViewportSize({ width: 640, height: 720 });
+  await expect(page.getByRole('button', { name: 'Check surroundings', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await page.getByRole('button', { name: 'Pause mission', exact: true }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole('button', { name: 'Pause mission', exact: true })).toBeInViewport({ ratio: 1 });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Check surroundings', exact: true }).scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await page.screenshot({ path: `test-results/goal-005-gallery-narrow-${test.info().project.name}.png`, animations: 'disabled' });
+});

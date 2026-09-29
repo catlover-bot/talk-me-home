@@ -13,17 +13,18 @@ function requestIntent(request) {
   if (/\b(?:wait|stop|not yet|do not|don't|never)\b/.test(text)) return { name: 'wait', permitted: [] };
   const command = text.trim().replace(/^pip[, ]+/, '')
     .replace(/^(?:sorry,? )?i meant [^.!?]+[.!]\s*/, '')
-    .replace(/^(?:could|can|would) you /, 'please ');
+    .replace(/^(?:could|can|would) you /, 'please ')
+    .replace(/^please create one new proposal to /, 'please ');
   if (/^please cross\b.*\bwhen (?:the )?power is off\b/.test(command)) return { name: 'conditional_plan', permitted: [] };
   if (/^(?:please )?(?:engage|secure|set) (?:the )?latch\b/.test(command)) return { name: 'engage_latch', permitted: ['interact_object'] };
-  if (/^(?:please )?(?:release|let go of) (?:the )?contact\b/.test(command)) return { name: 'release_contact', permitted: ['interact_object'] };
-  if (/^(?:please )?(?:hold|grip) (?:the )?contact\b/.test(command)) return { name: 'hold_contact', permitted: ['interact_object'] };
-  if (/^(?:please )?confirm (?:the )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
+  if (/^(?:please )?(?:release|let go of) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'release_contact', permitted: ['interact_object'] };
+  if (/^(?:please )?(?:hold|grip) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'hold_contact', permitted: ['interact_object'] };
+  if (/^(?:please )?confirm (?:the )?(?:authorized )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
   if (/^(?:please )?go through (?:the )?gate[.!?]?$/.test(command)) return { name: 'ambiguous_movement', permitted: [] };
-  if (/^(?:please )?(?:cross|go through|board|move to)\b/.test(command)) return { name: 'movement', permitted: ['move_to'] };
+  if (/^(?:please )?(?:cross|go through|board|move to|move through)\b/.test(command)) return { name: 'movement', permitted: ['move_to'] };
   if (/\b(?:is (?:the )?latch (?:engaged|secured)|(?:what|tell me).*latch.*status)\b/.test(text)) return { name: 'latch_status', permitted: [] };
   if (/\b(?:are you holding|is (?:the )?contact (?:held|released))\b/.test(text)) return { name: 'contact_status', permitted: [] };
-  if (/\b(?:inspect|check|look around|what emblem|physically clear or blocked)\b/.test(text)) return { name: 'inspection', permitted: [] };
+  if (/\b(?:inspect|check|look around|observe|what emblem|which (?:one )?emblem|physically clear or blocked)\b/.test(text)) return { name: 'inspection', permitted: [] };
   if (/\b(?:diagram|manual)\b.*\b(?:door|conveyor|power)\b|\bpower is (?:now )?off\b|\bcontroller is ready to charge\b/.test(text)) return { name: 'information', permitted: [] };
   if (/^(?:the|my|this|that)\b.+\b(?:is|shows|says)\b/.test(text) && !text.trim().endsWith('?')) return { name: 'information', permitted: [] };
   return { name: 'unsupported', permitted: [] };
@@ -40,7 +41,7 @@ function expectedProposalLabel(intent, request) {
   const direction = normalize(request).match(/\b(northeast|northwest|southeast|southwest|east|west|north|south) gate\b/)?.[1];
   if (direction) return `Move through the ${direction} gate`;
   if (/\bboard\b/i.test(request)) return 'Board the recovery capsule';
-  if (/\bcross\b/i.test(request)) return 'Move to the far-side platform';
+  if (/\bcross\b|\bmove to the far-side platform\b/i.test(request)) return 'Move to the far-side platform';
   return null;
 }
 

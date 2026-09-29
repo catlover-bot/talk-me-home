@@ -7,6 +7,7 @@ export type PipState =
   | "considering"
   | "speaking"
   | "checking"
+  | "awaiting_confirmation"
   | "paused"
   | "interrupted"
   | "success"
@@ -19,6 +20,7 @@ export const pipStateLabels: Record<PipState, string> = {
   considering: "Considering your message",
   speaking: "Playing a response",
   checking: "Checking local equipment",
+  awaiting_confirmation: "Waiting for your confirmation",
   paused: "Paused",
   interrupted: "Interrupted",
   success: "Arrival confirmed",
@@ -67,9 +69,7 @@ export function PipPortrait({
         aria-labelledby={`${id}-title`}
       >
         <title id={`${id}-title`}>
-          Pip, a small cream maintenance robot with an asymmetric antenna, a
-          dark face, and a repaired orange shoulder patch.{" "}
-          {pipStateLabels[state]}.
+          {`Pip, a small cream maintenance robot with an asymmetric antenna, a dark face, and a repaired orange shoulder patch. ${pipStateLabels[state]}.`}
         </title>
         <defs>
           <linearGradient id={`${id}-shell`} x1="0" y1="0" x2="1" y2="1">

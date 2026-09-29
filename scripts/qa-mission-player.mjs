@@ -3,6 +3,7 @@
 import { expect } from '@playwright/test';
 import { classifyProposalResponse, proposalRecoveryPhrases } from './qa-player-policy.mjs';
 import { createPlayerMemory, readVisiblePlayerReports } from './qa-player-memory.mjs';
+import { acquirePlayerReport, LOCATION_REQUESTS, passageRequests } from './qa-player-recovery.mjs';
 
 export const PHRASES = {
   observe: 'Pip, please look around.', latch: 'Please inspect the Latch.',
@@ -88,7 +89,7 @@ async function visibleActionChapter(page) {
   });
 }
 
-/** One initial exchange, at most one clarification and one same-intention retry. */
+/** Initial request plus three purposeful recovery exchanges; never confirm unknown work. */
 export async function requestConfirmedAction({ page, request, exchange, checkScope = async () => {}, report = {}, options = {} }) {
   const expectedLabel = proposalLabelForRequest(request);
   if (!expectedLabel) throw new Error('The QA player has no exact proposal label for this intention.');
@@ -96,6 +97,7 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
   const diagnostic = { intendedRequest: request, expectedLabel, strictFirstResponse: false, recovered: false, outcome: 'pending', exchanges: [] };
   report.actionRequests.push(diagnostic);
   const terminalIds = new Set(report.confirmations.map(receipt => receipt.proposalId));
+  const deadlineAt = performance.now() + 120_000;
   let text = request; let kind = 'initial'; let retry;
   try {
     const actionChapter = await visibleActionChapter(page);
@@ -105,7 +107,8 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
       await checkScope();
       if (await visibleActionChapter(page) !== actionChapter) throw new Error('QA player scope ended: the chapter changed before the selected action was confirmed.');
     };
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (performance.now() >= deadlineAt) throw new Error(`QA action recovery exceeded 120 seconds for ${expectedLabel}`);
       await checkActionScope();
       const before = await visibleProposal(page);
       if (before && before.status !== 'awaiting_confirmation') terminalIds.add(before.proposalId);
@@ -114,31 +117,50 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
       const oldIdentities = new Set(oldReports.map(identity));
       const exchangeRecord = { kind, text, outcome: 'pending', proposal: null, replies: [] };
       diagnostic.exchanges.push(exchangeRecord);
-      await exchange(text, options);
+      await exchange(text, { ...options, deadlineAt });
+      if (performance.now() > deadlineAt) throw new Error(`QA action recovery exceeded 120 seconds for ${expectedLabel}`);
       await checkActionScope();
       const current = await visibleProposal(page);
       const replies = (await readVisiblePlayerReports(page, 'current uninterrupted QA invocation')).filter(item => item.speaker === 'Pip' && item.chapter === actionChapter && item.final && !item.interrupted && !item.historical && !oldIdentities.has(identity(item)));
       const outcome = classifyProposalResponse({ expectedLabel, before, current, reply: replies.map(item => item.text).join(' '), terminalIds: [...terminalIds], confirmedIds: report.confirmations.filter(item => item.status === 'committed').map(item => item.proposalId) });
       Object.assign(exchangeRecord, { outcome: outcome.kind, proposal: current, replies });
       if (outcome.kind === 'matching_pending') {
+        if (report.exerciseRecovery && !report.recoveryExercise && expectedLabel === 'Engage the Latch') {
+          await page.locator(`[data-testid="action-proposal"][data-proposal-id=${JSON.stringify(current.proposalId)}]`).getByRole('button', { name: 'Not yet', exact: true }).click();
+          await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'declined');
+          terminalIds.add(current.proposalId);
+          report.recoveryExercise = { kind: 'deliberate_decline', proposalId: current.proposalId, label: expectedLabel, source: 'Normal Not yet UI; no physical confirmation', completed: false };
+          text = proposalRecoveryPhrases(expectedLabel, null).retry; kind = 'fresh_request_after_deliberate_decline';
+          exchangeRecord.outcome = 'deliberately_declined'; continue;
+        }
         const receipt = await confirmVisibleProposal(page, expectedLabel, request, report.confirmations, current.proposalId);
-        if (receipt.status !== 'committed') throw new Error(`The selected action was ${receipt.status}, not committed: ${expectedLabel}`);
+        if (receipt.status !== 'committed') {
+          if (!['failed', 'expired', 'invalidated', 'declined'].includes(receipt.status)) throw new Error(`The selected action has an unknown result: ${expectedLabel}`);
+          terminalIds.add(receipt.proposalId); exchangeRecord.outcome = `not_executed_${receipt.status}`;
+          text = proposalRecoveryPhrases(expectedLabel, null).clarify; retry = proposalRecoveryPhrases(expectedLabel, null).retry; kind = 'verify_rejected_preconditions';
+          continue;
+        }
         diagnostic.strictFirstResponse = attempt === 0; diagnostic.recovered = attempt > 0; diagnostic.outcome = 'committed';
+        if (report.recoveryExercise?.label === expectedLabel) report.recoveryExercise.completed = true;
         return receipt;
       }
-      if (!['verified_committed_receipt', 'relevant_clarification'].includes(outcome.kind) || !outcome.relevant) throw new Error(`QA action stopped: ${outcome.kind} for ${expectedLabel}`);
-      if (attempt === 2) throw new Error(`QA action recovery exhausted after 3 exchanges for ${expectedLabel}`);
+      if (!['verified_committed_receipt', 'relevant_clarification', 'rejected_or_unresolved', 'no_relevant_reply'].includes(outcome.kind)
+        || current?.status === 'confirming' || replies.length === 0) throw new Error(`QA action stopped: ${outcome.kind} for ${expectedLabel}`);
+      if (attempt === 3) throw new Error(`QA action recovery exhausted after 4 exchanges for ${expectedLabel}`);
       if (attempt === 0) {
         const phrases = proposalRecoveryPhrases(expectedLabel, current);
         text = phrases.clarify; retry = phrases.retry; kind = 'clarification';
-      } else { text = retry; kind = 'rephrased_request'; }
+      } else if (attempt === 1) { text = retry ?? proposalRecoveryPhrases(expectedLabel, current).retry; kind = 'rephrased_request'; }
+      else { text = proposalRecoveryPhrases(expectedLabel, current).propose; kind = 'explicit_proposal_request'; }
     }
+    throw new Error(`QA action recovery exhausted after 4 exchanges for ${expectedLabel}`);
   } catch (error) { diagnostic.outcome = 'failed'; diagnostic.failure = error.message; throw error; }
 }
 
-export async function runRescuePlayer({ page, say: exchange, screenshot = async () => {}, report = { route: [], steps: [] } }) {
+export async function runRescuePlayer({ page, say: exchange, waitForReady = async () => {}, exerciseRecovery = false, screenshot = async () => {}, report = { route: [], steps: [] } }) {
   report.route ??= []; report.steps ??= [];
   report.confirmations ??= [];
+  report.exerciseRecovery = exerciseRecovery;
   // There is no round identifier in the rendered UI. This identity belongs only to this
   // invocation. Replacement/disconnection of its communication panel invalidates it.
   const round = 'current uninterrupted QA invocation';
@@ -173,6 +195,8 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
     const expectedLabel = proposalLabelForRequest(text);
     if (expectedLabel) {
       await requestConfirmedAction({ page, request: text, exchange, report, options, checkScope: consume });
+      if (expectedLabel.startsWith('Move ')) memory.depart(new Date().toISOString());
+      await waitForReady();
     } else await exchange(text, options);
     if (options.terminal) await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
     await consume(options.context);
@@ -221,12 +245,10 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
     report.atlas = atlas; memory.visibleNames(atlas.rooms.map(room => room.name));
     async function location() {
       if (await atDock()) return 'dock';
-      if (!memory.value('location')) await say(PHRASES.clarify);
-      if (await atDock()) return 'dock';
-      if (!memory.value('location')) throw new Error('Current emblem remained ambiguous after one clarification.');
-      return memory.value('location');
+      await waitForReady(); await consume();
+      return acquirePlayerReport({ subject: 'current Gallery location', read: async () => await atDock() ? 'dock' : memory.value('location'),
+        exchange: say, checkScope: consume, requests: LOCATION_REQUESTS, report });
     }
-    await say(PHRASES.location);
     let current = await location(); report.route.push(current);
     const blocked = new Set();
     for (let moves = 0; moves < 8 && !await atDock(); moves++) {
@@ -245,21 +267,17 @@ export async function runRescuePlayer({ page, say: exchange, screenshot = async 
       const direction = (y2 < y1 ? 'north' : y2 > y1 ? 'south' : '') + (x2 > x1 ? 'east' : x2 < x1 ? 'west' : '');
       const target = `${current}:${direction}`;
       const button = page.getByRole('button', { name: `Relay ${gate.circuit}`, exact: true });
-      if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
+      if (await button.getAttribute('aria-pressed') !== 'true') { await button.click(); memory.invalidatePassages(); }
       await expect(page.getByTestId('acknowledged-relay')).toHaveText(gate.circuit);
       const options = { context: { room: current, target: direction } };
-      if (!memory.value('passage', target)) await say(`Please inspect the ${direction} gate and tell me whether anything blocks it.`, options);
-      if (await atDock()) break;
-      if (memory.value('location') !== current) continue;
-      if (!memory.value('passage', target)) await say(`Is the opening of the ${direction} gate physically clear or blocked?`, options);
-      if (await atDock()) break;
-      if (memory.value('location') !== current) continue;
-      if (!memory.value('passage', target)) await say(`Please check the ${direction} gate again and report whether cargo blocks passage.`, options);
+      await acquirePlayerReport({ subject: `${current} ${direction} passage`,
+        read: () => memory.value('location') !== current ? 'location_changed' : memory.value('passage', target),
+        exchange: (text, recovery) => say(text, { ...options, ...recovery }), checkScope: consume, requests: passageRequests(direction), report });
       if (await atDock()) break;
       if (memory.value('location') !== current) continue;
       if (memory.value('passage', target) === 'blocked') { blocked.add(gate.rooms.join('/')); continue; }
       if (memory.value('passage', target) !== 'clear') throw new Error('Gate inspection remained ambiguous after bounded checks.');
-      memory.invalidate('location');
+      memory.depart();
       await say(`Please go through the ${direction} gate.`);
       current = await location(); report.route.push(current);
     }

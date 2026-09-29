@@ -11,7 +11,7 @@ const objectParameter = {
 export const robotTools = [
   {
     type: 'function', name: 'observe_room',
-    description: 'Survey your current location without changing anything. Use before describing unfamiliar surroundings or after relevant changes. Normally make one survey and one useful inspection, then return the turn. This reveals no remote map.',
+    description: 'Survey your current location without changing anything. A question about the current emblem or surroundings requests this check; inspect and answer without asking permission to look. A fresh scoped arrival perception already supplies a local survey; recheck when missing or stale. Open gates do not prove clear passage. Normally make one survey and one useful inspection, then return the turn. This reveals no remote map.',
     parameters: { type: 'object', properties: {}, additionalProperties: false },
   },
   {
@@ -29,7 +29,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'propose_move',
-    description: 'Propose one move through a currently observed passage or to an observed destination, without moving. Clarify ambiguous directions. The player must press the console confirmation for this exact proposal; conversation cannot approve it. Do not substitute movement for an interaction or queue future moves. After a verified committed decision, observe the reached area. Only server-confirmed final completion means home.',
+    description: 'Propose one move through a currently observed passage or to an observed destination, without moving. Clarify ambiguous directions. The player must press the console confirmation for this exact proposal; conversation cannot approve it. Do not substitute movement for an interaction or queue future moves. After a verified committed decision, report the reached emblem and useful directions from its scoped local perception; observe if that perception is missing or stale. Only server-confirmed final completion means home.',
     parameters: { type: 'object', properties: {
       target: { type: 'string', description: 'One exact reachable passage or destination identifier returned by the latest local observation or inspection.' },
     }, required: ['target'], additionalProperties: false },

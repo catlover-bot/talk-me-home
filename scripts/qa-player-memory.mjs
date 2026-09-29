@@ -8,6 +8,7 @@ export function createPlayerMemory({ round, chapter, visibleNames = [] }) {
   const beliefs = new Map();
   const records = [];
   let sequence = 0;
+  let visit = 0; let navigationAfter;
   const key = (subject, target) => target ? `${subject}:${target}` : subject;
   function retain(subject, value, message, target, completedTransition = false) {
     const id = key(subject, target);
@@ -25,15 +26,21 @@ export function createPlayerMemory({ round, chapter, visibleNames = [] }) {
       messageOrder: message.order ?? null, round: scope.round, chapter: scope.chapter,
       displayedAt: message.displayedAt ?? null,
       sourceKey: message.sourceKey,
+      visit,
       final: message.final, interrupted: message.interrupted, identityBasis: message.identityBasis ?? 'supplied identity' };
     beliefs.set(id, entry); records.push(entry);
   }
   return {
     scope(next) {
-      if (next.round !== scope.round || next.chapter !== scope.chapter) { beliefs.clear(); seen.clear(); scope = { ...next }; }
+      if (next.round !== scope.round || next.chapter !== scope.chapter) { beliefs.clear(); seen.clear(); scope = { ...next }; visit = 0; navigationAfter = undefined; }
     },
     visibleNames(next) { names = next; },
     invalidate(subject, target) { beliefs.set(key(subject, target), { value: null, invalidated: true }); },
+    invalidatePassages() { for (const id of beliefs.keys()) if (id.startsWith('passage:')) beliefs.set(id, { value: null, invalidated: true }); },
+    depart(afterTimestamp) {
+      visit++; navigationAfter = afterTimestamp;
+      for (const id of beliefs.keys()) if (id === 'location' || id.startsWith('passage:')) beliefs.set(id, { value: null, invalidated: true });
+    },
     get(subject, target) { return beliefs.get(key(subject, target)); },
     value(subject, target) { return beliefs.get(key(subject, target))?.value ?? null; },
     snapshot() { return records.map(record => ({ ...record })); },
@@ -54,6 +61,9 @@ export function createPlayerMemory({ round, chapter, visibleNames = [] }) {
           const claim = communicatedActionClaim(message.text, subject);
           if (claim.mentioned) retain(subject, claim.value, message, undefined, claim.transition);
         }
+        // A delayed final from a reply that began before the confirmed departure
+        // retains its old displayed timestamp; it cannot locate the new visit.
+        if (navigationAfter && (!message.displayedAt || message.displayedAt < navigationAfter)) continue;
         const locationClaim = communicatedEmblemClaim(message.text, names);
         const location = locationClaim.value;
         // A fresh explicit location after movement replaces the former location.

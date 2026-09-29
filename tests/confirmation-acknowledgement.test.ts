@@ -6,7 +6,86 @@ import { decisionReceipt } from './fixtures/decision-receipt.ts';
 
 const pause = (ms = 25) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
-async function connection(t: TestContext, options: { executeTool?: VoiceStartOptions['executeTool']; scope?: () => unknown; expiryMs?: number; decisionMs?: number; greeting?: boolean } = {}) {
+function galleryArrivalReceipt() {
+  const receipt = decisionReceipt();
+  receipt.event.chapter = receipt.proposal.chapter = 'gallery';
+  receipt.event.chapterEpoch = receipt.proposal.chapterEpoch = 2;
+  receipt.proposal.action = { kind: 'move', target: 'gallery.g1' };
+  receipt.proposal.label = 'Move through the east gate';
+  receipt.result.message = 'You passed through the open gate. You are on a safe platform marked with the Fork emblem.';
+  receipt.checkpoint = { chapter: 'gallery', chapterEpoch: 2, completed: false };
+  return Object.assign(receipt, { perception: {
+    origin: 'confirmed_arrival' as const, roundId: 'round-1', chapter: 'gallery' as const, chapterEpoch: 2,
+    visitId: 'visit-2', observationRevision: 3, stateRevision: 7, actionEpoch: 4, observedAt: 1000,
+    emblem: 'Fork' as const, compass: 'north' as const,
+    gates: [{ handle: 'gallery.g1', direction: 'West' as const, power: 'powered' as const, door: 'open' as const, passage: 'unchecked' as const }],
+  } });
+}
+
+test('Goal005 arrival perception survives the shipped adapter and requests one orientation report', async t => {
+  const peer = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision: 7, actionEpoch: 4, status: 'active' }) });
+  const receipt = galleryArrivalReceipt();
+  assert.equal(peer.live.sendGameEvent(receipt), true);
+  await pause();
+  const context = JSON.parse(String(peer.sent.find(event => event.type === 'conversation.message')?.content).split('\n')[1]);
+  assert.equal(context.perception?.emblem, 'Fork', 'The move already supplied actual local perception; the adapter must retain it.');
+  assert.equal(context.perception.gates[0].passage, 'unchecked');
+  assert.match(String(peer.acknowledgements()[0]?.instructions), /arrival|orientation/i);
+  assert.match(String(peer.acknowledgements()[0]?.instructions), /emblem/);
+  assert.equal(peer.live.sendGameEvent(receipt), true);
+  await pause();
+  assert.equal(peer.acknowledgements().length, 1);
+  assert.equal(peer.sent.filter(event => event.type === 'tool.result').length, 0);
+});
+
+test('arrival scope changes retain the committed receipt but suppress stale local orientation', async t => {
+  let revision = 7;
+  const peer = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision, actionEpoch: 4, status: 'active' }) });
+  peer.live.sendGameEvent(galleryArrivalReceipt());
+  revision++;
+  await pause();
+  assert.equal(peer.acknowledgements().length, 1);
+  assert.match(String(peer.acknowledgements()[0].instructions), /historical/);
+  assert.doesNotMatch(String(peer.acknowledgements()[0].instructions), /say the current emblem/);
+  const stale = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision: 8, actionEpoch: 4, status: 'active' }) });
+  stale.live.sendGameEvent(galleryArrivalReceipt());
+  assert.doesNotMatch(String(stale.sent.find(event => event.type === 'conversation.message')?.content), /"perception":/);
+});
+
+test('arrival observation survives the real tool-result projection with no human or private extras', async t => {
+  const receipt = galleryArrivalReceipt();
+  const peer = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision: 7, actionEpoch: 4, status: 'active' }),
+    executeTool: async () => ({ ok: true, message: 'Local survey.', perception: { ...receipt.perception, hiddenTopology: 'NEVER_FORWARD' }, view: { privateNote: 'NEVER_FORWARD' } }) });
+  peer.emit({ type: 'reply.started', reply_id: 'survey' });
+  peer.emit({ type: 'tool.call', call_id: 'survey-call', name: 'observe_room', arguments: {} });
+  peer.emit({ type: 'reply.done', reply_id: 'survey', status: 'completed' });
+  await pause();
+  const result = peer.sent.find(event => event.type === 'tool.result');
+  assert.ok(result);
+  assert.equal(JSON.parse(String(result.result)).perception.emblem, 'Fork');
+  assert.doesNotMatch(String(result.result), /NEVER_FORWARD|privateNote|hiddenTopology|"view"/);
+});
+
+test('new speech consumes arrival context in the ordinary turn without a second arrival response', async t => {
+  const peer = await connection(t, { scope: () => ({ roundId: 'round-1', chapter: 'gallery', chapterEpoch: 2, revision: 7, actionEpoch: 4, status: 'active' }) });
+  peer.live.sendGameEvent(galleryArrivalReceipt());
+  peer.live.sendText('What emblem is here?'); await pause();
+  const messages = peer.sent.filter(event => event.type === 'conversation.message');
+  assert.deepEqual(messages.map(event => event.role), ['system', 'user']);
+  assert.match(String(messages[0].content), /"emblem":"Fork"/);
+  assert.equal(peer.acknowledgements().length, 0);
+  assert.equal(peer.sent.filter(event => event.type === 'reply.create').length, 1);
+});
+
+test('a selected quick request has its own transcript provenance and never masquerades as microphone speech', async t => {
+  const peer = await connection(t);
+  peer.live.sendText('Please check the room.', 'quick_request'); await pause();
+  assert.equal(peer.transcripts[0].id, 'quick:1');
+  assert.equal(peer.transcripts[0].text, 'Please check the room.');
+  assert.equal(peer.sent.some(event => event.type === 'input.audio'), false);
+});
+
+async function connection(t: TestContext, options: { executeTool?: VoiceStartOptions['executeTool']; scope?: () => unknown; expiryMs?: number; decisionMs?: number; greeting?: boolean; serverCap?: number; clientCap?: number } = {}) {
   const sent: Record<string, unknown>[] = []; const transcripts: TranscriptEntry[] = []; const warnings: string[] = [];
   let playback!: (active: boolean) => void; let drained!: () => void; let input!: (data: string) => void;
   const socket: VoiceSocket = { readyState: 1, onopen: null, onmessage: null, onclose: null, onerror: null,
@@ -20,7 +99,8 @@ async function connection(t: TestContext, options: { executeTool?: VoiceStartOpt
     { createAudio: () => audio, createSocket: () => { queueMicrotask(() => { socket.onopen?.(new Event('open')); emit({ type: 'session.ready' }); }); return socket; },
       endGraceMs: 25, acknowledgementIdleMs: 5, acknowledgementExpiryMs: options.expiryMs ?? 1000, decisionInputGraceMs: options.decisionMs ?? 1500 });
   t.after(() => live.stop());
-  await live.start({ token: 'offline-placeholder', config: {}, microphone: true,
+  await live.start({ token: options.serverCap === undefined ? 'offline-placeholder' : async () => ({ token: 'offline-placeholder', config: {}, maxSessionSeconds: options.serverCap }), config: {}, microphone: true,
+    maxSessionSeconds: options.clientCap,
     executeTool: options.executeTool ?? (async () => assert.fail('Acknowledgement is not an action.')),
     captureToolContext: options.scope, cancelPending: async () => {} });
   if (options.greeting !== false) { emit({ type: 'reply.started', reply_id: 'greeting' }); emit({ type: 'reply.done', reply_id: 'greeting', status: 'completed' }); }
@@ -56,6 +136,22 @@ test('a verified confirmation gets one acknowledgement only after the existing r
     assert.equal(sent.filter(event => event.type === 'reply.create').length, 1, 'The shipped adapter must request the missing acknowledgement after a safe boundary.');
     assert.equal(sent.filter(event => event.type === 'tool.result').length, 0);
   } finally { await live.stop(); }
+});
+
+test('only server-selected 900 seconds extends the local cap; warning and End remain finite', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const peer = await connection(t, { serverCap: 900, greeting: false });
+  t.mock.timers.tick(600_000);
+  assert.equal(peer.sent.some(event => event.type === 'session.end'), false);
+  t.mock.timers.tick(240_000);
+  assert.match(peer.warnings.at(-1)!, /end in 60 seconds/);
+  t.mock.timers.tick(60_000);
+  await peer.live.stop();
+  assert.equal(peer.sent.filter(event => event.type === 'session.end').length, 1);
+  assert.equal(peer.live.endAcknowledged, true);
+  const unapproved = await connection(t, { clientCap: 900, greeting: false });
+  t.mock.timers.tick(600_000); await unapproved.live.stop();
+  assert.equal(unapproved.sent.filter(event => event.type === 'session.end').length, 1, 'A client-only option cannot extend the default cap.');
 });
 
 test('receipt serialization carries only the exact robot result and known action; one idle request cannot become a second tool result', async t => {

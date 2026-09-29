@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Chapter, GalleryAnnotation, Scenario } from "../../shared/contracts";
-import { GalleryDocument, type AnnotationChange } from './GalleryDocument';
+import type { Chapter, Scenario } from "../../shared/contracts";
+import { GalleryDocument, type GalleryDocumentProps } from './GalleryDocument';
 import { ReturnDockDocument } from './ReturnDockDocument';
 
 /** Drafted geometry is fixed documentation, independent of current equipment state. */
@@ -82,12 +82,11 @@ function ModuleMark({ shape }: { shape: "crescent" | "kite" }) {
   );
 }
 
-export function MissionDocuments({ scenario, chapter = 'cargo', annotation, onAnnotation, busy = false }: {
-  scenario: Scenario; chapter?: Chapter; annotation?: GalleryAnnotation;
-  onAnnotation?(change: AnnotationChange): Promise<unknown>; busy?: boolean;
-}) {
+export function MissionDocuments({ scenario, chapter = 'cargo', ...galleryProps }: {
+  scenario: Scenario; chapter?: Chapter;
+} & GalleryDocumentProps) {
   const [tab, setTab] = useState<"map" | "manual">("map");
-  if (chapter === 'gallery') return <GalleryDocument annotation={annotation} onAnnotation={onAnnotation} busy={busy} />;
+  if (chapter === 'gallery') return <GalleryDocument {...galleryProps} />;
   if (chapter === 'return_dock') return <ReturnDockDocument />;
   return (
     <section

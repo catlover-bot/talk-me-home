@@ -14,7 +14,7 @@ function clauses(text) {
   return (normalize(text).match(/[^.!?;\n]+[.!?;]?/g) ?? []).flatMap(sentence => {
     const question = /\?\s*$/.test(sentence);
     const leadingCondition = /^\s*(?:if|unless)\b/.test(sentence);
-    return sentence.replace(/[.!?;]+$/, '').split(/,?\s+but\s+|,?\s+and\s+(?=(?:i\b|i'm\b|i've\b|the\b|you\b|it\b|we\b))/)
+    return sentence.replace(/[.!?;]+$/, '').split(/,?\s+but\s+|,?\s+and\s+(?=(?:i\b|i'm\b|i've\b|the\b|you\b|it\b|we\b))|,\s+(?=(?:now|here|this room)\b)/)
       .map(value => ({ value: value.trim().replace(/^(?:actually|however|instead),?\s+/, ''), conditional: leadingCondition || /\b(?:if|unless|whether)\b/.test(value), quoted: attribution.test(value), question }));
   });
 }
@@ -116,7 +116,10 @@ export function communicatedEmblemClaim(text, visibleNames) {
   const names = [...new Set(visibleNames.map(name => String(name).toLowerCase()))];
   const candidates = new Set(); let uncertain = false; let locationTopic = false; let mentioned = false;
   for (const clause of clauses(text)) {
-    const value = clause.value;
+    // Synonyms remain communicated shape descriptions matched to the visible atlas.
+    const value = clause.value.replace(/\b(?:circle|circular|annular)(?:[- ]shaped)? (emblem|symbol|mark)\b/g, 'ring $1')
+      .replace(/\b(?:y-shaped|branching|three-pronged) (emblem|symbol|mark)\b/g, 'fork $1')
+      .replace(/\b(?:sailboat|sail-shaped) (emblem|symbol|mark)\b/g, 'sail $1');
     const labels = names.filter(name => new RegExp(`\\b${escape(name)}\\b`).test(value));
     if (labels.length || /\bemblem\b/.test(value)) locationTopic = true;
     else if (/\b(?:latch|contact|conveyor|energy|gate|passage)\b/.test(value)) locationTopic = false;
@@ -206,5 +209,6 @@ export function proposalRecoveryPhrases(expectedLabel, current) {
     'Confirm the authorized return': 'Please confirm the return under the current authorization.',
   };
   const direction = expectedLabel.match(/^Move through the (east|west|northeast|northwest|southeast|southwest) gate$/)?.[1];
-  return { clarify, retry: fixed[expectedLabel] ?? (direction ? `Please go through the ${direction} gate if the opening is clear.` : `Please ${expectedLabel.toLowerCase()} if its local conditions are satisfied.`) };
+  return { clarify, retry: fixed[expectedLabel] ?? (direction ? `Please go through the ${direction} gate if the opening is clear.` : `Please ${expectedLabel.toLowerCase()} if its local conditions are satisfied.`),
+    propose: `Please create one new proposal to ${expectedLabel.toLowerCase()}. I will decide on the console.` };
 }

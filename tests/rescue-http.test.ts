@@ -151,7 +151,7 @@ test('HTTP Rescue annotations and hints remain private while historical captions
     assert.equal((await post(base, path(view, 'messages'), { ...historical, chapter: view.chapter, chapterEpoch: view.chapterEpoch })).status, 409)
     assert.equal((await post(base, path(view, 'messages'), { ...historical, messageId: 'future:caption', chapter: 'return_dock', chapterEpoch: 2 })).status, 400)
     const publicRecord = await record(base, view)
-    assert.deepEqual(publicRecord.annotations, { chapter: 'gallery', location: 'sail', blockedGates: ['g3'] })
+    assert.deepEqual(publicRecord.annotations, { chapter: 'gallery', location: 'sail', blockedGates: ['g3'], plannedGates: [], exploredGates: [], reportLinks: [] })
     assert.equal(publicRecord.debrief, null)
     const recap = await record<RobotRecap>(base, view, 'recap'), serialized = JSON.stringify(recap)
     assert.doesNotMatch(serialized, /PRIVATE_ROUTE_NOTE|suspected|blockedGates|"location"|Either service bay/)
@@ -159,7 +159,7 @@ test('HTTP Rescue annotations and hints remain private while historical captions
     assert.equal(quote.chapter, 'cargo'); assert.equal(quote.chapterEpoch, 0)
     const reset = await (await post(base, path(view, 'reset'), envelope(view, { missionKind: 'training', scenario: 'maintenance' }))).json() as HumanView
     assert.equal(reset.missionKind, 'training'); assert.equal(reset.scenario, 'maintenance'); assert.equal(reset.chapterEpoch, 0)
-    assert.deepEqual((await record(base, reset)).annotations, { chapter: 'gallery', location: null, blockedGates: [] })
+    assert.deepEqual((await record(base, reset)).annotations, { chapter: 'gallery', location: null, blockedGates: [], plannedGates: [], exploredGates: [], reportLinks: [] })
     assert.equal((await post(base, path(reset, 'annotations'), annotation)).status, 409)
     assert.equal((await post(base, path(reset, 'messages'), historical)).status, 409)
   })

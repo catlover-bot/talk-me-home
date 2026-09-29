@@ -8,7 +8,7 @@ type Mission = ReturnType<typeof useMission>;
 export function MessageQuote({ item, onPin, historical = false }: { item: Caption; onPin(id: string): void; historical?: boolean }) {
   return <article className="history-message">
     <div className="caption-meta"><strong>{item.role === 'game' ? 'Game event' : item.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
-      <span className="source-label">{originLabel[item.origin]}{item.inputMethod === 'typed' ? ' · Typed' : item.inputMethod === 'speech' ? ' · Speech' : ''}</span>
+      <span className="source-label">{originLabel[item.origin]}{item.inputMethod === 'typed' ? ' · Typed' : item.inputMethod === 'speech' ? ' · Speech' : item.inputMethod === 'quick_request' ? ' · Selected request' : ''}</span>
       {historical && <span className="earlier">Previous call</span>}
       {item.chapter && <span className="source-label chapter-source">{chapterNames[item.chapter]}</span>}
       <time dateTime={new Date(item.timestamp).toISOString()}>{new Date(item.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}</time>
@@ -68,7 +68,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
     {live && (m.connected || m.seconds > 0) && <p className="call-time">{m.seconds}s connected · 10-minute limit · provider usage</p>}
     <div className="caption-panel">
       <div className="caption-speaker"><strong>{m.activeCaption?.role === 'game' ? 'Game event' : m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
-        {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : ''}</span>}</div>
+        {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : m.activeCaption.inputMethod === 'quick_request' ? ' · Selected request' : ''}</span>}</div>
       <div className="caption-reading" data-overflow={captionOverflow}><p ref={captionText} className="caption-text" data-testid="caption" tabIndex={0} title="Scroll for longer replies. History keeps the full text." aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? (m.connected ? m.toolPending ? 'Pip is checking local equipment.' : 'Connected. Say hello or type a message.' : m.captions.length ? 'Earlier conversations are in history. Choose how to reconnect.' : 'Your partner is waiting for a connection.')}</p>{captionOverflow && <span className="caption-scroll-cue" title="Scroll this caption for more" aria-hidden="true">↕</span>}</div>
       <div className="caption-meta">{m.activeCaption?.interrupted ? <span>Interrupted / incomplete speech</span> : m.activeCaption && !m.activeCaption.final ? <span>Partial transcript</span> : null}
         {m.activeCaption?.role === 'robot' && m.activeCaption.final && <button className="text-button" disabled={!m.activeCaption.saved} onClick={() => { void m.pin(m.activeCaption!.id); }}>Pin report</button>}

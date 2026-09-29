@@ -65,7 +65,28 @@ export interface ActionOutcome {
   message: string
   code?: 'cancelled_before_execution' | 'precondition_failed' | 'outcome_unknown' | 'awaiting_confirmation' | 'not_executed'
 }
-export interface ToolResult extends ActionOutcome { proposal?: ActionProposal }
+/** Robot-local facts only. Never place this payload in HumanView or a public proposal. */
+export interface RobotLocalPerception {
+  origin: 'local_survey' | 'gate_inspection' | 'confirmed_arrival'
+  roundId: string
+  chapter: 'gallery'
+  chapterEpoch: number
+  visitId: string
+  observationRevision: number
+  stateRevision: number
+  actionEpoch: number
+  observedAt: number
+  emblem: 'Ring' | 'Fork' | 'Sail' | 'Leaf'
+  compass: 'north'
+  gates: {
+    handle: string
+    direction: 'East' | 'West' | 'Northeast' | 'Southwest' | 'Southeast' | 'Northwest'
+    power: 'powered' | 'unpowered'
+    door: 'open' | 'closed'
+    passage: 'clear' | 'blocked' | 'unchecked'
+  }[]
+}
+export interface ToolResult extends ActionOutcome { proposal?: ActionProposal; perception?: RobotLocalPerception }
 
 /** Forward only ok/message and a recognized outcome code; view stays human-only. */
 export interface ToolResponse extends ToolResult {
@@ -91,7 +112,7 @@ export interface LifecycleRequest {
 }
 
 export type TransportOrigin = 'practice' | 'live_voice' | 'live_text' | 'game'
-export type InputMethod = 'typed' | 'speech' | 'robot' | 'game_event'
+export type InputMethod = 'typed' | 'speech' | 'quick_request' | 'robot' | 'game_event'
 
 /** Communicated text is a reported claim, never a physical-state update. */
 export interface MessageRequest {
@@ -109,6 +130,8 @@ export interface MessageRequest {
 
 export interface RecordedMessage extends MessageRequest {
   timestamp: number
+  /** Human controller context at record receipt; never an inferred room or gate fact. */
+  reportContext?: { relay: Relay; earlier: boolean }
 }
 
 export type NotebookRequest = {
@@ -156,11 +179,32 @@ export interface GalleryAnnotation {
   chapter: 'gallery'
   location: 'ring' | 'fork' | 'sail' | 'leaf' | 'dock' | null
   blockedGates: string[]
+  plannedGates?: string[]
+  exploredGates?: string[]
+  reportLinks?: GalleryReportLink[]
+}
+
+export interface GalleryReportLink {
+  messageId: string
+  target: string
+  targetKind: 'room' | 'corridor'
+  dynamic: boolean
+  associatedAt: number
+  reportedAt: number
+  text: string
+  origin: TransportOrigin
+  chapter: 'gallery'
+  interrupted: boolean
+  relayAtReport?: Relay
+  earlier: boolean
 }
 
 export type AnnotationRequest = { roundId: string; chapterEpoch: number; requestId: string } & (
+  { kind: 'clear_plan' } |
   { kind: 'location'; target: GalleryAnnotation['location'] } |
-  { kind: 'blocked_gate'; target: string; marked: boolean }
+  { kind: 'blocked_gate' | 'planned_gate' | 'explored_gate'; target: string; marked: boolean } |
+  { kind: 'report_link'; messageId: string; target: string; targetKind: 'room' | 'corridor'; dynamic: boolean } |
+  { kind: 'report_unlink'; messageId: string; target: string; targetKind: 'room' | 'corridor' }
 )
 
 /** Does not contain undisclosed robot observations or the internal event log. */
@@ -187,6 +231,7 @@ export interface RobotRecap {
     messageId?: string
     chapter?: Chapter
     chapterEpoch?: number
+    observationOrigin?: RobotLocalPerception['origin']
   }[]
 }
 

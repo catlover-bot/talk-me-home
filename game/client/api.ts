@@ -1,4 +1,4 @@
-import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, GalleryAnnotation, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
+import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, AnnotationRequest, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
 
 /** A public, user-facing response from the game service. */
 export class MissionServiceError extends Error {}
@@ -123,7 +123,8 @@ export const requestHint = (view: HumanView, level: HintLevel) => request<HintRe
 const controlEnvelope = (view: HumanView) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, revision: view.revision, requestId: requestId() });
 export const setRelay = (view: HumanView, relay: Relay) => request<HumanView>(path(view, 'relay'), { ...controlEnvelope(view), relay });
 export const dockControl = (view: HumanView, action: DockControl) => request<HumanView>(path(view, 'dock-control'), { ...controlEnvelope(view), action });
-export type AnnotationChange = { kind: 'location'; target: GalleryAnnotation['location'] } | { kind: 'blocked_gate'; target: string; marked: boolean };
+type AnnotationPayload<T> = T extends unknown ? Omit<T, 'roundId' | 'chapterEpoch' | 'requestId'> : never;
+export type AnnotationChange = AnnotationPayload<AnnotationRequest>;
 export const annotate = (view: HumanView, change: AnnotationChange) => request<MissionRecord>(path(view, 'annotations'), { roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: requestId(), ...change });
 
 /** Confirmation names an immutable server proposal; replacement arguments are never sent. */

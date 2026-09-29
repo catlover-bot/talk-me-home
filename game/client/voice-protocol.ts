@@ -1,3 +1,6 @@
+import type { HumanView, RobotLocalPerception } from '../shared/contracts';
+import { currentRobotPerception } from './robot-perception';
+
 export interface TranscriptEntry {
   id: string;
   role: 'human' | 'robot' | 'game';
@@ -441,6 +444,8 @@ export class VoiceProtocol {
       // Never forward HumanView or arbitrary transport diagnostics into the model.
       const safe = isRecord(result) && typeof result.ok === 'boolean' && typeof result.message === 'string'
         ? { ok: result.ok, message: result.message,
+          ...(result.ok && result.perception ? { perception: currentRobotPerception(result.perception as RobotLocalPerception,
+            this.hooks.captureToolContext?.() as Partial<HumanView> | undefined) } : {}),
           ...(result.code === 'awaiting_confirmation' ? { code: 'awaiting_confirmation' } : {}),
           ...(isRecord(result.proposal) && typeof result.proposal.id === 'string'
             && typeof result.proposal.label === 'string' && typeof result.proposal.expiresAt === 'number'
@@ -452,7 +457,10 @@ export class VoiceProtocol {
         : { ok: false, code: 'outcome_unknown', message: 'The local action result could not be verified. Observe again before acting.' };
       this.retainOutcome(pending, { result: JSON.stringify(safe), is_error: !safe.ok });
     } catch {
-      this.retainOutcome(pending, { result: JSON.stringify({ ok: false, code: 'outcome_unknown', message: 'The action result could not be confirmed. It may already have committed. Observe current conditions before requesting another action.' }), is_error: true });
+      const readOnly = ['observe_room', 'inspect_object', 'get_action_status'].includes(pending.call.name);
+      this.retainOutcome(pending, { result: JSON.stringify({ ok: false, code: 'outcome_unknown', message: readOnly
+        ? 'The read-only check did not return a verified report. This check changed nothing. Explain that the information is unavailable and let the player ask again.'
+        : 'The action result could not be confirmed. It may already have committed. Observe current conditions before requesting another action.' }), is_error: true });
     }
     // Superseded executions must not change a newer action's busy indicator.
     if (!this.valid(pending)) { this.flush(); return; }

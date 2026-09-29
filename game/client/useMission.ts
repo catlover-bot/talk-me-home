@@ -6,6 +6,7 @@ import { simulationReply, simulationToolSpeech, rememberLocalResult, type Practi
 import { LocalEffects } from './effects';
 import { copy } from './strings';
 import { acceptsHumanViewSnapshot } from './view-order';
+import { currentRobotPerception } from './robot-perception';
 
 export interface Caption extends TranscriptEntry {
   origin: TransportOrigin;
@@ -117,7 +118,7 @@ export function useMission() {
     const previous = captionsRef.current.find(item => item.id === id);
     const item: Caption = {
       ...entry, id, origin: source.origin, segmentId: source.id, roundId,
-      inputMethod: entry.role === 'robot' ? 'robot' : entry.id.startsWith('typed:') || source.origin === 'practice' ? 'typed' : 'speech',
+      inputMethod: entry.role === 'robot' ? 'robot' : entry.id.startsWith('quick:') ? 'quick_request' : entry.id.startsWith('typed:') || source.origin === 'practice' ? 'typed' : 'speech',
       timestamp: previous?.timestamp ?? Date.now(), saved: previous?.saved ?? false,
       chapter: previous?.chapter ?? captured?.chapter ?? viewRef.current!.chapter,
       chapterEpoch: previous?.chapterEpoch ?? captured?.chapterEpoch ?? viewRef.current!.chapterEpoch,
@@ -140,6 +141,9 @@ export function useMission() {
       if (!currentRound(roundId)) return;
       const latest = captionsRef.current.find(value => value.id === id);
       if (latest) update({ ...latest, timestamp: saved.timestamp, saved: true });
+      // The field report uses persisted spoken records and their server-stamped
+      // control context. A new caption must not wait for an unrelated control click.
+      if (entry.role === 'robot') return refreshRecord();
     }).catch(cause => { if (currentRound(roundId)) showError(cause); });
     writes.current.add(promise); void promise.finally(() => writes.current.delete(promise));
   };
@@ -224,7 +228,8 @@ export function useMission() {
     if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
     if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
     if (result.proposal) practiceMemory.current = { ...practiceMemory.current, proposalId: result.proposal.id };
-    return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal };
+    return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal,
+      ...(result.perception ? { perception: currentRobotPerception(result.perception, viewRef.current ?? undefined) } : {}) };
   };
 
   const start = (connectionMode: TransportOrigin = mode) => {
@@ -329,7 +334,6 @@ export function useMission() {
         return runTool({ ...call, callId: id }, signal, expected, bound);
       },
       cancelPending: reason => cancelPending(expected, reason),
-      maxSessionSeconds: 600,
     }).then(() => {
       if (expected === generation.current && voice.current === connection) {
         setConnectedNow(true); liveStarted.current = Date.now(); effects.current.play('connect');
@@ -347,12 +351,12 @@ export function useMission() {
     catch (cause) { showError(cause); }
   };
 
-  const send = async (text: string) => {
+  const send = async (text: string, inputMethod: 'typed' | 'quick_request' = 'typed') => {
     if (!text.trim() || text.length > 2000 || !connectedRef.current || busyRef.current || viewRef.current?.status !== 'active') return false;
     setInterrupted(false); setError('');
-    if (voice.current) return voice.current.sendText(text);
+    if (voice.current) return voice.current.sendText(text, inputMethod);
     const source = segmentRef.current!;
-    addCaption({ id: api.requestId(), role: 'human', text, final: true }, source, viewRef.current.roundId);
+    addCaption({ id: (inputMethod === 'quick_request' ? 'quick:' : '') + api.requestId(), role: 'human', text, final: true }, source, viewRef.current.roundId);
     const reply = simulationReply(text, practiceMemory.current);
     const expected = generation.current;
     const turn = ++mockTurn.current;
@@ -373,6 +377,10 @@ export function useMission() {
     }
     return true;
   };
+
+  const quickRequest = (kind: 'surroundings' | 'repeat_report') => send(kind === 'surroundings'
+    ? 'Please look around and report the current emblem and reachable gates.'
+    : 'Please repeat your last report, noting if it may be out of date.', 'quick_request');
 
   const changePower = async (powerOn: boolean) => {
     const current = viewRef.current;
@@ -429,6 +437,7 @@ export function useMission() {
           // A bounded acknowledgement cannot authorize another physical operation.
           if (!result.proposal || !connection.sendGameEvent({ event: result.decisionEvent, proposal: result.proposal,
             result: { ok: result.ok, message: result.message, ...(result.code ? { code: result.code } : {}) },
+            perception: currentRobotPerception(result.perception, viewRef.current ?? undefined),
             checkpoint: { chapter: result.view.chapter, chapterEpoch: result.view.chapterEpoch, completed: result.view.completed },
           }, decisionInput?.inputTurn)) {
             if (!connection.hasConnectionLimitWarning) setWarning('The decision is saved, but its delivery to Pip was not confirmed. Ask Pip to check the proposal status before continuing.');
@@ -561,13 +570,13 @@ export function useMission() {
   const pipState = view?.completed ? 'success' : error ? 'error' : interrupted ? 'interrupted'
     : !connected ? busy ? 'considering' : view ? 'paused' : 'offline'
       : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' ? 'considering'
-        : inputState !== 'inactive' ? 'listening' : 'ready';
+        : view?.proposal?.status === 'awaiting_confirmation' ? 'awaiting_confirmation' : inputState !== 'inactive' ? 'listening' : 'ready';
   return {
     stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
     error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
-    start: () => requestStart(), stop, interrupt, send, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
+    start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
   };
 }

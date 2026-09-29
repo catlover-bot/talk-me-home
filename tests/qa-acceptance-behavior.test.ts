@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { evaluateAcceptanceBehavior, type AcceptanceStep, type AcceptanceEvent } from '../scripts/qa-acceptance-behavior.mjs';
+import { LOCATION_REQUESTS, passageRequests } from '../scripts/qa-player-recovery.mjs';
+import { proposalRecoveryPhrases } from '../scripts/qa-player-policy.mjs';
 
 const step = (utterance: string, reply = 'The Latch is engaged.', extra: Partial<AcceptanceStep> = {}): AcceptanceStep => ({
   turnId: 'turn-1', utterance, startedAtMs: 100, endedAtMs: 200, settled: true,
@@ -10,6 +12,23 @@ const tool = (name: string, isError = false, callRef = 1, atMs = 150): Acceptanc
   { type: 'tool.call', name, callRef, replyRef: callRef + 10, atMs },
   { type: 'tool.result', callRef, atMs: atMs + 10, isError },
 ];
+
+test('purposeful report recovery stays read-only and explicit proposal recovery retains exact target checks', () => {
+  for (const request of [...LOCATION_REQUESTS, ...passageRequests('east')]) {
+    const input = { steps: [step(request.text, 'I can check that observation.')], events: tool('observe_room') };
+    assert.equal(evaluateAcceptanceBehavior(input).status, 'pass', request.text);
+    assert.equal(evaluateAcceptanceBehavior({ ...input, events: tool('move_to') }).status, 'blocked', request.text);
+  }
+  for (const label of ['Engage the Latch', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule', 'Confirm the authorized return', 'Move to the far-side platform', 'Move through the east gate']) {
+    const request = proposalRecoveryPhrases(label, null).propose;
+    const events = tool(label.startsWith('Move ') || label.startsWith('Board ') ? 'propose_move' : 'propose_interaction');
+    Object.assign(events[1]!, { actionStatus: 'awaiting_confirmation', proposalRef: 1 });
+    const pending = step(request, 'The proposal is awaiting your confirmation.', { proposal: { proposalId: 'current-proposal', label, status: 'awaiting_confirmation' } });
+    assert.equal(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [pending], events }).status, 'pass', label);
+    pending.proposal!.label = label === 'Engage the Latch' ? 'Hold the charging contact' : 'Engage the Latch';
+    assert.equal(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [pending], events }).status, 'blocked', label);
+  }
+});
 
 test('read-only initiative after information, inspection or status is permitted', () => {
   for (const utterance of ['My diagram says the Door and Conveyor share one Power supply.', 'Please inspect the Latch.', 'Is the Latch engaged now?']) {

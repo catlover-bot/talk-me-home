@@ -1,9 +1,9 @@
 import { createHash, randomUUID } from 'node:crypto'
-import type { ActionOutcome, ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
+import type { ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
 import { applyHumanPower, applyRobotTool, exactObject, humanView, initialState, missionCompleted, type GameState } from './state.js'
 import { GameError } from './errors.js'
 import { RoundRecords } from './records.js'
-import { applyHumanRelay, type GalleryConfiguration } from './gallery.js'
+import { applyHumanRelay, perceptionIsCurrent, type GalleryConfiguration } from './gallery.js'
 import { applyHumanDock } from './return-dock.js'
 import { describeProposal, proposalLocation } from './proposals.js'
 export { GameError } from './errors.js'
@@ -31,7 +31,7 @@ interface StoredProposal {
   owner?: string
   location: string
   /** Detailed robot-local outcome never enters the human proposal or Game caption. */
-  outcome?: ActionOutcome
+  outcome?: ToolResult
   decision?: 'confirm' | 'decline'
   response?: Promise<ToolResponse>
 }
@@ -141,9 +141,14 @@ export class SessionStore {
     return { ...humanView(session.state), proposal: proposal ? structuredClone(proposal.value) : null, proposalRevision: session.proposalRevision }
   }
 
-  private proposalResult(proposal: StoredProposal): ToolResult {
+  private proposalResult(proposal: StoredProposal, state: GameState): ToolResult {
     const value = structuredClone(proposal.value)
-    return { ...(proposal.outcome ?? value.result ?? { ok: true, code: 'awaiting_confirmation', message: `Proposal ${value.id}: ${value.label}. Awaiting Mission Control's console confirmation; not executed. Do not report completion or repeatedly poll. Read its status after the owner decides.` }), proposal: value }
+    const outcome = structuredClone(proposal.outcome ?? value.result ?? { ok: true, code: 'awaiting_confirmation', message: `Proposal ${value.id}: ${value.label}. Awaiting Mission Control's console confirmation; not executed. Do not report completion or repeatedly poll. Read its status after the owner decides.` }) as ToolResult
+    if (outcome.perception && !perceptionIsCurrent(state, outcome.perception)) {
+      delete outcome.perception
+      outcome.message = `Historical action receipt. Any room or gate description below was observed then and is not a current reading; observe your current surroundings if needed. ${outcome.message}`
+    }
+    return { ...outcome, proposal: value }
   }
 
   assertOwner(id: string, owner: string | undefined): void {
@@ -204,13 +209,13 @@ export class SessionStore {
         if (!exactObject(request.arguments, ['proposal_id']) || !identifier(request.arguments.proposal_id)) return { ok: false, code: 'not_executed', message: 'Read status using one known proposal identifier.', view: this.view(session) }
         const proposal = session.proposals.get(request.arguments.proposal_id)
         if (!proposal || proposal.value.roundId !== current.roundId) return { ok: false, code: 'not_executed', message: 'That proposal is unavailable in this mission round.', view: this.view(session) }
-        return { ...this.proposalResult(proposal), view: this.view(session) }
+        return { ...this.proposalResult(proposal, current), view: this.view(session) }
       }
       if (['interact_object', 'move_to', 'propose_interaction', 'propose_move'].includes(request.name)) {
         const descriptor = describeProposal(current, request.name, request.arguments)
         if (!descriptor) return { ok: false, code: 'not_executed', message: 'That exact local action is unavailable. Observe or inspect a reachable object; approval flags are not accepted.', view: this.view(session) }
         if (pending?.value.status === 'awaiting_confirmation') {
-          if (canonical(pending.value.action) === canonical(descriptor.action)) return { ...this.proposalResult(pending), view: this.view(session) }
+          if (canonical(pending.value.action) === canonical(descriptor.action)) return { ...this.proposalResult(pending, current), view: this.view(session) }
           return { ok: false, code: 'not_executed', message: 'A different proposal is still awaiting a decision. It was not replaced. Mission Control must decline or cancel it before a different action is proposed.', proposal: structuredClone(pending.value), view: this.view(session) }
         }
         const proposal: StoredProposal = { owner: session.owner, location: proposalLocation(current), value: {
@@ -218,13 +223,13 @@ export class SessionStore {
           ...descriptor, status: 'awaiting_confirmation', expiresAt: this.now() + 90_000,
         } }
         session.proposals.set(proposal.value.id, proposal); session.latestProposal = proposal.value.id; session.proposalRevision += 1
-        return { ...this.proposalResult(proposal), view: this.view(session) }
+        return { ...this.proposalResult(proposal, current), view: this.view(session) }
       }
       // Only read-only operations may enter the physical dispatcher without owner confirmation.
       const result = ['observe_room', 'inspect_object'].includes(request.name)
-        ? applyRobotTool(current, request.name, request.arguments)
+        ? applyRobotTool(current, request.name, request.arguments, this.now())
         : { ok: false, message: 'That tool is not available. Use an implemented local game tool.' }
-      if (result.ok) session.records.event('observation', 'robot', result.message, current.chapter, current.chapterEpoch)
+      if (result.ok) session.records.event('observation', 'robot', result.message, current.chapter, current.chapterEpoch, result.perception?.origin)
       return { ...result, view: this.view(session) }
     })
   }
@@ -259,8 +264,8 @@ export class SessionStore {
           const before = current.revision
           const action = proposal.value.action
           result = action.kind === 'interaction'
-            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action })
-            : applyRobotTool(current, 'move_to', { target: action.target })
+            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action }, this.now())
+            : applyRobotTool(current, 'move_to', { target: action.target }, this.now())
           if (!result.ok) result = { ...result, code: 'precondition_failed' }
           proposal.outcome = { ...result }
           proposal.value = { ...proposal.value, status: result.ok ? 'committed' : 'failed', result: result.ok
@@ -268,12 +273,13 @@ export class SessionStore {
             : { ok: false, code: 'precondition_failed', message: 'The action was not executed because current conditions did not permit it. Ask Pip to inspect before proposing another action.' } }
           session.proposalRevision += 1
           if (result.ok && current.revision !== before) {
-            session.records.event('action', 'robot', result.message, chapter, chapterEpoch)
+            session.records.event('action', 'robot', result.perception ? `${proposal.value.label}: confirmed and completed.` : result.message, chapter, chapterEpoch)
             this.options.onRobotCommit?.({ sessionId: id, roundId: current.roundId, chapter, chapterEpoch, proposalId: proposal.value.id, revisionBefore: before, revisionAfter: current.revision })
             if (current.chapter !== chapter) {
               session.records.event('checkpoint', 'public', `${chapter === 'cargo' ? 'Cargo Bay' : 'Relay Gallery'} checkpoint confirmed. The rescue continues.`, chapter, chapterEpoch)
-              session.records.markHistorical()
             }
+            if (action.kind === 'move') session.records.markHistorical()
+            if (result.perception) session.records.event('observation', 'robot', result.message, current.chapter, current.chapterEpoch, result.perception.origin)
             if (missionCompleted(current)) session.records.event('completion', 'public', current.missionKind === 'rescue' ? 'Pip returned home. The server confirmed rescue completion.' : 'Pip arrived on the far-side safe platform. The server confirmed completion.', chapter, chapterEpoch)
           }
         }
@@ -319,7 +325,7 @@ export class SessionStore {
           const pending = this.refreshProposal(session)
           if (pending) this.invalidateProposal(session, pending, 'invalidated', 'Mission Control canceled this proposal before execution. Ask for a new proposal when ready.')
         }
-        if (action === 'resume') session.records.markHistorical()
+        if (action !== 'cancel' || request.reason !== 'supersede') session.records.markHistorical()
       }
       return this.view(session)
     }, ['stop', 'end', 'cancel', 'reset'].includes(action))
@@ -342,7 +348,7 @@ export class SessionStore {
       || !identifier(input.roundId) || !messageIdentifier(input.messageId) || !messageIdentifier(input.segmentId)
       || typeof input.role !== 'string' || !['human', 'robot'].includes(input.role)
       || typeof input.origin !== 'string' || !['practice', 'live_voice', 'live_text'].includes(input.origin)
-      || typeof input.inputMethod !== 'string' || !['typed', 'speech', 'robot'].includes(input.inputMethod)
+      || typeof input.inputMethod !== 'string' || !['typed', 'speech', 'quick_request', 'robot'].includes(input.inputMethod)
       || typeof input.interrupted !== 'boolean'
       || typeof input.text !== 'string' || !input.text.trim() || input.text.length > 2000
       || (input.role === 'robot') !== (input.inputMethod === 'robot')
@@ -357,7 +363,7 @@ export class SessionStore {
       const epoch = request.chapterEpoch ?? (state.missionKind === 'training' ? 0 : undefined)
       const chapter = request.chapter ?? (state.missionKind === 'training' ? 'cargo' : undefined)
       if (!integer(epoch) || epoch > state.chapterEpoch || ['cargo', 'gallery', 'return_dock'][epoch] !== chapter) throw new GameError(400, 'A finalized message must name a chapter already reached in this mission round.')
-      return session.records.message({ ...request, chapter, chapterEpoch: epoch })
+      return session.records.message({ ...request, chapter, chapterEpoch: epoch }, state.chapter === 'gallery' && chapter === 'gallery' ? state.gallery.relay : undefined)
     })
   }
 
@@ -403,6 +409,10 @@ export class SessionStore {
       const before = current.revision
       const result = kind === 'relay' ? applyHumanRelay(current, request.relay!) : applyHumanDock(current, request.action!)
       if (!result.ok) throw new GameError(409, result.message)
+      if (kind === 'relay' && before !== current.revision) {
+        const pending = this.refreshProposal(session)
+        if (pending) this.invalidateProposal(session, pending, 'invalidated', 'The Relay changed after this proposal. No move was executed; inspect the current gate and ask for a new proposal.')
+      }
       if (kind === 'dock' && request.action === 'revoke_return') {
         const pending = this.refreshProposal(session)
         if (pending) this.invalidateProposal(session, pending, 'invalidated', 'Mission Control revoked return authorization. This proposal was not executed and cannot be revived by a later grant.')
@@ -414,10 +424,18 @@ export class SessionStore {
   }
 
   annotate(id: string, input: unknown): Promise<MissionRecord> {
-    if ((!fields(input, ['roundId', 'chapterEpoch', 'requestId', 'kind', 'target']) && !fields(input, ['roundId', 'chapterEpoch', 'requestId', 'kind', 'target', 'marked']))
-      || !identifier(input.roundId) || !identifier(input.requestId)
-      || !(input.kind === 'location' && !('marked' in input) && (input.target === null || typeof input.target === 'string' && ['ring', 'fork', 'sail', 'leaf', 'dock'].includes(input.target))
-        || input.kind === 'blocked_gate' && typeof input.marked === 'boolean' && typeof input.target === 'string' && /^g[1-5]$/.test(input.target))) throw new GameError(400, 'Annotate one room emblem or suspected gate from your Gallery map. An annotation is your inference, not a sensor reading.')
+    const common = ['roundId', 'chapterEpoch', 'requestId', 'kind', 'target']
+    const room = (value: unknown) => typeof value === 'string' && ['ring', 'fork', 'sail', 'leaf', 'dock'].includes(value)
+    const gate = (value: unknown) => typeof value === 'string' && /^g[1-5]$/.test(value)
+    if (!input || typeof input !== 'object' || Array.isArray(input)) throw new GameError(400, 'Choose one private map annotation.')
+    const value = input as Record<string, unknown>
+    const valid = value.kind === 'clear_plan' ? exactObject(value, ['roundId', 'chapterEpoch', 'requestId', 'kind'])
+      : value.kind === 'location' ? exactObject(value, common) && (value.target === null || room(value.target))
+      : ['blocked_gate', 'planned_gate', 'explored_gate'].includes(String(value.kind)) ? exactObject(value, [...common, 'marked']) && gate(value.target) && typeof value.marked === 'boolean'
+        : ['report_link', 'report_unlink'].includes(String(value.kind)) && exactObject(value, [...common, 'messageId', 'targetKind', ...(value.kind === 'report_link' ? ['dynamic'] : [])])
+          && messageIdentifier(value.messageId) && (value.targetKind === 'room' ? room(value.target) : value.targetKind === 'corridor' && gate(value.target))
+          && (value.kind === 'report_unlink' || typeof value.dynamic === 'boolean')
+    if (!valid || !identifier(value.roundId) || !identifier(value.requestId)) throw new GameError(400, 'Annotate one room, route gate or exact Pip report from your Gallery map. An annotation is your inference, not a sensor reading.')
     const request = input as AnnotationRequest
     const session = this.session(id, request.roundId)
     return this.once(session, `annotation:${request.requestId}`, request, () => {

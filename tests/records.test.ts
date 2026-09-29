@@ -146,7 +146,7 @@ test('reset discards old records and refuses delayed message, pin and recap call
   await assert.rejects(pendingNote, /earlier round/)
   assert.throws(() => store.record(view.sessionId, view.roundId), /earlier round/)
   assert.throws(() => store.recap(view.sessionId, view.roundId), /earlier round/)
-  assert.deepEqual(store.record(next.sessionId, next.roundId), { roundId: next.roundId, messages: [], notebook: [], hintsUsed: [], hintUses: [], annotations: { chapter: 'gallery', location: null, blockedGates: [] }, debrief: null })
+  assert.deepEqual(store.record(next.sessionId, next.roundId), { roundId: next.roundId, messages: [], notebook: [], hintsUsed: [], hintUses: [], annotations: { chapter: 'gallery', location: null, blockedGates: [], plannedGates: [], exploredGates: [], reportLinks: [] }, debrief: null })
   assert.deepEqual(store.recap(next.sessionId, next.roundId).entries, [])
 })
 

@@ -35,7 +35,7 @@ export function initialState(sessionId: string = randomUUID(), scenario: Scenari
     scenario, maintenanceProfile: scenario === 'maintenance' ? profile ?? (randomInt(2) === 0 ? 'crescent' : 'kite') : null,
     selector: 'neutral',
     missionKind, chapter: 'cargo', chapterEpoch: 0,
-    gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b') },
+    gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b'), visitId: randomUUID(), observationRevision: 0 },
     dock: { location: 'platform', contactHeld: false, energy: 'empty', readinessVersion: 0, grant: null },
   }
 }
@@ -67,8 +67,8 @@ export function humanView(state: GameState): HumanView {
 }
 
 /** A fresh local observation, obtained through observe_room, never pushed to the human. */
-export function robotView(state: GameState): ToolResult {
-  if (state.chapter === 'gallery') return galleryView(state)
+export function robotView(state: GameState, observedAt = Date.now()): ToolResult {
+  if (state.chapter === 'gallery') return galleryView(state, 'local_survey', observedAt)
   if (state.chapter === 'return_dock') return dockView(state)
   if (state.robotLocation === 'far_side') {
     return { ok: true, message: 'You are on the far-side safe platform. Your arrival is confirmed.' }
@@ -88,16 +88,16 @@ export function exactObject(value: unknown, keys: readonly string[]): value is R
 const reject = (message: string): ToolResult => ({ ok: false, message })
 
 /** Atomic validation and commit. Callers bind actor identity outside model arguments. */
-export function applyRobotTool(state: GameState, name: string, args: unknown): ToolResult {
+export function applyRobotTool(state: GameState, name: string, args: unknown, observedAt = Date.now()): ToolResult {
   if (state.status !== 'active') return reject('The mission is stopped. Wait for Mission Control to reconnect.')
   if (state.chapter === 'gallery') {
-    const result = applyGalleryTool(state, name, args)
+    const result = applyGalleryTool(state, name, args, observedAt)
     if (result.ok && state.gallery.room === 'dock') advanceChapter(state, 'return_dock')
     return result
   }
   if (state.chapter === 'return_dock') return applyDockTool(state, name, args)
   if (name === 'observe_room') {
-    return exactObject(args, []) ? robotView(state) : reject('Observation takes no arguments.')
+    return exactObject(args, []) ? robotView(state, observedAt) : reject('Observation takes no arguments.')
   }
   if (name === 'inspect_object') {
     if (!exactObject(args, ['object']) || typeof args.object !== 'string') return reject('Choose one local object to inspect.')
@@ -145,7 +145,8 @@ export function applyRobotTool(state: GameState, name: string, args: unknown): T
     state.revision += 1
     if (state.missionKind === 'rescue') {
       advanceChapter(state, 'gallery')
-      return { ok: true, message: 'You crossed the stopped Conveyor and passed through the open Door. The Cargo Bay checkpoint confirms your arrival at the Relay Gallery entrance. The rescue continues. Observe your new surroundings before choosing another local action.' }
+      const survey = galleryView(state, 'confirmed_arrival', observedAt)
+      return { ...survey, message: `You crossed the stopped Conveyor and passed through the open Door. The Cargo Bay checkpoint confirms your arrival at the Relay Gallery entrance. The rescue continues. ${survey.message}` }
     }
     return { ok: true, message: 'You crossed the stopped Conveyor and passed through the open Door. Arrival on the far-side safe platform is confirmed.' }
   }

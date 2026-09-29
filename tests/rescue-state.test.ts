@@ -127,7 +127,9 @@ test('initial human and robot projections do not identify the hidden Gallery con
   assert.deepEqual(humanView(a), humanView(b)); assert.deepEqual(robotView(a), robotView(b))
   for (const state of [a, b]) assert.doesNotMatch(JSON.stringify(robotView(state)), /Ring|Fork|Sail|Leaf|gallery\.g|Beacon|Harbor|return\.contact|stored/)
   const ga = gallery('a'), gb = gallery('b')
-  assert.deepEqual(robotView(ga), robotView(gb))
+  // Compare different hidden layouts under identical opaque scope and observation time.
+  gb.roundId = ga.roundId; gb.gallery.visitId = ga.gallery.visitId
+  assert.deepEqual(robotView(ga, 1000), robotView(gb, 1000))
   assert.match(robotView(ga).message, /Ring emblem.*East gate \(gallery.g1\) is closed/)
   assert.doesNotMatch(robotView(ga).message, /Fork|Sail|Leaf|gallery\.g[2-5]|Beacon|Harbor|configuration/i)
 })
@@ -347,7 +349,7 @@ test('Gallery movement rechecks the latest Relay selection immediately before a 
     view = await store.control(view.sessionId, 'relay', envelope(view, { revision: view.revision, relay: 'off' }))
   } finally { release() }
   const result = await pending
-  assert.equal(result.ok, false); assert.match(result.message, /gate is closed/)
+  assert.equal(result.ok, false); assert.equal(result.proposal?.status, 'invalidated'); assert.match(result.message, /Relay changed.*No move was executed/)
   assert.equal(result.view.revision, view.revision)
   const observation = await store.tool(view.sessionId, call(view, 'observe_room'))
   assert.match(observation.message, /Ring emblem/)
@@ -407,7 +409,7 @@ test('chapter-aware records retain historical conversation but exclude private m
   assert.ok(recap.entries.some(entry => entry.chapter === 'cargo' && entry.text === oldCaption.text))
   assert.doesNotMatch(JSON.stringify(recap), /PRIVATE_ROUTE_PLAN|blockedGates|"location"|gallery\.g[2-5]|Configuration|Sail|Leaf/)
   const record = store.record(view.sessionId, view.roundId)
-  assert.deepEqual(record.annotations, { chapter: 'gallery', location: 'leaf', blockedGates: ['g3'] })
+  assert.deepEqual(record.annotations, { chapter: 'gallery', location: 'leaf', blockedGates: ['g3'], plannedGates: [], exploredGates: [], reportLinks: [] })
   assert.deepEqual(record.hintUses, [1, 2, 3].map(level => ({ chapter: 'gallery', level })))
   const before = store.get(view.sessionId)
   await store.annotate(view.sessionId, envelope(view, { kind: 'blocked_gate', target: 'g3', marked: true }))
@@ -417,6 +419,6 @@ test('chapter-aware records retain historical conversation but exclude private m
   assert.equal(view.chapter, 'gallery'); assert.equal(view.relay, 'off')
   const reset = await store.lifecycle(view.sessionId, 'reset', envelope(view))
   assert.equal(reset.chapter, 'cargo'); assert.equal(reset.chapterEpoch, 0)
-  assert.deepEqual(store.record(reset.sessionId, reset.roundId).annotations, { chapter: 'gallery', location: null, blockedGates: [] })
+  assert.deepEqual(store.record(reset.sessionId, reset.roundId).annotations, { chapter: 'gallery', location: null, blockedGates: [], plannedGates: [], exploredGates: [], reportLinks: [] })
   assert.deepEqual(store.recap(reset.sessionId, reset.roundId).entries, [])
 })

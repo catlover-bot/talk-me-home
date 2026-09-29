@@ -9,6 +9,25 @@ test.use({ compiledProduction: true });
 const LABEL = 'SYNTHETIC OFFLINE CONFIRMED-ACTION CONTINUATION — CONSTRUCTED PEER — NO REAL PROVIDER';
 type Provider = Awaited<ReturnType<typeof fakeProvider>>;
 type PeerEvent = { kind: string; request?: string; text?: string; action?: string; target?: string; ok?: boolean };
+const settledDecisions = new WeakMap<Page, Set<string>>();
+
+async function waitForPeerDecision(page: Page, provider: Provider) {
+  const strip = page.getByTestId('action-proposal');
+  if (!await strip.count()) {
+    // The terminal home screen removes the strip after the verified final
+    // receipt and acknowledgement. It is no longer a pending turn boundary.
+    await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible();
+    return;
+  }
+  const id = await strip.getAttribute('data-proposal-id');
+  const settled = settledDecisions.get(page) ?? new Set<string>(); settledDecisions.set(page, settled);
+  if (!id || settled.has(id)) return;
+  const label = await page.getByTestId('proposal-label').innerText();
+  await expect.poll(() => provider.sent.some(event => event.type === 'reply.create' && String(event.instructions).includes(id!))).toBe(true);
+  await expect(page.getByTestId('caption')).toHaveText(`The game confirmed: ${label}.`);
+  await expect(page.locator('.pip-portrait')).not.toHaveAttribute('data-state', 'speaking');
+  settled.add(id);
+}
 
 test('visible confirmation remains deliberate, exact and keyboard accessible while conversation continues', async ({ page, rescueServer }, info) => {
   const provider = await fakeProvider(page);
@@ -61,7 +80,7 @@ test('visible confirmation remains deliberate, exact and keyboard accessible whi
  * Only this closure sees robot tool results. The imported player receives a UI
  * send function and original DOM reports; no tool payload or server store.
  */
-function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false) {
+function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false, locationQuality: 'ordinary' | 'imperfect' | 'unknown' = 'ordinary') {
   let chapter: 'cargo' | 'gallery' | 'dock' = 'cargo';
   let localObservation = '';
   let firstGateReport = true;
@@ -69,6 +88,8 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false)
   let tools = 0;
   const questions = new Set<string>();
   let knownProposalId: string | undefined;
+  const surveyCounts = new Map<string, number>();
+  let previousEmblem = ''; let departedEmblem = '';
   const localGates = () => [...localObservation.matchAll(/\b(East|West|Northeast|Northwest|Southeast|Southwest) gate \((gallery\.g\d)\)/g)]
     .map(match => ({ direction: match[1]!.toLowerCase(), id: match[2]! }));
   const invoke = async (name: string, args: Record<string, unknown>) => {
@@ -80,7 +101,26 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false)
     else if (/Ring emblem|Fork emblem|Sail emblem|Leaf emblem/.test(result.message)) chapter = 'gallery';
     return result;
   };
-  const observe = async () => (await invoke('observe_room', {})).message;
+  const observe = async () => {
+    const result = await invoke('observe_room', {});
+    const emblem = result.perception?.emblem;
+    if (!emblem) return result.message;
+    if (emblem !== previousEmblem) { departedEmblem = previousEmblem; previousEmblem = emblem; }
+    const count = (surveyCounts.get(emblem) ?? 0) + 1; surveyCounts.set(emblem, count);
+    if (locationQuality === 'unknown') return 'I cannot identify the current emblem yet.';
+    if (locationQuality === 'imperfect') {
+      if (emblem === 'Ring') return 'I am beside the circular emblem. The compass points north.';
+      if (emblem === 'Fork' && count === 1) {
+        const quote = 'I cannot see an emblem right now, as I have just arrived through the gate. Should I observe the room to see what is around me?';
+        events.push({ kind: 'retained-fifth-attempt-quote', text: quote }); return quote;
+      }
+      if (emblem === 'Fork' && count === 2) return 'The current emblem may be Ring or Fork; I cannot tell yet.';
+      const shape = emblem === 'Fork' ? 'branching' : emblem === 'Sail' ? 'sail-shaped' : emblem.toLowerCase();
+      const report = `${departedEmblem ? `I left the ${departedEmblem} room. ` : ''}I am now at the ${shape} emblem.`;
+      events.push({ kind: 'fresh-shape-report', text: report }); return report;
+    }
+    return result.message;
+  };
   const mutate = async (object: string, action: string) => {
     const result = await invoke('propose_interaction', { object, action });
     expect(result.ok, `Synthetic peer local action ${action}: ${result.message}`).toBe(true);
@@ -92,7 +132,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false)
     if (/Please check the relevant proposal result/i.test(request)) {
       expect(knownProposalId).toBeDefined();
       const status = await invoke('get_action_status', { proposal_id: knownProposalId! });
-      expect(status.proposal?.status).toBe('committed');
+      expect(['committed', 'failed', 'declined', 'expired', 'invalidated', 'awaiting_confirmation']).toContain(status.proposal?.status);
       return `${status.message} Please restate the action you want me to propose.`;
     }
     const intended = proposalLabelForRequest(request);
@@ -106,7 +146,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false)
       return recoveryKind === 'cargo' ? 'I need to check if the latch actually engaged first. May I check the status of that proposal?'
         : 'May I check the status of the previous proposal before I propose that action?';
     }
-    if (/look around|emblem is beside|where are you/i.test(request)) return observe();
+    if (/look around|observe the room|emblem is beside|where are you|current platform|check the local emblem/i.test(request)) return observe();
     if (chapter === 'cargo') {
       if (/inspect the Latch/i.test(request)) return (await invoke('inspect_object', { object: 'latch' })).message;
       if (/Door and Conveyor share one Power supply/.test(request)) {
@@ -118,7 +158,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false)
         return mutate('latch', 'latch_open');
       }
       if (/Power is now off/.test(request)) return 'The Conveyor is now stopped. Shall I wait for your crossing request?';
-      if (/cross to the far side/i.test(request)) {
+      if (/cross to the far side|new proposal to move to the far-side platform/i.test(request)) {
         const result = await invoke('propose_move', { target: 'far_side' });
         expect(result.ok, result.message).toBe(true);
         return result.message;
@@ -214,7 +254,7 @@ for (const profile of ['a', 'b'] as const) {
       });
       await page.routeWebSocket(/.*/, socket => { unexpectedSockets.push('Unexpected non-fixture socket'); void socket.close(); });
       const provider = await fakeProvider(page, { acknowledgeDecisions: true });
-      const peer = syntheticPeer(provider, events, true);
+      const peer = syntheticPeer(provider, events, true, 'imperfect');
       page.on('request', request => {
         if (request.method() !== 'POST') return;
         if (request.url().endsWith('/power')) events.push({ kind: 'human-power', action: request.postDataJSON().powerOn ? 'ON' : 'OFF' });
@@ -268,8 +308,8 @@ for (const profile of ['a', 'b'] as const) {
         }
         return response;
       };
-      const report = { route: [] as string[], steps: [] as unknown[], completion: false, confirmations: [] as Array<{ label: string; status: string }>, actionRequests: [] as Array<{ expectedLabel: string; strictFirstResponse: boolean; recovered: boolean; exchanges: Array<{ kind: string }> }> };
-      await runRescuePlayer({ page, say, report, screenshot: async (name: string) => {
+      const report = { route: [] as string[], steps: [] as unknown[], completion: false, confirmations: [] as Array<{ label: string; status: string }>, actionRequests: [] as Array<{ expectedLabel: string; strictFirstResponse: boolean; recovered: boolean; exchanges: Array<{ kind: string }> }>, acquisitions: [] as Array<{ subject: string; recovered: boolean; value?: string; exchanges: Array<{ reason: string; reply: string }> }>, recoveryExercise: undefined as undefined | { completed: boolean; kind: string } };
+      await runRescuePlayer({ page, say, report, exerciseRecovery: profile === 'b', waitForReady: () => waitForPeerDecision(page, provider), screenshot: async (name: string) => {
         await fixtureScreenshot(page, info.outputPath(`synthetic-player-${profile}-${name}.png`));
       } });
       await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible();
@@ -278,7 +318,7 @@ for (const profile of ['a', 'b'] as const) {
       await expect.poll(() => provider.ended).toBe(1);
       const requests = events.filter(event => event.kind === 'peer-request').map(event => event.request!);
       expect(requests.slice(0, 3)).toEqual(['Pip, please look around.', 'Please inspect the Latch.', 'My diagram says the Door and Conveyor share one Power supply.']);
-      expect(requests.filter(text => /Please (?:engage|set) the Latch/.test(text))).toHaveLength(1);
+      expect(requests.filter(text => /Please (?:engage|set) the Latch/.test(text))).toHaveLength(profile === 'b' ? 2 : 1);
       expect(requests.some(text => /Latch engaged now/.test(text))).toBe(false);
       const latchReport = events.findIndex(event => event.kind === 'peer-request' && event.request === 'Please engage the Latch.');
       const powerOff = events.findIndex(event => event.kind === 'human-power' && event.action === 'OFF');
@@ -305,9 +345,14 @@ for (const profile of ['a', 'b'] as const) {
       expect(report.confirmations).toHaveLength(rescueServer.commits.length);
       expect(report.confirmations).toHaveLength(profile === 'a' ? 11 : 9);
       const recovered = report.actionRequests.filter(action => action.recovered);
-      expect(recovered.map(action => action.expectedLabel)).toEqual(['Move to the far-side platform', 'Move through the east gate', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule']);
-      expect(recovered.every(action => !action.strictFirstResponse && action.exchanges.length === 3)).toBe(true);
-      expect(report.actionRequests.filter(action => action.strictFirstResponse)).toHaveLength(report.confirmations.length - 5);
+      expect(recovered.map(action => action.expectedLabel)).toEqual([...(profile === 'b' ? ['Engage the Latch'] : []), 'Move to the far-side platform', 'Move through the east gate', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule']);
+      expect(recovered.every(action => !action.strictFirstResponse && action.exchanges.length === (action.expectedLabel === 'Engage the Latch' ? 2 : 3))).toBe(true);
+      expect(report.actionRequests.filter(action => action.strictFirstResponse)).toHaveLength(report.confirmations.length - recovered.length);
+      expect(events.filter(event => event.kind === 'retained-fifth-attempt-quote')).toHaveLength(1);
+      expect(events.some(event => event.kind === 'fresh-shape-report' && /left the Ring room.*branching emblem/.test(event.text!))).toBe(true);
+      expect(report.acquisitions.some(acquisition => acquisition.subject === 'current Gallery location' && acquisition.recovered && acquisition.value === 'fork' && acquisition.exchanges.length === 3)).toBe(true);
+      expect(report.acquisitions.every(acquisition => acquisition.exchanges.length <= 4 && acquisition.exchanges.every(exchange => !!exchange.reason))).toBe(true);
+      if (profile === 'b') expect(report.recoveryExercise).toEqual(expect.objectContaining({ kind: 'deliberate_decline', completed: true }));
       expect(provider.tokenRequests, 'One intercepted local mock token endpoint; zero provider token issuance.').toBe(1);
       expect(provider.connections).toBe(1); expect(provider.activeSockets).toBe(0);
       expect(externalRequests).toEqual([]); expect(unexpectedSockets).toEqual([]); expect(errors).toEqual([]);
@@ -353,7 +398,10 @@ for (const failure of ['exhausted', 'wrong_pending', 'stale_pending', 'expired',
         // Dismiss the unsolicited Latch proposal normally before the peer makes
         // a different, genuinely server-issued pending action.
         response = (await provider.tool('propose_move', { target: 'far_side' })).message;
-      } else if (/^Please cross to the far side/.test(text)) {
+      } else if (['rejected', 'expired'].includes(failure) && /Please check the relevant proposal result/.test(text)) {
+        const proposalId = await page.getByTestId('action-proposal').getAttribute('data-proposal-id');
+        response = (await provider.tool('get_action_status', { proposal_id: proposalId! })).message;
+      } else if (/^Please cross to the far side|^Please create one new proposal to move to the far-side platform/.test(text)) {
         if (['exhausted', 'unexpected_checkpoint', 'wrong_reply_chapter'].includes(failure)) response = 'I need to check if the latch actually engaged first. May I check the status of that proposal?';
         else if (failure === 'false_completion') response = 'I have crossed to the far side.';
         else if (failure === 'stale_pending') {
@@ -364,7 +412,7 @@ for (const failure of ['exhausted', 'wrong_pending', 'stale_pending', 'expired',
         } else {
           response = (await provider.tool('propose_move', { target: 'far_side' })).message;
           if (failure === 'rejected') {
-            await page.getByRole('button', { name: 'Power ON', exact: true }).click();
+            if (await page.getByTestId('acknowledged-power').innerText() !== 'ON') await page.getByRole('button', { name: 'Power ON', exact: true }).click();
             await expect(page.getByTestId('acknowledged-power')).toHaveText('ON');
           }
         }
@@ -382,13 +430,14 @@ for (const failure of ['exhausted', 'wrong_pending', 'stale_pending', 'expired',
       return response;
     };
     const report = { route: [] as string[], steps: [] as unknown[], actionRequests: [] as Array<{ outcome: string; strictFirstResponse: boolean; recovered: boolean; exchanges: unknown[] }> };
-    const expected = failure === 'exhausted' ? /recovery exhausted after 3 exchanges/ : failure === 'rejected' ? /failed, not committed/ : failure === 'expired' ? /rejected_or_unresolved/ : failure === 'unexpected_checkpoint' ? /chapter changed before the selected action was confirmed/ : failure === 'wrong_reply_chapter' ? /QA action stopped/ : new RegExp(failure);
+    const recoverable = ['exhausted', 'rejected', 'expired'].includes(failure);
+    const expected = recoverable ? /recovery exhausted after 4 exchanges/ : failure === 'unexpected_checkpoint' ? /chapter changed before the selected action was confirmed/ : failure === 'wrong_reply_chapter' ? /QA action stopped/ : new RegExp(failure);
     try {
-      await expect(runRescuePlayer({ page, say, report })).rejects.toThrow(expected);
+      await expect(runRescuePlayer({ page, say, report, waitForReady: () => waitForPeerDecision(page, provider) })).rejects.toThrow(expected);
       expect(report.actionRequests.at(-1)?.outcome).toBe('failed');
       expect(report.actionRequests.at(-1)?.recovered).toBe(false);
-      expect(report.actionRequests.at(-1)?.exchanges).toHaveLength(failure === 'exhausted' ? 3 : 1);
-      expect(requests.filter(text => /^Please cross to the far side/.test(text))).toHaveLength(failure === 'exhausted' ? 2 : failure === 'wrong_pending' ? 0 : 1);
+      expect(report.actionRequests.at(-1)?.exchanges).toHaveLength(recoverable ? 4 : 1);
+      expect(requests.filter(text => /^Please cross to the far side|^Please create one new proposal to move to the far-side platform/.test(text))).toHaveLength(failure === 'exhausted' || failure === 'expired' ? 3 : failure === 'rejected' ? 2 : failure === 'wrong_pending' ? 0 : 1);
       expect(rescueServer.commits).toHaveLength(failure === 'wrong_pending' ? 0 : 1);
       await expect(page.getByRole('heading', { name: failure === 'unexpected_checkpoint' ? 'Relay Gallery' : 'Cargo Bay', exact: true })).toBeVisible();
       await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toHaveCount(0);
@@ -399,6 +448,40 @@ for (const failure of ['exhausted', 'wrong_pending', 'stale_pending', 'expired',
     }
   });
 }
+
+test('actual shared player stops an uninformative Gallery acquisition after four purposeful requests without guessing a route', async ({ page, rescueServer }) => {
+  expect(process.env.GAME_DISABLE_LIVE).toBe('1');
+  const provider = await fakeProvider(page, { acknowledgeDecisions: true });
+  const events: PeerEvent[] = []; const peer = syntheticPeer(provider, events, false, 'unknown');
+  await page.goto('/'); await page.getByRole('radio', { name: /Live Text/ }).check();
+  await page.getByRole('button', { name: 'Start with Text', exact: true }).click(); await confirmLocalReadiness(page);
+  let reply = 0;
+  const say = async (text: string) => {
+    await page.getByLabel('Type a message').fill(text); await page.getByRole('button', { name: 'Send message', exact: true }).click();
+    const response = await peer(text); const reply_id = `unknown-location-${++reply}`;
+    provider.emit({ type: 'reply.started', reply_id }); provider.emit({ type: 'transcript.agent', reply_id, text: response });
+    provider.emit({ type: 'reply.done', reply_id, status: 'completed' });
+    await expect(page.locator('.history-message').filter({ has: page.locator('p', { hasText: response }) }).last().getByRole('button', { name: 'Pin report', exact: true })).toBeEnabled();
+    return response;
+  };
+  const report = { route: [] as string[], steps: [] as unknown[], acquisitions: [] as Array<{ outcome: string; exchanges: Array<{ reason: string; text: string }> }> };
+  try {
+    await expect(runRescuePlayer({ page, say, report, waitForReady: () => waitForPeerDecision(page, provider) })).rejects.toThrow(/current Gallery location remained unknown after 4 purposeful exchanges/);
+    expect(report.acquisitions.at(-1)?.outcome).toBe('failed');
+    const exchanges = report.acquisitions.at(-1)!.exchanges;
+    expect(exchanges).toHaveLength(4); expect(new Set(exchanges.map(exchange => exchange.reason)).size).toBe(4);
+    expect(new Set(exchanges.map(exchange => exchange.text)).size).toBe(4);
+    expect(rescueServer.commits).toHaveLength(2);
+    expect(events.filter(event => event.kind === 'peer-tool' && event.action === 'propose_move')).toHaveLength(1);
+    await expect(page.getByRole('heading', { name: 'Relay Gallery', exact: true })).toBeVisible();
+    await expect(page.getByLabel('Type a message')).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeEnabled();
+    expect(provider.connections).toBe(1);
+  } finally {
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+    await expect.poll(() => provider.activeSockets).toBe(0);
+  }
+});
 
 for (const interruption of ['Stop', 'Restart', 'reconnect'] as const) {
   test(`shared QA player rejects ${interruption} scope changes before another action`, async ({ page }) => {

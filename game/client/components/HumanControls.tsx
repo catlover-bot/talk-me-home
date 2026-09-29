@@ -18,7 +18,7 @@ export function HumanControls({ view, connected, busy, pending, changePower, cha
   if (view.chapter === 'gallery') return <section className="power-control human-controls relay-controls" aria-labelledby="relay-heading" aria-busy={pending !== null}>
     <div><p className="control-kicker">Mission Control / 02</p><h2 id="relay-heading">Remote Relay</h2><p>Acknowledged: <strong className="control-ack" key={view.relay} data-testid="acknowledged-relay">{view.relay === 'beacon' ? 'Beacon' : view.relay === 'harbor' ? 'Harbor' : 'Off'}</strong></p></div>
     <div className="power-buttons relay-buttons">{(['off', 'beacon', 'harbor'] as const).map(value => <button key={value} aria-label={`Relay ${value === 'off' ? 'Off' : value === 'beacon' ? 'Beacon' : 'Harbor'}`} aria-pressed={view.relay === value} disabled={disabled || view.relay === value} onClick={() => { void changeRelay(value); }}>{value === 'off' ? 'Off' : value === 'beacon' ? 'Beacon' : 'Harbor'}</button>)}</div>
-    <p className="power-explanation" role="status">{waiting ?? disconnected ?? 'One circuit at a time. Tell Pip what you select and ask which gate is clear.'}</p>
+    <p className="power-explanation" role="status">{waiting ?? disconnected ?? 'One circuit at a time. Tell Pip your selection, then recheck gate conditions. A powered gate can still be blocked.'}</p>
   </section>;
   if (view.chapter === 'return_dock') {
     const instruments = view.returnDock;

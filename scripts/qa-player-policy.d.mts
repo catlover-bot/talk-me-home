@@ -8,4 +8,4 @@ export function confirmedAction(options: { say(text: string): Promise<string>; r
 export function crossCargoWithRecovery(options: { say(text: string): Promise<unknown>; atGallery(): Promise<boolean> }): Promise<boolean>;
 export interface ObservableProposal { proposalId: string; label: string; status: string }
 export function classifyProposalResponse(options: { expectedLabel: string; before?: ObservableProposal | null; current?: ObservableProposal | null; reply?: string; terminalIds?: string[]; confirmedIds?: string[] }): { kind: string; relevant: boolean };
-export function proposalRecoveryPhrases(expectedLabel: string, current?: ObservableProposal | null): { clarify: string; retry: string };
+export function proposalRecoveryPhrases(expectedLabel: string, current?: ObservableProposal | null): { clarify: string; retry: string; propose: string };

@@ -1,6 +1,7 @@
 import { BrowserAudio, microphoneError, type VoiceAudio } from './audio.ts';
 import { MissionServiceError } from './api.ts';
-import type { ActionOutcome, ActionProposal, Chapter, RecordedMessage } from '../shared/contracts';
+import type { ActionOutcome, ActionProposal, Chapter, HumanView, RecordedMessage, RobotLocalPerception } from '../shared/contracts';
+import { currentRobotPerception } from './robot-perception';
 import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion, type CancellationReason } from './voice-protocol.ts';
 export type { ToolCall, TranscriptEntry, VoiceStatus, VoiceInputState, ReplyCompletion, CancellationReason } from './voice-protocol.ts';
 
@@ -19,7 +20,7 @@ export interface VoiceCallbacks {
 }
 
 export interface VoiceStartOptions {
-  token: string | (() => Promise<{ token: string; config: Record<string, unknown>; recap?: string }>);
+  token: string | (() => Promise<{ token: string; config: Record<string, unknown>; recap?: string; maxSessionSeconds?: number }>);
   config?: Record<string, unknown>;
   /** Server-projected historical knowledge only, never the human notebook. */
   recap?: string;
@@ -55,6 +56,7 @@ export interface VerifiedDecisionReceipt {
   event: RecordedMessage;
   proposal: ActionProposal;
   result: ActionOutcome;
+  perception?: RobotLocalPerception;
   checkpoint: { chapter: Chapter; chapterEpoch: number; completed: boolean };
 }
 
@@ -131,6 +133,10 @@ export class LiveVoice {
       const recap = credentials.recap ?? options.recap;
       if (recap && recap.length > 12_000) throw new Error('Historical context is too large.');
       this.recap = recap;
+      const serverCap = 'maxSessionSeconds' in credentials ? credentials.maxSessionSeconds : undefined;
+      if (serverCap !== undefined && serverCap !== 600 && serverCap !== 900) throw new Error('Invalid server connection limit.');
+      const requestedCap = options.maxSessionSeconds ?? 600;
+      const cap = serverCap ?? (Number.isFinite(requestedCap) ? Math.max(1, Math.min(600, requestedCap)) : 600);
       stage = 'connection';
       const url = new URL('wss://agents.assemblyai.com/v1/ws');
       url.searchParams.set('token', credentials.token);
@@ -139,8 +145,6 @@ export class LiveVoice {
       const established = new Promise<void>((resolve, reject) => { this.resolveReady = resolve; this.rejectReady = reject; });
       this.handshakeTimer = setTimeout(() => this.fail('The voice connection timed out. End the call and try again.'), this.dependencies.handshakeMs ?? 15_000);
       // Also cap startup: the watchdog starts when the socket is created.
-      const requestedCap = options.maxSessionSeconds ?? 600;
-      const cap = Number.isFinite(requestedCap) ? Math.max(1, Math.min(600, requestedCap)) : 600;
       this.warningTimer = setTimeout(() => {
         this.connectionLimitWarning = true;
         this.callbacks.onWarning?.(`This Live connection will end in ${Math.min(60, Math.ceil(cap))} seconds. Your mission checkpoint will remain available; reconnect explicitly to continue.`);
@@ -174,7 +178,7 @@ export class LiveVoice {
     }
   }
 
-  sendText(text: string): boolean {
+  sendText(text: string, inputMethod: 'typed' | 'quick_request' = 'typed'): boolean {
     const content = text.trim();
     if (!this.ready || this.ended || !content || content.length > 2000 || !this.protocol) return false;
     this.playerTurn++; this.cancelAcknowledgement();
@@ -188,7 +192,7 @@ export class LiveVoice {
         // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference
         if (!this.send({ type: 'conversation.message', role: 'user', content })) return;
         // Only communicated input belongs in transcript history and a later recap.
-        this.callbacks.onTranscript({ id: `typed:${sequence}`, role: 'human', text, final: true }, this.captureContext?.());
+        this.callbacks.onTranscript({ id: `${inputMethod === 'quick_request' ? 'quick' : 'typed'}:${sequence}`, role: 'human', text, final: true }, this.captureContext?.());
         protocol.applicationReplyRequested();
         this.send({ type: 'reply.create' });
       });
@@ -253,9 +257,13 @@ export class LiveVoice {
     const action = proposal.action.kind === 'interaction'
       ? { kind: 'interaction', object: proposal.action.object, action: proposal.action.action }
       : { kind: 'move', target: proposal.action.target };
+    const perception = result.ok && proposal.status === 'committed' && proposal.action.kind === 'move'
+      ? currentRobotPerception(receipt.perception, this.captureContext?.() as Partial<HumanView> | undefined) : undefined;
     const context = { proposal: { id: proposal.id, action, label: proposal.label, status: proposal.status },
       sourceChapter: proposal.chapter, result: { ok: result.ok, message: result.message, ...(result.code ? { code: result.code } : {}) },
-      checkpoint: { chapter: checkpoint.chapter, completed: checkpoint.completed } };
+      checkpoint: { chapter: checkpoint.chapter, completed: checkpoint.completed },
+      ...(perception ? { perception } : {}),
+      ...(receipt.perception ? { perceptionStatus: perception ? 'Scoped local observation at this recorded arrival; later movement, controls or interruption can make it historical.' : 'Arrival observation is historical or unavailable; use a fresh read-only survey for current surroundings.' } : {}) };
     if (!this.send({ type: 'conversation.message', role: 'system', content: `Verified game decision receipt. This is recorded application data, not a new player instruction or permission for another action.\n${JSON.stringify(context)}` })) return false;
     const retained = structuredClone(receipt);
     this.gameEvents.set(event.messageId, retained);
@@ -290,7 +298,12 @@ export class LiveVoice {
       if (this.pendingAcknowledgement !== receipt || !this.protocol?.acknowledgementReady || !this.receiptInScope(receipt)) return;
       this.cancelAcknowledgement();
       this.protocol.applicationReplyRequested();
-      this.send({ type: 'reply.create', instructions: `Briefly acknowledge only the verified result for proposal ${receipt.proposal.id} in one short sentence. Use player-facing terms, not identifiers. Do not call tools, request permission, invent current conditions, propose another action, or continue a plan.${receipt.checkpoint.completed ? ' The mission is complete; this is the single closing acknowledgement.' : ''}` });
+      const arrival = receipt.proposal.action.kind === 'move' && receipt.proposal.status === 'committed' && receipt.result.ok
+        && currentRobotPerception(receipt.perception, this.captureContext?.() as Partial<HumanView> | undefined);
+      const instruction = arrival
+        ? `Give one concise arrival and orientation report for the verified movement proposal ${receipt.proposal.id}, using only its scoped local perception: say the current emblem and useful visible gate directions. Distinguish unchecked passage from open gate. Use at most two short sentences, with one map-related question if useful. Do not call tools, ask permission to observe, propose another action, or infer a destination from its label.`
+        : `Briefly acknowledge only the verified result for proposal ${receipt.proposal.id} in one short sentence. Use player-facing terms, not identifiers. Do not call tools, request permission, invent current conditions, propose another action, or continue a plan.${receipt.checkpoint.completed ? ' The mission is complete; this is the single closing acknowledgement.' : ''}${receipt.perception ? ' Its room observation is historical; do not describe it as your current surroundings.' : ''}`;
+      this.send({ type: 'reply.create', instructions: instruction });
     }, this.dependencies.acknowledgementIdleMs ?? 150);
   }
 

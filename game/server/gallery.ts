@@ -1,9 +1,10 @@
-import type { Relay, ToolResult } from '../shared/contracts.js'
+import { randomUUID } from 'node:crypto'
+import type { Relay, RobotLocalPerception, ToolResult } from '../shared/contracts.js'
 import { exactObject, type GameState } from './state.js'
 
 export type GalleryConfiguration = 'a' | 'b'
 export type GalleryRoom = 'ring' | 'fork' | 'sail' | 'leaf' | 'dock'
-export interface GalleryState { room: GalleryRoom; relay: Relay; configuration: GalleryConfiguration }
+export interface GalleryState { room: GalleryRoom; relay: Relay; configuration: GalleryConfiguration; visitId: string; observationRevision: number }
 type Direction = 'East' | 'West' | 'Northeast' | 'Southwest' | 'Southeast' | 'Northwest'
 interface Gate { id: string; from: GalleryRoom; to: GalleryRoom; circuit: Exclude<Relay, 'off'>; outward: Direction; inward: Direction }
 
@@ -25,28 +26,48 @@ export const localGateDirection = (state: GameState, target: string): string | n
 const obstructed = (state: GameState, gate: Gate) => gate.id === (state.gallery.configuration === 'a' ? 'gallery.g3' : 'gallery.g5')
 const reject = (message: string): ToolResult => ({ ok: false, message })
 
-export function galleryView(state: GameState): ToolResult {
-  const { room, relay } = state.gallery
-  const emblem = room[0]!.toUpperCase() + room.slice(1)
-  return { ok: true, message: `You are in a safe room with the ${emblem} emblem. A fixed compass mark points north. ${adjacent(room).map(gate => `${direction(gate, room)} gate (${gate.id}) is ${relay === gate.circuit ? 'open' : 'closed'}.`).join(' ')} Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.` }
+function localPerception(state: GameState, origin: RobotLocalPerception['origin'], observedAt: number, inspectedGate?: string): RobotLocalPerception {
+  const { room, relay, visitId } = state.gallery
+  const emblems = { ring: 'Ring', fork: 'Fork', sail: 'Sail', leaf: 'Leaf' } as const
+  if (room === 'dock') throw new Error('Gallery perception cannot describe the Return Dock.')
+  return { origin, roundId: state.roundId, chapter: 'gallery', chapterEpoch: state.chapterEpoch, visitId,
+    observationRevision: ++state.gallery.observationRevision, stateRevision: state.revision, actionEpoch: state.actionEpoch, observedAt,
+    emblem: emblems[room], compass: 'north', gates: adjacent(room).map(gate => ({ handle: gate.id, direction: direction(gate, room),
+      power: relay === gate.circuit ? 'powered' : 'unpowered', door: relay === gate.circuit ? 'open' : 'closed',
+      passage: gate.id === inspectedGate ? obstructed(state, gate) ? 'blocked' : 'clear' : 'unchecked' })) }
 }
 
-export function applyGalleryTool(state: GameState, name: string, args: unknown): ToolResult {
-  if (name === 'observe_room') return exactObject(args, []) ? galleryView(state) : reject('Observation takes no arguments.')
+export function perceptionIsCurrent(state: GameState, perception: RobotLocalPerception): boolean {
+  return state.status === 'active' && state.roundId === perception.roundId && state.chapter === perception.chapter
+    && state.chapterEpoch === perception.chapterEpoch && state.gallery.visitId === perception.visitId
+    && state.revision === perception.stateRevision && state.actionEpoch === perception.actionEpoch
+    && state.gallery.observationRevision === perception.observationRevision
+}
+
+export function galleryView(state: GameState, origin: RobotLocalPerception['origin'] = 'local_survey', observedAt = Date.now()): ToolResult {
+  const { room, relay } = state.gallery
+  const emblem = room[0]!.toUpperCase() + room.slice(1)
+  return { ok: true, perception: localPerception(state, origin, observedAt), message: `You are in a safe room with the ${emblem} emblem. A fixed compass mark points north. ${adjacent(room).map(gate => `${direction(gate, room)} gate (${gate.id}) is ${relay === gate.circuit ? 'open' : 'closed'}.`).join(' ')} Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.` }
+}
+
+export function applyGalleryTool(state: GameState, name: string, args: unknown, observedAt = Date.now()): ToolResult {
+  if (name === 'observe_room') return exactObject(args, []) ? galleryView(state, 'local_survey', observedAt) : reject('Observation takes no arguments.')
   if (name === 'inspect_object' || name === 'move_to') {
     const key = name === 'inspect_object' ? 'object' : 'target'
     if (!exactObject(args, [key]) || typeof args[key] !== 'string') return reject('Choose one gate that is visible from your current room.')
     const gate = adjacent(state.gallery.room).find(gate => gate.id === args[key])
     if (!gate) return reject('That gate is not reachable from this room. Observe the local gate labels and choose one.')
-    if (obstructed(state, gate)) return { ok: name === 'inspect_object', message: 'Cargo blocks this gate opening. You remain in the safe room. The other reachable gates can still be checked.' }
-    if (name === 'inspect_object') return { ok: true, message: `${direction(gate, state.gallery.room)} gate (${gate.id}) is ${state.gallery.relay === gate.circuit ? 'open' : 'closed'}. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch. It is a reachable movement target.` }
+    if (name === 'inspect_object') return { ok: true, perception: localPerception(state, 'gate_inspection', observedAt, gate.id), message: `${direction(gate, state.gallery.room)} gate (${gate.id}) is ${state.gallery.relay === gate.circuit ? 'open' : 'closed'}. ${obstructed(state, gate) ? 'Cargo blocks this gate opening. You remain in the safe room. The other reachable gates can still be checked.' : 'The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch. It is a reachable movement target.'}` }
+    if (obstructed(state, gate)) return reject('Cargo blocks this gate opening. You remain in the safe room. The other reachable gates can still be checked.')
     if (state.gallery.relay !== gate.circuit) return reject('This gate is closed. You remain in the safe room. Ask Mission Control about its circuit, then check again.')
     state.gallery.room = gate.from === state.gallery.room ? gate.to : gate.from
+    state.gallery.visitId = randomUUID()
     state.revision += 1
     // A queued intent from the previous room must not turn into an accidental backtrack.
     state.actionEpoch += 1
     if (state.gallery.room === 'dock') return { ok: true, message: 'You passed through the open gate. The Relay Gallery checkpoint confirms arrival at the Return Dock. The rescue continues. Observe the equipment within reach before acting.' }
-    return { ok: true, message: `You passed through the open gate. ${galleryView(state).message}` }
+    const survey = galleryView(state, 'confirmed_arrival', observedAt)
+    return { ...survey, message: `You passed through the open gate. ${survey.message}` }
   }
   if (name === 'interact_object') return reject('There is no local gate circuit switch. Inspect one reachable gate or ask Mission Control to change the Relay.')
   return reject('That tool is not available. Use an implemented local game tool.')
