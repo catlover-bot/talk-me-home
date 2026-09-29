@@ -1,6 +1,6 @@
 # Recording outline and manual Practice check
 
-Developer-only: this page includes solutions. Never supply it to Pip. Example dialogue is illustrative, not a required phrase or password. Current flow: voice-led cooperation with explicit console confirmation. See [Goal 004E validation](goal-004e-confirmed-actions.md); this plan is not evidence of a completed run.
+Developer-only: this page includes solutions. Never supply it to Pip. Example dialogue is illustrative, not a required phrase or password. Current flow: voice-led cooperation with explicit console confirmation. See [Goal 005 validation](goal-005-gallery-live-completion.md) and the [actual edited demo](../submission/demo-script.md); this outline itself is not evidence of a completed run.
 
 ## A 110-second recording outline
 
@@ -35,4 +35,4 @@ Return to briefing, select Training, then Classic or Maintenance. Classic uses t
 
 ## Owner-started Live acceptance
 
-Review [current Goal 004E status](goal-004e-confirmed-actions.md) first. The historical [Goal 003 Live acceptance sheet](goal-003-live-acceptance.md) remains a reference for physical-device checks, not authorization for another call. Apply the current explicit proposal-confirmation step throughout. It includes microphone capture, human-audible output, concise paraphrased cooperation, correction, history, both routes, Return Dock recovery, explicit reconnect and final shutdown. Every human result remains pending until actually observed. Automatic Goal 003 provider use is zero seconds. Do not run the historical `test:live` script as part of this recording outline.
+Review [current Goal 005 status](goal-005-gallery-live-completion.md) first. Its eight-attempt batch is exhausted; one final-candidate synthetic Voice Rescue passed, while the second failed in Gallery with no ending ACK. This is not authorization for another call. The historical [Goal 003 Live acceptance sheet](goal-003-live-acceptance.md) remains a reference for physical-device checks. Apply the current explicit proposal-confirmation step throughout any separately authorized test. Human microphone, audible speaker, natural-play and enjoyment results remain pending. Do not run the historical `test:live` script as part of this outline.

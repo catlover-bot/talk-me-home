@@ -5,7 +5,7 @@ services:
   - type: web
     name: talk-me-home-game
     runtime: node
-    branch: work/goal-004e-confirmed-actions
+    branch: work/goal-005-gallery-live-completion
     plan: starter
     numInstances: 1
     autoDeployTrigger: off

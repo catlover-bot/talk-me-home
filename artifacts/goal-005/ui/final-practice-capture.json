@@ -1,0 +1,123 @@
+{
+  "source": "Frozen final build Practice via normal UI only; deterministic Mock, silent native browser capture, not real model or human speech",
+  "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "rawVideo": ".validation/goal-005-media/final-practice-ui.webm",
+  "rawVideoSha256": "52798f288ca3729eb25f54534a8f732c2645bb0109b6f671cd277882c7bbf429",
+  "clipStartSecondsFromPageCreation": 1.02,
+  "clipDurationSeconds": 30.002,
+  "exactQuote": "I am in a safe room with the Ring emblem. A fixed compass mark points north. East gate is closed. I can inspect a reachable gate to check the opening.",
+  "timeline": [
+    {
+      "label": "Practice Gallery at frozen final build; current report from selected Check surroundings",
+      "secondsFromPageCreation": 1.02,
+      "clipSeconds": 0
+    },
+    {
+      "label": "Planned Ring-Fork-Sail",
+      "secondsFromPageCreation": 1.174,
+      "clipSeconds": 0.154
+    },
+    {
+      "label": "Screenshot: planned-route",
+      "secondsFromPageCreation": 1.241,
+      "clipSeconds": 0.221
+    },
+    {
+      "label": "Changed plan toward Leaf",
+      "secondsFromPageCreation": 5.123,
+      "clipSeconds": 4.103
+    },
+    {
+      "label": "Screenshot: changed-route",
+      "secondsFromPageCreation": 5.192,
+      "clipSeconds": 4.172
+    },
+    {
+      "label": "Erased private plan",
+      "secondsFromPageCreation": 9.086,
+      "clipSeconds": 8.066
+    },
+    {
+      "label": "Same exact quote explicitly associated with corridor conditions and stable room clue",
+      "secondsFromPageCreation": 9.387,
+      "clipSeconds": 8.367
+    },
+    {
+      "label": "Screenshot: exact-quote-links",
+      "secondsFromPageCreation": 9.457,
+      "clipSeconds": 8.437
+    },
+    {
+      "label": "Relay changed; dynamic report became historical",
+      "secondsFromPageCreation": 17.091,
+      "clipSeconds": 16.071
+    },
+    {
+      "label": "Screenshot: historical-dynamic-stable-clue",
+      "secondsFromPageCreation": 17.198,
+      "clipSeconds": 16.178
+    },
+    {
+      "label": "Relay returned Off; dynamic report stays historical and stable clue remains attributed",
+      "secondsFromPageCreation": 22.095,
+      "clipSeconds": 21.075
+    },
+    {
+      "label": "Repeat report via selected request; faithful history provenance",
+      "secondsFromPageCreation": 22.286,
+      "clipSeconds": 21.266
+    },
+    {
+      "label": "Screenshot: selected-request-provenance",
+      "secondsFromPageCreation": 22.361,
+      "clipSeconds": 21.341
+    },
+    {
+      "label": "Usable Practice clip ends",
+      "secondsFromPageCreation": 31.022,
+      "clipSeconds": 30.002
+    }
+  ],
+  "safety": {
+    "GAME_DISABLE_LIVE": true,
+    "externalRequestsBlocked": 0,
+    "tokenAttempts": 0,
+    "websocketAttempts": 0,
+    "errors": []
+  },
+  "screenshots": [
+    "artifacts/goal-005/ui/final-planned-route.png",
+    "artifacts/goal-005/ui/final-changed-route.png",
+    "artifacts/goal-005/ui/final-exact-quote-links.png",
+    "artifacts/goal-005/ui/final-historical-dynamic-stable-clue.png",
+    "artifacts/goal-005/ui/final-selected-request-provenance.png"
+  ],
+  "screenshotSha256": {
+    "artifacts/goal-005/ui/final-planned-route.png": "a109f5a13c686a4999e4cf8517316899e84f9656532a5f1a776bb1ddf58e33fd",
+    "artifacts/goal-005/ui/final-changed-route.png": "b6408aa68a14436cbaea331f81f614de972916c323493c5e5407b47e84e2b73e",
+    "artifacts/goal-005/ui/final-exact-quote-links.png": "45b9a28e8ced7343109f11bf4c697355c98091b426507a52c4134931f1965173",
+    "artifacts/goal-005/ui/final-historical-dynamic-stable-clue.png": "bf7e78b74afa03b151090e3227a1c59a799de2ddbb61e136a6cdf8cb7099e4cf",
+    "artifacts/goal-005/ui/final-selected-request-provenance.png": "90007d0570910f2aba089ef661d32dcb8a03699d4df8c6cc310f826c34f22644"
+  },
+  "validation": {
+    "compiledFilesCompared": 22,
+    "compiledManifestSource": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+    "compiledMismatches": [],
+    "captureCommandExit": 0,
+    "ownedBrowserAndServerClosed": true,
+    "visualInspection": [
+      "Planned marks visible and map/Practice controls readable",
+      "Dynamic quote labelled historical after Relay change; stable player-associated clue separately attributed",
+      "Selected request source label visible on exact Repeat report history row"
+    ],
+    "script": ".validation/goal-005-media/capture-final-practice-ui.mjs",
+    "scriptSha256": "3d3cb6a347c9fc2750e47113a058467220cc4aaac7224cb97af7b75a714c465a",
+    "scope": "Offline scripted UI capture only; no runtime/player/source change, no provider connection, no microphone/audio synthesis. Prior capture selector/encoding failures retained under ignored media directory."
+  },
+  "timingBoundary": "Timeline uses Node wall-clock relative to browser page creation; native video alignment is approximate, not sample-accurate."
+}

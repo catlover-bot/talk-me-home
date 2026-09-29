@@ -1,10 +1,10 @@
 {
   "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
-  "attempts": 11,
-  "productionAttempts": 11,
-  "remainingAttempts": 2,
-  "reservedSeconds": 9170,
-  "estimatedReservedDollars": 11.4625,
+  "attempts": 13,
+  "productionAttempts": 13,
+  "remainingAttempts": 0,
+  "reservedSeconds": 11110,
+  "estimatedReservedDollars": 13.8875,
   "verifiedRateDollarsPerHour": 4.5,
   "localConnectedSeconds": [
     71.08180000000074,
@@ -17,7 +17,9 @@
     205.48260000002384,
     645.8465999999643,
     183.3817000000477,
-    883.0585
+    883.0585,
+    577.2133000000119,
+    567.446199999988
   ],
   "endAcknowledgements": [
     true,
@@ -30,26 +32,28 @@
     true,
     true,
     true,
+    false,
+    true,
     false
   ],
-  "nextPermittedAt": "2026-09-29T10:55:36.475Z",
-  "admissionStatus": "requires_current_frozen_candidate_batch_admission",
-  "inspectedAt": "2026-09-29T10:57:23.949Z",
+  "nextPermittedAt": null,
+  "admissionStatus": "exhausted",
+  "inspectedAt": "2026-09-29T11:34:53.266Z",
   "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "amendmentId": "goal-005-gallery-live-completion-2026-09-29",
   "historicalAttempts": 5,
-  "newAttempts": 6,
+  "newAttempts": 8,
   "historicalReservedSeconds": 3350,
-  "newReservedSeconds": 5820,
+  "newReservedSeconds": 7760,
   "historicalProductionAttempts": 5,
-  "newProductionAttempts": 6,
-  "remainingReservedCapacitySeconds": 1940,
+  "newProductionAttempts": 8,
+  "remainingReservedCapacitySeconds": 0,
   "maximumAggregatePlanningDollars": 13.8875,
   "approvedAggregatePlanningCeiling": 14.1875,
   "originalCampaignSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "originalAllowanceSha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
-  "amendmentLedgerSha256": "6a7efa22289300bc446942acfde2f5481b4f21ae24613643f5167388db64250c",
-  "amendedAllowanceSha256": "2853f09b23ea44c9eb570807e67b3e9d4435f46a7a49fbcdf2629b3797d447f7",
+  "amendmentLedgerSha256": "cf7090b4feb51c61bee85f38f0285cf051f9e71edd944f955582fe22069e89ce",
+  "amendedAllowanceSha256": "6aef0800752726825336f9ef40719c9bc98c7b7bc191cbb89a8dc361db519e85",
   "amendedSequence": {
     "mode": "voice_or_reasoned_text_diagnostic",
     "passed": false,
@@ -61,7 +65,7 @@
   "approvedNewReservedSeconds": 7760,
   "approvedNewDollars": 10,
   "permanentStop": null,
-  "estimatedNewReservedDollars": 7.275,
+  "estimatedNewReservedDollars": 9.7,
   "historicalEvidence": "Five unchanged historical attempts remain linked through the fixed predecessor hashes; their compact exports are not duplicated.",
   "results": [
     {
@@ -200,6 +204,52 @@
         "browserClosedObserved": true,
         "serverClosedObserved": true,
         "supervisorClosedAt": "2026-09-29T10:54:20.934Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-29T11-10-24-116Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+      "failure": null,
+      "completion": true,
+      "endAcknowledged": true,
+      "accountingAttempt": 12,
+      "historical": false,
+      "behaviorStatus": "pass",
+      "materialDefects": 0,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-29T11:20:14.356Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-29T11-21-06-378Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+      "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+      "completion": false,
+      "endAcknowledged": false,
+      "accountingAttempt": 13,
+      "historical": false,
+      "behaviorStatus": "blocked",
+      "materialDefects": 1,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-29T11:30:45.546Z"
       }
     }
   ],

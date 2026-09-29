@@ -1,6 +1,32 @@
 # Goal 005 — Gallery and Live completion
 
-Work is in progress on `work/goal-005-gallery-live-completion`, based on delivered `d87a898bdc7fa1e6dcb6bbf1debe4be1e9930291`. No Goal 005 Live completion is claimed before the attempt evidence below exists.
+**Final acceptance target not met: one of two required final-candidate Voice passes. The approved batch is exhausted; no retry remains.** Work is delivered on `work/goal-005-gallery-live-completion`, based on `d87a898bdc7fa1e6dcb6bbf1debe4be1e9930291`. The final ordinary sample (aggregate attempt 12) completed Rescue with real ASR, digital playback, exact confirmations, remote ending ACK and cleanup. The recovery sample (attempt 13) used the identical candidate but stopped in Gallery and received no ending ACK. `RELEASE_NOT_LIVE_VERIFIED` remains because the required final pair did not pass.
+
+| Final measure | Actual result |
+| --- | --- |
+| Frozen execution candidate | `2edf7914a008143843923b04a9bf3a1fe41f1f68`; identical runtime, harness and speech fixtures for attempts 12 and 13 |
+| Offline validation | 437 unit tests, 142 compiled-browser cases, typecheck, build, whitespace and fresh production Practice passed |
+| Final-candidate acceptance | **1/2 passed**: ordinary passed; deliberate-recovery sample failed |
+| Functional homes across all candidates | Attempts **9, 11 and 12**; earlier functional homes do not replace final-candidate acceptance |
+| Missing remote-ending ACKs | Attempts **11 and 13**; provider durations remain unknown |
+| Goal 005 allowance | **8/8 consumed**, 7,760 seconds / **USD 9.70** conservatively reserved; **0 remaining** |
+| Linked C/D/E/005 accounting | 13 attempts, 11,110 seconds / USD 13.8875 reserved, including unchanged historical reservations |
+| Public deployment / human evidence | Not deployed; physical-device quality, natural human play and enjoyment remain unverified |
+
+The USD 10 ceiling applies to the additional Goal 005 batch, not the historical aggregate. No grant was reset, refunded or replenished. See [final accounting](../artifacts/goal-005/live/final-accounting.json), [preservation audit](../artifacts/goal-005/live/final-preservation.json), [copied offline receipt](../artifacts/goal-005/live/final-offline-validation.json), and the actual attempts below. These are planning and observed-duration records, not an invoice or refreshed account balance.
+
+| Aggregate / batch attempt | Frozen commit | Furthest verified checkpoint | Automated result | Provider seconds | End ACK |
+| --- | --- | --- | --- | --- | --- |
+| 6 / 1 | `0723e57` | Return Dock; no home | Failed: four return exchanges exhausted | 562.556016 | Yes |
+| 7 / 2 | `8351617` | Return Dock; no home | Failed: four return exchanges exhausted | 509.541203 | Yes |
+| 8 / 3 | `61fdcbb` | Gallery, Fork; no home | Failed: empty completed reply left pacing unresolved | 205.216512 | Yes |
+| 9 / 4 | `dd91633` | **Home verified** | Failed: post-home next-input waiter stopped on `session_ended`; raw `completion:false` retained | 645.664858 | Yes |
+| 10 / 5 | `78fa583` | Gallery, Ring; no home | Failed: fresh Ring wording was not recognized within four exchanges | 183.183735 | Yes |
+| 11 / 6 | `cc3537b` | **Home verified** | Failed: ending observation timed out; no remote ACK | Unknown | No |
+| 12 / 7 | `2edf791` | **Home verified** | **Passed: ordinary sample** | 576.923132 | Yes |
+| 13 / 8 | `2edf791` | Gallery, Fork; no home | Failed: southeast-passage recovery exceeded 120 seconds; no remote ACK | Unknown | No |
+
+All eight were synthetic-microphone Voice runs. Attempt 13 included the deliberate decline exercise; it shared the exact final runtime, player and fixtures with attempt 12. The six ACK-bearing samples report **2,683.085456 provider seconds** in total. This is a partial observed sum: attempts 11 and 13 have unknown provider durations, so no total billed duration or actual billed cost is inferred.
 
 ## Authorization and acceptance
 
@@ -208,7 +234,7 @@ Aggregate linked accounting is now eleven attempts and eleven production admissi
 
 Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/`. The immutable manifest is `.validation/goal-004c-live/goal-005-attempt-11-cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8.json`; the clean validation receipt is `.validation/goal-005-offline/cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8-2026-09-29T10-34-55-314Z.json`.
 
-Goal 005 currently has **two verified functional homes (attempts 9 and 11), six recorded failed automated runs, and zero of the two required final-harness acceptance passes**. Two slots remain under the existing grant. Attempt 11 has no `REMOTE_END_CONFIRMED` result. Defaults and CI remain provider-disabled; `RELEASE_NOT_LIVE_VERIFIED` remains the release status.
+After the sixth sample, Goal 005 had two verified functional homes (attempts 9 and 11), six recorded failed automated runs and zero of the two required final-harness acceptance passes, with two slots remaining. Attempt 11 has no `REMOTE_END_CONFIRMED` result.
 
 ### Current-handle grounding and bounded ending hardening
 
@@ -216,16 +242,40 @@ Attempt 11 correctly consumed all Gallery arrivals without extra location survey
 
 The system decision context already carried eligible local handles, but the one-shot arrival instruction said to use its facts while omitting those handles. Both documented paths now retain the same dispatch-validated current gate handles, marked for tool arguments only and never spoken. Stale observations and their handles remain omitted. This is a consistency/grounding hypothesis, not proof of provider ingestion or persistence beyond a one-shot reply. The failing-first acknowledgement check and 20 passing repaired checks are retained in `.validation/goal-005-arrival-handles-{before,after}.log`.
 
-The official [browser integration](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration) and [message sequence](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/message-sequence) describe an ending ACK before normal socket closure, without a numeric ACK deadline. Attempt 11's handler had no reproduced ACK-processing defect: it continued receiving farewell events, then its five-second local fallback closed the connection. The driver's twelve-second observation could not recover an ACK after that listener/socket was gone. A bounded ending-policy hardening is being verified; it cannot establish that the missing historical ACK existed.
+The official [browser integration](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration) and [message sequence](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/message-sequence) describe an ending ACK before normal socket closure, without a numeric ACK deadline. Attempt 11's handler had no reproduced ACK-processing defect: it continued receiving farewell events, then its five-second local fallback closed the connection. The driver's twelve-second observation could not recover an ACK after that listener/socket was gone. The bounded ending-policy hardening below was verified offline before the final pair; it cannot establish that the missing historical ACK existed.
 
 The client now observes ending for up to ten seconds, clamped to the original monotonic socket-created 600/900-second deadline. Microphone, playback and tools still stop immediately, and only one End is sent. Constructed tests cover a six-second ACK, no ACK with hung cancellation, repeated End, oversized injected grace, and manual/automatic ending at both caps. The focused lifecycle/voice suite passed 87 checks after the failing baseline. This is a local bounded policy, not a provider latency guarantee.
 
-The driver observes at most twenty seconds after home (the existing eight-second closing phase plus ten-second End window and processing margin), or twelve seconds after explicit Pause. Either ACK or socket closure finishes observation; closure without ACK remains a failed independent final audit. Fourteen focused lifecycle/pacing checks passed, including a fourteen-second home-to-ACK sequence, prompt unacknowledged closure, and finite absence of both events. The original 900-second supervisor and 970-second accounting reservation are unchanged. The combined arrival browser checks passed 2/2 and their rendered screenshot was inspected; no spoken identifiers or human projection leak appeared in the constructed peer. A new frozen real sample is still needed.
+The driver observes at most twenty seconds after home (the existing eight-second closing phase plus ten-second End window and processing margin), or twelve seconds after explicit Pause. Either ACK or socket closure finishes observation; closure without ACK remains a failed independent final audit. Fourteen focused lifecycle/pacing checks passed, including a fourteen-second home-to-ACK sequence, prompt unacknowledged closure, and finite absence of both events. The original 900-second supervisor and 970-second accounting reservation are unchanged. The combined arrival browser checks passed 2/2 and their rendered screenshot was inspected; no spoken identifiers or human projection leak appeared in the constructed peer. The 87-case and 14-case focused results were captured in tool output only; no separate saved log path is claimed for them.
+
+### Final frozen validation and the seventh/eighth Goal 005 samples
+
+Clean commit `2edf7914a008143843923b04a9bf3a1fe41f1f68` then passed the full offline release: 437 unit tests, 142 compiled-browser cases, typecheck, production build, whitespace and fresh-context production Practice. The exact [copied receipt](../artifacts/goal-005/live/final-offline-validation.json) matches `.validation/goal-005-offline/2edf7914a008143843923b04a9bf3a1fe41f1f68-2026-09-29T11-06-05-085Z.json`. Both final attempts used runtime `bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401`, harness `d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486`, speech fixtures `d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7` and exact `session.update` hash `f24d678be5f5fb0b2b96649e5be160cafbf1bc9a8031544f9df45d01782e8f24`.
+
+| Measure | Attempt 12: ordinary | Attempt 13: deliberate recovery |
+| --- | --- | --- |
+| Automated outcome | **Passed** | **Failed** |
+| Functional home | Yes | No; stopped in Relay Gallery |
+| Synthetic turns | 28 | 23 |
+| Exact confirmations / unique physical commits | 11 / 11 | 5 / 5 |
+| Local observed duration | 577.2133 seconds to ending ACK | 567.4462 seconds to local socket close |
+| Provider-reported duration | 576.923132 seconds | Unknown; no ACK |
+| Explicit End / remote ACK | Sent / observed | Sent / not observed |
+| Audio resources / supervisor survivors after cleanup | 0 / 0 | 0 / 0 |
+| Browser and server closure | Observed | Observed |
+
+Attempt 12 crossed Cargo, navigated Gallery with recovery and backtracking, completed Dock, and committed the final authorized return. Its home checkpoint appeared at browser time 574,384.8 ms; [the actual home screenshot](../artifacts/goal-005/live/attempt-12-observed-home.png) was inspected. The final return needed a capsule-inspection clarification and a rephrased proposal request, then completed through the exact UI confirmation. Real ASR and nonzero synthetic input, provider, rendered and post-volume digital audio were observed. The behavior audit passed, the remote ending ACK was received, and the durable supervisor result is `passed`. This is one synthetic Voice Rescue pass, not a human-play or statistical-reliability claim. [Conversation](../artifacts/goal-005/live/2026-09-29T11-10-24-116Z-voice-mission-conversation.md), [metrics](../artifacts/goal-005/live/2026-09-29T11-10-24-116Z-voice-mission-metrics.json), [accounting](../artifacts/goal-005/live/attempt-12-accounting.json).
+
+Attempt 13 deliberately declined the first exact Latch proposal using **Not yet**. That proposal produced no physical commit. A fresh spoken request produced a different matching proposal, which was confirmed and committed. This local recovery exercise succeeded, but the mission later stopped after returning to Fork. The first southeast-passage request failed inspection; the second described an open gate without confirming a clear passage. The third inspection produced a successful tool result, but its normal spoken answer had not arrived when the 120-second subgoal expired. A clear-passage answer arrived only after explicit End and was not consumed for navigation or retroactively counted as recovery. The final failure remains `QA fork southeast passage recovery exceeded 120 seconds.` [The actual failure screenshot](../artifacts/goal-005/live/attempt-13-observed-failure.png), [conversation](../artifacts/goal-005/live/2026-09-29T11-21-06-378Z-voice-mission-conversation.md), [metrics](../artifacts/goal-005/live/2026-09-29T11-21-06-378Z-voice-mission-metrics.json), [accounting](../artifacts/goal-005/live/attempt-13-accounting.json) and [independent review](../artifacts/goal-005/live/attempt-13-independent-review.json) preserve the result.
+
+The independent review found four first-inspection failures across four Gallery arrivals. Growing ASR-final and tool-continuation delays were also observed, without evidence sufficient to assign a browser, network, model or provider cause. Asking for opaque gate labels and asking permission for already-requested read-only checks remain conversational shortcomings. All five committed actions had exact confirmations; no unsupported execution or unconfirmed physical mutation was observed. Those safety results do not establish mission completion.
+
+Attempt 13 sent one explicit End, then closed locally with code 1005 after the bounded fallback. No `session.ended` ACK arrived and provider duration remains null. Local cleanup is confirmed; remote termination and billing duration are not. Its supervisor lease expired at **2026-09-29 11:37:18.900 UTC** and the production lease at **11:37:18.921 UTC**. The [final audit](../artifacts/goal-005/live/final-accounting.json), performed at **11:42:34.087 UTC**, confirmed both expiries and read-only production admission rejection for exhaustion. Expiry cannot produce an ACK or restore capacity: **all eight Goal 005 slots are consumed, so every further attempt is blocked regardless of lease time**. No real call, funding initialization or retry follows this failed final sample.
+
+The original directories are `.validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/` and `.validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/`. Their immutable manifests are `goal-005-attempt-12-2edf7914a008143843923b04a9bf3a1fe41f1f68.json` and `goal-005-attempt-13-2edf7914a008143843923b04a9bf3a1fe41f1f68.json` in the original campaign directory. Original reports, captions, browser recordings, audio and ledgers are retained unchanged. The final preservation receipt lists authorized rebuilt `dist/` differences separately from unchanged historical evidence, without silently excluding baseline paths.
 
 ## Delivery checklist
 
-- Verify the complete perception-to-provider-to-caption path, cancellation, report freshness and exactly-once authority using compiled production and constructed peers.
-- Run full typecheck/build/unit/two-viewport browser tests; inspect map/history/controls at desktop, narrow and zoomed layouts.
-- Execute the approved bounded Voice repair loop; retain each actual result, identity, duration, ACK and reservation without retry concealment.
-- After the final result, produce versioned local `Talk_Me_Home_Goal005_Demo.mp4`, `Talk_Me_Home_Goal005_Pitch.pptx` and `Talk_Me_Home_Goal005_Pitch.pdf`; retain existing originals.
-- Push only the feature branch and inspect its exact final CI head. Update this report and current owner/checklist status from actual evidence.
+- Full offline validation and all eight authorized Goal 005 attempts are complete; the two-pass Live acceptance target was not met. No additional provider use is authorized by the exhausted batch.
+- Current local media, provenance, public availability and remaining owner-only decisions are listed in the [submission checklist](../submission/release-checklist.md) and [OWNER_ACTIONS](../OWNER_ACTIONS.md). Older Goal 001–004 reports and media remain historical records.
+- The frozen execution identity above is separate from the final documentation/media delivery commit. Consult the final handoff and local `.validation/goal-005/final-ci.json` for that exact delivery SHA and CI result; [feature-branch workflow runs](https://github.com/catlover-bot/talk-me-home/actions?query=branch%3Awork%2Fgoal-005-gallery-live-completion) provide the remote record. No final CI pass is inferred from local validation.

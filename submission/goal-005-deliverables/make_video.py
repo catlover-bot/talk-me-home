@@ -48,11 +48,12 @@ for index, segment in enumerate(PLAN['segments']):
     args = ['ffmpeg', '-nostdin', '-y', '-hide_banner', '-loglevel', 'error']
     args += ['-loop', '1', '-i', str(source)] if mode == 'card' else ['-ss', str(start), '-i', str(source)]
     if not segment.get('audio'): args += ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']
-    filters = ['scale=1152:648:force_original_aspect_ratio=decrease', 'pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x24382f', 'setsar=1']
-    for field, y, size in [('label', 9, 17), ('caption', 693, 16)]:
+    filters = ['scale=1840:1000:force_original_aspect_ratio=decrease', 'pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=0x24382f', 'setsar=1']
+    for field, y, size in [('label', 10, 24), ('caption', 1044, 22)]:
         content = segment[field]; assert '\n' not in content and len(content) <= 145
         txt = WORK / f'segment-{index:02d}-{field}.txt'; txt.write_text(content, encoding='utf-8')
         filters.append(f'drawtext=fontfile={FONT}:textfile={txt}:fontcolor=0xf4efdf:fontsize={size}:x=(w-tw)/2:y={y}')
+    if segment.get('audio'): args += ['-af', 'apad']
     args += ['-t', str(duration), '-vf', ','.join(filters), '-map', '0:v:0', '-map', '0:a:0' if segment.get('audio') else '1:a:0', '-r', '30', '-fps_mode', 'cfr', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-threads', '2', '-c:a', 'aac', '-b:a', '128k', '-ar', '48000', '-ac', '2', '-movflags', '+faststart', str(outfile)]
     run(args)
     timeline.append({**segment, 'editedStart': cursor, 'editedEnd': cursor+duration}); cursor += duration

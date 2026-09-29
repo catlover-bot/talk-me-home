@@ -1,27 +1,27 @@
 # Release and submission checklist
 
-Updated after the approved Goal 004E candidate recheck, September 29, 2026. Branch: **`work/goal-004e-confirmed-actions`**. **OFFLINE_REPAIR_PASS / REAL_VOICE_RESCUE_FAILED / REMOTE_END_CONFIRMED / RELEASE_NOT_LIVE_VERIFIED**. This is local delivery, not a submitted entry.
+Goal 005 local delivery, September 29, 2026. Branch: **`work/goal-005-gallery-live-completion`**. **OFFLINE_REPAIR_PASS / ONE FINAL-CANDIDATE VOICE RESCUE PASS / TWO-PASS TARGET NOT MET / RELEASE_NOT_LIVE_VERIFIED**.
 
 | Item | Actual status |
 | --- | --- |
-| Source and CI | Frozen application source `fcbd513effb17d8c90e612c28aa92ed76c070b7e`; approved preparation `c38a10c` minimally activated and executed as `0d21f7cd30cbb4d4b59a9710a53228cd7bad8b4d`. Application/prompt/shared player unchanged. Final feature-head CI is linked in the delivery report. Starter `main` is not the game. |
-| Production and offline coverage | **PASSED**: 358 unit tests, 124 browser cases, typecheck, build, whitespace and fresh production Practice. Both Gallery variants, Dock/home and Training covered. [Receipt](../artifacts/goal-004e/follow-up/offline-validation.json). |
-| Public HTTPS | **NOT PROVIDED / NOT DEPLOYED.** One prepared Render Node service + disk decision in [OWNER_ACTIONS](../OWNER_ACTIONS.md); initial Live disabled. |
-| Judge Live access | **NOT ENABLED.** Needs separate hosting/access/spending authorization and a finite durable public allowance. Exhausted private QA is not that allowance. |
-| Repository access | **OWNER DECISION PENDING.** Feature-branch access must be deliberate; visibility unchanged. |
-| Descriptions | **PRODUCED.** Title 12 characters, short description 172 characters, long description 242 words. |
-| Cover/icon | **PRODUCED.** Existing original art and source/license provenance preserved in `assets/`. Cover is illustration, not gameplay. |
-| Current UI images | **CAPTURED / INSPECTED.** New Practice images in `local-deliverables/screenshots/`; constructed-provider confirmation/history/home images in `../artifacts/goal-004e/follow-up/screenshots/`. Modes are labelled. |
-| Presentation | **PRODUCED LOCALLY.** [Editable six-slide PPTX](Talk_Me_Home_Pitch.pptx) and [native-rendered PDF](Talk_Me_Home_Pitch.pdf); every slide inspected. Public link **NOT PROVIDED**. |
-| Video | **PRODUCED LOCALLY / RECHECKED.** `submission/Talk_Me_Home_Demo_Draft.mp4`, 166.79s, 1280×720, 4,526,386 bytes, H.264/AAC. Retained failed synthetic Voice and completed Practice are explicitly separated. Audio occurs only within the historical 29.0–73.6s excerpt, with pauses; remaining sections are silent. Not narrated throughout. Local ignored file; upload/link **NOT PROVIDED**. |
-| Media provenance | [Exact paths/sizes/hashes and rendering checks](local-deliverables/provenance.json), [edit timeline](local-deliverables/edit-timeline.json), small editable sources retained. Historical originals unchanged. |
-| Historical Voice result | **FAILED IN CARGO** on September 28; original transcript/media and accounting retained. [Original conversation](../artifacts/goal-004e/live/2026-09-28T10-24-13-651Z-voice-mission-conversation.md). |
-| Approved candidate Voice recheck | **EXECUTED ONCE / RESCUE FAILED.** Cargo crossed; one Gallery gate move completed; no Dock/home. Three exact first-response proposals confirmed and committed. Final emblem clarification produced no observation and hit the unchanged player bound. [Actual conversation](../artifacts/goal-004e/recheck-live/2026-09-29T03-22-38-226Z-voice-mission-conversation.md), [analysis](../artifacts/goal-004e/recheck-live/outcome-analysis.json). No repair/retry. |
-| Recheck usage and ending | **ONE TOKEN / ONE CONNECTION.** 163.9664 local seconds, 163.862032 provider-reported seconds; explicit End ACK after 266 ms and clean closure. 670 seconds / USD 0.8375 conservatively reserved, below USD 0.84. No invoice or refreshed balance claimed. [Accounting](../artifacts/goal-004e/recheck-live/final-accounting.json). |
-| Recheck media | **PRESERVED SEPARATELY.** New real synthetic-microphone ASR/replies, digital input/output audio and browser video remain in the local ignored run directory. The older PPTX/PDF/draft video were not replaced after failure. [Review](../artifacts/goal-004e/recheck-live/media-review.json). |
-| QA allowance | **EXHAUSTED:** 5/5 attempts, 3,350 seconds reserved, USD 4.1875 planning estimate, zero remaining. Historical records unchanged. No reset/refund/replenishment. |
-| Physical audio / human play | **UNVERIFIED.** No new physical microphone/speaker result, natural human clear or enjoyment claim. |
-| Event form / cutoff | **OWNER CHECK PENDING.** Verify current logged-in requirements and precise cutoff; previous listing dates are historical, not a refreshed deadline. |
-| Uploads / final submission | **NOT UPLOADED / NOT SUBMITTED.** Local draft is not event compliance or submission confirmation. |
+| Source and CI | Runtime/player frozen at `2edf7914a008143843923b04a9bf3a1fe41f1f68` for both last calls. Later delivery commits add evidence, documents and media. Exact final-head CI is recorded in the owner handoff and [Goal 005 report](../docs/goal-005-gallery-live-completion.md). |
+| Offline coverage | **PASSED:** typecheck, 437 unit tests, build, 142 browser cases, whitespace and fresh production Practice. Both Gallery variants, backtracking, cancellation, Training, Dock/home, narrow layout and zoom covered. |
+| Ordinary real Voice | **PASSED ONCE:** global attempt 12 / new attempt 7. Cargo, Gallery backtracking, Dock and home; 11 exact confirmed commits. Synthetic microphone, real ASR/model/tools and shipped digital playback. End ACK and cleanup verified. 576.923132 provider seconds. |
+| Deliberate-recovery real Voice | **FAILED:** global attempt 13 / new attempt 8, same candidate. Declined Latch caused no commit; a fresh proposal recovered. Five exact commits; Cargo and Gallery reached. Fork passage recovery exceeded 120 seconds; no Dock/home. End sent, ACK absent, provider duration unknown. 567.4462 local socket seconds; local cleanup verified. |
+| Earlier home observations | Attempts 9 and 11 reached functional home but failed full acceptance because of a terminal harness error and missing ACK respectively. These are historical outcomes, not final-candidate passes. |
+| Remaining defects | Intermittent first-inspection failures, unnecessary permission questions and delayed responses remain. The required two-pass target was not met. |
+| QA allowance | **EXHAUSTED:** 8/8 new attempts, 7,760 reserved seconds / USD 9.70 additional estimate. Historical five attempts remain untouched. Combined 13 attempts / 11,110 seconds / USD 13.8875 estimate. Zero remaining; no refund or replenishment. Reservations are not invoices or refreshed balance evidence. |
+| Evidence | [Accounting and conversations](../artifacts/goal-005/live/campaign-summary.json); raw audio/video stay under local `.validation/goal-004c-live/`. Missing ACKs in 11 and 13 remain unknown remote ending. |
+| UI images | Actual [Gallery captures](../artifacts/goal-005/ui/gallery-validation.json), final Practice media, and real home/failure screenshots retain their mode labels. |
+| Descriptions | Title 12 characters; short description 172 characters; long description 242 words. |
+| Artwork | Original cover/icon and license/source provenance preserved. Cover is illustration. |
+| Presentation | [Goal 005 editable PPTX](Talk_Me_Home_Goal005_Pitch.pptx) and [native-rendered PDF](Talk_Me_Home_Goal005_Pitch.pdf). All six slides reviewed; [media receipt](goal-005-deliverables/README.md). |
+| Video | Local `submission/Talk_Me_Home_Goal005_Demo.mp4`: labelled Practice UI and disclosed excerpts from one successful synthetic real Voice run. Original speech retained; successful uncut run retained locally. [Exact edit and inspection](goal-005-deliverables/README.md). MP4 is ignored and not uploaded. |
+| Historical deliverables | Goal 004E PPTX/PDF/video and previous evidence remain unchanged. [Fifth-attempt history](../docs/goal-004e-confirmed-actions.md#approved-fifth-attempt-result). |
+| Physical audio / human play | **UNVERIFIED:** no physical microphone/speaker acceptance, human listening review, natural human clear or enjoyment study. Digital evidence is separate. |
+| Public HTTPS / judge access | **NOT DEPLOYED / NOT ENABLED.** [Prepared hosting settings](../OWNER_ACTIONS.md) keep Live disabled. Private QA is not a public allowance. |
+| Repository | Feature-branch push authorized; visibility unchanged. No PR or main merge. |
+| Event form / cutoff | Actual logged-in requirements and exact cutoff remain owner checks; historical dates are not a refreshed deadline. |
+| Uploads / submission | **NOT UPLOADED / NOT SUBMITTED.** No public video, presentation or demo URL is invented. |
 
-The [general submission guide](https://lablab.ai/ai-articles/hackathon-guidelines) was referenced in prior preparation; the actual logged-in event form remains authoritative for this entry. No public link is invented. Review the completed local artifacts and decide hosting/access/upload scope; no further ordinary implementation/browser work is pending for the owner.
+The report and media retain the successful sample and failed acceptance target together. Local implementation, browser testing and media production are handled here; future spending, deployment and external submission remain separate owner decisions.

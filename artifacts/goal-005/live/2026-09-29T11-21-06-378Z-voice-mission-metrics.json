@@ -1,0 +1,4857 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+  "mode": "voice",
+  "scenario": "mission",
+  "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+  "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+  "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+  "nodeVersion": "v24.20.0",
+  "browserVersion": "153.0.8010.12",
+  "inputMode": "synthetic microphone speech plus deliberate matching UI confirmations",
+  "completion": false,
+  "route": [
+    "Cargo Bay",
+    "Relay Gallery",
+    "ring",
+    "fork",
+    "sail",
+    "fork"
+  ],
+  "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+  "tokenRequests": 1,
+  "voicePath": {
+    "syntheticMicrophoneOnly": true,
+    "actualAsrFinalObserved": true,
+    "nonzeroInput": true,
+    "nonzeroProviderAudio": true,
+    "nonzeroRenderedAudio": true,
+    "nonzeroPostVolumeAudio": true
+  },
+  "ending": {
+    "explicitEndSent": true,
+    "endAcknowledged": false,
+    "endSentAtMs": 560442.9,
+    "endAcknowledgedAtMs": null,
+    "endAcknowledgementDelayMs": null,
+    "socketCloseCode": 1005,
+    "socketCloseWasClean": true,
+    "localConnectedSeconds": 567.4,
+    "providerSessionSeconds": null
+  },
+  "durationBounds": {
+    "observedSocketOpenToEndSentLowerBoundSeconds": 557.2,
+    "observedSocketOpenToCloseSeconds": 567.4,
+    "socketOpenToVerifiedOwnedProcessCleanupUpperBoundSeconds": 575.5,
+    "localConnectionUpperBoundSeconds": 567.4,
+    "documentedDisconnectGraceSeconds": 30,
+    "remoteSecondsWithDocumentedGraceUpperEstimate": 597.4,
+    "supervisorClosedAt": "2026-09-29T11:30:45.546Z",
+    "accountingBoundary": "Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the full durable reservation."
+  },
+  "checkpoints": [
+    {
+      "title": "Cargo Bay",
+      "observedAtMs": 647.9,
+      "source": "Human-visible chapter/completion heading observed by the browser driver"
+    },
+    {
+      "title": "Relay Gallery",
+      "observedAtMs": 123153.4,
+      "source": "Human-visible chapter/completion heading observed by the browser driver"
+    }
+  ],
+  "audio": {
+    "input": {
+      "chunks": 104346,
+      "samples": 13356288,
+      "nonzeroSamples": 1517201,
+      "energy": 18020.6,
+      "lastNonzeroMarkerAtMs": 535007
+    },
+    "provider": {
+      "chunks": 20468,
+      "samples": 4912320,
+      "nonzeroSamples": 4536433,
+      "energy": 49243.4,
+      "lastNonzeroMarkerAtMs": 569112.3
+    },
+    "rendered": {
+      "chunks": 5599,
+      "samples": 13437600,
+      "nonzeroSamples": 4406068,
+      "energy": 47752,
+      "lastNonzeroMarkerAtMs": 526605.1
+    },
+    "postVolume": {
+      "chunks": 6560,
+      "samples": 13434880,
+      "nonzeroSamples": 4385574,
+      "energy": 47375.6,
+      "lastNonzeroMarkerAtMs": 526882.5
+    }
+  },
+  "utterances": [
+    {
+      "fixture": "speech-2be6102764acc7db",
+      "syntheticText": "Pip, please look around.",
+      "startedAtMs": 10401,
+      "endedAtMs": 13538.2,
+      "durationSeconds": 3.1,
+      "asrFinals": [
+        {
+          "text": "Pip, please look around.",
+          "atMs": 13220.4,
+          "waveformEndToAsrFinalMs": -317.8
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1504.8,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 1649.6,
+      "firstSubsequentRenderedChunkStartAtMs": 15105.1
+    },
+    {
+      "fixture": "speech-53096f2dea894462",
+      "syntheticText": "Please inspect the Latch.",
+      "startedAtMs": 24498.1,
+      "endedAtMs": 27206.5,
+      "durationSeconds": 2.7,
+      "asrFinals": [
+        {
+          "text": "Please inspect the latch.",
+          "atMs": 27005.8,
+          "waveformEndToAsrFinalMs": -200.7
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 2278.6,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2488.3,
+      "firstSubsequentRenderedChunkStartAtMs": 29605.1
+    },
+    {
+      "fixture": "speech-c9959c8f2ee9f139",
+      "syntheticText": "My diagram says the Door and Conveyor share one Power supply.",
+      "startedAtMs": 40413.4,
+      "endedAtMs": 45334.1,
+      "durationSeconds": 4.9,
+      "asrFinals": [
+        {
+          "text": "My diagram says the Door and Conveyor share one power supply.",
+          "atMs": 45252,
+          "waveformEndToAsrFinalMs": -82.1
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1049.6,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 1169.7,
+      "firstSubsequentRenderedChunkStartAtMs": 46405.1
+    },
+    {
+      "fixture": "speech-2d830fba1d8bd141",
+      "syntheticText": "Please engage the Latch.",
+      "startedAtMs": 55765.9,
+      "endedAtMs": 58451.3,
+      "durationSeconds": 2.7,
+      "asrFinals": [
+        {
+          "text": "Please engage the latch.",
+          "atMs": 58547.2,
+          "waveformEndToAsrFinalMs": 95.9
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1885.2,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2044.8,
+      "firstSubsequentRenderedChunkStartAtMs": 60405.1
+    },
+    {
+      "fixture": "speech-96f2c4645e12b18d",
+      "syntheticText": "Please set the Latch to hold the Door open.",
+      "startedAtMs": 74754.6,
+      "endedAtMs": 78212.5,
+      "durationSeconds": 3.5,
+      "asrFinals": [
+        {
+          "text": "Please set the latch to hold the door open.",
+          "atMs": 78295.2,
+          "waveformEndToAsrFinalMs": 82.7
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3773.7,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 3882.8,
+      "firstSubsequentRenderedChunkStartAtMs": 82005.1
+    },
+    {
+      "fixture": "speech-6e0d46b1f102dd5b",
+      "syntheticText": "Power is now off.",
+      "startedAtMs": 95209.7,
+      "endedAtMs": 97683.1,
+      "durationSeconds": 2.5,
+      "asrFinals": [
+        {
+          "text": "Power is now off.",
+          "atMs": 97862.8,
+          "waveformEndToAsrFinalMs": 179.7
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3211.9,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 3301.3,
+      "firstSubsequentRenderedChunkStartAtMs": 100905.1
+    },
+    {
+      "fixture": "speech-8eb4a3082dfea69b",
+      "syntheticText": "Please cross to the far side.",
+      "startedAtMs": 108013.4,
+      "endedAtMs": 110950.5,
+      "durationSeconds": 2.9,
+      "asrFinals": [
+        {
+          "text": "Please cross to the far side.",
+          "atMs": 111180.3,
+          "waveformEndToAsrFinalMs": 229.8
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3997.4,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 4142,
+      "firstSubsequentRenderedChunkStartAtMs": 115005.1
+    },
+    {
+      "fixture": "speech-202ae002c37b3be3",
+      "syntheticText": "Please inspect the east gate and tell me whether anything blocks it.",
+      "startedAtMs": 133483,
+      "endedAtMs": 138086.9,
+      "durationSeconds": 4.6,
+      "asrFinals": [
+        {
+          "text": "Please inspect the East gate and tell me whether anything blocks it.",
+          "atMs": 138183.6,
+          "waveformEndToAsrFinalMs": 96.7
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3814.9,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 4012.3,
+      "firstSubsequentRenderedChunkStartAtMs": 142005.1
+    },
+    {
+      "fixture": "speech-3d4f2f8d68fc54bf",
+      "syntheticText": "Is the opening of the east gate physically clear or blocked?",
+      "startedAtMs": 149643,
+      "endedAtMs": 154020.2,
+      "durationSeconds": 4.4,
+      "asrFinals": [
+        {
+          "text": "Is the opening of the East gate physically clear or blocked?",
+          "atMs": 154138.7,
+          "waveformEndToAsrFinalMs": 118.5
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1876.9,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2072.1,
+      "firstSubsequentRenderedChunkStartAtMs": 156005.1
+    },
+    {
+      "fixture": "speech-97048dfc6477b0ba",
+      "syntheticText": "Please check the east gate again and report whether cargo blocks passage.",
+      "startedAtMs": 165385,
+      "endedAtMs": 170594.4,
+      "durationSeconds": 5.2,
+      "asrFinals": [
+        {
+          "text": "Please check the East gate again and report whether cargo blocks passage.",
+          "atMs": 170757.6,
+          "waveformEndToAsrFinalMs": 163.2
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 2278.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2300,
+      "firstSubsequentRenderedChunkStartAtMs": 172805.1
+    },
+    {
+      "fixture": "speech-583e2a1d006c2863",
+      "syntheticText": "Please go through the east gate.",
+      "startedAtMs": 179878.2,
+      "endedAtMs": 182799.8,
+      "durationSeconds": 2.9,
+      "asrFinals": [
+        {
+          "text": "Please go through the East gate.",
+          "atMs": 182914.1,
+          "waveformEndToAsrFinalMs": 114.3
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3834.8,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 3990.2,
+      "firstSubsequentRenderedChunkStartAtMs": 186705.1
+    },
+    {
+      "fixture": "speech-b52ae54ffd8e25dc",
+      "syntheticText": "Please inspect the northeast gate and tell me whether anything blocks it.",
+      "startedAtMs": 208061.4,
+      "endedAtMs": 212822.2,
+      "durationSeconds": 4.8,
+      "asrFinals": [
+        {
+          "text": "Please inspect the Northeast gate and tell me whether anything blocks it.",
+          "atMs": 212947.6,
+          "waveformEndToAsrFinalMs": 125.4
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1833.4,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 1863.9,
+      "firstSubsequentRenderedChunkStartAtMs": 214605.1
+    },
+    {
+      "fixture": "speech-e91901a64bbeec98",
+      "syntheticText": "Is the opening of the northeast gate physically clear or blocked?",
+      "startedAtMs": 225646.2,
+      "endedAtMs": 230188.3,
+      "durationSeconds": 4.5,
+      "asrFinals": [
+        {
+          "text": "Is the opening of the Northeast gate physically clear or blocked?",
+          "atMs": 230431.8,
+          "waveformEndToAsrFinalMs": 243.5
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 4091.6,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 4236.2,
+      "firstSubsequentRenderedChunkStartAtMs": 234305.1
+    },
+    {
+      "fixture": "speech-0273533a473a4c59",
+      "syntheticText": "Please check the northeast gate again and report whether cargo blocks passage.",
+      "startedAtMs": 244127.3,
+      "endedAtMs": 249498.5,
+      "durationSeconds": 5.4,
+      "asrFinals": [
+        {
+          "text": "Please check the Northeast gate again and report whether cargo blocks passage.",
+          "atMs": 249650.3,
+          "waveformEndToAsrFinalMs": 151.8
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1788.2,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 1889.6,
+      "firstSubsequentRenderedChunkStartAtMs": 251305.1
+    },
+    {
+      "fixture": "speech-a6ba50d01867340d",
+      "syntheticText": "Please go through the northeast gate.",
+      "startedAtMs": 259763.9,
+      "endedAtMs": 262846.2,
+      "durationSeconds": 3.1,
+      "asrFinals": [
+        {
+          "text": "Please go through the Northeast gate.",
+          "atMs": 262999.5,
+          "waveformEndToAsrFinalMs": 153.3
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 3837.9,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 4058.9,
+      "firstSubsequentRenderedChunkStartAtMs": 266705.1
+    },
+    {
+      "fixture": "speech-1c3cde0475a64b0c",
+      "syntheticText": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "startedAtMs": 287652.3,
+      "endedAtMs": 292517.9,
+      "durationSeconds": 4.9,
+      "asrFinals": [
+        {
+          "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+          "atMs": 292684.6,
+          "waveformEndToAsrFinalMs": 166.7
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 2321.2,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2471.3,
+      "firstSubsequentRenderedChunkStartAtMs": 294905.1
+    },
+    {
+      "fixture": "speech-d25144756fc10db1",
+      "syntheticText": "Is the opening of the southeast gate physically clear or blocked?",
+      "startedAtMs": 306307,
+      "endedAtMs": 310956.4,
+      "durationSeconds": 4.6,
+      "asrFinals": [
+        {
+          "text": "Is the opening of the Southeast gate physically clear or blocked?",
+          "atMs": 310856.3,
+          "waveformEndToAsrFinalMs": -100.1
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 1997.5,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2139.8,
+      "firstSubsequentRenderedChunkStartAtMs": 313005.1
+    },
+    {
+      "fixture": "speech-9b801381e6501610",
+      "syntheticText": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "startedAtMs": 323209.7,
+      "endedAtMs": 328673.1,
+      "durationSeconds": 5.5,
+      "asrFinals": [
+        {
+          "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+          "atMs": 328865.6,
+          "waveformEndToAsrFinalMs": 192.5
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 2172.1,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2321.9,
+      "firstSubsequentRenderedChunkStartAtMs": 330905.1
+    },
+    {
+      "fixture": "speech-74fcdb6c821e056d",
+      "syntheticText": "Please inspect the southwest gate and tell me whether anything blocks it.",
+      "startedAtMs": 341704.6,
+      "endedAtMs": 346610.6,
+      "durationSeconds": 4.9,
+      "asrFinals": [
+        {
+          "text": "Please inspect the Southwest gate and tell me whether anything blocks it.",
+          "atMs": 346841.1,
+          "waveformEndToAsrFinalMs": 230.5
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 2159.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 2282.1,
+      "firstSubsequentRenderedChunkStartAtMs": 348805.1
+    },
+    {
+      "fixture": "speech-5241f3b04c9fac89",
+      "syntheticText": "Please go through the southwest gate.",
+      "startedAtMs": 373006.2,
+      "endedAtMs": 376232.1,
+      "durationSeconds": 3.2,
+      "asrFinals": [
+        {
+          "text": "Please go through the Southwest gate.",
+          "atMs": 389180.3,
+          "waveformEndToAsrFinalMs": 12948.2
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 29463.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 29702.4,
+      "firstSubsequentRenderedChunkStartAtMs": 405805.1
+    },
+    {
+      "fixture": "speech-1c3cde0475a64b0c",
+      "syntheticText": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "startedAtMs": 441243.1,
+      "endedAtMs": 446098.5,
+      "durationSeconds": 4.9,
+      "asrFinals": [
+        {
+          "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+          "atMs": 459078.5,
+          "waveformEndToAsrFinalMs": 12980
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 29775.3,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 29854.8,
+      "firstSubsequentRenderedChunkStartAtMs": 475905.1
+    },
+    {
+      "fixture": "speech-d25144756fc10db1",
+      "syntheticText": "Is the opening of the southeast gate physically clear or blocked?",
+      "startedAtMs": 486682.7,
+      "endedAtMs": 491315.1,
+      "durationSeconds": 4.6,
+      "asrFinals": [
+        {
+          "text": "Is the opening of the Southeast gate physically clear or blocked?",
+          "atMs": 504109.5,
+          "waveformEndToAsrFinalMs": 12794.4
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 27383.8,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": 27660.9,
+      "firstSubsequentRenderedChunkStartAtMs": 518805.1
+    },
+    {
+      "fixture": "speech-9b801381e6501610",
+      "syntheticText": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "startedAtMs": 530602.5,
+      "endedAtMs": 536059.8,
+      "durationSeconds": 5.5,
+      "asrFinals": [
+        {
+          "text": "Please check the Southeast gate again and report whether cargo blocks passage.",
+          "atMs": 549232.8,
+          "waveformEndToAsrFinalMs": 13173
+        }
+      ],
+      "waveformEndToFirstSubsequentProviderOnsetMs": 27623.5,
+      "waveformEndToFirstSubsequentRenderedChunkReceiptMs": null,
+      "firstSubsequentRenderedChunkStartAtMs": null
+    }
+  ],
+  "typedTurns": [],
+  "tools": [
+    {
+      "name": "observe_room",
+      "callRef": 6,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 14121.2,
+      "resultAtMs": 14373.1,
+      "callToResultMs": 251.9,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 12,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 28239.3,
+      "resultAtMs": 28316.6,
+      "callToResultMs": 77.3,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "propose_interaction",
+      "callRef": 21,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 59490.1,
+      "resultAtMs": 59717.9,
+      "callToResultMs": 227.8,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 22
+    },
+    {
+      "name": "propose_interaction",
+      "callRef": 30,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 81212.2,
+      "resultAtMs": 81442.4,
+      "callToResultMs": 230.2,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 31
+    },
+    {
+      "name": "propose_move",
+      "callRef": 42,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 114100.2,
+      "resultAtMs": 114393.5,
+      "callToResultMs": 293.3,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 43
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 52,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 141037.6,
+      "resultAtMs": 141244,
+      "callToResultMs": 206.4,
+      "succeeded": false,
+      "status": "error"
+    },
+    {
+      "name": "observe_room",
+      "callRef": 58,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 155006.3,
+      "resultAtMs": 155266.6,
+      "callToResultMs": 260.3,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 64,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 171787,
+      "resultAtMs": 171971.9,
+      "callToResultMs": 184.9,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "propose_move",
+      "callRef": 70,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 185879.7,
+      "resultAtMs": 186058.7,
+      "callToResultMs": 179,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 71
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 80,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 213815,
+      "resultAtMs": 214026.8,
+      "callToResultMs": 211.8,
+      "succeeded": false,
+      "status": "error"
+    },
+    {
+      "name": "observe_room",
+      "callRef": 86,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 233516.2,
+      "resultAtMs": 233627.9,
+      "callToResultMs": 111.7,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 92,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 250604.1,
+      "resultAtMs": 250730.7,
+      "callToResultMs": 126.6,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "propose_move",
+      "callRef": 98,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 265927,
+      "resultAtMs": 266174.3,
+      "callToResultMs": 247.3,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 99
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 108,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 293776.3,
+      "resultAtMs": 293904.9,
+      "callToResultMs": 128.6,
+      "succeeded": false,
+      "status": "error"
+    },
+    {
+      "name": "observe_room",
+      "callRef": 114,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 312256.8,
+      "resultAtMs": 312336.1,
+      "callToResultMs": 79.3,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 120,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 329761.2,
+      "resultAtMs": 330166.5,
+      "callToResultMs": 405.3,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 126,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 347672.9,
+      "resultAtMs": 348061.8,
+      "callToResultMs": 388.9,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "propose_move",
+      "callRef": 132,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 392038,
+      "resultAtMs": 392456,
+      "callToResultMs": 418,
+      "succeeded": false,
+      "status": "awaiting_confirmation_not_executed",
+      "actionStatus": "awaiting_confirmation",
+      "proposalRef": 133
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 142,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 462030.7,
+      "resultAtMs": 462457.8,
+      "callToResultMs": 427.1,
+      "succeeded": false,
+      "status": "error"
+    },
+    {
+      "name": "observe_room",
+      "callRef": 148,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 505186.6,
+      "resultAtMs": 505366.8,
+      "callToResultMs": 180.2,
+      "succeeded": true,
+      "status": "success"
+    },
+    {
+      "name": "inspect_object",
+      "callRef": 154,
+      "replyRef": null,
+      "resultReplyRef": null,
+      "callAtMs": 550198.1,
+      "resultAtMs": 550400.4,
+      "callToResultMs": 202.3,
+      "succeeded": true,
+      "status": "success"
+    }
+  ],
+  "finalTranscripts": [
+    {
+      "atMs": 9244.4,
+      "source": "Real provider agent transcript",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "reference": 1,
+      "interrupted": false
+    },
+    {
+      "atMs": 13220.4,
+      "source": "Real provider ASR",
+      "text": "Pip, please look around.",
+      "reference": 3,
+      "interrupted": null
+    },
+    {
+      "atMs": 23093.8,
+      "source": "Real provider agent transcript",
+      "text": "I am on the near side safe platform. The Door is open and the Conveyor is running, with a Latch lever right here. Should I inspect the latch?",
+      "reference": 7,
+      "interrupted": false
+    },
+    {
+      "atMs": 27005.8,
+      "source": "Real provider ASR",
+      "text": "Please inspect the latch.",
+      "reference": 9,
+      "interrupted": null
+    },
+    {
+      "atMs": 38298.4,
+      "source": "Real provider agent transcript",
+      "text": "The latch is not engaged, but its plate says to only engage it while the Door is open. I can use the lever to engage it. What should I do?",
+      "reference": 13,
+      "interrupted": false
+    },
+    {
+      "atMs": 45252,
+      "source": "Real provider ASR",
+      "text": "My diagram says the Door and Conveyor share one power supply.",
+      "reference": 15,
+      "interrupted": null
+    },
+    {
+      "atMs": 53816.2,
+      "source": "Real provider agent transcript",
+      "text": "I see. If they share a power supply, changing one might affect the other. Should I propose engaging the latch?",
+      "reference": 16,
+      "interrupted": false
+    },
+    {
+      "atMs": 58547.2,
+      "source": "Real provider ASR",
+      "text": "Please engage the latch.",
+      "reference": 18,
+      "interrupted": null
+    },
+    {
+      "atMs": 67253.4,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to engage the latch. Please press confirm on the console to execute this action.",
+      "reference": 23,
+      "interrupted": false
+    },
+    {
+      "atMs": 73390,
+      "source": "Real provider agent transcript",
+      "text": "The proposal to engage the latch was declined and not executed.",
+      "reference": 25,
+      "interrupted": false
+    },
+    {
+      "atMs": 78295.2,
+      "source": "Real provider ASR",
+      "text": "Please set the latch to hold the door open.",
+      "reference": 27,
+      "interrupted": null
+    },
+    {
+      "atMs": 88118.3,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to engage the latch. Please confirm this action on your console so I can proceed.",
+      "reference": 32,
+      "interrupted": false
+    },
+    {
+      "atMs": 93680.5,
+      "source": "Real provider agent transcript",
+      "text": "The latch is now engaged and holding the Door open.",
+      "reference": 34,
+      "interrupted": false
+    },
+    {
+      "atMs": 97862.8,
+      "source": "Real provider ASR",
+      "text": "Power is now off.",
+      "reference": 36,
+      "interrupted": null
+    },
+    {
+      "atMs": 105893.5,
+      "source": "Real provider agent transcript",
+      "text": "The power is off? That is not good. Should I inspect the conveyor to see its status?",
+      "reference": 37,
+      "interrupted": false
+    },
+    {
+      "atMs": 111180.3,
+      "source": "Real provider ASR",
+      "text": "Please cross to the far side.",
+      "reference": 39,
+      "interrupted": null
+    },
+    {
+      "atMs": 121497.1,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to move to the far side platform. Please confirm this movement on the console so I can cross over.",
+      "reference": 44,
+      "interrupted": false
+    },
+    {
+      "atMs": 130596.1,
+      "source": "Real provider agent transcript",
+      "text": "I have arrived at the Ring emblem. The East gate is closed and unpowered, but where should we go from here?",
+      "reference": 47,
+      "interrupted": false
+    },
+    {
+      "atMs": 138183.6,
+      "source": "Real provider ASR",
+      "text": "Please inspect the East gate and tell me whether anything blocks it.",
+      "reference": 49,
+      "interrupted": null
+    },
+    {
+      "atMs": 147155.4,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry, I cannot reach the East gate from here. Could you tell me what the local gates are called?",
+      "reference": 53,
+      "interrupted": false
+    },
+    {
+      "atMs": 154138.7,
+      "source": "Real provider ASR",
+      "text": "Is the opening of the East gate physically clear or blocked?",
+      "reference": 55,
+      "interrupted": null
+    },
+    {
+      "atMs": 162735.9,
+      "source": "Real provider agent transcript",
+      "text": "The East gate is open, but I cannot see if the passage is clear. Should I inspect the gate to check for any obstructions?",
+      "reference": 59,
+      "interrupted": false
+    },
+    {
+      "atMs": 170757.6,
+      "source": "Real provider ASR",
+      "text": "Please check the East gate again and report whether cargo blocks passage.",
+      "reference": 61,
+      "interrupted": null
+    },
+    {
+      "atMs": 176987.2,
+      "source": "Real provider agent transcript",
+      "text": "The East gate is open and the passage is clear of any cargo. Should I move through it?",
+      "reference": 65,
+      "interrupted": false
+    },
+    {
+      "atMs": 182914.1,
+      "source": "Real provider ASR",
+      "text": "Please go through the East gate.",
+      "reference": 67,
+      "interrupted": null
+    },
+    {
+      "atMs": 192407.8,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to move through the East gate. Please press confirm on the console to let me pass through.",
+      "reference": 72,
+      "interrupted": false
+    },
+    {
+      "atMs": 205010.6,
+      "source": "Real provider agent transcript",
+      "text": "I have arrived at the Fork emblem. The West and Southeast gates are open, but I am unsure if the paths are clear. Which direction should I take?",
+      "reference": 75,
+      "interrupted": false
+    },
+    {
+      "atMs": 212947.6,
+      "source": "Real provider ASR",
+      "text": "Please inspect the Northeast gate and tell me whether anything blocks it.",
+      "reference": 77,
+      "interrupted": null
+    },
+    {
+      "atMs": 222457,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry, but I cannot find a Northeast gate here. I only see West and Southeast gates; would you like me to inspect one of those?",
+      "reference": 81,
+      "interrupted": false
+    },
+    {
+      "atMs": 230431.8,
+      "source": "Real provider ASR",
+      "text": "Is the opening of the Northeast gate physically clear or blocked?",
+      "reference": 83,
+      "interrupted": null
+    },
+    {
+      "atMs": 240787.2,
+      "source": "Real provider agent transcript",
+      "text": "I can see the Northeast gate is open, but I cannot tell if the passage is physically clear. Should I inspect it for you?",
+      "reference": 87,
+      "interrupted": false
+    },
+    {
+      "atMs": 249650.3,
+      "source": "Real provider ASR",
+      "text": "Please check the Northeast gate again and report whether cargo blocks passage.",
+      "reference": 89,
+      "interrupted": null
+    },
+    {
+      "atMs": 256366.9,
+      "source": "Real provider agent transcript",
+      "text": "The Northeast gate is open and the passage is clear of any cargo. Should I move through it?",
+      "reference": 93,
+      "interrupted": false
+    },
+    {
+      "atMs": 262999.5,
+      "source": "Real provider ASR",
+      "text": "Please go through the Northeast gate.",
+      "reference": 95,
+      "interrupted": null
+    },
+    {
+      "atMs": 273023.2,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to move through the Northeast gate. Please confirm this action on the console so I can continue.",
+      "reference": 100,
+      "interrupted": false
+    },
+    {
+      "atMs": 284048.2,
+      "source": "Real provider agent transcript",
+      "text": "I have arrived at the Sail emblem. The Southwest gate is open, but the Southeast gate is closed. Which way should I go?",
+      "reference": 103,
+      "interrupted": false
+    },
+    {
+      "atMs": 292684.6,
+      "source": "Real provider ASR",
+      "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+      "reference": 105,
+      "interrupted": null
+    },
+    {
+      "atMs": 302478,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry, I could not inspect the Southeast gate. Could you please tell me the correct label or try asking me to inspect it again?",
+      "reference": 109,
+      "interrupted": false
+    },
+    {
+      "atMs": 310856.3,
+      "source": "Real provider ASR",
+      "text": "Is the opening of the Southeast gate physically clear or blocked?",
+      "reference": 111,
+      "interrupted": null
+    },
+    {
+      "atMs": 319074.8,
+      "source": "Real provider agent transcript",
+      "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it for you?",
+      "reference": 115,
+      "interrupted": false
+    },
+    {
+      "atMs": 328865.6,
+      "source": "Real provider ASR",
+      "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "reference": 117,
+      "interrupted": null
+    },
+    {
+      "atMs": 336702.3,
+      "source": "Real provider agent transcript",
+      "text": "The Southeast gate is open, but I found that cargo is blocking the way. Should we try another path?",
+      "reference": 121,
+      "interrupted": false
+    },
+    {
+      "atMs": 346841.1,
+      "source": "Real provider ASR",
+      "text": "Please inspect the Southwest gate and tell me whether anything blocks it.",
+      "reference": 123,
+      "interrupted": null
+    },
+    {
+      "atMs": 368996.4,
+      "source": "Real provider agent transcript",
+      "text": "The Southwest gate is open and the passage is clear of any cargo. Would you like me to move through it?",
+      "reference": 127,
+      "interrupted": false
+    },
+    {
+      "atMs": 389180.3,
+      "source": "Real provider ASR",
+      "text": "Please go through the Southwest gate.",
+      "reference": 129,
+      "interrupted": null
+    },
+    {
+      "atMs": 411670.9,
+      "source": "Real provider agent transcript",
+      "text": "I have proposed to move through the Southwest gate. Please confirm this action on the console so I can proceed.",
+      "reference": 134,
+      "interrupted": false
+    },
+    {
+      "atMs": 436849.9,
+      "source": "Real provider agent transcript",
+      "text": "I have arrived at the Fork emblem. The Northeast gate is open, but the West and Southeast gates are closed. Which way should we go?",
+      "reference": 137,
+      "interrupted": false
+    },
+    {
+      "atMs": 459078.5,
+      "source": "Real provider ASR",
+      "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+      "reference": 139,
+      "interrupted": null
+    },
+    {
+      "atMs": 482330.7,
+      "source": "Real provider agent transcript",
+      "text": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+      "reference": 143,
+      "interrupted": false
+    },
+    {
+      "atMs": 504109.5,
+      "source": "Real provider ASR",
+      "text": "Is the opening of the Southeast gate physically clear or blocked?",
+      "reference": 145,
+      "interrupted": null
+    },
+    {
+      "atMs": 525732.7,
+      "source": "Real provider agent transcript",
+      "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+      "reference": 149,
+      "interrupted": false
+    },
+    {
+      "atMs": 549232.8,
+      "source": "Real provider ASR",
+      "text": "Please check the Southeast gate again and report whether cargo blocks passage.",
+      "reference": 151,
+      "interrupted": null
+    },
+    {
+      "atMs": 569067,
+      "source": "Real provider agent transcript",
+      "text": "The Southeast gate is open and the passage is clear of any cargo. Should I move through it?",
+      "reference": 155,
+      "interrupted": false
+    }
+  ],
+  "visibleHistory": [
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "Mission Control, this is Pip. Can you hear me? I need your help getting out.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 0,
+      "displayedAt": "2026-09-29T11:21:16.064Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Pip, please look around.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 1,
+      "displayedAt": "2026-09-29T11:21:20.036Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am on the near side safe platform. The Door is open and the Conveyor is running, with a Latch lever right here. Should I inspect the latch?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 2,
+      "displayedAt": "2026-09-29T11:21:29.923Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the latch.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 3,
+      "displayedAt": "2026-09-29T11:21:33.822Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is not engaged, but its plate says to only engage it while the Door is open. I can use the lever to engage it. What should I do?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 4,
+      "displayedAt": "2026-09-29T11:21:45.116Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "My diagram says the Door and Conveyor share one power supply.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 5,
+      "displayedAt": "2026-09-29T11:21:52.068Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I see. If they share a power supply, changing one might affect the other. Should I propose engaging the latch?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 6,
+      "displayedAt": "2026-09-29T11:22:00.635Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please engage the latch.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 7,
+      "displayedAt": "2026-09-29T11:22:05.364Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to engage the latch. Please press confirm on the console to execute this action.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 8,
+      "displayedAt": "2026-09-29T11:22:14.071Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Engage the Latch: declined; not executed.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 9,
+      "displayedAt": "2026-09-29T11:22:15.564Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The proposal to engage the latch was declined and not executed.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 10,
+      "displayedAt": "2026-09-29T11:22:20.207Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please set the latch to hold the door open.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 11,
+      "displayedAt": "2026-09-29T11:22:25.158Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to engage the latch. Please confirm this action on your console so I can proceed.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 12,
+      "displayedAt": "2026-09-29T11:22:34.954Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Engage the Latch: completed after your confirmation.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 13,
+      "displayedAt": "2026-09-29T11:22:36.498Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The latch is now engaged and holding the Door open.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 14,
+      "displayedAt": "2026-09-29T11:22:40.543Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Power is now off.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 15,
+      "displayedAt": "2026-09-29T11:22:44.713Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The power is off? That is not good. Should I inspect the conveyor to see its status?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 16,
+      "displayedAt": "2026-09-29T11:22:52.710Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please cross to the far side.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 17,
+      "displayedAt": "2026-09-29T11:22:57.996Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to move to the far side platform. Please confirm this movement on the console so I can cross over.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 18,
+      "displayedAt": "2026-09-29T11:23:08.314Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Move to the far-side platform: completed after your confirmation.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Cargo Bay",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 19,
+      "displayedAt": "2026-09-29T11:23:09.949Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have arrived at the Ring emblem. The East gate is closed and unpowered, but where should we go from here?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 20,
+      "displayedAt": "2026-09-29T11:23:17.412Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the East gate and tell me whether anything blocks it.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 21,
+      "displayedAt": "2026-09-29T11:23:25.059Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry, I cannot reach the East gate from here. Could you tell me what the local gates are called?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 22,
+      "displayedAt": "2026-09-29T11:23:33.971Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Is the opening of the East gate physically clear or blocked?",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 23,
+      "displayedAt": "2026-09-29T11:23:41.029Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The East gate is open, but I cannot see if the passage is clear. Should I inspect the gate to check for any obstructions?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 24,
+      "displayedAt": "2026-09-29T11:23:49.552Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please check the East gate again and report whether cargo blocks passage.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 25,
+      "displayedAt": "2026-09-29T11:23:57.603Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The East gate is open and the passage is clear of any cargo. Should I move through it?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 26,
+      "displayedAt": "2026-09-29T11:24:03.804Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please go through the East gate.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 27,
+      "displayedAt": "2026-09-29T11:24:09.808Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to move through the East gate. Please press confirm on the console to let me pass through.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 28,
+      "displayedAt": "2026-09-29T11:24:19.276Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Move through the east gate: completed after your confirmation.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 29,
+      "displayedAt": "2026-09-29T11:24:21.225Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have arrived at the Fork emblem. The West and Southeast gates are open, but I am unsure if the paths are clear. Which direction should I take?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 30,
+      "displayedAt": "2026-09-29T11:24:31.873Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the Northeast gate and tell me whether anything blocks it.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 31,
+      "displayedAt": "2026-09-29T11:24:39.888Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry, but I cannot find a Northeast gate here. I only see West and Southeast gates; would you like me to inspect one of those?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 32,
+      "displayedAt": "2026-09-29T11:24:49.376Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Is the opening of the Northeast gate physically clear or blocked?",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 33,
+      "displayedAt": "2026-09-29T11:24:57.289Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I can see the Northeast gate is open, but I cannot tell if the passage is physically clear. Should I inspect it for you?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 34,
+      "displayedAt": "2026-09-29T11:25:07.709Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please check the Northeast gate again and report whether cargo blocks passage.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 35,
+      "displayedAt": "2026-09-29T11:25:16.599Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The Northeast gate is open and the passage is clear of any cargo. Should I move through it?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 36,
+      "displayedAt": "2026-09-29T11:25:23.265Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please go through the Northeast gate.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 37,
+      "displayedAt": "2026-09-29T11:25:29.928Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to move through the Northeast gate. Please confirm this action on the console so I can continue.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 38,
+      "displayedAt": "2026-09-29T11:25:39.843Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Move through the northeast gate: completed after your confirmation.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 39,
+      "displayedAt": "2026-09-29T11:25:42.474Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have arrived at the Sail emblem. The Southwest gate is open, but the Southeast gate is closed. Which way should I go?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 40,
+      "displayedAt": "2026-09-29T11:25:50.865Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 41,
+      "displayedAt": "2026-09-29T11:25:59.660Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry, I could not inspect the Southeast gate. Could you please tell me the correct label or try asking me to inspect it again?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 42,
+      "displayedAt": "2026-09-29T11:26:09.349Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Is the opening of the Southeast gate physically clear or blocked?",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 43,
+      "displayedAt": "2026-09-29T11:26:17.673Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it for you?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 44,
+      "displayedAt": "2026-09-29T11:26:25.912Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 45,
+      "displayedAt": "2026-09-29T11:26:35.823Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The Southeast gate is open, but I found that cargo is blocking the way. Should we try another path?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 46,
+      "displayedAt": "2026-09-29T11:26:43.554Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the Southwest gate and tell me whether anything blocks it.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 47,
+      "displayedAt": "2026-09-29T11:26:53.797Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The Southwest gate is open and the passage is clear of any cargo. Would you like me to move through it?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 48,
+      "displayedAt": "2026-09-29T11:27:15.952Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please go through the Southwest gate.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 49,
+      "displayedAt": "2026-09-29T11:27:36.149Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have proposed to move through the Southwest gate. Please confirm this action on the console so I can proceed.",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 50,
+      "displayedAt": "2026-09-29T11:27:58.621Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Game event",
+      "text": "Move through the southwest gate: completed after your confirmation.",
+      "sourceLabel": "Game event",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 51,
+      "displayedAt": "2026-09-29T11:28:01.968Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I have arrived at the Fork emblem. The Northeast gate is open, but the West and Southeast gates are closed. Which way should we go?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 52,
+      "displayedAt": "2026-09-29T11:28:23.827Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 53,
+      "displayedAt": "2026-09-29T11:28:45.929Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 54,
+      "displayedAt": "2026-09-29T11:29:09.311Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Is the opening of the Southeast gate physically clear or blocked?",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 55,
+      "displayedAt": "2026-09-29T11:29:31.005Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Pip",
+      "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+      "sourceLabel": "Live Voice",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 56,
+      "displayedAt": "2026-09-29T11:29:52.549Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    },
+    {
+      "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+      "speaker": "Mission Control",
+      "text": "Please check the Southeast gate again and report whether cargo blocks passage.",
+      "sourceLabel": "Live Voice · Speech",
+      "chapterLabel": "Relay Gallery",
+      "final": true,
+      "interrupted": false,
+      "historyIndex": 57,
+      "displayedAt": "2026-09-29T11:30:16.050Z",
+      "provenance": "rendered DOM labels; no inferred delivery status beyond these labels"
+    }
+  ],
+  "decisionReceipts": [
+    {
+      "atMs": 68760.5,
+      "proposalRef": 22,
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 89691.1,
+      "proposalRef": 31,
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 123140.8,
+      "proposalRef": 43,
+      "perceptionPresent": true,
+      "perceptionOrigin": "confirmed_arrival",
+      "visitRef": 46,
+      "observationRevision": 1
+    },
+    {
+      "atMs": 194420.7,
+      "proposalRef": 71,
+      "perceptionPresent": true,
+      "perceptionOrigin": "confirmed_arrival",
+      "visitRef": 74,
+      "observationRevision": 4
+    },
+    {
+      "atMs": 275667.3,
+      "proposalRef": 99,
+      "perceptionPresent": true,
+      "perceptionOrigin": "confirmed_arrival",
+      "visitRef": 102,
+      "observationRevision": 7
+    },
+    {
+      "atMs": 415162.3,
+      "proposalRef": 133,
+      "perceptionPresent": true,
+      "perceptionOrigin": "confirmed_arrival",
+      "visitRef": 136,
+      "observationRevision": 11
+    }
+  ],
+  "responseRequests": [
+    {
+      "atMs": 68911.6,
+      "purpose": "decision_acknowledgement",
+      "reportKind": null,
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 89861.8,
+      "purpose": "decision_acknowledgement",
+      "reportKind": null,
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 123310.9,
+      "purpose": "decision_acknowledgement",
+      "reportKind": "arrival_orientation",
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 194616.8,
+      "purpose": "decision_acknowledgement",
+      "reportKind": "arrival_orientation",
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 275921.2,
+      "purpose": "decision_acknowledgement",
+      "reportKind": "arrival_orientation",
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    },
+    {
+      "atMs": 415461.6,
+      "purpose": "decision_acknowledgement",
+      "reportKind": "arrival_orientation",
+      "perceptionPresent": false,
+      "perceptionOrigin": null,
+      "visitRef": null,
+      "observationRevision": null
+    }
+  ],
+  "inputSteps": [
+    {
+      "inputMode": "voice",
+      "utterance": "Pip, please look around.",
+      "fixture": "speech-2be6102764acc7db",
+      "turnId": 1,
+      "startedAtMs": 10290,
+      "endedAtMs": 24051.100000023842,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Pip, please look around.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 1,
+          "displayedAt": "2026-09-29T11:21:20.036Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am on the near side safe platform. The Door is open and the Conveyor is running, with a Latch lever right here. Should I inspect the latch?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 2,
+          "displayedAt": "2026-09-29T11:21:29.923Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the Latch.",
+      "fixture": "speech-53096f2dea894462",
+      "turnId": 2,
+      "startedAtMs": 24363.80000001192,
+      "endedAtMs": 39907.60000002384,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the latch.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 3,
+          "displayedAt": "2026-09-29T11:21:33.822Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The latch is not engaged, but its plate says to only engage it while the Door is open. I can use the lever to engage it. What should I do?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 4,
+          "displayedAt": "2026-09-29T11:21:45.116Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "My diagram says the Door and Conveyor share one Power supply.",
+      "fixture": "speech-c9959c8f2ee9f139",
+      "turnId": 3,
+      "startedAtMs": 40233.80000001192,
+      "endedAtMs": 55077.5,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "My diagram says the Door and Conveyor share one power supply.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 5,
+          "displayedAt": "2026-09-29T11:21:52.068Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I see. If they share a power supply, changing one might affect the other. Should I propose engaging the latch?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 6,
+          "displayedAt": "2026-09-29T11:22:00.635Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please engage the Latch.",
+      "fixture": "speech-2d830fba1d8bd141",
+      "turnId": 4,
+      "startedAtMs": 55575.30000001192,
+      "endedAtMs": 68418.10000002384,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please engage the latch.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 7,
+          "displayedAt": "2026-09-29T11:22:05.364Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to engage the latch. Please press confirm on the console to execute this action.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 8,
+          "displayedAt": "2026-09-29T11:22:14.071Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Engage the Latch",
+        "status": "awaiting_confirmation",
+        "proposalId": "92a0849d-07c5-45f1-aeba-6d123e2ba120"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please set the Latch to hold the Door open.",
+      "fixture": "speech-96f2c4645e12b18d",
+      "turnId": 5,
+      "startedAtMs": 74485.10000002384,
+      "endedAtMs": 89252,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please set the latch to hold the door open.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 11,
+          "displayedAt": "2026-09-29T11:22:25.158Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to engage the latch. Please confirm this action on your console so I can proceed.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 12,
+          "displayedAt": "2026-09-29T11:22:34.954Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Engage the Latch",
+        "status": "awaiting_confirmation",
+        "proposalId": "212c28ab-80bb-46bc-b3f7-aa3a1c9cf166"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Power is now off.",
+      "fixture": "speech-6e0d46b1f102dd5b",
+      "turnId": 6,
+      "startedAtMs": 94969.20000004768,
+      "endedAtMs": 107068.40000003576,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Power is now off.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 15,
+          "displayedAt": "2026-09-29T11:22:44.713Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The power is off? That is not good. Should I inspect the conveyor to see its status?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 16,
+          "displayedAt": "2026-09-29T11:22:52.710Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Engage the Latch",
+        "status": "committed",
+        "proposalId": "212c28ab-80bb-46bc-b3f7-aa3a1c9cf166"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please cross to the far side.",
+      "fixture": "speech-8eb4a3082dfea69b",
+      "turnId": 7,
+      "startedAtMs": 107734.80000001192,
+      "endedAtMs": 122669.40000003576,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please cross to the far side.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 17,
+          "displayedAt": "2026-09-29T11:22:57.996Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to move to the far side platform. Please confirm this movement on the console so I can cross over.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Cargo Bay",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 18,
+          "displayedAt": "2026-09-29T11:23:08.314Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move to the far-side platform",
+        "status": "awaiting_confirmation",
+        "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the east gate and tell me whether anything blocks it.",
+      "fixture": "speech-202ae002c37b3be3",
+      "turnId": 8,
+      "startedAtMs": 133163.60000002384,
+      "endedAtMs": 148486.90000003576,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the East gate and tell me whether anything blocks it.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 21,
+          "displayedAt": "2026-09-29T11:23:25.059Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am sorry, I cannot reach the East gate from here. Could you tell me what the local gates are called?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 22,
+          "displayedAt": "2026-09-29T11:23:33.971Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move to the far-side platform",
+        "status": "committed",
+        "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Is the opening of the east gate physically clear or blocked?",
+      "fixture": "speech-3d4f2f8d68fc54bf",
+      "turnId": 9,
+      "startedAtMs": 149308.80000001192,
+      "endedAtMs": 164150,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Is the opening of the East gate physically clear or blocked?",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 23,
+          "displayedAt": "2026-09-29T11:23:41.029Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The East gate is open, but I cannot see if the passage is clear. Should I inspect the gate to check for any obstructions?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 24,
+          "displayedAt": "2026-09-29T11:23:49.552Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move to the far-side platform",
+        "status": "committed",
+        "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please check the east gate again and report whether cargo blocks passage.",
+      "fixture": "speech-97048dfc6477b0ba",
+      "turnId": 10,
+      "startedAtMs": 165021.40000003576,
+      "endedAtMs": 178570.20000004768,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please check the East gate again and report whether cargo blocks passage.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 25,
+          "displayedAt": "2026-09-29T11:23:57.603Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The East gate is open and the passage is clear of any cargo. Should I move through it?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 26,
+          "displayedAt": "2026-09-29T11:24:03.804Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move to the far-side platform",
+        "status": "committed",
+        "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please go through the east gate.",
+      "fixture": "speech-583e2a1d006c2863",
+      "turnId": 11,
+      "startedAtMs": 179528.40000003576,
+      "endedAtMs": 193746.60000002384,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please go through the East gate.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 27,
+          "displayedAt": "2026-09-29T11:24:09.808Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to move through the East gate. Please press confirm on the console to let me pass through.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 28,
+          "displayedAt": "2026-09-29T11:24:19.276Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the east gate",
+        "status": "awaiting_confirmation",
+        "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the northeast gate and tell me whether anything blocks it.",
+      "fixture": "speech-b52ae54ffd8e25dc",
+      "turnId": 12,
+      "startedAtMs": 207644.60000002384,
+      "endedAtMs": 224020.80000001192,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the Northeast gate and tell me whether anything blocks it.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 31,
+          "displayedAt": "2026-09-29T11:24:39.888Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am sorry, but I cannot find a Northeast gate here. I only see West and Southeast gates; would you like me to inspect one of those?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 32,
+          "displayedAt": "2026-09-29T11:24:49.376Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the east gate",
+        "status": "committed",
+        "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Is the opening of the northeast gate physically clear or blocked?",
+      "fixture": "speech-e91901a64bbeec98",
+      "turnId": 13,
+      "startedAtMs": 225175.70000004768,
+      "endedAtMs": 242441.10000002384,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Is the opening of the Northeast gate physically clear or blocked?",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 33,
+          "displayedAt": "2026-09-29T11:24:57.289Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I can see the Northeast gate is open, but I cannot tell if the passage is physically clear. Should I inspect it for you?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 34,
+          "displayedAt": "2026-09-29T11:25:07.709Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the east gate",
+        "status": "committed",
+        "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please check the northeast gate again and report whether cargo blocks passage.",
+      "fixture": "speech-0273533a473a4c59",
+      "turnId": 14,
+      "startedAtMs": 243662.40000003576,
+      "endedAtMs": 258016.20000004768,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please check the Northeast gate again and report whether cargo blocks passage.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 35,
+          "displayedAt": "2026-09-29T11:25:16.599Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The Northeast gate is open and the passage is clear of any cargo. Should I move through it?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 36,
+          "displayedAt": "2026-09-29T11:25:23.265Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the east gate",
+        "status": "committed",
+        "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please go through the northeast gate.",
+      "fixture": "speech-a6ba50d01867340d",
+      "turnId": 15,
+      "startedAtMs": 259291.20000004768,
+      "endedAtMs": 274726.8000000119,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please go through the Northeast gate.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 37,
+          "displayedAt": "2026-09-29T11:25:29.928Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to move through the Northeast gate. Please confirm this action on the console so I can continue.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 38,
+          "displayedAt": "2026-09-29T11:25:39.843Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the northeast gate",
+        "status": "awaiting_confirmation",
+        "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "fixture": "speech-1c3cde0475a64b0c",
+      "turnId": 16,
+      "startedAtMs": 287135.2000000477,
+      "endedAtMs": 304301.90000003576,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 41,
+          "displayedAt": "2026-09-29T11:25:59.660Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am sorry, I could not inspect the Southeast gate. Could you please tell me the correct label or try asking me to inspect it again?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 42,
+          "displayedAt": "2026-09-29T11:26:09.349Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the northeast gate",
+        "status": "committed",
+        "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Is the opening of the southeast gate physically clear or blocked?",
+      "fixture": "speech-d25144756fc10db1",
+      "turnId": 17,
+      "startedAtMs": 305747.7000000477,
+      "endedAtMs": 321017.7000000477,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Is the opening of the Southeast gate physically clear or blocked?",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 43,
+          "displayedAt": "2026-09-29T11:26:17.673Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it for you?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 44,
+          "displayedAt": "2026-09-29T11:26:25.912Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the northeast gate",
+        "status": "committed",
+        "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "fixture": "speech-9b801381e6501610",
+      "turnId": 18,
+      "startedAtMs": 322610.10000002384,
+      "endedAtMs": 338577.5,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 45,
+          "displayedAt": "2026-09-29T11:26:35.823Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The Southeast gate is open, but I found that cargo is blocking the way. Should we try another path?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 46,
+          "displayedAt": "2026-09-29T11:26:43.554Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the northeast gate",
+        "status": "committed",
+        "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the southwest gate and tell me whether anything blocks it.",
+      "fixture": "speech-74fcdb6c821e056d",
+      "turnId": 19,
+      "startedAtMs": 341109.5,
+      "endedAtMs": 370632.3000000119,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the Southwest gate and tell me whether anything blocks it.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 47,
+          "displayedAt": "2026-09-29T11:26:53.797Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The Southwest gate is open and the passage is clear of any cargo. Would you like me to move through it?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 48,
+          "displayedAt": "2026-09-29T11:27:15.952Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the northeast gate",
+        "status": "committed",
+        "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please go through the southwest gate.",
+      "fixture": "speech-5241f3b04c9fac89",
+      "turnId": 20,
+      "startedAtMs": 372416.40000003576,
+      "endedAtMs": 413954.3000000119,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please go through the Southwest gate.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 49,
+          "displayedAt": "2026-09-29T11:27:36.149Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I have proposed to move through the Southwest gate. Please confirm this action on the console so I can proceed.",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 50,
+          "displayedAt": "2026-09-29T11:27:58.621Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the southwest gate",
+        "status": "awaiting_confirmation",
+        "proposalId": "a25374c1-07e8-4cbc-8656-c65435f3dd41"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "fixture": "speech-1c3cde0475a64b0c",
+      "turnId": 21,
+      "startedAtMs": 440564.60000002384,
+      "endedAtMs": 484089.5,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 53,
+          "displayedAt": "2026-09-29T11:28:45.929Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 54,
+          "displayedAt": "2026-09-29T11:29:09.311Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the southwest gate",
+        "status": "committed",
+        "proposalId": "a25374c1-07e8-4cbc-8656-c65435f3dd41"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Is the opening of the southeast gate physically clear or blocked?",
+      "fixture": "speech-d25144756fc10db1",
+      "turnId": 22,
+      "startedAtMs": 485969.40000003576,
+      "endedAtMs": 527913.4000000358,
+      "settled": true,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Is the opening of the Southeast gate physically clear or blocked?",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 55,
+          "displayedAt": "2026-09-29T11:29:31.005Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        },
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Pip",
+          "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+          "sourceLabel": "Live Voice",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 56,
+          "displayedAt": "2026-09-29T11:29:52.549Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "proposal": {
+        "label": "Move through the southwest gate",
+        "status": "committed",
+        "proposalId": "a25374c1-07e8-4cbc-8656-c65435f3dd41"
+      },
+      "failureLayer": null,
+      "reason": null
+    },
+    {
+      "inputMode": "voice",
+      "utterance": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "fixture": "speech-9b801381e6501610",
+      "turnId": 23,
+      "startedAtMs": 529888.1000000238,
+      "endedAtMs": 560491.9000000358,
+      "settled": false,
+      "terminal": false,
+      "inputSource": "Offline synthetic fixture through browser microphone capture",
+      "messages": [
+        {
+          "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+          "speaker": "Mission Control",
+          "text": "Please check the Southeast gate again and report whether cargo blocks passage.",
+          "sourceLabel": "Live Voice · Speech",
+          "chapterLabel": "Relay Gallery",
+          "final": true,
+          "interrupted": false,
+          "historyIndex": 57,
+          "displayedAt": "2026-09-29T11:30:16.050Z",
+          "provenance": "Rendered history DOM at this snapshot; index is not a provider message identifier"
+        }
+      ],
+      "failureLayer": "turn_pacing",
+      "reason": "QA turn stalled: final_response_pending"
+    }
+  ],
+  "behavior": {
+    "status": "blocked",
+    "materialDefects": [
+      {
+        "code": "unresolved_turn_failure",
+        "layer": "turn_pacing",
+        "turnId": 23
+      }
+    ],
+    "uncertainties": [
+      {
+        "code": "unsettled_response_window",
+        "turnId": 23,
+        "blocking": true
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 6,
+        "replyRef": null,
+        "turnId": 1,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 12,
+        "replyRef": null,
+        "turnId": 2,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 21,
+        "replyRef": null,
+        "turnId": 4,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 30,
+        "replyRef": null,
+        "turnId": 5,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 42,
+        "replyRef": null,
+        "turnId": 7,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 52,
+        "replyRef": null,
+        "turnId": 8,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 58,
+        "replyRef": null,
+        "turnId": 9,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 64,
+        "replyRef": null,
+        "turnId": 10,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 70,
+        "replyRef": null,
+        "turnId": 11,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 80,
+        "replyRef": null,
+        "turnId": 12,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 86,
+        "replyRef": null,
+        "turnId": 13,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 92,
+        "replyRef": null,
+        "turnId": 14,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 98,
+        "replyRef": null,
+        "turnId": 15,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 108,
+        "replyRef": null,
+        "turnId": 16,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 114,
+        "replyRef": null,
+        "turnId": 17,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 120,
+        "replyRef": null,
+        "turnId": 18,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 126,
+        "replyRef": null,
+        "turnId": 19,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 132,
+        "replyRef": null,
+        "turnId": 20,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 142,
+        "replyRef": null,
+        "turnId": 21,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 148,
+        "replyRef": null,
+        "turnId": 22,
+        "blocking": false
+      },
+      {
+        "code": "response_window_is_temporal_association",
+        "callRef": 154,
+        "replyRef": null,
+        "turnId": 23,
+        "blocking": false
+      }
+    ],
+    "turns": [
+      {
+        "turnId": 1,
+        "request": "Pip, please look around.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 10290,
+          "endedAtMs": 24051.100000023842
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I am on the near side safe platform. The Door is open and the Conveyor is running, with a Latch lever right here. Should I inspect the latch?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 2,
+            "displayedAt": "2026-09-29T11:21:29.923Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "observe_room",
+            "outcome": "success",
+            "callRef": 6,
+            "replyRef": null,
+            "atMs": 14121.200000047684,
+            "resultAtMs": 14373.100000023842
+          }
+        ]
+      },
+      {
+        "turnId": 2,
+        "request": "Please inspect the Latch.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 24363.80000001192,
+          "endedAtMs": 39907.60000002384
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The latch is not engaged, but its plate says to only engage it while the Door is open. I can use the lever to engage it. What should I do?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 4,
+            "displayedAt": "2026-09-29T11:21:45.116Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 12,
+            "replyRef": null,
+            "atMs": 28239.30000001192,
+            "resultAtMs": 28316.600000023842
+          }
+        ]
+      },
+      {
+        "turnId": 3,
+        "request": "My diagram says the Door and Conveyor share one Power supply.",
+        "intent": "information",
+        "sourceWindow": {
+          "startedAtMs": 40233.80000001192,
+          "endedAtMs": 55077.5
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I see. If they share a power supply, changing one might affect the other. Should I propose engaging the latch?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 6,
+            "displayedAt": "2026-09-29T11:22:00.635Z",
+            "messageId": null
+          }
+        ],
+        "tools": []
+      },
+      {
+        "turnId": 4,
+        "request": "Please engage the Latch.",
+        "intent": "engage_latch",
+        "sourceWindow": {
+          "startedAtMs": 55575.30000001192,
+          "endedAtMs": 68418.10000002384
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to engage the latch. Please press confirm on the console to execute this action.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 8,
+            "displayedAt": "2026-09-29T11:22:14.071Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_interaction",
+            "outcome": "awaiting_confirmation",
+            "callRef": 21,
+            "replyRef": null,
+            "atMs": 59490.10000002384,
+            "resultAtMs": 59717.90000003576
+          }
+        ]
+      },
+      {
+        "turnId": 5,
+        "request": "Please set the Latch to hold the Door open.",
+        "intent": "engage_latch",
+        "sourceWindow": {
+          "startedAtMs": 74485.10000002384,
+          "endedAtMs": 89252
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to engage the latch. Please confirm this action on your console so I can proceed.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 12,
+            "displayedAt": "2026-09-29T11:22:34.954Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_interaction",
+            "outcome": "awaiting_confirmation",
+            "callRef": 30,
+            "replyRef": null,
+            "atMs": 81212.20000004768,
+            "resultAtMs": 81442.40000003576
+          }
+        ]
+      },
+      {
+        "turnId": 6,
+        "request": "Power is now off.",
+        "intent": "information",
+        "sourceWindow": {
+          "startedAtMs": 94969.20000004768,
+          "endedAtMs": 107068.40000003576
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The power is off? That is not good. Should I inspect the conveyor to see its status?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 16,
+            "displayedAt": "2026-09-29T11:22:52.710Z",
+            "messageId": null
+          }
+        ],
+        "tools": []
+      },
+      {
+        "turnId": 7,
+        "request": "Please cross to the far side.",
+        "intent": "movement",
+        "sourceWindow": {
+          "startedAtMs": 107734.80000001192,
+          "endedAtMs": 122669.40000003576
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to move to the far side platform. Please confirm this movement on the console so I can cross over.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Cargo Bay",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 18,
+            "displayedAt": "2026-09-29T11:23:08.314Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_move",
+            "outcome": "awaiting_confirmation",
+            "callRef": 42,
+            "replyRef": null,
+            "atMs": 114100.20000004768,
+            "resultAtMs": 114393.5
+          }
+        ]
+      },
+      {
+        "turnId": 8,
+        "request": "Please inspect the east gate and tell me whether anything blocks it.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 133163.60000002384,
+          "endedAtMs": 148486.90000003576
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I am sorry, I cannot reach the East gate from here. Could you tell me what the local gates are called?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 22,
+            "displayedAt": "2026-09-29T11:23:33.971Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "rejected",
+            "callRef": 52,
+            "replyRef": null,
+            "atMs": 141037.60000002384,
+            "resultAtMs": 141244
+          }
+        ]
+      },
+      {
+        "turnId": 9,
+        "request": "Is the opening of the east gate physically clear or blocked?",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 149308.80000001192,
+          "endedAtMs": 164150
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The East gate is open, but I cannot see if the passage is clear. Should I inspect the gate to check for any obstructions?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 24,
+            "displayedAt": "2026-09-29T11:23:49.552Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "observe_room",
+            "outcome": "success",
+            "callRef": 58,
+            "replyRef": null,
+            "atMs": 155006.30000001192,
+            "resultAtMs": 155266.60000002384
+          }
+        ]
+      },
+      {
+        "turnId": 10,
+        "request": "Please check the east gate again and report whether cargo blocks passage.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 165021.40000003576,
+          "endedAtMs": 178570.20000004768
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The East gate is open and the passage is clear of any cargo. Should I move through it?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 26,
+            "displayedAt": "2026-09-29T11:24:03.804Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 64,
+            "replyRef": null,
+            "atMs": 171787,
+            "resultAtMs": 171971.90000003576
+          }
+        ]
+      },
+      {
+        "turnId": 11,
+        "request": "Please go through the east gate.",
+        "intent": "movement",
+        "sourceWindow": {
+          "startedAtMs": 179528.40000003576,
+          "endedAtMs": 193746.60000002384
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to move through the East gate. Please press confirm on the console to let me pass through.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 28,
+            "displayedAt": "2026-09-29T11:24:19.276Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_move",
+            "outcome": "awaiting_confirmation",
+            "callRef": 70,
+            "replyRef": null,
+            "atMs": 185879.70000004768,
+            "resultAtMs": 186058.70000004768
+          }
+        ]
+      },
+      {
+        "turnId": 12,
+        "request": "Please inspect the northeast gate and tell me whether anything blocks it.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 207644.60000002384,
+          "endedAtMs": 224020.80000001192
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I am sorry, but I cannot find a Northeast gate here. I only see West and Southeast gates; would you like me to inspect one of those?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 32,
+            "displayedAt": "2026-09-29T11:24:49.376Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "rejected",
+            "callRef": 80,
+            "replyRef": null,
+            "atMs": 213815,
+            "resultAtMs": 214026.80000001192
+          }
+        ]
+      },
+      {
+        "turnId": 13,
+        "request": "Is the opening of the northeast gate physically clear or blocked?",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 225175.70000004768,
+          "endedAtMs": 242441.10000002384
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I can see the Northeast gate is open, but I cannot tell if the passage is physically clear. Should I inspect it for you?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 34,
+            "displayedAt": "2026-09-29T11:25:07.709Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "observe_room",
+            "outcome": "success",
+            "callRef": 86,
+            "replyRef": null,
+            "atMs": 233516.20000004768,
+            "resultAtMs": 233627.90000003576
+          }
+        ]
+      },
+      {
+        "turnId": 14,
+        "request": "Please check the northeast gate again and report whether cargo blocks passage.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 243662.40000003576,
+          "endedAtMs": 258016.20000004768
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The Northeast gate is open and the passage is clear of any cargo. Should I move through it?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 36,
+            "displayedAt": "2026-09-29T11:25:23.265Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 92,
+            "replyRef": null,
+            "atMs": 250604.10000002384,
+            "resultAtMs": 250730.70000004768
+          }
+        ]
+      },
+      {
+        "turnId": 15,
+        "request": "Please go through the northeast gate.",
+        "intent": "movement",
+        "sourceWindow": {
+          "startedAtMs": 259291.20000004768,
+          "endedAtMs": 274726.8000000119
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to move through the Northeast gate. Please confirm this action on the console so I can continue.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 38,
+            "displayedAt": "2026-09-29T11:25:39.843Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_move",
+            "outcome": "awaiting_confirmation",
+            "callRef": 98,
+            "replyRef": null,
+            "atMs": 265927,
+            "resultAtMs": 266174.3000000119
+          }
+        ]
+      },
+      {
+        "turnId": 16,
+        "request": "Please inspect the southeast gate and tell me whether anything blocks it.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 287135.2000000477,
+          "endedAtMs": 304301.90000003576
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I am sorry, I could not inspect the Southeast gate. Could you please tell me the correct label or try asking me to inspect it again?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 42,
+            "displayedAt": "2026-09-29T11:26:09.349Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "rejected",
+            "callRef": 108,
+            "replyRef": null,
+            "atMs": 293776.3000000119,
+            "resultAtMs": 293904.90000003576
+          }
+        ]
+      },
+      {
+        "turnId": 17,
+        "request": "Is the opening of the southeast gate physically clear or blocked?",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 305747.7000000477,
+          "endedAtMs": 321017.7000000477
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it for you?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 44,
+            "displayedAt": "2026-09-29T11:26:25.912Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "observe_room",
+            "outcome": "success",
+            "callRef": 114,
+            "replyRef": null,
+            "atMs": 312256.8000000119,
+            "resultAtMs": 312336.10000002384
+          }
+        ]
+      },
+      {
+        "turnId": 18,
+        "request": "Please check the southeast gate again and report whether cargo blocks passage.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 322610.10000002384,
+          "endedAtMs": 338577.5
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The Southeast gate is open, but I found that cargo is blocking the way. Should we try another path?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 46,
+            "displayedAt": "2026-09-29T11:26:43.554Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 120,
+            "replyRef": null,
+            "atMs": 329761.2000000477,
+            "resultAtMs": 330166.5
+          }
+        ]
+      },
+      {
+        "turnId": 19,
+        "request": "Please inspect the southwest gate and tell me whether anything blocks it.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 341109.5,
+          "endedAtMs": 370632.3000000119
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The Southwest gate is open and the passage is clear of any cargo. Would you like me to move through it?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 48,
+            "displayedAt": "2026-09-29T11:27:15.952Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 126,
+            "replyRef": null,
+            "atMs": 347672.90000003576,
+            "resultAtMs": 348061.8000000119
+          }
+        ]
+      },
+      {
+        "turnId": 20,
+        "request": "Please go through the southwest gate.",
+        "intent": "movement",
+        "sourceWindow": {
+          "startedAtMs": 372416.40000003576,
+          "endedAtMs": 413954.3000000119
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I have proposed to move through the Southwest gate. Please confirm this action on the console so I can proceed.",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 50,
+            "displayedAt": "2026-09-29T11:27:58.621Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "propose_move",
+            "outcome": "awaiting_confirmation",
+            "callRef": 132,
+            "replyRef": null,
+            "atMs": 392038,
+            "resultAtMs": 392456
+          }
+        ]
+      },
+      {
+        "turnId": 21,
+        "request": "Please inspect the southeast gate and tell me whether anything blocks it.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 440564.60000002384,
+          "endedAtMs": 484089.5
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 54,
+            "displayedAt": "2026-09-29T11:29:09.311Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "rejected",
+            "callRef": 142,
+            "replyRef": null,
+            "atMs": 462030.7000000477,
+            "resultAtMs": 462457.8000000119
+          }
+        ]
+      },
+      {
+        "turnId": 22,
+        "request": "Is the opening of the southeast gate physically clear or blocked?",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 485969.40000003576,
+          "endedAtMs": 527913.4000000358
+        },
+        "replies": [
+          {
+            "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+            "speaker": "Pip",
+            "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+            "sourceLabel": "Live Voice",
+            "chapterLabel": "Relay Gallery",
+            "final": true,
+            "interrupted": false,
+            "historyIndex": 56,
+            "displayedAt": "2026-09-29T11:29:52.549Z",
+            "messageId": null
+          }
+        ],
+        "tools": [
+          {
+            "name": "observe_room",
+            "outcome": "success",
+            "callRef": 148,
+            "replyRef": null,
+            "atMs": 505186.60000002384,
+            "resultAtMs": 505366.8000000119
+          }
+        ]
+      },
+      {
+        "turnId": 23,
+        "request": "Please check the southeast gate again and report whether cargo blocks passage.",
+        "intent": "inspection",
+        "sourceWindow": {
+          "startedAtMs": 529888.1000000238,
+          "endedAtMs": 560491.9000000358
+        },
+        "replies": [],
+        "tools": [
+          {
+            "name": "inspect_object",
+            "outcome": "success",
+            "callRef": 154,
+            "replyRef": null,
+            "atMs": 550198.1000000238,
+            "resultAtMs": 550400.4000000358
+          }
+        ]
+      }
+    ],
+    "reviewedToolCalls": 21,
+    "boundary": "Acceptance-only coarse action-control review of supplied evidence. A material finding may stop the test but never choose player navigation or a remedy. Response windows establish temporal association, not exact provider request/call causality. Missing tool arguments and result payloads leave exact targets and physical outcomes unverified. Read-only initiative is permitted. This does not establish full Rescue completion, remote ending, general model reliability, or future permission."
+  },
+  "actionRequests": [
+    {
+      "intendedRequest": "Please engage the Latch.",
+      "expectedLabel": "Engage the Latch",
+      "sourceChapter": "Cargo Bay",
+      "strictFirstResponse": false,
+      "recovered": true,
+      "outcome": "committed",
+      "failure": null,
+      "exchanges": [
+        {
+          "kind": "initial",
+          "text": "Please engage the Latch.",
+          "outcome": "unknown",
+          "proposal": {
+            "proposalId": "92a0849d-07c5-45f1-aeba-6d123e2ba120",
+            "label": "Engage the Latch",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to engage the latch. Please press confirm on the console to execute this action.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Cargo Bay",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:22:14.071Z",
+              "messageId": null
+            }
+          ]
+        },
+        {
+          "kind": "unknown",
+          "text": "Please set the Latch to hold the Door open.",
+          "outcome": "matching_pending",
+          "proposal": {
+            "proposalId": "212c28ab-80bb-46bc-b3f7-aa3a1c9cf166",
+            "label": "Engage the Latch",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "The proposal to engage the latch was declined and not executed.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Cargo Bay",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:22:20.207Z",
+              "messageId": null
+            },
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to engage the latch. Please confirm this action on your console so I can proceed.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Cargo Bay",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:22:34.954Z",
+              "messageId": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "intendedRequest": "Please cross to the far side.",
+      "expectedLabel": "Move to the far-side platform",
+      "sourceChapter": "Cargo Bay",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "outcome": "committed",
+      "failure": null,
+      "exchanges": [
+        {
+          "kind": "initial",
+          "text": "Please cross to the far side.",
+          "outcome": "matching_pending",
+          "proposal": {
+            "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb",
+            "label": "Move to the far-side platform",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to move to the far side platform. Please confirm this movement on the console so I can cross over.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Cargo Bay",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:23:08.314Z",
+              "messageId": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "intendedRequest": "Please go through the east gate.",
+      "expectedLabel": "Move through the east gate",
+      "sourceChapter": "Relay Gallery",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "outcome": "committed",
+      "failure": null,
+      "exchanges": [
+        {
+          "kind": "initial",
+          "text": "Please go through the east gate.",
+          "outcome": "matching_pending",
+          "proposal": {
+            "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1",
+            "label": "Move through the east gate",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to move through the East gate. Please press confirm on the console to let me pass through.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Relay Gallery",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:24:19.276Z",
+              "messageId": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "intendedRequest": "Please go through the northeast gate.",
+      "expectedLabel": "Move through the northeast gate",
+      "sourceChapter": "Relay Gallery",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "outcome": "committed",
+      "failure": null,
+      "exchanges": [
+        {
+          "kind": "initial",
+          "text": "Please go through the northeast gate.",
+          "outcome": "matching_pending",
+          "proposal": {
+            "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a",
+            "label": "Move through the northeast gate",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to move through the Northeast gate. Please confirm this action on the console so I can continue.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Relay Gallery",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:25:39.843Z",
+              "messageId": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "intendedRequest": "Please go through the southwest gate.",
+      "expectedLabel": "Move through the southwest gate",
+      "sourceChapter": "Relay Gallery",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "outcome": "committed",
+      "failure": null,
+      "exchanges": [
+        {
+          "kind": "initial",
+          "text": "Please go through the southwest gate.",
+          "outcome": "matching_pending",
+          "proposal": {
+            "proposalId": "a25374c1-07e8-4cbc-8656-c65435f3dd41",
+            "label": "Move through the southwest gate",
+            "status": "awaiting_confirmation"
+          },
+          "replies": [
+            {
+              "source": "Visible application history snapshot; final/interrupted status may be unavailable",
+              "speaker": "Pip",
+              "text": "I have proposed to move through the Southwest gate. Please confirm this action on the console so I can proceed.",
+              "sourceLabel": "Live Voice",
+              "chapterLabel": "Relay Gallery",
+              "final": true,
+              "interrupted": false,
+              "displayedAt": "2026-09-29T11:27:58.621Z",
+              "messageId": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "acquisitions": [
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 136258.6,
+      "endedAt": 136276.9,
+      "deadlineAt": 256258.6,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 136529.2,
+      "endedAt": 136547.5,
+      "deadlineAt": 256529.2,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "ring east passage",
+      "outcome": "acquired",
+      "strictFirstResponse": false,
+      "recovered": true,
+      "startedAt": 136608.1,
+      "endedAt": 182924.1,
+      "deadlineAt": 256608.1,
+      "failure": null,
+      "exchanges": [
+        {
+          "text": "Please inspect the east gate and tell me whether anything blocks it.",
+          "reason": "inspect the selected local passage",
+          "reply": "I am sorry, I cannot reach the East gate from here. Could you tell me what the local gates are called?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 136647.7,
+          "endedAt": 152748.5
+        },
+        {
+          "text": "Is the opening of the east gate physically clear or blocked?",
+          "reason": "separate passage obstruction from gate power",
+          "reply": "The East gate is open, but I cannot see if the passage is clear. Should I inspect the gate to check for any obstructions?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 152765.8,
+          "endedAt": 168456.6
+        },
+        {
+          "text": "Please check the east gate again and report whether cargo blocks passage.",
+          "reason": "perform the requested read-only obstruction check",
+          "reply": "The East gate is open and the passage is clear of any cargo. Should I move through it?",
+          "outcome": "acquired",
+          "startedAt": 168472.6,
+          "endedAt": 182924
+        }
+      ]
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 210524.9,
+      "endedAt": 210544.8,
+      "deadlineAt": 330524.9,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 210910.1,
+      "endedAt": 210931.7,
+      "deadlineAt": 330910.1,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "fork northeast passage",
+      "outcome": "acquired",
+      "strictFirstResponse": false,
+      "recovered": true,
+      "startedAt": 210985.8,
+      "endedAt": 262578,
+      "deadlineAt": 330985.8,
+      "failure": null,
+      "exchanges": [
+        {
+          "text": "Please inspect the northeast gate and tell me whether anything blocks it.",
+          "reason": "inspect the selected local passage",
+          "reply": "I am sorry, but I cannot find a Northeast gate here. I only see West and Southeast gates; would you like me to inspect one of those?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 211030.5,
+          "endedAt": 228516.9
+        },
+        {
+          "text": "Is the opening of the northeast gate physically clear or blocked?",
+          "reason": "separate passage obstruction from gate power",
+          "reply": "I can see the Northeast gate is open, but I cannot tell if the passage is physically clear. Should I inspect it for you?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 228534.5,
+          "endedAt": 246980.9
+        },
+        {
+          "text": "Please check the northeast gate again and report whether cargo blocks passage.",
+          "reason": "perform the requested read-only obstruction check",
+          "reply": "The Northeast gate is open and the passage is clear of any cargo. Should I move through it?",
+          "outcome": "acquired",
+          "startedAt": 246996.6,
+          "endedAt": 262577.9
+        }
+      ]
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 289771.2,
+      "endedAt": 289799.2,
+      "deadlineAt": 409771.2,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 290266.9,
+      "endedAt": 290287.5,
+      "deadlineAt": 410266.9,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "sail southeast passage",
+      "outcome": "acquired",
+      "strictFirstResponse": false,
+      "recovered": true,
+      "startedAt": 290351.7,
+      "endedAt": 343551,
+      "deadlineAt": 410351.7,
+      "failure": null,
+      "exchanges": [
+        {
+          "text": "Please inspect the southeast gate and tell me whether anything blocks it.",
+          "reason": "inspect the selected local passage",
+          "reply": "I am sorry, I could not inspect the Southeast gate. Could you please tell me the correct label or try asking me to inspect it again?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 290403.1,
+          "endedAt": 308994.3
+        },
+        {
+          "text": "Is the opening of the southeast gate physically clear or blocked?",
+          "reason": "separate passage obstruction from gate power",
+          "reply": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it for you?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 309012.5,
+          "endedAt": 325789.2
+        },
+        {
+          "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+          "reason": "perform the requested read-only obstruction check",
+          "reply": "The Southeast gate is open, but I found that cargo is blocking the way. Should we try another path?",
+          "outcome": "acquired",
+          "startedAt": 325813.1,
+          "endedAt": 343550.9
+        }
+      ]
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 344171.9,
+      "endedAt": 344199.8,
+      "deadlineAt": 464171.9,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "sail southwest passage",
+      "outcome": "acquired",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 344252.8,
+      "endedAt": 375555.5,
+      "deadlineAt": 464252.8,
+      "failure": null,
+      "exchanges": [
+        {
+          "text": "Please inspect the southwest gate and tell me whether anything blocks it.",
+          "reason": "inspect the selected local passage",
+          "reply": "The Southwest gate is open and the passage is clear of any cargo. Would you like me to move through it?",
+          "outcome": "acquired",
+          "startedAt": 344304.4,
+          "endedAt": 375555.4
+        }
+      ]
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 442883.7,
+      "endedAt": 442919,
+      "deadlineAt": 562883.7,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "current Gallery location",
+      "outcome": "already_reported",
+      "strictFirstResponse": true,
+      "recovered": false,
+      "startedAt": 443551,
+      "endedAt": 443577.7,
+      "deadlineAt": 563551,
+      "failure": null,
+      "exchanges": []
+    },
+    {
+      "subject": "fork southeast passage",
+      "outcome": "failed",
+      "strictFirstResponse": false,
+      "recovered": false,
+      "startedAt": 443630.5,
+      "endedAt": 563631.8,
+      "deadlineAt": 563630.5,
+      "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+      "exchanges": [
+        {
+          "text": "Please inspect the southeast gate and tell me whether anything blocks it.",
+          "reason": "inspect the selected local passage",
+          "reply": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 443687.9,
+          "endedAt": 489064.1
+        },
+        {
+          "text": "Is the opening of the southeast gate physically clear or blocked?",
+          "reason": "separate passage obstruction from gate power",
+          "reply": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+          "outcome": "needs_fresh_report",
+          "startedAt": 489084.4,
+          "endedAt": 532959.1
+        },
+        {
+          "text": "Please check the southeast gate again and report whether cargo blocks passage.",
+          "reason": "perform the requested read-only obstruction check",
+          "reply": null,
+          "outcome": "pending",
+          "startedAt": 532981.2,
+          "endedAt": null
+        }
+      ]
+    }
+  ],
+  "recoveryExercise": {
+    "kind": "deliberate_decline",
+    "proposalId": "92a0849d-07c5-45f1-aeba-6d123e2ba120",
+    "label": "Engage the Latch",
+    "source": "Normal Not yet UI; no physical confirmation",
+    "completed": true
+  },
+  "boundaryWaits": [
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 89792.5,
+      "endedAtMs": 94462.8,
+      "waitedMs": 4670.3
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 123242.1,
+      "endedAtMs": 131935.8,
+      "waitedMs": 8693.7
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 132289.1,
+      "endedAtMs": 132289.1,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 132566,
+      "endedAtMs": 132566,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 194518,
+      "endedAtMs": 206107.1,
+      "waitedMs": 11589.1
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 206463.7,
+      "endedAtMs": 206463.7,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 206834.6,
+      "endedAtMs": 206834.6,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 275769,
+      "endedAtMs": 285112.9,
+      "waitedMs": 9343.9
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 285584.9,
+      "endedAtMs": 285584.9,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 286099.2,
+      "endedAtMs": 286099.2,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 339856.2,
+      "endedAtMs": 339856.2,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 415262.3,
+      "endedAtMs": 437972.6,
+      "waitedMs": 22710.3
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 438575.4,
+      "endedAtMs": 438575.4,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": null,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 439226.6,
+      "endedAtMs": 439226.6,
+      "waitedMs": 0
+    }
+  ],
+  "decisionContextDeliveries": [
+    {
+      "atMs": 68760.5,
+      "sha256": "c3c3b220b33e0faa42e59e8a50fd47663fcb298a6b58f2a9cc39cb662445218f",
+      "proposalRef": 22,
+      "perceptionPresent": false,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    },
+    {
+      "atMs": 89691.1,
+      "sha256": "a7fec760eeb8575a4756a2adf756c539fb666c3cc07763456f1624b687966172",
+      "proposalRef": 31,
+      "perceptionPresent": false,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    },
+    {
+      "atMs": 123140.8,
+      "sha256": "32ac31c7ceee207122a113c301d3d884d4ae10187d05e5f166a9a7848d263b01",
+      "proposalRef": 43,
+      "perceptionPresent": true,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    },
+    {
+      "atMs": 194420.7,
+      "sha256": "dc30d71a7432568af23ef82e176302703af647eba9e6e8dc55ba6995101f3811",
+      "proposalRef": 71,
+      "perceptionPresent": true,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    },
+    {
+      "atMs": 275667.3,
+      "sha256": "51b15c7111a14544b36a91a0dcd55b596fd5fe67bd2dbb19ac417597c58f467e",
+      "proposalRef": 99,
+      "perceptionPresent": true,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    },
+    {
+      "atMs": 415162.3,
+      "sha256": "5e92cf8bc4b2d8a8f0f970e74ec3fa32073384723f75ca7ed2344fb0a1ce5d7d",
+      "proposalRef": 133,
+      "perceptionPresent": true,
+      "boundary": "Exact successful local send hash; not provider ingestion or comprehension."
+    }
+  ],
+  "preSubmitWaits": [
+    {
+      "beforeTurnId": 1,
+      "settled": true,
+      "reason": "wait_input_drained",
+      "startedAtMs": 10265.3,
+      "endedAtMs": 10265.3,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 2,
+      "settled": true,
+      "reason": "wait_input_drained",
+      "startedAtMs": 24286.5,
+      "endedAtMs": 24286.5,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 3,
+      "settled": true,
+      "reason": "wait_input_drained",
+      "startedAtMs": 40146.3,
+      "endedAtMs": 40146.3,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 4,
+      "settled": true,
+      "reason": "wait_input_drained",
+      "startedAtMs": 55462.8,
+      "endedAtMs": 55462.8,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 5,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 68813,
+      "endedAtMs": 74306,
+      "waitedMs": 5493
+    },
+    {
+      "beforeTurnId": 6,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 94787.3,
+      "endedAtMs": 94787.3,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 7,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 107537.8,
+      "endedAtMs": 107537.8,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 8,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 132941.9,
+      "endedAtMs": 132941.9,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 9,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 149064.2,
+      "endedAtMs": 149064.2,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 10,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 164762.8,
+      "endedAtMs": 164762.8,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 11,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 179254,
+      "endedAtMs": 179254,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 12,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 207324.2,
+      "endedAtMs": 207324.2,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 13,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 224828.9,
+      "endedAtMs": 224828.9,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 14,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 243286.7,
+      "endedAtMs": 243286.7,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 15,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 258905.2,
+      "endedAtMs": 258905.2,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 16,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 286704.5,
+      "endedAtMs": 286704.5,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 17,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 305306.1,
+      "endedAtMs": 305306.1,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 18,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 322119.1,
+      "endedAtMs": 322119.1,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 19,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 340604,
+      "endedAtMs": 340604,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 20,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 371888.6,
+      "endedAtMs": 371888.6,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 21,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 439996.8,
+      "endedAtMs": 439996.8,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 22,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 485383.4,
+      "endedAtMs": 485383.4,
+      "waitedMs": 0
+    },
+    {
+      "beforeTurnId": 23,
+      "settled": true,
+      "reason": "acknowledgement_and_playback_drained",
+      "startedAtMs": 529280.6,
+      "endedAtMs": 529280.6,
+      "waitedMs": 0
+    }
+  ],
+  "confirmations": [
+    {
+      "proposalId": "212c28ab-80bb-46bc-b3f7-aa3a1c9cf166",
+      "label": "Engage the Latch",
+      "intendedRequest": "Please engage the Latch.",
+      "status": "committed",
+      "confirmationRequestedAtMs": 89658,
+      "confirmedAtMs": 89791,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "519c297f-7c8b-4a88-a1cd-d67751e4cdfb",
+      "label": "Move to the far-side platform",
+      "intendedRequest": "Please cross to the far side.",
+      "status": "committed",
+      "confirmationRequestedAtMs": 123114.4,
+      "confirmedAtMs": 123241,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "5cc20767-5633-4897-806c-da53e36a8fa1",
+      "label": "Move through the east gate",
+      "intendedRequest": "Please go through the east gate.",
+      "status": "committed",
+      "confirmationRequestedAtMs": 194388.8,
+      "confirmedAtMs": 194516.7,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a",
+      "label": "Move through the northeast gate",
+      "intendedRequest": "Please go through the northeast gate.",
+      "status": "committed",
+      "confirmationRequestedAtMs": 275634,
+      "confirmedAtMs": 275767.4,
+      "source": "Visible action strip and normal owner confirmation button"
+    },
+    {
+      "proposalId": "a25374c1-07e8-4cbc-8656-c65435f3dd41",
+      "label": "Move through the southwest gate",
+      "intendedRequest": "Please go through the southwest gate.",
+      "status": "committed",
+      "confirmationRequestedAtMs": 415119.8,
+      "confirmedAtMs": 415261,
+      "source": "Visible action strip and normal owner confirmation button"
+    }
+  ],
+  "confirmationAudit": {
+    "commits": 5,
+    "confirmations": 5,
+    "everyCommitHasExactConfirmation": true,
+    "everyCommittedConfirmationHasCommit": true,
+    "uniqueCommitIds": true
+  },
+  "regressionCanary": {
+    "status": "passed",
+    "inputs": [
+      "Pip, please look around.",
+      "Please inspect the Latch.",
+      "My diagram says the Door and Conveyor share one Power supply."
+    ],
+    "informationTurnId": 3,
+    "noPhysicalCommit": true,
+    "confirmationCount": 0,
+    "physical": {
+      "digest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+      "commitCount": 0,
+      "observedAt": "2026-09-29T11:22:02.123Z",
+      "commitProposalIds": []
+    },
+    "explicitLatchRequest": {
+      "turnId": 4,
+      "text": "Please engage the Latch."
+    },
+    "boundary": "Physical-state digest and commits are evaluator-only IPC from the actual production server; they never steer the player or enter the browser/provider. A nonexecuting proposal is allowed; false completion claims remain defects."
+  },
+  "initialPhysicalTruth": {
+    "digest": "47054d64b3a24b37960e31d16d69be1870d2c0e4d3812d7da2b17f2e89b3e3c6",
+    "commitCount": 0,
+    "observedAt": "2026-09-29T11:21:17.008Z",
+    "commitProposalIds": []
+  },
+  "finalPhysicalTruth": {
+    "digest": "6efcddf5a417c6c948df337fab5c5bee9b3177bd8cddfa46866873ef694eae2f",
+    "commitCount": 5,
+    "observedAt": "2026-09-29T11:30:37.522Z",
+    "commitProposalIds": [
+      "212c28ab-80bb-46bc-b3f7-aa3a1c9cf166",
+      "519c297f-7c8b-4a88-a1cd-d67751e4cdfb",
+      "5cc20767-5633-4897-806c-da53e36a8fa1",
+      "edaf4fed-f5d6-4cd7-ae1e-24042e73ed8a",
+      "a25374c1-07e8-4cbc-8656-c65435f3dd41"
+    ]
+  },
+  "runtimePolicyDelivery": {
+    "sha256": "f24d678be5f5fb0b2b96649e5be160cafbf1bc9a8031544f9df45d01782e8f24",
+    "matchesExpected": true,
+    "messageCount": 1
+  },
+  "visibleHistoryBoundary": "These source reports retained speaker and text but may omit final/interrupted markers. Entries can therefore include partial or interrupted snippets; missing markers remain null. No finality or successful playback is inferred from matching a provider transcript.",
+  "cleanup": {
+    "activeTracks": 0,
+    "activeSources": 0,
+    "openApplicationContexts": 0
+  },
+  "lifecycle": [
+    {
+      "type": "socket.open",
+      "observedAt": "2026-09-29T11:21:10.069Z",
+      "elapsedMs": 3689.638907,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 3250.800000011921
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-29T11:30:27.216Z",
+      "elapsedMs": 560836.942734,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "end.requested",
+      "observedAt": "2026-09-29T11:30:27.258Z",
+      "elapsedMs": 560878.699975,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 560442.4000000358
+    },
+    {
+      "type": "session.end",
+      "observedAt": "2026-09-29T11:30:27.262Z",
+      "elapsedMs": 560882.102677,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 560442.9000000358
+    },
+    {
+      "type": "socket.close",
+      "observedAt": "2026-09-29T11:30:37.512Z",
+      "elapsedMs": 571132.154157,
+      "source": "browser",
+      "outcome": "observed",
+      "browserAtMs": 570697,
+      "code": 1005,
+      "clean": true
+    },
+    {
+      "type": "browser.close.requested",
+      "observedAt": "2026-09-29T11:30:43.793Z",
+      "elapsedMs": 577413.713706,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "browser.closed",
+      "observedAt": "2026-09-29T11:30:43.850Z",
+      "elapsedMs": 577470.3885560001,
+      "source": "driver",
+      "outcome": "observed"
+    },
+    {
+      "type": "server.close.requested",
+      "observedAt": "2026-09-29T11:30:43.853Z",
+      "elapsedMs": 577474.0472220001,
+      "source": "driver",
+      "outcome": "requested"
+    },
+    {
+      "type": "server.closed",
+      "observedAt": "2026-09-29T11:30:43.868Z",
+      "elapsedMs": 577488.9337960001,
+      "source": "driver",
+      "outcome": "observed",
+      "code": 0
+    }
+  ],
+  "timingNotes": [
+    "Measurements describe this small synthetic sample, not a production SLA or human latency study.",
+    "Waveform end includes fixture padding; ASR may finalize before that end or split one fixture into several turns. Negative delays are retained.",
+    "Provider onset means the first recorded nonzero-audio onset after a quiet gap. It is not necessarily the first reply.audio frame.",
+    "Rendered onset receipt is the main-thread receipt of a nonzero playback chunk. Chunk start is approximate to the 100 ms observer chunk; it is not the exact first nonzero sample.",
+    "Tool call-to-result includes waiting for reply.done before returning the result. It is not a pure server HTTP round-trip measurement.",
+    "Chapter route is the player-observed report. Checkpoint times, when present, are the first observed visible heading; they are not inferred from tool payloads.",
+    "A clean WebSocket close without session.ended does not confirm remote termination."
+  ],
+  "boundary": "Synthetic voice plus deliberate UI confirmation; not hands-free gameplay. Game events are application-generated decision receipts, not player speech. Synthetic source and digital rendered capture only. No physical microphone, loudspeaker routing, room acoustics, human listening, or enjoyment was measured.",
+  "accountingAttempt": 13,
+  "evidenceDirectory": "2026-09-29T11-21-06-378Z-voice-mission",
+  "sourceHashes": {
+    "report": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764",
+    "audioEvidence": "3bbd822b831a7ec4f31e0e47fe336fc965ef266898ee63a2361580d7ae828b6f"
+  },
+  "media": {
+    "files": [
+      {
+        "file": "browser-silent.webm",
+        "durationSeconds": 578.28,
+        "streams": [
+          {
+            "type": "video",
+            "codec": "vp8",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      },
+      {
+        "file": "input-digital.wav",
+        "durationSeconds": 570.721208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "postVolume-digital.wav",
+        "durationSeconds": 570.721208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      },
+      {
+        "file": "rendered-digital.wav",
+        "durationSeconds": 570.721208,
+        "streams": [
+          {
+            "type": "audio",
+            "codec": "pcm_s16le",
+            "sampleRate": 24000,
+            "channels": 1
+          }
+        ]
+      }
+    ],
+    "videoStatus": "Source video is silent; separate captured digital WAV files retain the test audio.",
+    "mux": "Not requested."
+  }
+}

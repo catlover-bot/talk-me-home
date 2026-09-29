@@ -61,7 +61,7 @@ text(s, 'Talk Me\nHome.', .73, 1.5, 6.1, 2.1, 59, 'F4EEDC', serif=True)
 text(s, 'You have the map.\nPip has eyes and hands.', .78, 4.1, 5.9, 1.1, 24, 'EADBBC')
 text(s, 'Explore through conversation.\nChoose the route. Confirm the action.', .78, 5.65, 5.9, .95, 18, 'DCE2CE')
 text(s, STATUS['displayStatus'], .78, 7.04, 6, .25, 10, 'CBD3BC')
-notes(s, 'Existing original cover illustration, not a gameplay screenshot. Goal 005 versioned local draft. Final results are controlled by status.json; no public link is invented.')
+notes(s, 'Existing original cover illustration, not a gameplay screenshot. Goal 005 local release media. Results are controlled by status.json; no public link is invented.')
 
 s = slide(2, 'The cooperation premise', 'Neither partner has the whole picture.', 'Three chapters: Cargo Bay → Relay Gallery → Return Dock.')
 for x, title, body, foot, fill in [
@@ -80,7 +80,7 @@ text(s, 'PLAN', 9.3, 2.75, 3.1, .35, 13, GREEN, True)
 text(s, 'Mark a corridor.\nRevise the plan.', 9.3, 3.24, 3.14, .98, 20)
 text(s, 'COMPARE', 9.3, 4.67, 3.1, .35, 13, GREEN, True)
 text(s, 'Keep explored paths and\nreported obstructions distinct.', 9.3, 5.15, 3.14, 1.04, 18)
-notes(s, 'Actual Goal 005 compiled Practice UI, artifacts/goal-005/ui/gallery-validation.json. Capture is deterministic offline gameplay, not real-model completion. Planned and explored routes are deliberate private player annotations. Both authored Gallery configurations and topology remain finite; no automatically solved safe path is drawn.')
+notes(s, 'Actual final-build Goal 005 Practice UI, recorded separately from real Voice attempt 12. Capture is deterministic offline gameplay, not real-model completion. Planned and explored routes are deliberate private player annotations. Both authored Gallery configurations and topology remain finite; no automatically solved safe path is drawn. ' + STATUS['uiCaptures']['wide'])
 
 s = slide(4, 'Useful field reports', 'Exact words, with their source and age.', 'A report is a communicated claim, not a live sensor reading.')
 picture(s, STATUS['uiCaptures']['report'], .68, 2.6, 7.65, 4.22)
@@ -88,18 +88,14 @@ text(s, 'Keep the quote.', 8.76, 2.86, 3.82, .48, 24, serif=True)
 text(s, 'Attach it to a room or corridor.\nThe association belongs to you.', 8.76, 3.43, 3.82, .9, 17, MUTED)
 text(s, 'Recheck what changed.', 8.76, 4.74, 3.82, .48, 24, serif=True)
 text(s, 'Relay changes age gate notes.\nStable clues remain historical quotes.\nAsk for a fresh surroundings report.', 8.76, 5.3, 3.82, 1.23, 16, MUTED)
-notes(s, 'Actual Practice screenshot at CSS 200% zoom, not a visual mockup. Exact saved messages and original report time/source are preserved. Report freshness is server-stamped at receipt; a Relay change and change-back cannot revive a gate reading. Selected quick requests are explicitly labelled Selected request, never microphone speech. Private associations do not enter robot context.')
+notes(s, 'Actual final-build Practice screenshot, not a visual mockup. Exact saved messages and original report time/source are preserved. Report freshness is server-stamped at receipt; a Relay change and change-back cannot revive a gate reading. Selected quick requests are explicitly labelled Selected request, never microphone speech. Private associations do not enter robot context. ' + STATUS['uiCaptures']['report'])
 
-s = slide(5, 'A companion that helps you orient', '“I moved” should not be the end of the exchange.', 'Goal 005 connects a confirmed arrival to a useful local report.')
-for x, title, body, fill in [
-    (.68, '1  CONFIRMED ARRIVAL', 'One confirmed action.\nA scoped local observation.\nIts source and time retained.', 'E4E9DD'),
-    (4.9, '2  USEFUL ORIENTATION', 'Report the nearby emblem.\nName visible directions.\nKeep the response bounded.', 'E8E1CF'),
-    (9.12, '3  A HUMAN CHOICE', 'Compare with the atlas.\nCheck an uncertain branch.\nReplan without resetting.', 'E4E9DD')]:
-    box(s, x, 2.79, 3.53, 3.17, fill)
-    text(s, title, x+.23, 3.11, 3.1, .38, 12, GREEN, True)
-    text(s, body, x+.23, 3.83, 3.07, 1.8, 18)
-text(s, 'Pause, Interrupt and End still win. A missing report leaves room to ask again.', .8, 6.4, 11.9, .53, 19, GREEN)
-notes(s, 'Implemented Goal 005 product design; schema/adapter and compiled injected-provider tests establish local behavior, not a guarantee of real-model compliance. Arrival data is robot-eligible only and has no hidden global graph. Existing one-shot scheduler preserves safe tool/playback boundaries and cancellation. Final live efficacy must be supplied from completed batch evidence.')
+s = slide(5, 'An actual rescue', 'A blocked passage can change the route.', 'Real Voice attempt 12: a backtrack, a recovered request, and confirmed home.')
+picture(s, STATUS['homeCapture'], .68, 2.52, 8.05, 4.22)
+text(s, 'ONE COMPLETE RESCUE', 9.05, 2.83, 3.55, .4, 13, GREEN, True)
+text(s, 'Eleven exact confirmations.\nUseful arrival reports.\nA way around blocked cargo.', 9.05, 3.47, 3.55, 1.53, 19)
+text(s, 'Home, playback drain and\nending ACK observed.', 9.05, 5.54, 3.55, .8, 17, MUTED)
+notes(s, 'Actual server-confirmed home screenshot from synthetic-microphone real AssemblyAI Voice attempt 12. Build ' + STATUS['verifiedBuild'] + '. 11 exact UI-confirmed commits; local connected 577.2133s, provider-reported 576.923132s; ending ACK and cleanup observed. Arrival reports and bounded recovery helped this sample; permission questions and an empty response still occurred. One pass is not the required two or a statistical reliability guarantee. ' + STATUS['homeCapture'])
 
 s = slide(6, 'Evidence and availability', STATUS['acceptanceHeadline'])
 box(s, .68, 2.25, 7.1, 3.83, 'E4E9DD')
@@ -109,7 +105,7 @@ text(s, 'LOCAL PROTOTYPE', 8.2, 2.62, 4.43, .35, 13, GREEN, True)
 text(s, 'Playable Rescue and Training.\nNo public demo is deployed.\nNo upload or event entry is submitted.', 8.2, 3.23, 4.38, 1.9, 20)
 text(s, 'Synthetic QA is not a human\nplaytest or physical-device test.', 8.2, 5.47, 4.38, .88, 16, MUTED)
 text(s, f"Evidence: {STATUS['evidencePath']}", .8, 6.53, 11.9, .3, 12, MUTED)
-notes(s, 'This slide must be updated from actual final-candidate results. Do not convert Practice, fake-peer tests, selected requests or historical failed calls into a Voice completion. No claim about human enjoyment, physical audio quality, revenue, customers or statistical reliability. Public URLs intentionally remain unset. ' + json.dumps(STATUS))
+notes(s, 'Final batch result: one accepted Voice completion on final build; target of two not met. Attempt 13 stalled acquiring a Gallery passage report and had no ending ACK; local resources were cleaned up. All eight Goal 005 slots are consumed. Practice, fake-peer tests, selected requests and historical functional homes are not extra final-candidate passes. No claim about human enjoyment, physical audio quality, revenue, customers or statistical reliability. Public URLs intentionally remain unset. ' + json.dumps(STATUS))
 
 prs.save(OUTPUT)
 print(OUTPUT)

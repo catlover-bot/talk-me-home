@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T11:38:52.137281+00:00",
+  "status": "HISTORICAL_EVIDENCE_PRESERVED_WITH_AUTHORIZED_BUILD_REPLACEMENT",
+  "olderBaseline": {
+    "path": ".validation/goal-004e-approved-recheck-preservation-before.json",
+    "sha256": "aac42662cf52dafdf5c4da706d4d17dcd39983a510dc7ef82d6db4b5bb091d80",
+    "checkedPaths": 1294,
+    "unchangedPaths": 1281,
+    "changedPaths": [
+      "dist/client/index.html",
+      "dist/server/agent/config.js",
+      "dist/server/agent/prompt.js",
+      "dist/server/server/admission.js",
+      "dist/server/server/gallery.js",
+      "dist/server/server/http.js",
+      "dist/server/server/production.js",
+      "dist/server/server/records.js",
+      "dist/server/server/sessions.js",
+      "dist/server/server/state.js"
+    ],
+    "missingPaths": [
+      "dist/client/assets/Debrief-iYI4bR5j.js",
+      "dist/client/assets/index-BMWv5jcH.css",
+      "dist/client/assets/index-c4oFDsR2.js"
+    ],
+    "excludedPaths": [],
+    "interpretation": "Every baseline entry was compared. Only current dist build outputs differ after authorized Goal005 changes; old hashed client assets were superseded. Historical evidence, original media, accounting and operational credential-file bytes match."
+  },
+  "goal005Baseline": {
+    "path": ".validation/goal-005-budget-baseline.json",
+    "sha256": "90a187aa57470c06f93088f2d3891505fff36c53504f1f5118adbea87d90dcba",
+    "checkedPaths": 24,
+    "unchangedHistoricalJournals": 15,
+    "authorizedAccountingAdmissionHarnessSourceChanges": [
+      "scripts/qa-amended-budget.mjs",
+      "scripts/qa-supervisor.mjs",
+      "scripts/qa-live-browser.mjs",
+      "scripts/qa-live-authorization.mjs",
+      "scripts/qa-evidence.mjs",
+      "game/server/admission.ts",
+      "game/server/http.ts",
+      "game/server/production.ts",
+      "game/client/api.ts"
+    ]
+  },
+  "historicalFifthAttempt": {
+    "receipt": "artifacts/goal-004e/recheck-live/media-review.json",
+    "receiptSha256": "17d1df93dc20881dd86f4ee80e0498be8ead74ba52df7761b8a30b292624d725",
+    "checkedFiles": 9,
+    "changedFiles": [],
+    "files": [
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/report.json",
+        "sha256": "e05d72c4a209b85f0eab723e4279ec2671ff715f70d86eb64a5a5d741efc8904"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/audio-evidence.json",
+        "sha256": "f484305319b23017c2ae96a8315547e6074eaf3a0f70bab3a1bd6ba70babf955"
+      },
+      {
+        "path": "artifacts/goal-004e/recheck-live/2026-09-29T03-22-38-226Z-voice-mission-metrics.json",
+        "sha256": "f1bd2d6b47e0aa2285ed79965a469e907a9d4270eecda872361e66741a59a70b"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/browser-silent.webm",
+        "sha256": "14f48f6fc8bf15a65558f67929f57ad497686f59035d59ed06494e2bab9098c0"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/input-digital.wav",
+        "sha256": "8735cb292ee9bf2e22993c8608fe8ffc4701f2294c01dc8f8fa7c80962f00769"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/rendered-digital.wav",
+        "sha256": "21915d9e72d508d8f4ffae1b2e1a6ec8acb24a15933df1301f1977d565db62b9"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/postVolume-digital.wav",
+        "sha256": "f6765c99be11b52a8565a0a18742507e22492928051d785f1d087fa5a87b89e0"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/qa-combined-digital.wav",
+        "sha256": "52b77cc44b1c23afa55dde8a303ac6bd572fdc56e7443adc1e62515499cccad0"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T03-22-38-226Z-voice-mission/qa-combined-video.mp4",
+        "sha256": "7e0edd50d800897d21a2deea76cd2e5887ea621952bca3be3881d091b9ab6f2d"
+      }
+    ]
+  },
+  "goal005Originals": {
+    "snapshot": "artifacts/goal-005/live/attempt-13-accounting.json",
+    "snapshotSha256": "8c15ff43759859987c0000c7fde2826bc542c70761ec1ed684f42a40161a3a60",
+    "checkedFiles": 112,
+    "changedFiles": [],
+    "priorCompactFilesVerified": 21,
+    "priorCompactChanges": []
+  },
+  "appendOnlyProof": {
+    "checks": 18,
+    "allMatched": true,
+    "prefixes": [
+      {
+        "throughAttempt": 6,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 4,
+        "sha256": "f3e8a92b221a934d12b3f162405b15adc5377cd2333268c75a44c07c0500b0b9",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 6,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 2,
+        "sha256": "4d81d26cc444efec430a5829a8d05fcf5112993bee2467934308036e68a02268",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 6,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 1,
+        "sha256": "1b8eb5bc59cd03c8efc4c0e9bef1ebaf079531820fe40c4f92dcb727905a2e3f",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 7,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 7,
+        "sha256": "63f2c8b04727f4267774e3e8a81c715c0787695fda109170e8bc43b11bc76e45",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 7,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 3,
+        "sha256": "1122f8c3811a31da1354051a0039479331617795d4d38f64240ef6be3ccd300b",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 7,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 2,
+        "sha256": "a028fc312b055530a38bf92390cd28ddc9bba147fc2778a9c29f6a1570936a2d",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 8,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 10,
+        "sha256": "eabadeee45826d6186163ed744981bd14d826b5292e2ba6ab0732e5f33895471",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 8,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 4,
+        "sha256": "28c69ca0708e3f14a878dac1b5d04ce633508869d5115a93fce6b655591e1909",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 8,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 3,
+        "sha256": "2754f9e05405480b5f5a6b7266a61cb33b6787d049b3e0fb593ce4cc352c91be",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 9,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 13,
+        "sha256": "33423502c561c26800475bc827a8d61118f9bc5acbd641810b6216e2797a02c3",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 9,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 5,
+        "sha256": "6e6697c3a15dd6a3681de347561e38f606cf529a68e89619e6daafd0ac7deb94",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 9,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 4,
+        "sha256": "39bc2ac42b5b4ea8a88114f45c46ed2b0b4efafda075b03b74143553eb63718d",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 10,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 16,
+        "sha256": "0c9e5fcbf7730d9e1118c75fb21b24713f4a0d17d2d23e99089012c03f52cec4",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 10,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 6,
+        "sha256": "e0b253371e7c89f4e67160a0ff02d1f9a6357936b306db392efce07729b1d088",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 10,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 5,
+        "sha256": "27ed2d9efac0c353c34701ceee6beaf6be1da30f4ca1b6b4ea1a624b84392f8e",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 11,
+        "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+        "rows": 19,
+        "sha256": "6a7efa22289300bc446942acfde2f5481b4f21ae24613643f5167388db64250c",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 11,
+        "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+        "rows": 7,
+        "sha256": "2853f09b23ea44c9eb570807e67b3e9d4435f46a7a49fbcdf2629b3797d447f7",
+        "unchanged": true
+      },
+      {
+        "throughAttempt": 11,
+        "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+        "rows": 6,
+        "sha256": "1b59054ce2c5f747badf956c964d58ee97b658513cbf9444464d7e8b19ca4b59",
+        "unchanged": true
+      }
+    ]
+  },
+  "frozenCandidate": {
+    "runtimeFiles": 22,
+    "harnessFiles": 17,
+    "fixtureFiles": 718,
+    "currentRuntimeMatches": true,
+    "currentHarnessMatches": true,
+    "currentSpeechFixturesMatch": true
+  },
+  "cleanup": {
+    "supervisorRecords": 8,
+    "allSurvivorsZero": true,
+    "allRecordedDriverPidsAbsent": true
+  },
+  "scope": "Read-only hash and receipt audit plus additive sanitized outputs. No raw ledger/report/original media, grant, credential, runtime or fixture was changed."
+}

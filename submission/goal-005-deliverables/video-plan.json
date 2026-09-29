@@ -1,19 +1,91 @@
 {
   "schemaVersion": 1,
-  "status": "PLAN_ONLY",
+  "status": "READY_FOR_LOCAL_RENDER",
   "output": "submission/Talk_Me_Home_Goal005_Demo.mp4",
   "workingDirectory": ".validation/goal-005-media",
-  "targetDurationSeconds": { "minimum": 120, "maximum": 180 },
-  "story": [
-    { "section": "Premise", "seconds": 10, "content": "You have the map; Pip has local eyes and hands. Original title art is illustration, not gameplay." },
-    { "section": "Explore and plan", "seconds": 25, "content": "Actual improved atlas, a deliberate private route mark, exact source quote and Relay freshness. Label Practice if no real capture shows these operations." },
-    { "section": "Arrival and orientation", "seconds": 35, "content": "Same-attempt request, exact proposal, owner confirmation, actual Pip arrival report and playback. Retain uncertainty or permission questions if present." },
-    { "section": "Recover or reroute", "seconds": 35, "content": "A useful real recovery or backtrack when actually observed. Otherwise show a labelled Practice demonstration and disclose the mode/build boundary." },
-    { "section": "Ending or actual limit", "seconds": 25, "content": "Show server-confirmed home only if that selected mission achieved it. Otherwise retain the real stopping point and truthful prototype status." },
-    { "section": "Availability", "seconds": 10, "content": "Actual final-candidate result; public URL blank unless separately deployed. No submission/upload claim." }
+  "targetDurationSeconds": {
+    "minimum": 120,
+    "maximum": 180,
+    "planned": 178
+  },
+  "sources": {
+    "title": {
+      "path": ".validation/goal-005-media/final-slides/slide-1.png",
+      "sha256": "b2d9da77fc41f70947f76cf589b214f01a3f354dbcd199bc9beecb77cff4df57",
+      "mode": "card"
+    },
+    "practice": {
+      "path": ".validation/goal-005-media/final-practice-ui.webm",
+      "sha256": "52798f288ca3729eb25f54534a8f732c2645bb0109b6f671cd277882c7bbf429",
+      "mode": "practice",
+      "build": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+      "attemptId": "separate-final-practice-ui"
+    },
+    "voice12": {
+      "path": ".validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+      "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812",
+      "mode": "real_voice",
+      "build": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+      "attemptId": "2026-09-29T11-10-24-116Z-voice-mission",
+      "serverConfirmedHome": true,
+      "homeEvidencePath": "artifacts/goal-005/live/attempt-12-observed-home.png"
+    },
+    "result": {
+      "path": ".validation/goal-005-media/final-slides/slide-6.png",
+      "sha256": "cb46107d8eb9893b2ca33571189c541ad946a9736052b00072d294cdc112663c",
+      "mode": "card"
+    }
+  },
+  "segments": [
+    {
+      "source": "title",
+      "duration": 5,
+      "audio": false,
+      "label": "TALK ME HOME | GOAL 005",
+      "caption": "You have the map. Pip has local eyes and hands. Edited gameplay follows."
+    },
+    {
+      "source": "practice",
+      "start": 1.02,
+      "duration": 30,
+      "audio": false,
+      "label": "PRACTICE UI | deterministic, silent | build 2edf791",
+      "caption": "Your route marks and exact report notes stay private. Selected requests are UI commands.",
+      "disclosedTransition": true
+    },
+    {
+      "source": "voice12",
+      "start": 222.0802,
+      "duration": 66,
+      "audio": true,
+      "label": "SYNTHETIC VOICE + UI | real AssemblyAI | attempt 12 | build 2edf791",
+      "caption": "Cut to Gallery, 03:42-04:48: blocked passage, a checked alternative, and a confirmed backtrack.",
+      "disclosedTransition": true
+    },
+    {
+      "source": "voice12",
+      "start": 515.0802,
+      "duration": 67,
+      "audio": true,
+      "label": "SYNTHETIC VOICE + UI | real AssemblyAI | attempt 12 | build 2edf791",
+      "caption": "Cut to Return Dock, 08:35-09:42: an empty response, a fresh check, and exact confirmation of home.",
+      "showsHome": true
+    },
+    {
+      "source": "result",
+      "duration": 10,
+      "audio": false,
+      "label": "LOCAL PROTOTYPE | FINAL BATCH RESULT",
+      "caption": "One final-candidate pass; two required. Attempt 13 stalled without an ending ACK. No public deployment."
+    }
   ],
-  "sources": {},
-  "segments": [],
+  "selectionBoundary": "Only attempt 12 contributes real Voice footage. The separately labelled Practice UI recording uses the same compiled build. Cuts are disclosed in the lower caption; clips run at original speed with original source audio. An empty response and recovered request remain visible.",
+  "alignment": {
+    "offsetMs": 80.2,
+    "creationIntervalHalfWidthMs": 38.5,
+    "boundary": "Approximate page-creation wall-clock alignment. Additional recording-pipeline delay is not bounded; not sample-accurate synchronization."
+  },
+  "practiceEvidence": "artifacts/goal-005/ui/final-practice-capture.json",
   "sourceRules": {
     "hashEveryInput": true,
     "oneAttemptPerContinuousMission": true,
@@ -24,12 +96,5 @@
     "generatedNarration": false,
     "physicalAudioClaim": false,
     "historicalFilesWritable": false
-  },
-  "inspectionRequired": [
-    "Inspect every native slide render.",
-    "Inspect video frames before/after every mode, build, chapter and edit boundary.",
-    "Decode/probe audio and review audible content with an audio-capable tool or human if available; record any unperformed listening honestly.",
-    "Verify exact final output hashes, streams, durations and original-input hashes.",
-    "Update status.json and rendered deck after the real result is known."
-  ]
+  }
 }

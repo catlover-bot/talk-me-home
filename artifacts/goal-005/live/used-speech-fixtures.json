@@ -129,6 +129,24 @@
       "sha256": "b58a652bb1d083805d4a4c2e25a5c3603f7d452add69d67af3526c37ed8a4470"
     },
     {
+      "id": "speech-2da1f096cbe96e03",
+      "text": "Please inspect the capsule return panel and report its operation.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-2da1f096cbe96e03.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.8895,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 3.80675,
+      "nonzeroSamples": 78452,
+      "rms": 0.09026357562797013,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "6c53310ff2d732b5118b919e8c908eb2a018c75f373f031a4af6e0aaba91c4fb"
+    },
+    {
       "id": "speech-3675d104a4f60ed8",
       "text": "Please observe the room now and tell me which emblem is beside you.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -417,6 +435,24 @@
       "sha256": "783e3f6506ea90ed1feddda138b4baa26d051669a168ece5762d6c2ca41eabab"
     },
     {
+      "id": "speech-8797aa13512b4f84",
+      "text": "Please propose confirming the return with the inspected capsule operation.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-8797aa13512b4f84.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 5.1695,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 4.08225,
+      "nonzeroSamples": 84846,
+      "rms": 0.09274348398575598,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "775ebde12b91ef6e709481563efc410287bc930956eb9a69d2ac9092849c43b2"
+    },
+    {
       "id": "speech-87dd4f38d46077c6",
       "text": "Please inspect the capsule for its local departure operation and tell me how to confirm the authorized return.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -469,6 +505,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "38d2fa466153c3c92332da15a6df43a37f59a9dc5a72078b3eb0bc446334bc33"
+    },
+    {
+      "id": "speech-96f2c4645e12b18d",
+      "text": "Please set the Latch to hold the Door open.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-96f2c4645e12b18d.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 3.4645,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 2.38375,
+      "nonzeroSamples": 47698,
+      "rms": 0.0820750966844683,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "6371bb11120485bb65d4d3ea173f9fbfa57afb715928449a1e2f205e23724d09"
     },
     {
       "id": "speech-97048dfc6477b0ba",

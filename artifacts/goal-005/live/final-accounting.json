@@ -1,0 +1,564 @@
+{
+  "schema": 1,
+  "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+  "checkedAt": "2026-09-29T11:42:34.087Z",
+  "status": "GRANT_EXHAUSTED_ACCEPTANCE_TARGET_NOT_MET",
+  "amendmentId": "goal-005-gallery-live-completion-2026-09-29",
+  "accounting": {
+    "historical": {
+      "attempts": 5,
+      "reservedSeconds": 3350,
+      "estimatedReservedDollars": 4.1875
+    },
+    "goal005": {
+      "approvedAdditionalCeilingDollars": 10,
+      "maxAttempts": 8,
+      "attemptsConsumed": 8,
+      "productionAdmissionsConsumed": 8,
+      "voiceAttempts": 8,
+      "textDiagnosticAttempts": 0,
+      "reservationSecondsPerAttempt": 970,
+      "reservedSeconds": 7760,
+      "estimatedReservedDollars": 9.7,
+      "remainingAttempts": 0,
+      "remainingReservedSeconds": 0,
+      "remainingReservationEstimateDollars": 0
+    },
+    "aggregate": {
+      "attempts": 13,
+      "productionAdmissions": 13,
+      "reservedSeconds": 11110,
+      "estimatedReservedDollars": 13.8875
+    },
+    "hourlyPlanningRateDollars": 4.5,
+    "rateSource": "https://www.assemblyai.com/pricing",
+    "permanentAccountRefusalStopRecorded": false,
+    "refundsOrReplenishment": 0,
+    "planningBoundary": "Reservation estimates are conservative planning values, not invoices or verified account debits. Unused monetary ceiling headroom creates no extra attempt."
+  },
+  "acceptance": {
+    "requiredFinalCandidatePasses": 2,
+    "actualFinalCandidatePasses": 1,
+    "targetMet": false,
+    "finalCandidateAttempts": [
+      12,
+      13
+    ],
+    "identicalFinalPairIdentity": true,
+    "automatedPassedAttempts": [
+      12
+    ],
+    "functionalHomeAttempts": [
+      9,
+      11,
+      12
+    ],
+    "earlierHomesDoNotReplaceFinalCandidateAcceptance": true,
+    "releaseStatus": "RELEASE_NOT_LIVE_VERIFIED"
+  },
+  "durationEvidence": {
+    "knownProviderReportedSamples": 6,
+    "knownProviderReportedSeconds": 2683.085456,
+    "unknownProviderDurationAttempts": [
+      11,
+      13
+    ],
+    "remoteEndUnconfirmedAttempts": [
+      11,
+      13
+    ],
+    "boundary": "The six acknowledged provider durations are a partial observed sum. Local socket close, expired reservation leases and zero local resources cannot establish remote termination or total billed duration."
+  },
+  "admission": {
+    "readOnlyStatus": {
+      "available": false,
+      "status": 429,
+      "message": "The demo Live allowance has been used. Practice is available without a connection."
+    },
+    "allSupervisorAndProductionLeasesExpired": true,
+    "latestSupervisorLeaseUntil": "2026-09-29T11:37:18.900Z",
+    "latestProductionLeaseUntil": "2026-09-29T11:37:18.921Z",
+    "lastAttemptAckClosureExemption": false,
+    "activeLocalLeaseCount": 0,
+    "furtherAttemptAvailable": false,
+    "boundary": "Exhaustion blocks further reservations after expiry. This audit invoked no reserve, initialization, grant, token or provider operation."
+  },
+  "finalCandidate": {
+    "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+    "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+    "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+    "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+    "sessionUpdateSha256": "f24d678be5f5fb0b2b96649e5be160cafbf1bc9a8031544f9df45d01782e8f24",
+    "currentRuntimeFilesVerified": 22,
+    "currentHarnessFilesVerified": 17,
+    "currentFixtureFilesVerified": 718,
+    "fullOfflineValidation": {
+      "path": "artifacts/goal-005/live/final-offline-validation.json",
+      "sha256": "5bc5527f38025f223180995ef152286fc852e8e596989344f9511b45591f124e",
+      "unitTests": 437,
+      "browserTests": 142,
+      "status": "passed",
+      "executionCommitWasClean": true
+    }
+  },
+  "cleanup": {
+    "allEightExplicitEndSent": true,
+    "allEightAudioResourcesZero": true,
+    "allEightBrowserAndServerClosureObserved": true,
+    "supervisorRecords": 8,
+    "allSurvivorsZero": true,
+    "allRecordedDriverPidsAbsent": true,
+    "remoteEndingAcknowledgedAttempts": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      12
+    ]
+  },
+  "attempts": [
+    {
+      "attempt": 6,
+      "batchAttempt": 1,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "0723e57f075146d06d15e4bfab2fc0c7163dc402",
+      "runtimeSha256": "f3cf1e1266a51030adabb2efab247a84eda3f8e96af2f775021927b944281fce",
+      "harnessSha256": "e37bd8362cc79f520f7ad5070cd81a3e23246c2b329da50020f8da44bc6303c8",
+      "fixtureSha256": "c8bbe2cbc227ba2322b368d388260e963f9b24ed35b11b602abfac9081c81022",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T09-03-52-791Z-voice-mission/report.json",
+        "sha256": "b31d7310437b9540dddc1b018b99b8332e185dab481f395efd275177256a0e7c"
+      },
+      "furthestCheckpoint": "Return Dock",
+      "functionalHomeVerified": false,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA action recovery exhausted after 4 exchanges for Confirm the authorized return",
+      "syntheticInputTurns": 25,
+      "exactConfirmations": 8,
+      "uniquePhysicalCommits": 8,
+      "localObservedSeconds": 562.6221000000238,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 562.556016,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T09:20:05.293Z",
+        "productionUntil": "2026-09-29T09:20:05.310Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 7,
+      "batchAttempt": 2,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "8351617b1202d78c3f173cca4835d22ccf148f27",
+      "runtimeSha256": "bb4e5178f7025236e1ec6027168a2c7f675ab2c8c37b57af91b3257abe23acc8",
+      "harnessSha256": "99b0a13bd0e469d54b7fc83c40bc5fe1959caac8adb34bbe96fb4eb5da6c90c8",
+      "fixtureSha256": "ea0fa48441a2e6df3e5a85e2ac25d612cab8a16b982c9858f07e42875348ca68",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T09-28-09-963Z-voice-mission/report.json",
+        "sha256": "0c7d6c2ce8223ddddaebd12bd883015dbba9c4e7683cdc0aa3f84c9901255e4f"
+      },
+      "furthestCheckpoint": "Return Dock",
+      "functionalHomeVerified": false,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA action recovery exhausted after 4 exchanges for Confirm the authorized return",
+      "syntheticInputTurns": 25,
+      "exactConfirmations": 8,
+      "uniquePhysicalCommits": 8,
+      "localObservedSeconds": 509.6797999999523,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 509.541203,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T09:44:22.391Z",
+        "productionUntil": "2026-09-29T09:44:22.412Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 8,
+      "batchAttempt": 3,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "61fdcbb5fda115ce63835d13762a5fd7592c64b0",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "harnessSha256": "77153bc118a133c5096a67037e728819b86fc7aefe57358192745c4d314df31c",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T09-46-23-539Z-voice-mission/report.json",
+        "sha256": "e4a473d16d6778787aba4a4aa6568ef321b9f53128778b701c27ff7b2f62d67a"
+      },
+      "furthestCheckpoint": "Relay Gallery",
+      "functionalHomeVerified": false,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA turn stalled: final_response_pending",
+      "syntheticInputTurns": 10,
+      "exactConfirmations": 3,
+      "uniquePhysicalCommits": 3,
+      "localObservedSeconds": 205.48260000002384,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 205.216512,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T10:02:35.876Z",
+        "productionUntil": "2026-09-29T10:02:35.890Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 9,
+      "batchAttempt": 4,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "dd916335b0314dbbca1de22a391a560101f678c5",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "harnessSha256": "f5a6b8a66fc7bdec1701532844962d5e0a53ab3d416a3b31b71638bd5d785494",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T10-04-30-971Z-voice-mission/report.json",
+        "sha256": "bd57e926d19af16f5cbb2637087441250bf724eadb6214a3ca2873264b61c824"
+      },
+      "furthestCheckpoint": "You brought Pip home.",
+      "functionalHomeVerified": true,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA pre-submit stopped: session_ended",
+      "syntheticInputTurns": 28,
+      "exactConfirmations": 11,
+      "uniquePhysicalCommits": 11,
+      "localObservedSeconds": 645.8465999999643,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 645.664858,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T10:20:43.545Z",
+        "productionUntil": "2026-09-29T10:20:43.570Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 10,
+      "batchAttempt": 5,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "78fa583af5a4c17c7eda53ae07873deacaf46836",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "harnessSha256": "44162d461b65b96f1fc652dc8331c1ca9b38f5bb2ee800fdf4251f84409b5185",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T10-24-48-370Z-voice-mission/report.json",
+        "sha256": "4bbb13347d2293935ef903c6a03ab5b808f8e502898e357bc777c49ca1d0c8d5"
+      },
+      "furthestCheckpoint": "Relay Gallery",
+      "functionalHomeVerified": false,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA current Gallery location remained unknown after 4 purposeful exchanges.",
+      "syntheticInputTurns": 10,
+      "exactConfirmations": 2,
+      "uniquePhysicalCommits": 2,
+      "localObservedSeconds": 183.3817000000477,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 183.183735,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T10:41:00.934Z",
+        "productionUntil": "2026-09-29T10:41:00.957Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 11,
+      "batchAttempt": 6,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "harnessSha256": "aa4606c1242bca540284c4b9f1d9db33a44a1188a6579127b53522fa81d643fd",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/report.json",
+        "sha256": "f3142be57473a363d848bb1a7d7d5a8a3b1ae3a73961bf5f7810e09746a3caed"
+      },
+      "furthestCheckpoint": "You brought Pip home.",
+      "functionalHomeVerified": true,
+      "rawCompletion": true,
+      "outcome": "failed",
+      "failure": "page.waitForFunction: Timeout 12000ms exceeded.",
+      "syntheticInputTurns": 34,
+      "exactConfirmations": 11,
+      "uniquePhysicalCommits": 11,
+      "localObservedSeconds": 883.0585,
+      "localDurationEndpoint": "local socket close only",
+      "providerReportedSessionSeconds": null,
+      "remoteEndConfirmed": false,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T10:55:36.475Z",
+        "productionUntil": "2026-09-29T10:55:36.494Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": false
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 12,
+      "batchAttempt": 7,
+      "mode": "voice",
+      "exerciseRecovery": false,
+      "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+      "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+      "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/report.json",
+        "sha256": "ee15f44547487e297d0c903f0184b98f60d78e9e4391137d992bf6d8a24db974"
+      },
+      "furthestCheckpoint": "You brought Pip home.",
+      "functionalHomeVerified": true,
+      "rawCompletion": true,
+      "outcome": "passed",
+      "failure": null,
+      "syntheticInputTurns": 28,
+      "exactConfirmations": 11,
+      "uniquePhysicalCommits": 11,
+      "localObservedSeconds": 577.2133000000119,
+      "localDurationEndpoint": "ending ACK",
+      "providerReportedSessionSeconds": 576.923132,
+      "remoteEndConfirmed": true,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T11:26:36.621Z",
+        "productionUntil": "2026-09-29T11:26:36.641Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": true
+      },
+      "reservedSeconds": 970
+    },
+    {
+      "attempt": 13,
+      "batchAttempt": 8,
+      "mode": "voice",
+      "exerciseRecovery": true,
+      "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+      "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+      "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+      "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+      "source": {
+        "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+        "sha256": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764"
+      },
+      "furthestCheckpoint": "Relay Gallery",
+      "functionalHomeVerified": false,
+      "rawCompletion": false,
+      "outcome": "failed",
+      "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+      "syntheticInputTurns": 23,
+      "exactConfirmations": 5,
+      "uniquePhysicalCommits": 5,
+      "localObservedSeconds": 567.446199999988,
+      "localDurationEndpoint": "local socket close only",
+      "providerReportedSessionSeconds": null,
+      "remoteEndConfirmed": false,
+      "explicitEndSent": true,
+      "cleanup": {
+        "audioResources": {
+          "activeTracks": 0,
+          "activeSources": 0,
+          "openApplicationContexts": 0
+        },
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorSurvivors": 0,
+        "recordedDriverAbsent": true
+      },
+      "leases": {
+        "supervisorUntil": "2026-09-29T11:37:18.900Z",
+        "productionUntil": "2026-09-29T11:37:18.921Z",
+        "expiredAtAudit": true,
+        "ackClosureExemption": false
+      },
+      "reservedSeconds": 970
+    }
+  ],
+  "currentJournals": [
+    {
+      "path": ".validation/goal-004c-live/allowance.jsonl",
+      "sha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck-allowance.jsonl",
+      "sha256": "468ebf6236dff2513fe15714e1b816bd49422adf52cf49de054de20c6026d866"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck-cleanup.jsonl",
+      "sha256": "edfdf39036c414199e620ee572874ae4cd056f5fd64ec4a6f5155d9845617e5c"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-candidate-recheck.jsonl",
+      "sha256": "ca4a824f15550f7622c5984490101243d9b7cf2277cd0686eba53cded991685c"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions-allowance.jsonl",
+      "sha256": "1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions-cleanup.jsonl",
+      "sha256": "411308dbabe0c58a11741dd37143017965c3fc09657718b01e37d7d6a45c660e"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-confirmed-actions.jsonl",
+      "sha256": "c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance-allowance.jsonl",
+      "sha256": "4cc324d8dc43d7bd4ff57986e43dc5f0d37ead592117b53d49fff7bf6a455152"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance-cleanup.jsonl",
+      "sha256": "3aecb080749e467b9281fb4752b4a17e2d57f4c0461c90d3fc65d0e582314806"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-final-acceptance.jsonl",
+      "sha256": "8c9c0f4c94c8f8e400769fdbc62aa20a7b6c232fcf4bf5cfffc992bd28ef70d0"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-goal-005-allowance.jsonl",
+      "sha256": "6aef0800752726825336f9ef40719c9bc98c7b7bc191cbb89a8dc361db519e85"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-goal-005-cleanup.jsonl",
+      "sha256": "07839b2bd38bbf568e111522d1581c0a8b141fd8e9c2edbddb2fe275e9df1f3f"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-goal-005.jsonl",
+      "sha256": "cf7090b4feb51c61bee85f38f0285cf051f9e71edd944f955582fe22069e89ce"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest-allowance.jsonl",
+      "sha256": "5b40201155c6fe78141cf36de9863552d76669f33cde02d243434de1da117bd5"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest-cleanup.jsonl",
+      "sha256": "73baecd607491fd4958ea05b5ba669fa71b629425b0e69a5993dcdfff8c1a281"
+    },
+    {
+      "path": ".validation/goal-004c-live/amendment-runtime-retest.jsonl",
+      "sha256": "f14a70efc214e673305bf8bcb0f289f4f2519b9c3ff4cc2cb757521056d63dae"
+    },
+    {
+      "path": ".validation/goal-004c-live/campaign.jsonl",
+      "sha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0"
+    },
+    {
+      "path": ".validation/goal-004c-live/cleanup.jsonl",
+      "sha256": "c227660c0d0b54f1641f624a19e02cc47cddecd567c3dc98ce20f4a93e72e11d"
+    }
+  ],
+  "preservation": {
+    "path": "artifacts/goal-005/live/final-preservation.json",
+    "sha256": "023d686db99d671b5d39f8b5b7fe97b482b6db5741c9e079ae26ffaa8ca0ac90",
+    "olderBaselinePathsChecked": 1294,
+    "originalGoal005FilesRechecked": 112,
+    "originalFileChanges": [],
+    "boundary": "See preservation receipt for every historical-baseline delta, including authorized build replacement and superseded hashed assets. No historical evidence or accounting file is silently excluded."
+  }
+}

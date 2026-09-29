@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_MEDIA_RENDERED_AND_INSPECTED",
+  "createdAtUTC": "2026-09-29T11:41:53.337927+00:00",
+  "build": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+  "result": {
+    "finalCandidateVoicePasses": 1,
+    "requiredPasses": 2,
+    "acceptanceTargetMet": false,
+    "goal005AttemptsConsumed": 8,
+    "remainingSlots": 0,
+    "selectedAttempt": 12,
+    "selectedAttemptHomeConfirmed": true,
+    "selectedAttemptEndingAcknowledged": true,
+    "selectedAttemptConfirmations": 11,
+    "selectedAttemptLocalConnectedSeconds": 577.2133000000119,
+    "selectedAttemptProviderSeconds": 576.923132,
+    "attempt13": "Failed Gallery report acquisition; no ending ACK. It is not used as footage."
+  },
+  "outputs": [
+    {
+      "file": {
+        "path": "submission/Talk_Me_Home_Goal005_Demo.mp4",
+        "bytes": 11872746,
+        "sha256": "74d9dcbf24c5778c231e7718bed88c87b1168ae0f0374cc5d64700b4efecea3e"
+      },
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1920,
+            "height": 1080,
+            "avg_frame_rate": "5337/178",
+            "duration": "178.000000",
+            "nb_frames": "5337"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "avg_frame_rate": "0/0",
+            "duration": "178.021333",
+            "nb_frames": "8351"
+          }
+        ],
+        "format": {
+          "duration": "178.021354",
+          "size": "11872746"
+        }
+      }
+    },
+    {
+      "file": {
+        "path": "submission/Talk_Me_Home_Goal005_Pitch.pptx",
+        "bytes": 1213455,
+        "sha256": "adea18b75ef494a375f90e3e9edc9b4df466bd97c5ff2dec25706c325f453adb"
+      },
+      "nativeSlides": 6
+    },
+    {
+      "file": {
+        "path": "submission/Talk_Me_Home_Goal005_Pitch.pdf",
+        "bytes": 778771,
+        "sha256": "2546dac4dafc8031c300dfde5080422970a1c99c3ad56dc2b77fb9bff699a7d5"
+      },
+      "nativePages": 6
+    }
+  ],
+  "privateSuccessfulUncut": {
+    "file": {
+      "path": ".validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+      "bytes": 27913490,
+      "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812"
+    },
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1440,
+          "height": 900,
+          "avg_frame_rate": "25/1",
+          "duration": "588.760000",
+          "nb_frames": "14719",
+          "nb_read_packets": "14719"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "24000",
+          "channels": 1,
+          "avg_frame_rate": "0/0",
+          "duration": "580.478833",
+          "nb_frames": "13605",
+          "nb_read_packets": "13605"
+        }
+      ],
+      "format": {
+        "start_time": "0.000000",
+        "duration": "588.760000",
+        "size": "27913490"
+      }
+    }
+  },
+  "sources": {
+    "originalAttempt12": [
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/audio-evidence.json",
+        "bytes": 3442166,
+        "sha256": "a38931d40914a3c943ed776c18e6aeb5d1a420ee2dc961324c9c02584ccb9d69"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/browser-silent.webm",
+        "bytes": 40723531,
+        "sha256": "267e619076c7e8385be3ab6a8caace2ca56cd42ebe5d2a9e44572adf59dab3ed"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/dock.png",
+        "bytes": 206812,
+        "sha256": "61c1511ca109ea4dcd5f086cb0dc542424bfaaf87c373998a43c9fae6331dcf5"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/gallery.png",
+        "bytes": 221514,
+        "sha256": "9ede27f37b335812a9da14bd3816155ba09d6ecfeaa78518a0aa6834af9a9832"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/home.png",
+        "bytes": 197228,
+        "sha256": "b00d3bc69c44034576174f4ee849c3bcc0f68a2ded3d052ed3c2e3ad95f88e24"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/input-digital.wav",
+        "bytes": 27859178,
+        "sha256": "e0dc9ba1378c589d421a2b76cdcf5570ce5a710bacc4559c20f0bb1e0a301fae"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/lifecycle.jsonl",
+        "bytes": 1820,
+        "sha256": "1423a426222ee6e73f46b1e1a4b4ac2898468e0c33d65a646c32b90497f0cf57"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/postVolume-digital.wav",
+        "bytes": 27859178,
+        "sha256": "54c0ffb5236e1e465ba0112547f65a8f7711e96e945ffc0bb76b89192278ccb3"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/rendered-digital.wav",
+        "bytes": 27859178,
+        "sha256": "dd978448a3750829b8effd34f0e481ef390faa931548f7008790a57139df3e22"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/report.json",
+        "bytes": 273318,
+        "sha256": "ee15f44547487e297d0c903f0184b98f60d78e9e4391137d992bf6d8a24db974"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/title.png",
+        "bytes": 206187,
+        "sha256": "3fc17a9ecdf5504c212fb405d500ec4746d80037049e161343ec310a88b93fdf"
+      },
+      {
+        "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/voice-unconfirmed-canary.png",
+        "bytes": 177544,
+        "sha256": "b3189fe0a241f87a4d0de8bd77171542a0c84d8e4f22a2d8db5d73f91edc5325"
+      }
+    ],
+    "practiceVideo": {
+      "path": ".validation/goal-005-media/final-practice-ui.webm",
+      "bytes": 2888568,
+      "sha256": "52798f288ca3729eb25f54534a8f732c2645bb0109b6f671cd277882c7bbf429"
+    },
+    "practiceReceipt": {
+      "path": "artifacts/goal-005/ui/final-practice-capture.json",
+      "bytes": 5016,
+      "sha256": "897a8fd1127fb8c261f60672f6dc988d5f531b5949c2e7b7243785ecf2a875d9"
+    },
+    "practiceSource": "Frozen final build Practice via normal UI only; deterministic Mock, silent native browser capture, not real model or human speech",
+    "practiceNetwork": {
+      "GAME_DISABLE_LIVE": true,
+      "externalRequestsBlocked": 0,
+      "tokenAttempts": 0,
+      "websocketAttempts": 0,
+      "errors": []
+    },
+    "originalArtwork": {
+      "path": "submission/assets/cover-illustration-1600x900.png",
+      "bytes": 495651,
+      "sha256": "1bff9ecc0829d107e13a478679e3cec445c2c996a250dcd1f0628ed09d634d2f"
+    },
+    "deckScreenshots": [
+      {
+        "path": "artifacts/goal-005/ui/final-planned-route.png",
+        "bytes": 256385,
+        "sha256": "a109f5a13c686a4999e4cf8517316899e84f9656532a5f1a776bb1ddf58e33fd"
+      },
+      {
+        "path": "artifacts/goal-005/ui/final-historical-dynamic-stable-clue.png",
+        "bytes": 244258,
+        "sha256": "bf7e78b74afa03b151090e3227a1c59a799de2ddbb61e136a6cdf8cb7099e4cf"
+      },
+      {
+        "path": "artifacts/goal-005/live/attempt-12-observed-home.png",
+        "bytes": 197228,
+        "sha256": "b00d3bc69c44034576174f4ee849c3bcc0f68a2ded3d052ed3c2e3ad95f88e24"
+      }
+    ]
+  },
+  "edit": {
+    "plan": {
+      "path": "submission/goal-005-deliverables/video-plan.json",
+      "bytes": 3927,
+      "sha256": "5c211d046aad72bd30548df81e8df9de7ff85d7fc37e436a1cda7aadf7651d13"
+    },
+    "recipe": {
+      "path": "submission/goal-005-deliverables/make_video.py",
+      "bytes": 4801,
+      "sha256": "59c91c82e3c383173d45cd75ede910f0fc853001e76d810cc3d18067f99bf910"
+    },
+    "plannedSeconds": 178,
+    "actualContainerSeconds": 178.021354,
+    "selection": "Only attempt 12 contributes real Voice footage. The separately labelled Practice UI recording uses the same compiled build. Cuts are disclosed in the lower caption; clips run at original speed with original source audio. An empty response and recovered request remain visible.",
+    "audioVideoAlignment": {
+      "offsetMs": 80.2,
+      "creationIntervalHalfWidthMs": 38.5,
+      "boundary": "Approximate page-creation wall-clock alignment. Additional recording-pipeline delay is not bounded; not sample-accurate synchronization."
+    },
+    "practiceClipOrigin": "Start1.020s after recorded page creation,30s selected. Native recording origin is approximate; inspected actual frames confirm the intended operations.",
+    "speedChanges": false,
+    "replacementSpeech": false,
+    "generatedNarration": false,
+    "originalPipCaptionsRewritten": false,
+    "silence": "Cards and Practice are silent; the final real clip pads silence only after original audio ends."
+  },
+  "audio": {
+    "sourceMix": "Original synthetic microphone capture and actually rendered provider PCM at half gain each; no independent voice synthesis.",
+    "sourceWavMetrics": {
+      "input": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "durationSeconds": 580.398625,
+        "peakPCM": 32767,
+        "nonzeroSamples": 859053,
+        "fullScaleSamples": 274
+      },
+      "rendered": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "durationSeconds": 580.398625,
+        "peakPCM": 31023,
+        "nonzeroSamples": 5599573,
+        "fullScaleSamples": 0
+      },
+      "mix": {
+        "sampleRate": 24000,
+        "channels": 1,
+        "durationSeconds": 580.398625,
+        "peakPCM": 16384,
+        "nonzeroSamples": 6376251,
+        "fullScaleSamples": 0
+      }
+    },
+    "decodedDemoMetrics": {
+      "durationSeconds": 178.14933333333335,
+      "sampleRate": 48000,
+      "channels": 1,
+      "peakPCM": 11783,
+      "nonzeroSamples": 3005198,
+      "fullScaleSamples": 0,
+      "rmsPCM": 747.335
+    },
+    "fullDemoDecode": "pass",
+    "fullUncutAudioDecode": "pass",
+    "waveform": {
+      "path": ".validation/goal-005-media/final-review/demo-audio-waveform.png",
+      "bytes": 3891,
+      "sha256": "0e934e878f93d30bc721a0b24c80ad44f682fb8d6bfdeec1502d9258c4ae7d45"
+    },
+    "humanListeningPerformed": false,
+    "physicalMicrophoneSpeakerVerified": false,
+    "limitations": "Digital sample/waveform inspection and decode are not a listening test. Original input contains274 full-scale samples; gain reduction does not repair source clipping. Approximate synchronization is not sample accurate."
+  },
+  "inspection": {
+    "nativePptxSlides": 6,
+    "nativePdfPages": 6,
+    "allSlidePagesVisuallyInspected": true,
+    "slideRenders": [
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-1.png",
+        "bytes": 384613,
+        "sha256": "b2d9da77fc41f70947f76cf589b214f01a3f354dbcd199bc9beecb77cff4df57"
+      },
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-2.png",
+        "bytes": 148017,
+        "sha256": "dbccaeb562d58448ae62c2aa41e62a795d2b95b615ec1e1baadbeb3c3c8c644e"
+      },
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-3.png",
+        "bytes": 377340,
+        "sha256": "1cf6b50ebfb160122d6103aaad612a4d837b4062dd5ecf7d403441e00d234035"
+      },
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-4.png",
+        "bytes": 385178,
+        "sha256": "73b6a70b48e3720521031c3ca22626ab17380adc37bd152eb7fe8253bf277ce6"
+      },
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-5.png",
+        "bytes": 382024,
+        "sha256": "a5a7891d98e16884a369d1cec2702a3e886acc099e5a41cc8ec1cbd0314bed37"
+      },
+      {
+        "path": ".validation/goal-005-media/final-slides/slide-6.png",
+        "bytes": 172849,
+        "sha256": "cb46107d8eb9893b2ca33571189c541ad946a9736052b00072d294cdc112663c"
+      }
+    ],
+    "videoFrameTimesSeconds": [
+      0.3,
+      4.8,
+      5.2,
+      9,
+      13,
+      21.3,
+      26.4,
+      34.8,
+      35.2,
+      48,
+      64,
+      77,
+      88.4,
+      89.4,
+      100.8,
+      101.2,
+      115,
+      136,
+      160,
+      166,
+      167.8,
+      168.2,
+      177.5
+    ],
+    "contactSheet": {
+      "path": ".validation/goal-005-media/final-review/demo-contact-sheet.png",
+      "bytes": 1253546,
+      "sha256": "d94a6382f7c2616ba2c7bedbe846b16ba78ba3b42fe1df81541cd5665636bac6"
+    },
+    "specificFullFrameReviewSeconds": [
+      26.4,
+      88.4,
+      101.2,
+      167.8,
+      168.2
+    ],
+    "visualFindings": [
+      "Practice route set/change/erase, attributed exact quotes and dynamic/stable freshness labels visible.",
+      "Selected request provenance is visible; silent Practice is explicitly distinct from real Voice.",
+      "Real pending southwest proposal and later committed receipt visible; no automatic map position added.",
+      "The same attempt reaches home, retains the actual farewell and shows Call ended before the result card.",
+      "Mode and time cuts are labelled outside the game image; no overlays obscure essential caption or confirmation controls.",
+      "All six native slide pages have readable titles/copy and no observed overflow. Final status is one pass; two required."
+    ],
+    "privateTechnicalReceipt": {
+      "path": ".validation/goal-005-media/final-technical-inspection.json",
+      "bytes": 9043,
+      "sha256": "931cdf15b857e4446f85a67b5a880ae842ad7dfda5ac7c5fc298579f22db2b04"
+    }
+  },
+  "preservation": {
+    "originalAttempt12FilesVerifiedUnchanged": 12,
+    "pinnedEditSourcesVerifiedUnchanged": true,
+    "historicalSubmissionFiles": [
+      {
+        "path": "submission/Talk_Me_Home_Pitch.pptx",
+        "bytes": 1331075,
+        "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08"
+      },
+      {
+        "path": "submission/Talk_Me_Home_Pitch.pdf",
+        "bytes": 810438,
+        "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea"
+      },
+      {
+        "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+        "bytes": 4526386,
+        "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c"
+      }
+    ],
+    "rawReportsTranscriptsAudioVideoRewritten": false
+  },
+  "localReproduction": {
+    "uncutRecipe": {
+      "path": ".validation/goal-005-media/prepare-attempt12.py",
+      "bytes": 4157,
+      "sha256": "4fab8617cba15092635772c7e7730f619d4e92d9c7d8f88c13bcbede992b6931"
+    },
+    "uncutCommandsAndProbes": {
+      "path": ".validation/goal-005-media/attempt12-uncut-preparation.json",
+      "bytes": 8412,
+      "sha256": "e63138adadc8067b67def93ac3e666620f60b3eaf84bdb25987080c242c22471"
+    },
+    "deckRecipe": {
+      "path": "submission/goal-005-deliverables/make_pitch.py",
+      "bytes": 8697,
+      "sha256": "bbef4f5a29801382cc14217db655c73ac13328c0b3c0c346da8866214c39c2ec"
+    },
+    "renderLog": {
+      "path": ".validation/goal-005-media/final-render.log",
+      "bytes": 80,
+      "sha256": "1dc2b02e247d984dce02bf22b516c35cb439f920e2951e0dd8eedfa92e41ac3b"
+    },
+    "inspectionLog": {
+      "path": ".validation/goal-005-media/final-inspection.log",
+      "bytes": 666,
+      "sha256": "a0a11a620359d518a32b863903f1551d09ee1921405b244649320ede2efd5eae"
+    }
+  },
+  "publication": {
+    "mp4": "Local ignored file; not uploaded",
+    "pptxAndPdf": "Goal005 deliverables; earlier submission versions preserved",
+    "publicDemoUrl": null,
+    "uploadedVideoUrl": null,
+    "deployed": false,
+    "submitted": false
+  }
+}
