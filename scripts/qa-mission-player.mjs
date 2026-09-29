@@ -14,11 +14,14 @@ export const PHRASES = {
   confirmContact: 'Are you holding the contact now?', retryContact: 'Please grip the contact steadily.',
   controller: 'The controller is ready to charge.', release: 'Please release the contact.',
   retryRelease: 'Please let go of the contact.',
-  board: 'Please board the capsule.', home: 'Please confirm the return.', wait: 'Please wait.',
+  board: 'Please board the capsule.',
+  home: 'Please confirm the authorized return. Inspect the capsule first, then propose its local departure operation. My console shows Ready and authorization Granted.',
+  wait: 'Please wait.',
 };
 
 /** Fixed player intentions, matched against the server's visible action label. */
 export function proposalLabelForRequest(text) {
+  if (text === PHRASES.home) return 'Confirm the authorized return';
   const request = text.toLowerCase().replace(/^please /, '').replace(/[.!]$/, '').trim();
   if (['engage the latch', 'set the latch to hold the door open', 'keep the door open', 'latch the door open'].includes(request)) return 'Engage the Latch';
   if (['hold the contact', 'grip the contact steadily', 'hold the contact while i store the charge'].includes(request)) return 'Hold the charging contact';

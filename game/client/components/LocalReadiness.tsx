@@ -92,6 +92,6 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
       {(accessError || (access && !access.available)) && <button className="text-button" onClick={refreshAccess}>Check availability again</button>}
     </section>
     <div className="readiness-actions"><button className="primary-button" disabled={!ready} onClick={() => finish(onReady)}>Connect {mode === 'live_voice' ? 'Live Voice' : 'Live Text'}</button><button onClick={() => finish(onPractice)}>Choose Practice</button>{mode === 'live_voice' && <button onClick={() => finish(onText)}>Use Live Text</button>}</div>
-    <p className="readiness-footnote">Live uses provider time, with a 10-minute call limit. Practice is deterministic and needs no provider. This app does not record microphone audio.</p>
+    <p className="readiness-footnote">Live uses provider time and has a time limit shown during the call. Practice is deterministic and needs no provider. This app does not record microphone audio.</p>
   </dialog>;
 }

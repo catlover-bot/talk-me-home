@@ -1,0 +1,83 @@
+{
+  "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
+  "attempts": 6,
+  "productionAttempts": 6,
+  "remainingAttempts": 7,
+  "reservedSeconds": 4320,
+  "estimatedReservedDollars": 5.4,
+  "verifiedRateDollarsPerHour": 4.5,
+  "localConnectedSeconds": [
+    71.08180000000074,
+    44.61229999999702,
+    38.00119999998808,
+    89.61630000001192,
+    163.96640000003578,
+    562.6221000000238
+  ],
+  "endAcknowledgements": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "nextPermittedAt": null,
+  "admissionStatus": "requires_current_frozen_candidate_batch_admission",
+  "inspectedAt": "2026-09-29T09:18:17.454Z",
+  "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+  "amendmentId": "goal-005-gallery-live-completion-2026-09-29",
+  "historicalAttempts": 5,
+  "newAttempts": 1,
+  "historicalReservedSeconds": 3350,
+  "newReservedSeconds": 970,
+  "historicalProductionAttempts": 5,
+  "newProductionAttempts": 1,
+  "remainingReservedCapacitySeconds": 6790,
+  "maximumAggregatePlanningDollars": 13.8875,
+  "approvedAggregatePlanningCeiling": 14.1875,
+  "originalCampaignSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
+  "originalAllowanceSha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
+  "amendmentLedgerSha256": "f3e8a92b221a934d12b3f162405b15adc5377cd2333268c75a44c07c0500b0b9",
+  "amendedAllowanceSha256": "4d81d26cc444efec430a5829a8d05fcf5112993bee2467934308036e68a02268",
+  "amendedSequence": {
+    "mode": "voice_or_reasoned_text_diagnostic",
+    "passed": false,
+    "diagnosticTextAttemptsUsed": 0,
+    "reason": "Each attempt requires the current immutable runtime/player/fixture freeze and aggregate supervisor lock. Repairs between attempts do not refund reservations.",
+    "boundary": "Read-only accounting, not a new grant or an executable admission approval."
+  },
+  "approvedNewAttempts": 8,
+  "approvedNewReservedSeconds": 7760,
+  "approvedNewDollars": 10,
+  "permanentStop": null,
+  "estimatedNewReservedDollars": 1.2125,
+  "historicalEvidence": "Five unchanged historical attempts remain linked through the fixed predecessor hashes; their compact exports are not duplicated.",
+  "results": [
+    {
+      "evidenceDirectory": "2026-09-29T09-03-52-791Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "f3cf1e1266a51030adabb2efab247a84eda3f8e96af2f775021927b944281fce",
+      "failure": "QA action recovery exhausted after 4 exchanges for Confirm the authorized return",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 6,
+      "historical": false,
+      "behaviorStatus": "review_required",
+      "materialDefects": 0,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-29T09:13:26.735Z"
+      }
+    }
+  ],
+  "accountingBoundary": "Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.",
+  "redaction": "Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels."
+}

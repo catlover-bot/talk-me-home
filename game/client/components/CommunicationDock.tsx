@@ -65,7 +65,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
   return <section className="communication-dock" aria-label="Communication with Pip">
     <div className="connection-readout"><span className="mode-badge">{m.connected ? originLabel[origin!] : 'No active call'}</span>
       <span role="status">{connectionText}</span></div>
-    {live && (m.connected || m.seconds > 0) && <p className="call-time">{m.seconds}s connected · 10-minute limit · provider usage</p>}
+    {live && (m.connected || m.seconds > 0) && <p className="call-time">{m.seconds}s connected · {m.connectionLimitSeconds / 60}-minute limit · provider usage</p>}
     <div className="caption-panel">
       <div className="caption-speaker"><strong>{m.activeCaption?.role === 'game' ? 'Game event' : m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
         {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : m.activeCaption.inputMethod === 'quick_request' ? ' · Selected request' : ''}</span>}</div>

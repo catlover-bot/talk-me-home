@@ -76,6 +76,7 @@ export function useMission() {
   const closingReplyDone = useRef(false);
   const completionRound = useRef('');
   const [seconds, setSeconds] = useState(0);
+  const [connectionLimitSeconds, setConnectionLimitSeconds] = useState(600);
   const liveStarted = useRef(0);
   const practiceMemory = useRef<PracticeMemory>({ chapter: 'cargo', gates: [] });
 
@@ -236,7 +237,7 @@ export function useMission() {
   const start = (connectionMode: TransportOrigin = mode) => {
     if (connectionMode === 'game') return;
     if (busyRef.current || connectedRef.current || voice.current) return;
-    setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0);
+    setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0); setConnectionLimitSeconds(600);
     // Both audio paths begin in this user gesture; no capture happens on page load.
     if (effectsVolume > 0) void effects.current.unlock();
     const expected = ++generation.current;
@@ -318,6 +319,8 @@ export function useMission() {
         const { current, recap } = await prepareMission();
         const token = await api.voiceToken(current);
         if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
+        // Mirror the supported server limit for display; LiveVoice still validates and enforces it.
+        setConnectionLimitSeconds(token.maxSessionSeconds === 900 ? 900 : 600);
         return { ...token, recap };
       },
       captureToolContext: () => viewRef.current ? { ...viewRef.current } : undefined,
@@ -577,7 +580,7 @@ export function useMission() {
     stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
-    error, warning, recapNotice, hint, seconds, voiceVolume, effectsVolume, reducedMotion, pipState,
+    error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
     start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
   };

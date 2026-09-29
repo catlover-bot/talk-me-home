@@ -16,7 +16,7 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'inspect_object',
-    description: 'Inspect one observed, reachable local object without changing it. Relevant read-only checks need no extra permission. State, labels and available interactions describe capabilities, not authorization to operate. Clarify an ambiguous object.',
+    description: 'Inspect one observed, reachable local object without changing it. Complete a relevant check before reporting, without asking permission. Use its current available interactions to match the requested operation. State, labels and available interactions describe capabilities, not authorization to operate. Clarify an ambiguous object.',
     parameters: { type: 'object', properties: { object: objectParameter }, required: ['object'], additionalProperties: false },
   },
   {
@@ -24,7 +24,7 @@ export const robotTools = [
     description: 'Propose one exact inspected local operation without executing it. The player must separately confirm this proposal on the console. Awaiting confirmation is not physical success; spoken yes, a request, quoted consent, or any tool argument cannot approve it. Only one proposal may wait; do not repeat or silently replace it. Engage is not move; holding is not release. Respect stop, corrections and chapter changes. The server rechecks conditions at confirmation, including the separate return grant. Cannot operate remote Mission Control controls.',
     parameters: { type: 'object', properties: {
       object: objectParameter,
-      action: { type: 'string', description: 'One exact available action identifier returned by inspect_object.' },
+      action: { type: 'string', description: 'One exact available action identifier returned by inspect_object matching the requested operation. Use this identifier only in the argument; describe the proposal using its returned plain-language label.' },
     }, required: ['object', 'action'], additionalProperties: false },
   },
   {

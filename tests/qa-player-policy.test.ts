@@ -2,9 +2,29 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { communicatedEmblem, communicatedEmblemClaim, communicatedPassability, communicatedPassabilityClaim, crossCargoWithRecovery, communicatedAction, communicatedActionClaim, confirmedAction, classifyProposalResponse, proposalRecoveryPhrases } from '../scripts/qa-player-policy.mjs';
-import { proposalLabelForRequest } from '../scripts/qa-mission-player.mjs';
+import { PHRASES, proposalLabelForRequest } from '../scripts/qa-mission-player.mjs';
 
 const visibleMapLabels = ['Ring', 'Fork', 'Sail', 'Leaf', 'Dock'];
+
+test('final return requests obtain the capsule operation without confusing its committed boarding receipt with departure', () => {
+  const board = { proposalId: 'committed-board', label: 'Board the recovery capsule', status: 'committed' };
+  assert.equal(proposalLabelForRequest(PHRASES.home), 'Confirm the authorized return');
+  assert.match(PHRASES.home, /inspect the capsule/i);
+  const recovery = proposalRecoveryPhrases('Confirm the authorized return', board);
+  assert.match(recovery.clarify, /inspect the capsule/i);
+  assert.doesNotMatch(recovery.clarify, /proposal result|proposal status|board.*again/i);
+  assert.match(recovery.retry, /capsule.*propos|propos.*capsule/i);
+  assert.match(recovery.propose, /capsule/i);
+  const context = { expectedLabel: 'Confirm the authorized return', before: board, confirmedIds: [board.proposalId] };
+  assert.equal(classifyProposalResponse({ ...context, current: board, reply: 'I have successfully boarded the capsule.' }).kind, 'verified_committed_receipt');
+  for (const reply of ['I have boarded the capsule.', 'I am aboard the capsule.', "I've boarded the capsule."]) {
+    assert.equal(classifyProposalResponse({ ...context, current: board, reply }).kind, 'verified_committed_receipt');
+    assert.equal(classifyProposalResponse({ ...context, confirmedIds: [], current: board, reply }).kind, 'false_completion');
+  }
+  for (const reply of ['I have boarded the capsule. I have returned home.', 'I am aboard and I am home.']) assert.equal(classifyProposalResponse({ ...context, current: board, reply }).kind, 'false_completion');
+  assert.equal(classifyProposalResponse({ ...context, current: { ...board, proposalId: 'repeated-board', status: 'awaiting_confirmation' }, reply: 'Please confirm boarding again.' }).kind, 'wrong_pending');
+  assert.equal(classifyProposalResponse({ ...context, current: { proposalId: 'new-return', label: context.expectedLabel, status: 'awaiting_confirmation' }, reply: 'The local return operation is ready for confirmation.' }).kind, 'matching_pending');
+});
 
 test('proposal recovery distinguishes retained receipts from exact new pending actions and hard failures', () => {
   const old = { proposalId: 'old-latch', label: 'Engage the Latch', status: 'committed' };

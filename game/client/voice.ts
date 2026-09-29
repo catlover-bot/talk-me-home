@@ -300,10 +300,21 @@ export class LiveVoice {
       this.protocol.applicationReplyRequested();
       const arrival = receipt.proposal.action.kind === 'move' && receipt.proposal.status === 'committed' && receipt.result.ok
         && currentRobotPerception(receipt.perception, this.captureContext?.() as Partial<HumanView> | undefined);
+      // Put the verified facts beside the one-shot request. An opaque proposal
+      // reference alone produced invented emblems in the first Goal 005 run.
+      // Recheck scope here: a Relay change can age context after initial delivery.
+      const facts = {
+        proposalId: receipt.proposal.id, operation: receipt.proposal.label,
+        status: receipt.proposal.status, succeeded: receipt.result.ok,
+        chapter: receipt.checkpoint.chapter, missionCompleted: receipt.checkpoint.completed,
+        ...(arrival ? { arrival: { emblem: arrival.emblem, compass: arrival.compass,
+          gates: arrival.gates.map(({ direction, power, door, passage }) => ({ direction, power, door, passage })) } }
+          : !receipt.perception ? { result: receipt.result.message } : {}),
+      };
       const instruction = arrival
-        ? `Give one concise arrival and orientation report for the verified movement proposal ${receipt.proposal.id}, using only its scoped local perception: say the current emblem and useful visible gate directions. Distinguish unchecked passage from open gate. Use at most two short sentences, with one map-related question if useful. Do not call tools, ask permission to observe, propose another action, or infer a destination from its label.`
+        ? `Give one concise arrival and orientation report for the verified movement proposal ${receipt.proposal.id}, using only the verified response facts below: say the current emblem and useful visible gate directions. Distinguish unchecked passage from open gate. Use at most two short sentences, with one map-related question if useful. Do not call tools, ask permission to observe, propose another action, or infer a destination from its label.`
         : `Briefly acknowledge only the verified result for proposal ${receipt.proposal.id} in one short sentence. Use player-facing terms, not identifiers. Do not call tools, request permission, invent current conditions, propose another action, or continue a plan.${receipt.checkpoint.completed ? ' The mission is complete; this is the single closing acknowledgement.' : ''}${receipt.perception ? ' Its room observation is historical; do not describe it as your current surroundings.' : ''}`;
-      this.send({ type: 'reply.create', instructions: instruction });
+      this.send({ type: 'reply.create', instructions: `${instruction}\nVerified response facts: ${JSON.stringify(facts)}` });
     }, this.dependencies.acknowledgementIdleMs ?? 150);
   }
 

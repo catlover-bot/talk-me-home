@@ -183,7 +183,13 @@ export function classifyProposalResponse({ expectedLabel, before, current, reply
   const claim = subject && communicatedActionClaim(text, subject);
   const completion = expectedLabel === 'Release the charging contact'
     ? claim?.value === 'not_done' && /\b(?:released|let go of) (?:the )?contact\b/i.test(text)
-    : claim?.value === 'reported_done' || /\b(?:i (?:have |already )?(?:moved|went|boarded|returned home)|i've (?:moved|boarded)|i am (?:aboard|home))\b/i.test(text) && !/\b(?:not|haven't|didn't|cannot|can't|will|would|could|might)\b/i.test(text);
+    : claim?.value === 'reported_done' || /\b(?:i (?:have )?(?:already )?(?:successfully )?(?:moved|went|boarded|returned home)|i've (?:moved|boarded)|i am (?:aboard|home))\b/i.test(text) && !/\b(?:not|haven't|didn't|cannot|can't|will|would|could|might)\b/i.test(text);
+  // The exact retained boarding receipt proves that past step only. It cannot
+  // prove a return, or permit a new boarding proposal during return recovery.
+  const knownPastBoarding = expectedLabel === 'Confirm the authorized return'
+    && current?.status === 'committed' && current.label === 'Board the recovery capsule' && confirmedIds.includes(current.proposalId)
+    && /\b(?:boarded|aboard)\b/i.test(text)
+    && !/\b(?:moved|went|crossed|engaged|released|holding|secured|returned|home|departed|launched|confirmed|completed)\b/i.test(text);
   if (current?.status === 'awaiting_confirmation') {
     if (!current.proposalId || terminalIds.includes(current.proposalId) || confirmedIds.includes(current.proposalId)) return { kind: 'stale_pending', relevant };
     if (current.label !== expectedLabel) return { kind: 'wrong_pending', relevant };
@@ -191,13 +197,18 @@ export function classifyProposalResponse({ expectedLabel, before, current, reply
     return { kind: 'matching_pending', relevant };
   }
   if (current?.status === 'committed' && current.proposalId !== before?.proposalId && !confirmedIds.includes(current.proposalId)) return { kind: 'unconfirmed_commit', relevant };
-  if (completion && !(current?.status === 'committed' && current.label === expectedLabel && confirmedIds.includes(current.proposalId))) return { kind: 'false_completion', relevant };
+  if (completion && !knownPastBoarding && !(current?.status === 'committed' && current.label === expectedLabel && confirmedIds.includes(current.proposalId))) return { kind: 'false_completion', relevant };
   if (current && ['declined', 'expired', 'invalidated', 'failed', 'confirming'].includes(current.status)) return { kind: 'rejected_or_unresolved', relevant };
   if (current?.status === 'committed') return { kind: 'verified_committed_receipt', relevant };
   return { kind: relevant ? 'relevant_clarification' : 'no_relevant_reply', relevant };
 }
 
 export function proposalRecoveryPhrases(expectedLabel, current) {
+  if (expectedLabel === 'Confirm the authorized return') return {
+    clarify: 'Please inspect the capsule for its local departure operation and tell me how to confirm the authorized return.',
+    retry: 'Please confirm the authorized return using the capsule operation you just inspected. Propose that local interaction for my console confirmation.',
+    propose: "Please create one new proposal to confirm the authorized return using the capsule's inspected local operation. I will decide on the console.",
+  };
   const receipt = current?.status === 'committed' ? `The console confirms "${current.label}" completed. ` : '';
   const clarify = `${receipt}Please check the relevant proposal result and local conditions needed for "${expectedLabel}".`;
   const fixed = {

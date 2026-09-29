@@ -34,7 +34,40 @@ The first implementation commit is `2b3db8a`. Goal 005 local speech fixtures wer
 
 The first clean full candidate, `b468405742d11106cb6e62d50e4ca674d6ed560a`, passed typecheck, 418 unit tests and production build. Browser coverage passed 134/136 cases; both failed cases exposed the same Practice backtracking regression. The richer blocked-gate inspection named its direction/handle, and the existing prose memory replaced all known gates with that single gate. The repair uses the admitted typed local perception's complete reachable gate set, replacing it on a new visit rather than merging rooms. A failing-first unit case reproduced the lost northwest backtrack and checks that a later Fork arrival discards the departed-room handles. No real attempt was spent on this regression.
 
-Goal 005 real token attempts so far: **not yet executed**. Historical five-attempt ledgers remain exhausted and preserved. Defaults and CI remain provider-disabled.
+The next clean candidate, `0723e57f075146d06d15e4bfab2fc0c7163dc402`, passed typecheck, 419 unit tests, production build, all 136 compiled-browser tests, whitespace checks and the fresh-context production Practice check. That exact candidate was frozen for the first Goal 005 Voice attempt. Its runtime SHA-256 is `f3cf1e1266a51030adabb2efab247a84eda3f8e96af2f775021927b944281fce`; its harness SHA-256 is `e37bd8362cc79f520f7ad5070cd81a3e23246c2b329da50020f8da44bc6303c8`. The [accounting and preservation receipt](../artifacts/goal-005/live/attempt-06-accounting.json) also records the fixture, exact `session.update`, frozen manifest and clean validation receipt hashes.
+
+### First Goal 005 Voice attempt — failed, remotely ended
+
+Aggregate attempt 6 was an ordinary synthetic-microphone sample, without the deliberate recovery exercise. It reached Cargo, Relay Gallery and Return Dock, committed eight exact UI-confirmed actions, and boarded the recovery capsule. It did **not** confirm the authorized return or reach server-confirmed home. Four purposeful return exchanges exhausted the bounded recovery policy: the robot referred back to boarding, a status check failed, and subsequent movement calls were rejected without producing the requested new return proposal. The final failure was `QA action recovery exhausted after 4 exchanges for Confirm the authorized return`.
+
+The attempt also exposed incorrect unsolicited arrival narration: `far_side`, Square, Star and Moon were spoken as location/emblem reports. Fresh explicit surveys supplied usable Ring, Fork and Sail reports and then the Return Dock equipment, allowing the player to continue without substituting intended destinations. This is a real grounding/continuity failure. The coarse behavior report remained `review_required`, including a blocking unsettled-response window; its empty material-defect array does not establish correct arrival narration or a behavior pass. [Source-labelled conversation](../artifacts/goal-005/live/2026-09-29T09-03-52-791Z-voice-mission-conversation.md) and [compact metrics](../artifacts/goal-005/live/2026-09-29T09-03-52-791Z-voice-mission-metrics.json) retain the actual result.
+
+| Observed measure | Result |
+| --- | --- |
+| Token requests / provider sockets | 1 / 1 |
+| Synthetic input turns | 25 |
+| Exact UI confirmations / physical commits | 8 / 8; matching receipts in both directions |
+| Information-only three-input canary | Passed; no confirmation or physical commit |
+| Local socket-open to remote ACK | 562.6221 seconds |
+| Provider-reported session duration | 562.556016 seconds |
+| Ending | One explicit `session.end`, one `session.ended` ACK, clean socket close |
+| Cleanup | Zero active audio tracks/sources/contexts; browser and server closure observed; supervisor survivors 0 |
+| Goal 005 reservation consumed | 1 slot, 970 seconds, USD 1.2125 estimated |
+| Same-batch capacity remaining | 7 slots, 6,790 reserved seconds, USD 8.4875 estimated |
+
+Real ASR and nonzero input, provider, rendered and post-volume digital audio were observed. These receipts do not establish physical microphone/speaker performance, human listening, enjoyment or a full Rescue clear. The reservation remains consumed regardless of the shorter actual connection. Aggregate linked accounting is now six attempts and six production reservations, 4,320 reserved seconds and USD 5.40 estimated. The five previous attempts and all 15 historical accounting/cleanup journals remain unchanged. All 30 checked raw run/accounting files were unchanged by this compact export. The durable result and independent supervisor closure release concurrency; they do not refund capacity. No account-refusal stop was recorded. Remaining attempts still require a repaired, clean, validated frozen candidate and supervised admission under the existing grant. [Campaign accounting](../artifacts/goal-005/live/campaign-summary.json).
+
+Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T09-03-52-791Z-voice-mission/`, including `report.json`, `lifecycle.jsonl`, the original silent browser recording and digital audio. The immutable attempt manifest is `.validation/goal-004c-live/goal-005-attempt-6-0723e57f075146d06d15e4bfab2fc0c7163dc402.json`; the clean offline receipt is `.validation/goal-005-offline/0723e57f075146d06d15e4bfab2fc0c7163dc402-2026-09-29T09-00-04-175Z.json`. Nothing was uploaded or overwritten.
+
+The ensuing offline repair tests the hypothesis that the arrival reply needs current local facts directly in its one-shot instruction. The client now includes dispatch-validated emblem, compass, local gate direction, Power, Door and passage facts with the exact decision status in the documented `reply.create.instructions` field; observations are omitted after an incompatible revision change. A failing-first test reproduced the absent inline facts, followed by 29/29 passing acknowledgement, confirmed-client and authority tests. Local logs are `.validation/goal-005/arrival-grounding-before.log` and `.validation/goal-005/arrival-grounding-after.log`. The [official event reference](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference) explicitly supports this one-shot instruction field and system conversation messages. The test proves payload grounding, not provider ingestion or model compliance; a subsequent frozen Live result is still required.
+
+The shared player's final request now asks for a fresh capsule inspection and the separate local return operation, using the visible Ready/Granted instrument. Its first recovery asks for that inspection rather than a missing boarding receipt. A known, exactly confirmed boarding receipt remains history; it cannot satisfy return or authorize another boarding proposal. The retained failed speech reproduced four-exchange exhaustion in the old browser player. The repaired actual shared player then completed constructed A/B missions, including inspection-based return recovery (2/2 focused browser cases); policy/preflight/acceptance checks passed 41 cases. These are offline constructed results, not Live passes. Logs: `.validation/goal-005-return-player-before.log`, `goal-005-return-player-after.log`, and `goal-005-return-recovery-after.log`.
+
+Small prompt/tool-description changes favor completing useful read-only checks, using returned operation labels in speech, preserving evidenced causal relationships, and distinguishing readiness from completion. Focused config/voice tests passed 54 cases. New ordinary/recovery speech was synthesized locally before the next freeze. No real connection was open during these repairs.
+
+Inspection of the real failed-run screenshot also found a fixed 10-minute label despite the correctly enforced approved 900-second cap. The display now follows the token-selected limit (15 minutes for the approved path, 10 for the public/default path) and resets on a new connection. Enforcement and allowance checks are unchanged; an injected browser case covers the display across 900, 600 and absent cap responses.
+
+Goal 005 currently has **one failed real Voice attempt and zero of the two required final-candidate passes**. `RELEASE_NOT_LIVE_VERIFIED` remains the release status. Defaults and CI remain provider-disabled.
 
 ## Delivery checklist
 

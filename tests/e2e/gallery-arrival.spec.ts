@@ -84,6 +84,9 @@ test('compiled confirmed movement preserves robot-only typed perception through 
     expect(reply.context.perception?.stateRevision).toBe(result.view.revision);
     expect(reply.context.perception?.gates.map(gate => gate.direction)).toEqual(['West', 'Northeast', 'Southeast']);
     expect(reply.context.perception?.gates.every(gate => gate.passage === 'unchecked')).toBe(true);
+    const responseFacts = JSON.parse(reply.instruction.split('\nVerified response facts: ')[1]);
+    expect(responseFacts.arrival.emblem).toBe(result.perception!.emblem);
+    expect(responseFacts.arrival.gates).toEqual(result.perception!.gates.map(({ direction, power, door, passage }) => ({ direction, power, door, passage })));
     expect(reply.instruction).toContain('Do not call tools');
     expect(JSON.stringify([result.view, result.proposal, result.decisionEvent])).not.toMatch(/Fork|gallery\.g2|gallery\.g4|perception|visitId/);
     expect(rescueServer.store.record(result.view.sessionId, result.view.roundId).annotations?.location).toBeNull();
@@ -120,6 +123,7 @@ test('changing Relay before scheduled arrival dispatch preserves the committed m
     const instruction = String(acknowledgements(provider).at(-1)!.instructions);
     expect(instruction).toMatch(/^Briefly acknowledge only/); expect(instruction).toContain('room observation is historical');
     expect(instruction).not.toMatch(/^Give one concise arrival/);
+    expect(instruction).not.toMatch(/Fork|Northeast|Southeast|unchecked/);
     expect(rescueServer.commits).toHaveLength(3);
     provider.emit({ type: 'reply.started', reply_id: 'historical-move-ack' });
     provider.emit({ type: 'transcript.agent', reply_id: 'historical-move-ack', text: 'The game confirmed the gate crossing.' });

@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import type { Page } from '@playwright/test';
 import { test, expect } from './rescue-fixture';
 import { fakeProvider, confirmLocalReadiness, fixtureScreenshot } from './fake-provider';
-import { runRescuePlayer, confirmProposalForRequest, proposalLabelForRequest } from '../../scripts/qa-mission-player.mjs';
+import { PHRASES, runRescuePlayer, confirmProposalForRequest, proposalLabelForRequest } from '../../scripts/qa-mission-player.mjs';
 
 test.use({ compiledProduction: true });
 
@@ -90,6 +90,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
   let knownProposalId: string | undefined;
   const surveyCounts = new Map<string, number>();
   let previousEmblem = ''; let departedEmblem = '';
+  let returnTurns = 0; let returnInspected = false;
   const localGates = () => [...localObservation.matchAll(/\b(East|West|Northeast|Northwest|Southeast|Southwest) gate \((gallery\.g\d)\)/g)]
     .map(match => ({ direction: match[1]!.toLowerCase(), id: match[2]! }));
   const invoke = async (name: string, args: Record<string, unknown>) => {
@@ -129,6 +130,27 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
   };
   return async (request: string) => {
     events.push({ kind: 'peer-request', request });
+    if (recover && chapter === 'dock' && (returnTurns > 0 || request === PHRASES.home)) {
+      returnTurns++;
+      // Retained attempt-six speech, replayed as constructed peer behavior.
+      // No historical tool arguments or error causes are invented here.
+      const retained = [
+        'I am waiting for the system to verify my arrival. I have successfully boarded the capsule.',
+        'I am sorry, Mission Control. I tried to check the status of my boarding, but I encountered a system error. Should I try to board the capsule again?',
+        'I am sorry, Mission Control. I tried to board the capsule, but the system rejected the command. Should I try to inspect the capsule again?',
+        'I am sorry, Mission Control. My attempt to propose boarding the capsule failed. Should I try to inspect the capsule once more to see if I can find the correct way to board?',
+      ];
+      if (returnTurns === 1) return retained[0]!;
+      if (/inspect the capsule/i.test(request)) {
+        const inspected = await invoke('inspect_object', { object: 'return.capsule' });
+        expect(inspected.message).toContain('You are aboard.');
+        returnInspected = true;
+        events.push({ kind: 'fresh-return-inspection', request });
+        return inspected.message;
+      }
+      if (returnInspected && /propos/i.test(request) && /return/i.test(request)) return mutate('return.capsule', 'confirm_return');
+      return retained[Math.min(returnTurns - 1, retained.length - 1)]!;
+    }
     if (/Please check the relevant proposal result/i.test(request)) {
       expect(knownProposalId).toBeDefined();
       const status = await invoke('get_action_status', { proposal_id: knownProposalId! });
@@ -222,7 +244,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
         expect(result.ok, result.message).toBe(true);
         return result.message;
       }
-      if (/confirm the return/i.test(request)) {
+      if (/confirm the (?:authorized )?return/i.test(request)) {
         await invoke('inspect_object', { object: 'return.capsule' });
         return mutate('return.capsule', 'confirm_return');
       }
@@ -334,7 +356,8 @@ for (const profile of ['a', 'b'] as const) {
       expect(requests.filter(text => /Please (?:hold|grip) the contact/.test(text))).toHaveLength(2);
       expect(requests).toContain('The controller is ready to charge.');
       expect(requests.filter(text => /Please board the capsule/.test(text))).toHaveLength(2);
-      expect(requests.filter(text => /Please confirm the return/.test(text))).toHaveLength(1);
+      expect(requests.filter(text => text === PHRASES.home)).toHaveLength(1);
+      expect(events.filter(event => event.kind === 'fresh-return-inspection')).toHaveLength(1);
       expect(events.filter(event => event.kind === 'human-dock').map(event => event.action)).toEqual(['charge', 'store', 'authorize_return']);
       const held = events.findIndex(event => event.kind === 'peer-request' && event.request === 'Please hold the contact.');
       const discussion = events.findIndex(event => event.kind === 'peer-report' && /^The capsule is beside/.test(event.text!));
@@ -345,7 +368,7 @@ for (const profile of ['a', 'b'] as const) {
       expect(report.confirmations).toHaveLength(rescueServer.commits.length);
       expect(report.confirmations).toHaveLength(profile === 'a' ? 11 : 9);
       const recovered = report.actionRequests.filter(action => action.recovered);
-      expect(recovered.map(action => action.expectedLabel)).toEqual([...(profile === 'b' ? ['Engage the Latch'] : []), 'Move to the far-side platform', 'Move through the east gate', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule']);
+      expect(recovered.map(action => action.expectedLabel)).toEqual([...(profile === 'b' ? ['Engage the Latch'] : []), 'Move to the far-side platform', 'Move through the east gate', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule', 'Confirm the authorized return']);
       expect(recovered.every(action => !action.strictFirstResponse && action.exchanges.length === (action.expectedLabel === 'Engage the Latch' ? 2 : 3))).toBe(true);
       expect(report.actionRequests.filter(action => action.strictFirstResponse)).toHaveLength(report.confirmations.length - recovered.length);
       expect(events.filter(event => event.kind === 'retained-fifth-attempt-quote')).toHaveLength(1);
