@@ -1,0 +1,38 @@
+{
+    "schema":  1,
+    "inspectedAt":  "2026-09-29T13:52:22.5342254Z",
+    "sourceCommit":  "a1ab51da635018d70e6669a63d27524bdefe33ba",
+    "runtimeBuildSha256":  "53bef418e797a4a998e08097250def42ab4c35841ce3441bd38b5cc2f077102b",
+    "images":  [
+                   {
+                       "path":  "artifacts/goal-005b/ui/constructed-delayed-inspection-1280.png",
+                       "sha256":  "2b98144c73a50a5e49441ff48b9376a194eb64669b41cdf583f1def04ea59930",
+                       "bytes":  231411,
+                       "mode":  "Constructed injected provider; fake audio devices; zero real provider use"
+                   },
+                   {
+                       "path":  "artifacts/goal-005b/ui/constructed-delayed-inspection-390.png",
+                       "sha256":  "3719a82eb7c0c85179d063fc770ddaada51b61d9adeb582e87dd99a1e1990adf",
+                       "bytes":  202263,
+                       "mode":  "Constructed injected provider; fake audio devices; zero real provider use"
+                   }
+               ],
+    "observations":  [
+                         "Actual rendered images visually inspected by the primary agent.",
+                         "Waiting stage is readable and Pause/End controls remain available.",
+                         "The 390px atlas uses intentional horizontal scrolling.",
+                         "The offline evidence label qualifies the in-product Live Text badge."
+                     ],
+    "practiceImagesInspected":  [
+                                    ".validation/goal-005-offline/a1ab51da635018d70e6669a63d27524bdefe33ba-2026-09-29T13-43-53-349Z/screenshots/gallery.png",
+                                    ".validation/goal-005-offline/a1ab51da635018d70e6669a63d27524bdefe33ba-2026-09-29T13-43-53-349Z/screenshots/home.png"
+                                ],
+    "screenshotCapture":  {
+                              "result":  "Two existing compiled browser cases passed while retaining final screenshots.",
+                              "evidence":  "Interactive execution tool output; no separate log file was retained for this capture-only rerun.",
+                              "addsDistinctCases":  0
+                          },
+    "distinctFullSuiteCases":  146,
+    "realProviderCalls":  0,
+    "limitation":  "Constructed offline and Practice screenshots are not Live acceptance evidence."
+}

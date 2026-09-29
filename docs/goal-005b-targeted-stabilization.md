@@ -1,6 +1,6 @@
 # Goal 005B — Targeted stabilization
 
-**Offline stabilization in progress; zero new Live authorization.** The demonstrated Goal 005 build remains preserved. Its successful ordinary Voice sample and failed recovery sample are separate evidence fields, and `RELEASE_NOT_LIVE_VERIFIED` remains the unmet acceptance flag.
+**Offline stabilization passed; zero new provider/token attempts.** The demonstrated Goal 005 build remains preserved. Its successful ordinary Voice sample and failed recovery sample are separate evidence fields, and `RELEASE_NOT_LIVE_VERIFIED` remains the unmet acceptance flag.
 
 | Evidence field | Preserved fact / current status |
 | --- | --- |
@@ -11,7 +11,7 @@
 | Missing remote-ending evidence | Attempts 11 and 13 retain null provider duration and unconfirmed remote termination |
 | Repeated-run acceptance | One of two required final-candidate passes; no population success-rate inference |
 | Goal 005B branch | `work/goal-005b-targeted-stabilization`, based on delivered `1949b921fc744dc28d0889ca8d30c9d7d8102bd6` |
-| Goal 005B validation | Focused reproductions, complete offline release and final feature-head CI pending |
+| Goal 005B validation | Clean candidate `a1ab51da635018d70e6669a63d27524bdefe33ba`: typecheck, 455 unit cases, 146 compiled browser cases, production build and full Practice passed; exact delivery-head CI is recorded in the final handoff |
 | Goal 005B Live evidence | None; no token/provider call or funded allowance is authorized |
 | Existing accounting | Goal 005 exhausted: 8/8 new attempts, 7,760 reserved seconds / USD 9.70 conservative estimate, zero remaining; linked history 13 attempts / 11,110 seconds / USD 13.8875 |
 | Public access and submission | Hosting, public allowance, upload, visibility change, PR/main merge and event submission remain unapproved |
@@ -51,6 +51,10 @@ To collect private validation diagnostics during a separately chosen **offline l
 
 The first clean implementation `7473ea791745be20a44997789a76602ac7767bb1` passed typecheck, all 455 unit tests and production build. Its combined browser invocation passed 145/146 cases before the existing 210-second global suite limit left the final case unrun; no individual assertion failed. The failed release receipt is preserved at `.validation/goal-005-offline/7473ea791745be20a44997789a76602ac7767bb1-2026-09-29T13-37-25-706Z.json`. The existing release runner now uses the same two viewports × two shards already used by CI, and records each result before adding the complete-suite summary. No cases, per-case limits, suite limits or cleanup bounds are removed or enlarged. This is test execution organization, not a Live recovery-policy change.
 
+The complete clean-candidate rerun on `a1ab51da635018d70e6669a63d27524bdefe33ba` passed at 2026-09-29 13:47:55 UTC. The [release receipt](../artifacts/goal-005b/offline-release.json) records Node 24.20.0 on Linux, 455 unit cases, 146 browser cases (37 + 36 at each viewport), typecheck, production build and whitespace checks. The [shard coverage audit](../artifacts/goal-005b/browser-shard-coverage.json) found no omitted or duplicated cases. A fresh browser context exercised the actual production entry, settings/history, ownership, narrow and 200% zoom layouts, replay and a full Practice Rescue with 11 deliberate confirmations and server-confirmed home. Live was disabled, provider calls were zero, and owned browser/process resources were cleaned up. Runtime build SHA-256 is `53bef418e797a4a998e08097250def42ab4c35841ce3441bd38b5cc2f077102b`; runtime manifest SHA-256 is `200ab0cd0b6af152dd4b34eff8984ef6f243b66082d4dec6e2b730c00a238ab7`.
+
+Actual rendered evidence was inspected: the constructed delayed-reply [1280px view](../artifacts/goal-005b/ui/constructed-delayed-inspection-1280.png) and [390px view](../artifacts/goal-005b/ui/constructed-delayed-inspection-390.png), plus the production Practice Gallery and home captures listed in the release receipt. The constructed captures explicitly label the simulated provider and fake audio; their in-product Live Text badge does not imply a real provider connection. Waiting status and Pause/End remain readable; the narrow atlas deliberately scrolls horizontally. Two existing compiled tests were rerun solely to retain the final screenshots; they are not added to the 146 distinct cases. [UI provenance and inspection receipt](../artifacts/goal-005b/ui/inspection.json).
+
 ## Independent ending audit
 
 The [ending audit](../artifacts/goal-005b/ending-audit.json) found no reproduced production-handler defect. `session.ended` is handled before the ended-state suppression of ordinary replies, transcripts, audio and tools, so an ACK remains receivable during the existing bounded closing window. The production ending code was byte-identical to the delivered baseline at audit time; no deadline enlargement or extra ending request was introduced.
@@ -71,7 +75,7 @@ Independent review caught a test-only coverage gap: the first added late-audio f
 
 The current [178.021354-second Goal 005 demo, editable PPTX, native PDF and provenance](../submission/goal-005-deliverables/README.md) remain the demonstrated-build package, together with the local uncut successful recording at `.validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4`. The [package receipt](../artifacts/goal-005b/demonstrated-package.json) verifies all four media files against their delivered provenance, both final raw reports against their recorded hashes, and all 18 campaign journals against final accounting. They are not screenshots or recordings of Goal 005B. Original failed recordings and raw reports remain intact.
 
-The new [preservation baseline](../artifacts/goal-005b/preservation-baseline.json) hashes 495 historical files totaling 1,211,858,558 bytes without copying them. It covers delivered reports/artifacts, media recipes/provenance, all B/C campaign records, successful/failing raw records, current and earlier submission media, and the successful uncut. A [separate anchor](../artifacts/goal-005b/historical-budget-anchor.json) preserves the original Goal 001 cumulative budget outside those campaign directories. The private full hash manifest is `.validation/goal-005b/preservation-baseline.json`; a final comparison will check every one of these 496 paths. Current rebuildable `dist/` outputs are outside the immutable-file set; their old frozen manifests and original execution identities remain preserved.
+The new [preservation baseline](../artifacts/goal-005b/preservation-baseline.json) hashes 495 historical files totaling 1,211,858,558 bytes without copying them. It covers delivered reports/artifacts, media recipes/provenance, all B/C campaign records, successful/failing raw records, current and earlier submission media, and the successful uncut. A [separate anchor](../artifacts/goal-005b/historical-budget-anchor.json) preserves the original Goal 001 cumulative budget outside those campaign directories. The private full hash manifest is `.validation/goal-005b/preservation-baseline.json`; the final comparison checked every one of these 496 paths. Current rebuildable `dist/` outputs are outside the immutable-file set; their old frozen manifests and original execution identities remain preserved.
 
 The [read-only audit helper](../artifacts/goal-005b/check-preservation.mjs) writes only a new receipt and refuses to replace its baseline or an existing output:
 
@@ -79,7 +83,7 @@ The [read-only audit helper](../artifacts/goal-005b/check-preservation.mjs) writ
 node artifacts/goal-005b/check-preservation.mjs --check artifacts/goal-005b/preservation-final.json
 ```
 
-The [initial preservation comparison](../artifacts/goal-005b/preservation-initial-check.json) passed all 496 paths with no exclusions or differences. No historical accounting, grant, reservation or media was edited. Final preservation and zero-use verification remain pending the completed offline work.
+Both the [initial preservation comparison](../artifacts/goal-005b/preservation-initial-check.json) and [final comparison](../artifacts/goal-005b/preservation-final.json), completed at 2026-09-29 13:51:18 UTC after full offline validation, passed all 496 paths with no exclusions or differences. No historical accounting, grant, reservation or media was edited. The delivered branch still points to `1949b921fc744dc28d0889ca8d30c9d7d8102bd6`; `game/client/voice.ts` remains byte-identical to that baseline. New provider/token attempts, real connected seconds and funded allowances are all zero.
 
 ## Public reviewer duration proposal — not activated
 
@@ -87,10 +91,9 @@ The ordinary public/default session cap remains **600 seconds**. The successful 
 
 A finite future reviewer plan could retain the existing 600-second cap and schedule a manual Pause at the Gallery-to-Dock checkpoint, then one explicit Resume for Dock. Limit the visit to at most two token attempts, one active connection, at most 1,200 connected seconds and the existing 1,340 seconds of conservative concurrency reservations; require the first connection's ending ACK before Resume, and stop if it is absent. This is a proposed separate owner-approved access/spending plan, not an enabled allowance or a promised duration. Resume depends on the same in-memory server session; a restart loses the mission. No automatic reconnect or cap change is introduced.
 
-## Final delivery fields
+## Delivery identity and remaining decisions
 
-- New stabilization source/runtime identity and exact production paths: pending.
-- Focused before/after regressions, complete offline release and actual browser inspection: pending.
-- Final preservation/unchanged exhausted accounting and new provider/token attempts: pending final audit; authorized new use is zero.
-- Final pushed feature head and exact-head CI: pending.
-- Demonstrated Live result remains one full pass with the repeated-run target unmet. Any future same-candidate ordinary/recovery retest requires separate explicit funding authorization; Goal 005B creates none.
+- Production implementation: `7473ea791745be20a44997789a76602ac7767bb1`. Clean fully validated candidate: `a1ab51da635018d70e6669a63d27524bdefe33ba`; the latter changes test orchestration and the valid-PCM regression fixture, with identical game source. Later delivery changes contain only evidence and documentation.
+- Exact final pushed feature SHA, remote CI URL and conclusion are recorded in the final owner handoff and local `.validation/goal-005b/final-ci.json`, avoiding a self-referential commit identity in this report. The checked delivery branch is `work/goal-005b-targeted-stabilization`.
+- Confirmed repairs are scoped direction reads, classified validation/error projection and truthful waiting status. Historical rejected arguments and the cause of the measured delay remain unknown. Ending schedules passed without a production ending change; historical missing ACKs stay missing.
+- Demonstrated Live result remains one full pass with the repeated-run target unmet. Any future same-candidate ordinary/recovery retest requires separate explicit funding authorization; Goal 005B creates none. Public hosting, access funding, uploads, visibility changes, PR/main merge and event submission remain unapproved.
