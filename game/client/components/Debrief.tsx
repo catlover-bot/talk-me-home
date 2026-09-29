@@ -32,6 +32,7 @@ export function Debrief({
 }: DebriefProps) {
   const timeline = record?.debrief?.timeline ?? [];
   const rescue = view?.missionKind === 'rescue';
+  const RecordContainer = rescue ? 'details' : 'div';
   const humanActions = timeline.filter(
     (entry) => entry.actor === "human" && ['power', 'relay', 'dock'].includes(entry.kind),
   ).length;
@@ -65,7 +66,7 @@ export function Debrief({
         </p>
         {rescue && <p className="home-story" data-testid="home-story"><span>Recovery bay · story</span>{view?.recoveredFlightRecorder ? 'And on the shelf: the flight recorder you chose to bring back.' : 'A safe arrival. That was always enough.'}</p>}
         {closingCaption}
-        <details className="debrief-record" open={rescue ? undefined : true}><summary>{rescue ? 'Remember the journey' : 'Your collaboration record'}</summary>
+        <RecordContainer className={rescue ? 'debrief-record' : undefined}>{rescue && <summary>Remember the journey</summary>}
         <div className="contribution-strip" aria-label="Retained collaboration record counts">
           <span>
             <strong>{record?.debrief ? humanActions : '—'}</strong>acknowledged remote{" "}
@@ -92,7 +93,7 @@ export function Debrief({
             history limit.
           </p>
         )}
-        </details>
+        </RecordContainer>
         <div className="debrief-actions">
           <button className={rescue ? 'secondary-button' : 'primary-button'} onClick={onReplay} disabled={busy}>
             {rescue ? 'Start another rescue' : `Play ${scenario === "classic" ? "Classic" : "Maintenance"} again`}

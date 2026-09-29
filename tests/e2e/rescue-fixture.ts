@@ -14,6 +14,8 @@ export const test = base.extend<{
   galleryConfiguration: ['a', { option: true }],
   compiledProduction: [false, { option: true }],
   rescueServer: [async ({ page, galleryConfiguration, compiledProduction, baseURL }, use) => {
+    if (!baseURL) throw new Error('The offline fixture requires an explicit browser base URL.');
+    const browserOrigin = new URL(baseURL).origin;
     // Evaluator-only physical commit journal. It is never passed to the player.
     const commits: Array<{ proposalId: string; revisionBefore: number; revisionAfter: number }> = [];
     const Store: typeof SessionStore = compiledProduction ? (await import(pathToFileURL(resolve('dist/server/server/sessions.js')).href)).SessionStore : SessionStore;
@@ -21,7 +23,9 @@ export const test = base.extend<{
     const store = new Store({ galleryConfiguration, onRobotCommit: event => commits.push(event) });
     // These are the production entry point's HTTP/static/cookie settings. Only
     // this isolated offline fixture injects the authored profile and commit oracle.
-    const server = createServer({ store, apiKey: '', ...(compiledProduction ? { production: true, staticDirectory: resolve('dist/client'), allowedOrigins: [baseURL!], secureCookies: false } : {}) });
+    // Both fixture modes accept only the configured browser origin, including
+    // isolated QA ports; they must not fall back to the development port.
+    const server = createServer({ store, apiKey: '', allowedOrigins: [browserOrigin], ...(compiledProduction ? { production: true, staticDirectory: resolve('dist/client'), secureCookies: false } : {}) });
     await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
     const address = server.address();
     if (!address || typeof address === 'string') throw new Error('The offline fixture server did not obtain a port.');
