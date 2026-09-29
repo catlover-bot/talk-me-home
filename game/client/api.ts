@@ -1,7 +1,10 @@
 import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, AnnotationRequest, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
+import { toolOutcomeCodes, toolRecoverySteps, type ToolOutcomeCode, type ToolResult } from '../shared/contracts';
 
 /** A public, user-facing response from the game service. */
-export class MissionServiceError extends Error {}
+export class MissionServiceError extends Error {
+  constructor(message: string, readonly code?: ToolOutcomeCode, readonly recovery?: ToolResult['recovery']) { super(message); }
+}
 
 async function request<T>(
   path: string,
@@ -36,6 +39,8 @@ async function request<T>(
       typeof data.error === "string"
         ? data.error
         : "The request could not be completed. Please try again.",
+      toolOutcomeCodes.includes(data.code) ? data.code : undefined,
+      toolRecoverySteps.includes(data.recovery) ? data.recovery : undefined,
     );
   return data as T;
 }
@@ -83,8 +88,11 @@ export interface RobotCall {
   arguments: unknown;
 }
 
+/** App-captured robot transport scope; never part of the human projection or model arguments. */
+export type RobotToolContext = HumanView & { inspectionScope?: { visitId: string } };
+
 export function executeTool(
-  view: HumanView,
+  view: RobotToolContext,
   call: RobotCall,
   signal?: AbortSignal,
 ) {
@@ -97,6 +105,7 @@ export function executeTool(
       callId: call.callId,
       name: call.name,
       arguments: call.arguments,
+      ...(call.name === 'inspect_gate' && view.inspectionScope ? { inspectionScope: { visitId: view.inspectionScope.visitId } } : {}),
     },
     signal,
   );

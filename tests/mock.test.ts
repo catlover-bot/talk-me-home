@@ -9,7 +9,7 @@ test('Practice routes only by locally learned compass labels and never substitut
   assert.equal(simulationReply('Go through the northeast gate', empty).call, undefined);
   const memory = rememberLocalResult(empty, 'West gate (gallery.g1) is open. Northeast gate (gallery.g2) is closed. Southeast gate (gallery.g4) is open.', 'gallery');
   assert.deepEqual(simulationReply('Please take the north-east gate', memory).call?.arguments, { target: 'gallery.g2' });
-  assert.deepEqual(simulationReply('Inspect the southeast gate', memory).call?.arguments, { object: 'gallery.g4' });
+  assert.deepEqual(simulationReply('Inspect the southeast gate', memory).call?.arguments, { direction: 'southeast' });
   for (const request of ['Use that gate', 'Take the other route', 'Go northeast or southeast', 'Go through gallery.g5']) assert.equal(simulationReply(request, memory).call, undefined);
   const moved = rememberLocalResult(memory, 'You are in a room with the Sail emblem. Southwest gate (gallery.g2) is open. Southeast gate (gallery.g3) is closed.', 'gallery');
   assert.equal(simulationReply('Go through the west gate', moved).call, undefined);

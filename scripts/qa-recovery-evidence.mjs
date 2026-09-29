@@ -27,7 +27,7 @@ export function normalizeObservedEvents(events) {
     if (event.type === 'transcript.user' && Number.isSafeInteger(event.reference)) safe.input = alias('input', event.reference)
     if (event.type.startsWith('synthetic.speech.') && typeof event.id === 'string') safe.fixture = alias('fixture', event.id)
     if (['completed', 'interrupted', 'failed', 'cancelled'].includes(event.status)) safe.status = event.status
-    if (['observe_room', 'inspect_object', 'interact_object', 'move_to'].includes(event.name)) safe.name = event.name
+    if (['observe_room', 'inspect_object', 'inspect_gate', 'interact_object', 'move_to'].includes(event.name)) safe.name = event.name
     if (typeof event.isError === 'boolean') safe.isError = event.isError
     if (event.type === 'socket.close') { safe.code = Number.isInteger(event.code) ? event.code : null; safe.clean = event.clean === true }
     return safe

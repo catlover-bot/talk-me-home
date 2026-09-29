@@ -3,7 +3,8 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { createGameServer } from './http.js'
 import { LiveAdmission } from './admission.js'
-import type { SessionStore } from './sessions.js'
+import { SessionStore } from './sessions.js'
+import { localToolDiagnosticSink } from './tool-diagnostics.js'
 
 // Production reads hosting environment variables only. It never loads the owner's .env.
 export function startProductionServer(store?: SessionStore, qaOptions?: { maxVoiceSessionSeconds: 900; onProviderAccountRefusal?: (reason: 'provider_credit_refused' | 'provider_credential_or_account_refused') => Promise<void>; confirmedClosed: (reservation: Readonly<{ reservedAt: number; leaseUntil: number }>) => boolean }) {
@@ -17,6 +18,8 @@ export function startProductionServer(store?: SessionStore, qaOptions?: { maxVoi
   if (!local && !origin.startsWith('https://')) throw new Error('Public origin requires HTTPS')
   if (!process.env.GAME_ORIGIN && host !== '127.0.0.1') throw new Error('Public bind requires an explicit origin')
   if (qaOptions && (qaOptions.maxVoiceSessionSeconds !== 900 || host !== '127.0.0.1' || !local)) throw new Error('The approved extended QA service is local only')
+  const diagnostics = localToolDiagnosticSink(process.env.GAME_LOCAL_TOOL_DIAGNOSTICS, host, origin)
+  if (diagnostics) { store ??= new SessionStore(); store.enableLocalToolDiagnostics(diagnostics) }
   const admission = process.env.GAME_LIVE_ALLOWANCE_FILE ? new LiveAdmission(process.env.GAME_LIVE_ALLOWANCE_FILE, Number(process.env.GAME_LIVE_CONCURRENT_LIMIT ?? 2), Date.now, qaOptions?.maxVoiceSessionSeconds ?? 600, qaOptions?.confirmedClosed) : undefined
   const server = createGameServer({
     store,

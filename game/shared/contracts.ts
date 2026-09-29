@@ -30,7 +30,13 @@ export interface HumanView {
   proposalRevision?: number
 }
 
-export type ToolName = 'observe_room' | 'inspect_object' | 'propose_interaction' | 'propose_move' | 'get_action_status' | 'interact_object' | 'move_to'
+export type ToolName = 'observe_room' | 'inspect_object' | 'inspect_gate' | 'propose_interaction' | 'propose_move' | 'get_action_status' | 'interact_object' | 'move_to'
+export const gateDirections = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'] as const
+export type GateDirection = typeof gateDirections[number]
+export const toolOutcomeCodes = ['cancelled_before_execution', 'precondition_failed', 'outcome_unknown', 'awaiting_confirmation', 'not_executed',
+  'invalid_arguments', 'unknown_target', 'nonlocal_target', 'direction_unavailable', 'direction_ambiguous', 'target_unobserved', 'stale_scope', 'mission_stopped', 'tool_unavailable'] as const
+export type ToolOutcomeCode = typeof toolOutcomeCodes[number]
+export const toolRecoverySteps = ['observe_room', 'resume_mission', 'wait_for_control'] as const
 
 export type ProposedAction = { kind: 'interaction'; object: string; action: string } | { kind: 'move'; target: string }
 export interface ActionProposal {
@@ -58,12 +64,14 @@ export interface ToolRequest {
   name: string
   arguments: Record<string, unknown>
   chapterEpoch?: number
+  /** Captured by the application at tool receipt, never supplied by model arguments or HumanView. */
+  inspectionScope?: { visitId: string }
 }
 
 export interface ActionOutcome {
   ok: boolean
   message: string
-  code?: 'cancelled_before_execution' | 'precondition_failed' | 'outcome_unknown' | 'awaiting_confirmation' | 'not_executed'
+  code?: ToolOutcomeCode
 }
 /** Robot-local facts only. Never place this payload in HumanView or a public proposal. */
 export interface RobotLocalPerception {
@@ -86,7 +94,7 @@ export interface RobotLocalPerception {
     passage: 'clear' | 'blocked' | 'unchecked'
   }[]
 }
-export interface ToolResult extends ActionOutcome { proposal?: ActionProposal; perception?: RobotLocalPerception }
+export interface ToolResult extends ActionOutcome { proposal?: ActionProposal; perception?: RobotLocalPerception; recovery?: typeof toolRecoverySteps[number] }
 
 /** Forward only ok/message and a recognized outcome code; view stays human-only. */
 export interface ToolResponse extends ToolResult {
@@ -237,4 +245,6 @@ export interface RobotRecap {
 
 export interface ApiErrorResponse {
   error: string
+  code?: ToolOutcomeCode
+  recovery?: typeof toolRecoverySteps[number]
 }

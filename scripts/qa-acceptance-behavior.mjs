@@ -5,7 +5,7 @@ import { communicatedActionClaim } from './qa-player-policy.mjs';
 
 const mutations = new Set(['interact_object', 'move_to']);
 const proposals = new Set(['propose_interaction', 'propose_move']);
-const readOnly = new Set(['observe_room', 'inspect_object', 'get_action_status']);
+const readOnly = new Set(['observe_room', 'inspect_object', 'inspect_gate', 'get_action_status']);
 const normalize = text => typeof text === 'string' ? text.toLowerCase().replaceAll('\u2019', "'") : '';
 
 function requestIntent(request) {

@@ -603,7 +603,7 @@ test('agent boundaries: compact English configuration contains no answer key, hi
   assert.equal(sessionConfig.output.voice, 'anna');
   assert.deepEqual(sessionConfig.input.language_codes, ['en']);
   assert.equal('agent_id' in sessionConfig, false);
-  assert.deepEqual(robotTools.map((tool) => tool.name), ['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status']);
+  assert.deepEqual(robotTools.map((tool) => tool.name), ['observe_room', 'inspect_object', 'inspect_gate', 'propose_interaction', 'propose_move', 'get_action_status']);
 });
 
 test('Pip prompt: bounded initiative, communicated intent, historical provenance, and corrections without puzzle spoilers', () => {

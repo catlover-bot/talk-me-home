@@ -147,3 +147,85 @@ test('changing Relay before scheduled arrival dispatch preserves the committed m
     await expect.poll(() => provider.activeSockets).toBe(0);
   }
 });
+
+test('compiled direction read carries private request-time scope and keeps controls usable through a delayed empty reply', async ({ page, rescueServer }, info) => {
+  const provider = await start(page);
+  let release!: () => void;
+  const held = new Promise<void>(resolve => { release = resolve; });
+  let request: Record<string, any> | undefined;
+  try {
+    const arrival = await enterGallery(page, provider);
+    await page.route('**/api/sessions/*/tools', async route => {
+      const body = route.request().postDataJSON();
+      if (body.name === 'inspect_gate') { request = body; await held; }
+      await route.fallback();
+    });
+    const reading = provider.tool('inspect_gate', { direction: 'east' }, 'scoped-read');
+    await expect.poll(() => request).toBeTruthy();
+    expect(request!.arguments).toEqual({ direction: 'east' });
+    expect(request!.inspectionScope).toEqual({ visitId: arrival.perception!.visitId });
+    expect(request!.chapterEpoch).toBe(arrival.view.chapterEpoch);
+    await expect(page.getByText('Pip is checking equipment', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Interrupt', exact: true })).toBeEnabled();
+    await expect(page.getByLabel('Type a message')).toBeEnabled();
+    release();
+    const result = await reading;
+    expect(result.ok).toBe(true);
+    expect(result.perception?.gates.find(gate => gate.direction === 'East')).toMatchObject({ door: 'closed', passage: 'clear' });
+    expect(rescueServer.commits).toHaveLength(2);
+    await expect(page.getByText('Check sent · waiting for Pip’s reply', { exact: true })).toBeVisible();
+    await page.clock.install(); await page.clock.fastForward(13_000);
+    provider.emit({ type: 'reply.done', reply_id: 'ordinary-scoped-read', status: 'completed' });
+    provider.emit({ type: 'tool.call', call_id: 'scoped-read', name: 'inspect_gate', arguments: { direction: 'east' } });
+    await provider.drain();
+    await expect(page.getByText('Check sent · waiting for Pip’s reply', { exact: true })).toBeVisible();
+    expect(provider.sent.filter(event => event.type === 'tool.result' && event.call_id === 'scoped-read')).toHaveLength(1);
+    expect(provider.sent.filter(event => event.type === 'reply.create')).toHaveLength(2);
+    await fixtureScreenshot(page, info.outputPath('constructed-delayed-inspection.png'));
+    const viewport = page.viewportSize()!;
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).scrollIntoViewIfNeeded();
+    await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeInViewport();
+    await fixtureScreenshot(page, info.outputPath('constructed-delayed-inspection-narrow.png'));
+    await page.setViewportSize(viewport);
+    provider.emit({ type: 'reply.started', reply_id: 'empty-inspection' });
+    provider.emit({ type: 'reply.done', reply_id: 'empty-inspection', status: 'completed' });
+    await expect(page.getByText('Check sent · waiting for Pip’s reply', { exact: true })).toHaveCount(0);
+    const fresh = await provider.tool('inspect_gate', { direction: 'east' }, 'repeat-read');
+    expect(fresh.ok).toBe(true);
+    provider.emit({ type: 'reply.started', reply_id: 'fresh-read-answer' });
+    provider.emit({ type: 'transcript.agent', reply_id: 'fresh-read-answer', text: 'The east gate is closed. Its passage is clear.' });
+    provider.emit({ type: 'reply.done', reply_id: 'fresh-read-answer', status: 'completed' });
+    await expect(page.getByTestId('caption')).toHaveText('The east gate is closed. Its passage is clear.');
+    expect(rescueServer.store.record(arrival.view.sessionId, arrival.view.roundId).annotations?.location).toBeNull();
+    expect(rescueServer.commits).toHaveLength(2);
+  } finally {
+    release();
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+    await expect.poll(() => provider.activeSockets).toBe(0);
+  }
+});
+
+test('direction rejections remain specific and interrupted late reports cannot become current navigation', async ({ page, rescueServer }) => {
+  const provider = await start(page);
+  try {
+    const arrival = await enterGallery(page, provider);
+    const unavailable = await provider.tool('inspect_gate', { direction: 'north' }, 'absent-direction');
+    expect(unavailable).toMatchObject({ ok: false, code: 'direction_unavailable', recovery: 'observe_room' });
+    expect(unavailable.message).not.toMatch(/correct (?:label|identifier)/i);
+    expect(unavailable.perception).toBeUndefined();
+    await page.getByRole('button', { name: 'Interrupt', exact: true }).click();
+    provider.emit({ type: 'reply.started', reply_id: 'late-interrupted-read' });
+    provider.emit({ type: 'transcript.agent', reply_id: 'late-interrupted-read', text: 'Constructed late report must not appear.' });
+    provider.emit({ type: 'reply.done', reply_id: 'late-interrupted-read', status: 'completed' });
+    await expect(page.getByTestId('caption')).not.toHaveText('Constructed late report must not appear.');
+    await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeEnabled();
+    expect(rescueServer.commits).toHaveLength(2);
+    expect(rescueServer.store.record(arrival.view.sessionId, arrival.view.roundId).annotations?.location).toBeNull();
+  } finally {
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+    await expect.poll(() => provider.activeSockets).toBe(0);
+  }
+});

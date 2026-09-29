@@ -79,6 +79,16 @@ export function useMission() {
   const [connectionLimitSeconds, setConnectionLimitSeconds] = useState(600);
   const liveStarted = useRef(0);
   const practiceMemory = useRef<PracticeMemory>({ chapter: 'cargo', gates: [] });
+  // Retain only transport scope, not a human location or navigation belief.
+  // A missed arrival leaves an old visit which the server rejects, never retargets.
+  const inspectionVisit = useRef<{ roundId: string; chapterEpoch: number; visitId: string } | null>(null);
+  const captureToolContext = (): api.RobotToolContext | undefined => {
+    const current = viewRef.current;
+    if (!current) return;
+    const known = inspectionVisit.current;
+    return { ...current, ...(current.status === 'active' && current.chapter === 'gallery' && known?.roundId === current.roundId
+      && known.chapterEpoch === current.chapterEpoch ? { inspectionScope: { visitId: known.visitId } } : {}) };
+  };
 
   const setBusyNow = (value: boolean) => { busyRef.current = value; setBusy(value); };
   const setConnectedNow = (value: boolean) => { connectedRef.current = value; setConnected(value); };
@@ -217,10 +227,16 @@ export function useMission() {
     return operation;
   };
 
-  const runTool = async (call: api.RobotCall, signal: AbortSignal, expected: number, captured?: HumanView) => {
-    const current = captured ?? viewRef.current;
+  const runTool = async (call: api.RobotCall, signal: AbortSignal, expected: number, captured?: api.RobotToolContext) => {
+    const current = captured ?? captureToolContext();
     if (!current || expected !== generation.current || signal.aborted) throw new DOMException('Canceled', 'AbortError');
-    const result = await api.executeTool(current, call, signal);
+    let result;
+    try { result = await api.executeTool(current, call, signal); }
+    catch (cause) {
+      // A classified validation rejection is different from a lost transport.
+      if (cause instanceof api.MissionServiceError && cause.code) return { ok: false, code: cause.code, recovery: cause.recovery, message: cause.message };
+      throw cause;
+    }
     if (expected !== generation.current || !currentRound(result.view.roundId)) throw new DOMException('Canceled', 'AbortError');
     // A received authoritative result remains true even if the input changed.
     // The cancellation response owns the newer human view; do not overwrite it.
@@ -228,9 +244,10 @@ export function useMission() {
     applyView(result.view);
     if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
     const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
+    if (perception) inspectionVisit.current = { roundId: perception.roundId, chapterEpoch: perception.chapterEpoch, visitId: perception.visitId };
     if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter, perception ?? null);
     if (result.proposal) practiceMemory.current = { ...practiceMemory.current, proposalId: result.proposal.id };
-    return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal,
+    return { ok: result.ok, message: result.message, code: result.code, recovery: result.recovery, proposal: result.proposal,
       ...(perception ? { perception } : {}) };
   };
 
@@ -323,11 +340,11 @@ export function useMission() {
         setConnectionLimitSeconds(token.maxSessionSeconds === 900 ? 900 : 600);
         return { ...token, recap };
       },
-      captureToolContext: () => viewRef.current ? { ...viewRef.current } : undefined,
+      captureToolContext,
       executeTool: (call, signal, context) => {
         let id = localCallIds.get(call.callId);
         if (!id) { id = api.requestId(); localCallIds.set(call.callId, id); }
-        const captured = context as HumanView | undefined;
+        const captured = context as api.RobotToolContext | undefined;
         const cancellation = lastCancellation.current;
         // A new-input cancellation may settle after receipt. Old protocol work is aborted;
         // fresh work may adopt only that acknowledged cancellation epoch. A later room
@@ -434,6 +451,8 @@ export function useMission() {
       // A newer chapter/result owns the view; old decisions cannot seed it.
       if (viewRef.current!.chapterEpoch > result.view.chapterEpoch) return;
       applyView(result.view);
+      const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
+      if (perception) inspectionVisit.current = { roundId: perception.roundId, chapterEpoch: perception.chapterEpoch, visitId: perception.visitId };
       if (result.decisionEvent) {
         addGameEvent(result.decisionEvent);
         if (connection && voice.current === connection && connectedRef.current) {
@@ -574,7 +593,7 @@ export function useMission() {
   const activeCaption = segment ? captions.filter(item => item.segmentId === segment.id).at(-1) : undefined;
   const pipState = view?.completed ? 'success' : error ? 'error' : interrupted ? 'interrupted'
     : !connected ? busy ? 'considering' : view ? 'paused' : 'offline'
-      : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' ? 'considering'
+      : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' || status === 'awaiting_reply' ? 'considering'
         : view?.proposal?.status === 'awaiting_confirmation' ? 'awaiting_confirmation' : inputState !== 'inactive' ? 'listening' : 'ready';
   return {
     stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,

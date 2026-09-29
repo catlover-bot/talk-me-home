@@ -6,6 +6,7 @@ import { RoundRecords } from './records.js'
 import { applyHumanRelay, perceptionIsCurrent, type GalleryConfiguration } from './gallery.js'
 import { applyHumanDock } from './return-dock.js'
 import { describeProposal, proposalLocation } from './proposals.js'
+import { toolDiagnosticIdentity, type ToolDiagnostic } from './tool-diagnostics.js'
 export { GameError } from './errors.js'
 
 interface CachedRequest {
@@ -46,6 +47,8 @@ interface StoreOptions {
   onRobotCommit?: (event: { sessionId: string; roundId: string; chapter: Chapter; chapterEpoch: number; proposalId: string; revisionBefore: number; revisionAfter: number }) => void
   /** Server-side deterministic test seam; no HTTP field selects this hidden configuration. */
   galleryConfiguration?: GalleryConfiguration
+  /** Private local diagnostics, explicitly enabled by the loopback server entry point. */
+  onToolDiagnostic?: (event: ToolDiagnostic) => void
 }
 
 function identifier(value: unknown): value is string {
@@ -64,8 +67,8 @@ function fields(value: unknown, required: string[], optional: string[] = []): va
 }
 function currentChapter(state: GameState, epoch: unknown, safety = false): void {
   if (epoch === undefined && state.missionKind === 'training') return
-  if (!integer(epoch)) throw new GameError(400, 'This command requires the current chapter generation.')
-  if (!safety && epoch !== state.chapterEpoch) throw new GameError(409, 'This request belongs to an earlier chapter. Use the current chapter and observe again.')
+  if (!integer(epoch)) throw new GameError(400, 'This command requires the current chapter generation.', 'invalid_arguments', 'observe_room')
+  if (!safety && epoch !== state.chapterEpoch) throw new GameError(409, 'This request belongs to an earlier chapter. Use the current chapter and observe again.', 'stale_scope', 'observe_room')
   if (safety && epoch > state.chapterEpoch) throw new GameError(409, 'That chapter has not been reached in this mission.')
 }
 function messageIdentifier(value: unknown): value is string {
@@ -83,7 +86,11 @@ function canonical(value: unknown): string {
 export class SessionStore {
   private readonly sessions = new Map<string, Session>()
   private readonly now: () => number
-  constructor(private readonly options: StoreOptions = {}) { this.now = options.now ?? Date.now }
+  private toolDiagnosticSink?: (event: ToolDiagnostic) => void
+  constructor(private readonly options: StoreOptions = {}) { this.now = options.now ?? Date.now; this.toolDiagnosticSink = options.onToolDiagnostic }
+
+  /** Server bootstrap only; no browser/model route can enable this sink. */
+  enableLocalToolDiagnostics(sink: (event: ToolDiagnostic) => void): void { this.toolDiagnosticSink = sink }
 
   create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string): HumanView {
     if (!scenario(selectedScenario) || !missionKind(kind) || (kind === 'rescue' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission or Classic/Maintenance Training.')
@@ -102,7 +109,7 @@ export class SessionStore {
       this.sessions.delete(id)
       throw new GameError(404, 'This mission session is unavailable. Start a new mission.')
     }
-    if (roundId !== undefined && roundId !== session.state.roundId) throw new GameError(409, 'This request belongs to an earlier round. Use the current mission round.')
+    if (roundId !== undefined && roundId !== session.state.roundId) throw new GameError(409, 'This request belongs to an earlier round. Use the current mission round.', 'stale_scope', 'observe_room')
     session.touchedAt = this.now()
     return session
   }
@@ -194,44 +201,79 @@ export class SessionStore {
   }
 
   tool(id: string, input: unknown): Promise<ToolResponse> {
-    if (!fields(input, ['roundId', 'callId', 'actionEpoch', 'name', 'arguments'], ['chapterEpoch']) || !identifier(input.roundId) || !identifier(input.callId) || !integer(input.actionEpoch) || typeof input.name !== 'string' || input.name.length > 80 || typeof input.arguments !== 'object' || input.arguments === null || Array.isArray(input.arguments)) {
-      throw new GameError(400, 'A local tool request requires the current round, call identifier, action epoch, tool name, and object arguments.')
+    const startedAtMs = performance.now()
+    let stage: ToolDiagnostic['stage'] = 'request_schema'
+    const scope: ToolDiagnostic['scope'] = { round: null, chapter: null, action: null, visit: null }
+    const diagnostic = (code: ToolDiagnostic['code'], finalStage = stage) => {
+      if (!this.toolDiagnosticSink) return
+      const finishedAtMs = performance.now()
+      try { this.toolDiagnosticSink({ ...toolDiagnosticIdentity(id, input), scope: { ...scope }, stage: finalStage, code, startedAtMs, finishedAtMs, elapsedMs: finishedAtMs - startedAtMs }) }
+      catch { /* Diagnostics never alter tool execution or its result. */ }
+    }
+    const failed = (error: unknown): never => { diagnostic(error instanceof GameError ? error.code ?? 'request_rejected' : 'request_rejected'); throw error }
+    try {
+    if (!fields(input, ['roundId', 'callId', 'actionEpoch', 'name', 'arguments'], ['chapterEpoch', 'inspectionScope']) || !identifier(input.roundId) || !identifier(input.callId) || !integer(input.actionEpoch) || typeof input.name !== 'string' || input.name.length > 80 || typeof input.arguments !== 'object' || input.arguments === null || Array.isArray(input.arguments)
+      || input.inspectionScope !== undefined && (!exactObject(input.inspectionScope, ['visitId']) || !identifier(input.inspectionScope.visitId))) {
+      throw new GameError(400, 'A local tool request requires the current round, call identifier, action epoch, tool name, and object arguments.', 'invalid_arguments', 'observe_room')
     }
     const request = input as unknown as ToolRequest
+    stage = 'scope'
+    const admitted = this.session(id).state
+    scope.round = admitted.roundId === request.roundId
     const session = this.session(id, request.roundId)
+    // Captured before any queued work. A missing envelope cannot silently acquire a later visit.
+    const admittedVisit = admitted.gallery.visitId
     return this.once(session, `tool:${request.callId}`, request, async () => {
+      try {
       await this.options.beforeToolCommit?.()
-      const current = this.session(id, request.roundId).state
+      const current = this.session(id).state
+      scope.round = current.roundId === request.roundId
+      scope.chapter = request.chapterEpoch === current.chapterEpoch || request.chapterEpoch === undefined && current.missionKind === 'training'
+      scope.action = request.actionEpoch === current.actionEpoch
+      scope.visit = request.inspectionScope ? request.inspectionScope.visitId === current.gallery.visitId && admittedVisit === current.gallery.visitId : null
+      this.session(id, request.roundId)
+      const finish = (result: ToolResult, resultStage: ToolDiagnostic['stage'] = 'tool_validation'): ToolResponse => {
+        diagnostic(result.code ?? (result.ok ? 'ok' : 'precondition_failed'), result.ok ? 'complete' : resultStage)
+        return { ...result, view: this.view(session) }
+      }
+      if (request.name === 'inspect_gate') {
+        if (current.status !== 'active') return finish({ ok: false, code: 'mission_stopped', recovery: 'resume_mission', message: 'The mission is stopped. Wait for Mission Control to resume before inspecting.' }, 'scope')
+        if (scope.chapter && scope.action && current.chapter !== 'gallery') return finish({ ok: false, code: 'tool_unavailable', recovery: 'observe_room', message: 'Direction-based gate inspection is available only in the Relay Gallery. Observe the current local equipment.' })
+        if (!scope.chapter || !scope.action || scope.visit !== true) return finish({ ok: false, code: 'stale_scope', recovery: 'observe_room', message: 'This inspection belongs to an earlier or unobserved visit or action generation. Observe the current room, then inspect the requested direction again.' }, 'scope')
+      }
       currentChapter(current, request.chapterEpoch)
-      if (request.actionEpoch !== current.actionEpoch) return { ok: false, code: 'cancelled_before_execution', message: 'This pending action was canceled before it committed. Observe again when Mission Control is ready.', view: this.view(session) }
+      if (request.actionEpoch !== current.actionEpoch) return finish({ ok: false, code: 'cancelled_before_execution', recovery: 'wait_for_control', message: 'This pending action was canceled before it committed. Observe again when Mission Control is ready.' }, 'scope')
+      stage = 'tool_validation'
       const pending = this.refreshProposal(session)
       if (request.name === 'get_action_status') {
-        if (!exactObject(request.arguments, ['proposal_id']) || !identifier(request.arguments.proposal_id)) return { ok: false, code: 'not_executed', message: 'Read status using one known proposal identifier.', view: this.view(session) }
+        if (!exactObject(request.arguments, ['proposal_id']) || !identifier(request.arguments.proposal_id)) return finish({ ok: false, code: 'not_executed', message: 'Read status using one known proposal identifier.' })
         const proposal = session.proposals.get(request.arguments.proposal_id)
-        if (!proposal || proposal.value.roundId !== current.roundId) return { ok: false, code: 'not_executed', message: 'That proposal is unavailable in this mission round.', view: this.view(session) }
-        return { ...this.proposalResult(proposal, current), view: this.view(session) }
+        if (!proposal || proposal.value.roundId !== current.roundId) return finish({ ok: false, code: 'not_executed', message: 'That proposal is unavailable in this mission round.' })
+        return finish(this.proposalResult(proposal, current))
       }
       if (['interact_object', 'move_to', 'propose_interaction', 'propose_move'].includes(request.name)) {
         const descriptor = describeProposal(current, request.name, request.arguments)
-        if (!descriptor) return { ok: false, code: 'not_executed', message: 'That exact local action is unavailable. Observe or inspect a reachable object; approval flags are not accepted.', view: this.view(session) }
+        if (!descriptor) return finish({ ok: false, code: 'not_executed', message: 'That exact local action is unavailable. Observe or inspect a reachable object; approval flags are not accepted.' })
         if (pending?.value.status === 'awaiting_confirmation') {
-          if (canonical(pending.value.action) === canonical(descriptor.action)) return { ...this.proposalResult(pending, current), view: this.view(session) }
-          return { ok: false, code: 'not_executed', message: 'A different proposal is still awaiting a decision. It was not replaced. Mission Control must decline or cancel it before a different action is proposed.', proposal: structuredClone(pending.value), view: this.view(session) }
+          if (canonical(pending.value.action) === canonical(descriptor.action)) return finish(this.proposalResult(pending, current))
+          return finish({ ok: false, code: 'not_executed', message: 'A different proposal is still awaiting a decision. It was not replaced. Mission Control must decline or cancel it before a different action is proposed.', proposal: structuredClone(pending.value) })
         }
         const proposal: StoredProposal = { owner: session.owner, location: proposalLocation(current), value: {
           id: randomUUID(), roundId: current.roundId, chapter: current.chapter, chapterEpoch: current.chapterEpoch,
           ...descriptor, status: 'awaiting_confirmation', expiresAt: this.now() + 90_000,
         } }
         session.proposals.set(proposal.value.id, proposal); session.latestProposal = proposal.value.id; session.proposalRevision += 1
-        return { ...this.proposalResult(proposal, current), view: this.view(session) }
+        return finish(this.proposalResult(proposal, current))
       }
       // Only read-only operations may enter the physical dispatcher without owner confirmation.
-      const result = ['observe_room', 'inspect_object'].includes(request.name)
-        ? applyRobotTool(current, request.name, request.arguments, this.now())
-        : { ok: false, message: 'That tool is not available. Use an implemented local game tool.' }
+      const result: ToolResult = ['observe_room', 'inspect_object', 'inspect_gate'].includes(request.name)
+        ? applyRobotTool(current, request.name, request.arguments, this.now(), request.inspectionScope)
+        : { ok: false, code: 'tool_unavailable', recovery: 'observe_room', message: 'That tool is not available. Use an implemented local game tool.' }
       if (result.ok) session.records.event('observation', 'robot', result.message, current.chapter, current.chapterEpoch, result.perception?.origin)
-      return { ...result, view: this.view(session) }
+      return finish(result, result.code === 'invalid_arguments' ? 'request_schema' : 'target_resolution')
+      } catch (error) { return failed(error) }
     })
+    } catch (error) { return failed(error) }
   }
 
   decideProposal(id: string, input: unknown, owner: string | undefined): Promise<ToolResponse> {

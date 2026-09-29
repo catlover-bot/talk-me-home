@@ -179,7 +179,8 @@ export function createGameServer(options: ServerOptions = {}) {
       return reply(response, 200, await store.lifecycle(id, action as 'stop' | 'resume' | 'reset' | 'end' | 'cancel', body))
     } catch (error) {
       if (response.headersSent) return response.end()
-      reply(response, error instanceof GameError ? error.status : 500, { error: error instanceof GameError ? error.message : 'The game server could not complete this request.' })
+      reply(response, error instanceof GameError ? error.status : 500, { error: error instanceof GameError ? error.message : 'The game server could not complete this request.',
+        ...(error instanceof GameError && error.code ? { code: error.code, recovery: error.recovery } : {}) })
     }
   })
 }

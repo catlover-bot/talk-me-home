@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-29T13:36:49.050Z",
+  "priorReceipt": "artifacts/goal-005b/server-validation.json",
+  "scope": "Wrong-chapter direction-inspection precedence and actual local production diagnostic startup",
+  "finding": "Current source and compiled build already return tool_unavailable for valid current Cargo/Dock requests before missing-visit scope rejection. No production repair was required.",
+  "tests": {
+    "addedAssertions": [
+      "Rescue Cargo current scope -> tool_unavailable",
+      "Rescue Cargo wrong chapter -> stale_scope",
+      "Actual confirmed Gallery route reaches Dock",
+      "Dock current scope without inspectionScope -> tool_unavailable",
+      "Dock request with previous Gallery chapter -> stale_scope",
+      "Legacy Dock contact inspection remains available"
+    ],
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/gallery-inspection.test.ts",
+    "passed": 10,
+    "failed": 0,
+    "typecheck": "PASS",
+    "diffCheck": "PASS"
+  },
+  "productionSmoke": {
+    "status": "PASS",
+    "source": "Actual prebuilt startProductionServer offline loopback smoke",
+    "diagnosticFile": ".validation/goal-005b/production-tools-12fa14d4-f78b-4903-a580-45bd9451b896.jsonl",
+    "diagnosticSha256": "3b16848debaa7515c347614ac4806b78da37b70e439360d78e8a236e2e228955",
+    "diagnostics": 3,
+    "codes": [
+      "tool_unavailable",
+      "invalid_arguments",
+      "stale_scope"
+    ],
+    "compiledSha256": {
+      "dist/server/server/production.js": "998b113ff3ea7035e8475f4518df44992fa7172588d49124f29e5ee2c923bec9",
+      "dist/server/server/sessions.js": "f7876375d59045d578c245a726d6a52ee4d19a16777ea782e681288831a6525d",
+      "dist/server/server/tool-diagnostics.js": "c146fb5e185fb31cda963fa6e6121b53f1daf3985013575ae0ef1f1dc6a85f4b"
+    },
+    "liveEnabled": false,
+    "providerRequests": 0,
+    "tokenRequests": 0,
+    "allowanceWrites": 0,
+    "rebuilt": false,
+    "command": "GAME_DISABLE_LIVE=1 node .validation/goal-005b/production-diagnostics-smoke.mjs",
+    "cleanup": "Server closed normally; command exited0; no owned browser/server processes remain"
+  },
+  "sourceChanges": [
+    "tests/gallery-inspection.test.ts"
+  ],
+  "productionChanges": [],
+  "newProviderRequests": 0,
+  "newTokenRequests": 0,
+  "newAllowanceWrites": 0,
+  "sourceSha256": {
+    "artifacts/goal-005b/server-validation.json": "2e5846451a8793c62e5c5db12954d57a23a9d15621e411511732de590b61ac65",
+    "tests/gallery-inspection.test.ts": "e1cb1e8a5148d601a4eb61a7c1c5f7032fff673c66d621f74ce416ba8e37a42e",
+    ".validation/goal-005b/inspection-precedence-followup.log": "87cbec2358b32fed5b65f1cc8e7c4763da11a288172597c6824c17a92985926a",
+    ".validation/goal-005b/production-diagnostics-smoke.mjs": "15ea157ac55abd4cf5696bb32b5b6432f0b36d3354328ae3b10fe73524e3e3b7",
+    ".validation/goal-005b/production-diagnostics-smoke.json": "6915764dbb47209ab0bb3fcec83347888962add05ecd85ed43703c56db55b69c",
+    ".validation/goal-005b/production-diagnostics-smoke.log": "9dff6f4fc90050e6a4e1b5dbdce15d014e39ccf35e1769c3fa46fb51c7e8bc22"
+  }
+}

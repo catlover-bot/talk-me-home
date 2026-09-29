@@ -1,5 +1,5 @@
 import { randomInt, randomUUID } from 'node:crypto'
-import type { Chapter, HumanView, MissionKind, Scenario, SessionStatus, ToolResult } from '../shared/contracts.js'
+import type { Chapter, HumanView, MissionKind, Scenario, SessionStatus, ToolRequest, ToolResult } from '../shared/contracts.js'
 import { applyGalleryTool, galleryView, type GalleryConfiguration, type GalleryState } from './gallery.js'
 import { applyDockTool, dockReady, dockView, type DockState } from './return-dock.js'
 
@@ -88,13 +88,14 @@ export function exactObject(value: unknown, keys: readonly string[]): value is R
 const reject = (message: string): ToolResult => ({ ok: false, message })
 
 /** Atomic validation and commit. Callers bind actor identity outside model arguments. */
-export function applyRobotTool(state: GameState, name: string, args: unknown, observedAt = Date.now()): ToolResult {
-  if (state.status !== 'active') return reject('The mission is stopped. Wait for Mission Control to reconnect.')
+export function applyRobotTool(state: GameState, name: string, args: unknown, observedAt = Date.now(), inspectionScope?: ToolRequest['inspectionScope']): ToolResult {
+  if (state.status !== 'active') return { ok: false, code: 'mission_stopped', recovery: 'resume_mission', message: 'The mission is stopped. Wait for Mission Control to resume.' }
   if (state.chapter === 'gallery') {
-    const result = applyGalleryTool(state, name, args, observedAt)
+    const result = applyGalleryTool(state, name, args, observedAt, inspectionScope)
     if (result.ok && state.gallery.room === 'dock') advanceChapter(state, 'return_dock')
     return result
   }
+  if (name === 'inspect_gate') return { ok: false, code: 'tool_unavailable', recovery: 'observe_room', message: 'Direction-based gate inspection is available only in the Relay Gallery. Observe the current local equipment.' }
   if (state.chapter === 'return_dock') return applyDockTool(state, name, args)
   if (name === 'observe_room') {
     return exactObject(args, []) ? robotView(state, observedAt) : reject('Observation takes no arguments.')

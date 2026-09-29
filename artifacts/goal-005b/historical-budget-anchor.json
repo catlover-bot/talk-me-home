@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "capturedAt": "2026-09-29T13:31:39.398Z",
+  "scope": "Separate original Goal001 cumulative ledger, discovered outside the B/C campaign directories. No values interpreted as new capacity.",
+  "file": {
+    "path": ".live-test-budget.json",
+    "bytes": 3118,
+    "sha256": "7287dfb11b266d2c1491d657b91037d42b57a5704850b4982747646317b2c3e1"
+  }
+}

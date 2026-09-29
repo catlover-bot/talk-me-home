@@ -1,0 +1,287 @@
+{
+  "label": "GOAL005B_OFFLINE_ENDING_AUDIT",
+  "createdAt": "2026-09-29T13:33:03.892232+00:00",
+  "baselineCommit": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6",
+  "result": "NO_PRODUCTION_ENDING_DEFECT_REPRODUCED",
+  "productionEndingPolicyChanged": false,
+  "liveOrTokenCalls": 0,
+  "newFundedAllowance": false,
+  "implementation": {
+    "source": {
+      "path": "game/client/voice.ts",
+      "bytes": 25592,
+      "sha256": "02d0e33757daa4c04eaad9029f2bdaf31822f2034b693f8e95abc2fc49eafba7"
+    },
+    "byteIdenticalToBaseline": true,
+    "findings": [
+      "session.ended is handled before the ended-state early return, so an ACK remains receivable during the bounded closing window.",
+      "Ordinary reply, transcript, audio and tool events are ignored after End; stop cancels pending work and stops local input/playback immediately.",
+      "Repeated end/stop calls share one promise and send at most one session.end; no retry or new connection is created.",
+      "The existing ten-second maximum includes cleanup and is clamped to socket creation plus the validated 600/900-second absolute cap.",
+      "voice.ts delegates tool-name validation to VoiceProtocol and needs no local inspect_gate allowlist change."
+    ]
+  },
+  "documentation": {
+    "retrievedAt": "2026-09-29T13:27:31Z",
+    "sources": [
+      "https://www.assemblyai.com/docs/llms.txt",
+      "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference",
+      "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools",
+      "https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration"
+    ],
+    "findings": [
+      "The documented explicit ending sequence is session.end, then session.ended, then socket closure. Closing the socket alone may leave a billable resume window.",
+      "The reviewed pages give no numeric acknowledgement latency guarantee.",
+      "Client tool results remain correlated to a valid latest completed reply; interrupted pending tools must be discarded. An extra tool result or reply is not an ending acknowledgement."
+    ]
+  },
+  "clockAndEvidenceBoundaries": [
+    "Differences use browser performance.now timestamps from the same attempt. Driver elapsedMs and observedAt receipt timestamps are not substituted for browser event times.",
+    "The browser end.requested marker is emitted by the send interceptor immediately before session.end; it does not prove the earliest UI intent or button-click time.",
+    "Attempt12 socket.close is retained in lifecycle.jsonl after the earlier audio-evidence snapshot. Both sources remain unchanged.",
+    "A socket close event can occur after the local close invocation due to WebSocket closing/event-loop scheduling; these retained events do not identify the exact close invocation time.",
+    "Observed ordinary replies after End do not establish ACK delivery, handler failure, provider billing duration, or a completed recovery within the expired deadline.",
+    "Attempts11/13 retain missing-ACK uncertainty and null provider duration. Local duration and clean close are not remote-end confirmation."
+  ],
+  "attempts": [
+    {
+      "attempt": 11,
+      "identity": {
+        "commit": "cc3537bf9c3a49381986e79e5bfc4205ac1ec3e8",
+        "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee"
+      },
+      "completion": true,
+      "failure": "page.waitForFunction: Timeout 12000ms exceeded.",
+      "configuredEndingGraceMs": 5000,
+      "sessionEndCount": 1,
+      "endSentBrowserAtMs": 880504.3999999762,
+      "endSentObservedAt": "2026-09-29T10:54:04.958Z",
+      "endAcknowledged": false,
+      "ackBrowserAtMs": null,
+      "endToAckMs": null,
+      "socketClose": {
+        "browserAtMs": 886229.3999999762,
+        "code": 1005,
+        "clean": true
+      },
+      "endToObservedSocketCloseMs": 5725.0,
+      "lateOrdinaryEvents": [
+        {
+          "type": "transcript.agent",
+          "atMs": 882541.5,
+          "afterEndMs": 2037.1
+        },
+        {
+          "type": "reply.done",
+          "atMs": 882853.3000000119,
+          "replyRef": 237,
+          "status": "completed",
+          "afterEndMs": 2348.9
+        }
+      ],
+      "localConnectedSeconds": 883.0585,
+      "providerDurationSeconds": null,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "browserClosedObserved": true,
+      "serverClosedObserved": true,
+      "sources": [
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/report.json",
+          "bytes": 296585,
+          "sha256": "f3142be57473a363d848bb1a7d7d5a8a3b1ae3a73961bf5f7810e09746a3caed"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/audio-evidence.json",
+          "bytes": 4203774,
+          "sha256": "ea7f10c992ecf4968bab7fb545b3447156bb52c31f3f553a94a001c1bf91bca9"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T10-39-24-021Z-voice-mission/lifecycle.jsonl",
+          "bytes": 1763,
+          "sha256": "316e046a247a7a6f5f42d8107ce2378e47c3ebffd8124b8e3c58af77d52f3c6c"
+        }
+      ]
+    },
+    {
+      "attempt": 12,
+      "identity": {
+        "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+        "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401"
+      },
+      "completion": true,
+      "failure": null,
+      "configuredEndingGraceMs": 10000,
+      "sessionEndCount": 1,
+      "endSentBrowserAtMs": 579631.3999999762,
+      "endSentObservedAt": "2026-09-29T11:20:04.219Z",
+      "endAcknowledged": true,
+      "ackBrowserAtMs": 580348.3000000119,
+      "endToAckMs": 716.9,
+      "socketClose": {
+        "browserAtMs": 581193.1999999881,
+        "code": 1000,
+        "clean": true
+      },
+      "endToObservedSocketCloseMs": 1561.8,
+      "lateOrdinaryEvents": [],
+      "localConnectedSeconds": 577.2133000000119,
+      "providerDurationSeconds": 576.923132,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "browserClosedObserved": true,
+      "serverClosedObserved": true,
+      "sources": [
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/report.json",
+          "bytes": 273318,
+          "sha256": "ee15f44547487e297d0c903f0184b98f60d78e9e4391137d992bf6d8a24db974"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/audio-evidence.json",
+          "bytes": 3442166,
+          "sha256": "a38931d40914a3c943ed776c18e6aeb5d1a420ee2dc961324c9c02584ccb9d69"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/lifecycle.jsonl",
+          "bytes": 1820,
+          "sha256": "1423a426222ee6e73f46b1e1a4b4ac2898468e0c33d65a646c32b90497f0cf57"
+        }
+      ]
+    },
+    {
+      "attempt": 13,
+      "identity": {
+        "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+        "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401"
+      },
+      "completion": false,
+      "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+      "configuredEndingGraceMs": 10000,
+      "sessionEndCount": 1,
+      "endSentBrowserAtMs": 560442.9000000358,
+      "endSentObservedAt": "2026-09-29T11:30:27.262Z",
+      "endAcknowledged": false,
+      "ackBrowserAtMs": null,
+      "endToAckMs": null,
+      "socketClose": {
+        "browserAtMs": 570697,
+        "code": 1005,
+        "clean": true
+      },
+      "endToObservedSocketCloseMs": 10254.1,
+      "lateOrdinaryEvents": [
+        {
+          "type": "reply.started",
+          "atMs": 563185,
+          "replyRef": 155,
+          "afterEndMs": 2742.1
+        },
+        {
+          "type": "transcript.agent",
+          "atMs": 569067,
+          "afterEndMs": 8624.1
+        },
+        {
+          "type": "reply.done",
+          "atMs": 569413.1000000238,
+          "replyRef": 155,
+          "status": "completed",
+          "afterEndMs": 8970.2
+        }
+      ],
+      "localConnectedSeconds": 567.446199999988,
+      "providerDurationSeconds": null,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "browserClosedObserved": true,
+      "serverClosedObserved": true,
+      "sources": [
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+          "bytes": 223434,
+          "sha256": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/audio-evidence.json",
+          "bytes": 2724764,
+          "sha256": "3bbd822b831a7ec4f31e0e47fe336fc965ef266898ee63a2361580d7ae828b6f"
+        },
+        {
+          "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/lifecycle.jsonl",
+          "bytes": 1626,
+          "sha256": "22f375b31acffdb438d21395ac0d66f30ca58b6d914b16e3b97ca93410b41e41"
+        }
+      ]
+    }
+  ],
+  "offlineValidation": {
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/voice-lifecycle.test.ts",
+    "baseline": {
+      "passed": 9,
+      "failed": 0,
+      "log": {
+        "path": ".validation/goal-005b/ending-existing-baseline.log",
+        "bytes": 1047,
+        "sha256": "ec2e261d1103a2ee925deb0c3abcc9eeb888dde1c232e811b54c92c29cee7d8a"
+      }
+    },
+    "expanded": {
+      "passed": 11,
+      "failed": 0,
+      "log": {
+        "path": ".validation/goal-005b/ending-audit-regressions.log",
+        "bytes": 1282,
+        "sha256": "850b9594464348c6030a2f4786ff5b3e4425611f5b4fcd5f39ba94dd55bdbd56"
+      }
+    },
+    "testSource": {
+      "path": "tests/voice-lifecycle.test.ts",
+      "bytes": 13234,
+      "sha256": "7ae27a2ea253be3d7032ac490efa01389fa494e5e3b9e928162e138aae341a0b"
+    },
+    "newTests": [
+      "Goal005B ending audit: late ordinary reply cannot restart work; missing ACK remains unknown",
+      "Goal005B ending audit: late ordinary reply cannot restart work; constructed late ACK remains receivable"
+    ],
+    "schedules": "Rounded attempt13 reply offsets are replayed after End. Late audio, a physical proposal tool, repeated session.ready and optional 9.2-second ACK are constructed adversarial inputs, not invented historical events.",
+    "coverage": [
+      "delayed and absent ACK",
+      "six-second and constructed 9.2-second ACK",
+      "late ordinary reply/audio/tool events",
+      "repeated End and hung cancellation",
+      "manual/automatic cap exhaustion at both 600 and 900 seconds",
+      "one End and finite cleanup",
+      "clean close without ACK remains unknown"
+    ],
+    "interpretation": "A passing baseline with additional passing adverse schedules; no failing-first production repair is claimed. Offline transport tests do not establish why the real provider omitted ACK.",
+    "typecheck": {
+      "command": "GAME_DISABLE_LIVE=1 npm run typecheck",
+      "exitCode": 0,
+      "log": {
+        "path": ".validation/goal-005b/ending-typecheck.log",
+        "bytes": 55,
+        "sha256": "7f2b44c31228841cfdc61c145ce1019e332e292f8fe8ed5235c6628158c2887b"
+      }
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": {
+        "path": ".validation/goal-005b/ending-diff-check.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "disposition": "Retain the existing finite ending policy and historical missing-ACK outcomes. No deadline enlargement, fabricated ACK, real call, accounting mutation or production ending edit is justified by this audit."
+}

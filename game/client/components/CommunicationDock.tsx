@@ -59,7 +59,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
   const connectionText = m.busy ? 'Connecting…' : !m.connected ? 'Disconnected · microphone off'
     : origin === 'practice' ? 'Practice simulation · text only'
       : m.playing ? 'Playing Pip’s reply' : m.toolPending ? 'Pip is checking equipment'
-        : m.status === 'responding' ? 'Pip is responding'
+        : m.status === 'awaiting_reply' ? 'Check sent · waiting for Pip’s reply' : m.status === 'responding' ? 'Pip is responding'
           : m.microphone ? m.inputState === 'receiving' ? 'Receiving microphone input' : 'Connected · microphone ready' : 'Connected · microphone off';
   const canSend = m.connected && !m.busy && !m.view?.completed;
   return <section className="communication-dock" aria-label="Communication with Pip">

@@ -1,4 +1,5 @@
 import type { HumanView, RobotLocalPerception } from '../shared/contracts';
+import { toolOutcomeCodes, toolRecoverySteps } from '../shared/contracts';
 import { currentRobotPerception } from './robot-perception';
 
 export interface TranscriptEntry {
@@ -15,7 +16,7 @@ export interface ToolCall {
   arguments: Record<string, unknown>;
 }
 
-export type VoiceStatus = 'connecting' | 'listening' | 'responding' | 'speaking' | 'ended' | 'error';
+export type VoiceStatus = 'connecting' | 'listening' | 'awaiting_reply' | 'responding' | 'speaking' | 'ended' | 'error';
 export type VoiceInputState = 'inactive' | 'ready' | 'receiving';
 export type CancellationReason = 'interrupt' | 'supersede' | 'stop';
 export interface ReplyCompletion { id: string; status: string; hasTools: boolean }
@@ -49,7 +50,7 @@ export interface ProtocolHooks {
   onBoundaryChange?(): void;
 }
 
-const tools = new Set(['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status', 'interact_object', 'move_to']);
+const tools = new Set(['observe_room', 'inspect_object', 'inspect_gate', 'propose_interaction', 'propose_move', 'get_action_status', 'interact_object', 'move_to']);
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -248,7 +249,7 @@ export class VoiceProtocol {
         this.flush();
       }
       if (currentCompletion) this.pendingReply = false;
-      if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus('listening');
+      if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus(this.awaitingToolContinuation ? 'awaiting_reply' : 'listening');
       if (typeof event.reply_id === 'string') this.hooks.onReplyDone?.({ id: event.reply_id, status: String(event.status ?? ''), hasTools: this.toolReplies.has(event.reply_id) });
     }
     if (typeof event.reply_id === 'string' && this.interruptedReplies.has(event.reply_id) && event.type === 'transcript.agent.delta') return;
@@ -265,13 +266,12 @@ export class VoiceProtocol {
     this.audioPlaying = active && !this.stopped && !this.held;
     this.hooks.onPlayback?.(this.audioPlaying);
     if (this.audioPlaying) this.hooks.onStatus('speaking');
-    else if (!this.stopped && this.ready) this.hooks.onStatus(this.pendingReply ? 'responding' : 'listening');
+    else if (!this.stopped && this.ready) this.hooks.onStatus(this.pendingReply ? 'responding' : this.awaitingToolContinuation ? 'awaiting_reply' : 'listening');
     this.hooks.onBoundaryChange?.();
   }
 
   playbackDrained(): void {
     this.playbackChanged(false);
-    if (!this.stopped && this.ready && !this.pendingReply) this.hooks.onStatus('listening');
   }
 
   resumeInput(): void { this.held = false; }
@@ -404,6 +404,7 @@ export class VoiceProtocol {
       if (pending.result) {
         this.awaitingToolContinuation = true;
         this.hooks.send({ type: 'tool.result', call_id: id, ...pending.result });
+        if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus('awaiting_reply');
         this.calls.delete(id);
         this.clearRecovery(id);
         this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size });
@@ -429,6 +430,7 @@ export class VoiceProtocol {
       ok: false, code: 'cancelled_before_execution',
       message: 'This request belongs to an interrupted reply and was not executed. Respond to the latest player request. If it still requires an action, use a new tool call.',
     }) }) });
+    if (!this.audioPlaying && !this.pendingReply) this.hooks.onStatus('awaiting_reply');
     if (!pending.result && !this.recoveryWarningActive) {
       this.recoveryWarningActive = true;
       this.hooks.onWarning?.('An interrupted request was canceled before it executed. Finish your message, then ask Pip to check or propose it again.');
@@ -458,7 +460,8 @@ export class VoiceProtocol {
             && ['awaiting_confirmation', 'committed', 'declined', 'expired', 'invalidated', 'failed'].includes(String(result.proposal.status))
             ? { proposal: { id: result.proposal.id, status: result.proposal.status, label: result.proposal.label, expiresAt: result.proposal.expiresAt } } : {}),
           ...(!result.ok ? {
-          code: result.code === 'cancelled_before_execution' || result.code === 'outcome_unknown' || result.code === 'not_executed' ? result.code : 'precondition_failed',
+          code: toolOutcomeCodes.some(code => code !== 'awaiting_confirmation' && code === result.code) ? result.code : 'precondition_failed',
+          ...(toolRecoverySteps.some(step => step === result.recovery) ? { recovery: result.recovery } : {}),
         } : {}) }
         : { ok: false, code: 'outcome_unknown', message: 'The local action result could not be verified. Observe again before acting.' };
       this.retainOutcome(pending, { result: JSON.stringify(safe), is_error: !safe.ok });
@@ -467,7 +470,7 @@ export class VoiceProtocol {
         this.hooks.onWarning?.('');
       }
     } catch {
-      const readOnly = ['observe_room', 'inspect_object', 'get_action_status'].includes(pending.call.name);
+      const readOnly = ['observe_room', 'inspect_object', 'inspect_gate', 'get_action_status'].includes(pending.call.name);
       this.retainOutcome(pending, { result: JSON.stringify({ ok: false, code: 'outcome_unknown', message: readOnly
         ? 'The read-only check did not return a verified report. This check changed nothing. Explain that the information is unavailable and let the player ask again.'
         : 'The action result could not be confirmed. It may already have committed. Observe current conditions before requesting another action.' }), is_error: true });

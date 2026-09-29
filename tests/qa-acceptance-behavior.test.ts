@@ -36,6 +36,7 @@ test('purposeful report recovery stays read-only and explicit proposal recovery 
   for (const request of [...LOCATION_REQUESTS, ...passageRequests('east')]) {
     const input = { steps: [step(request.text, 'I can check that observation.')], events: tool('observe_room') };
     assert.equal(evaluateAcceptanceBehavior(input).status, 'pass', request.text);
+    assert.equal(evaluateAcceptanceBehavior({ ...input, events: tool('inspect_gate') }).status, 'pass', request.text);
     assert.equal(evaluateAcceptanceBehavior({ ...input, events: tool('move_to') }).status, 'blocked', request.text);
   }
   for (const label of ['Engage the Latch', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule', 'Confirm the authorized return', 'Move to the far-side platform', 'Move through the east gate']) {

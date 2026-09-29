@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "capturedAt": "2026-09-29T13:28:39.598Z",
+  "deliveredCommit": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6",
+  "demonstratedRuntimeCommit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "baselinePath": ".validation/goal-005b/preservation-baseline.json",
+  "baselineSha256": "189351cb52bb860f6883487fb304a31b9c64cc000b9c42afda051e9828ee57fd",
+  "files": 495,
+  "bytes": 1211858558,
+  "scope": "Delivered historical artifacts/reports, prior media recipes/provenance, all B/C campaign records, Goal005 demonstrated MP4/PPTX/PDF and successful uncut. Hashes only; no original copied or rewritten.",
+  "excludedByDesign": "Current dist build outputs and editable current handoff documents are outside immutable history; the old frozen execution manifests remain included."
+}

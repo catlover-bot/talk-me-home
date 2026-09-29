@@ -49,7 +49,7 @@ test('QA wire allowlist excludes config, result payloads, URLs, cookie values an
   const canonical = sanitizeWireEvent({ type: 'reply.done', reply_id: `fc-${secret}`, status: 'completed' }, 'received', references);
   assert.equal(canonical?.callRef, request?.callRef);
   assert.equal(JSON.stringify(canonical).includes(secret), false);
-  for (const code of ['cancelled_before_execution', 'precondition_failed', 'outcome_unknown']) {
+  for (const code of ['cancelled_before_execution', 'precondition_failed', 'outcome_unknown', 'invalid_arguments', 'unknown_target', 'nonlocal_target', 'direction_unavailable', 'direction_ambiguous', 'target_unobserved', 'stale_scope', 'mission_stopped', 'tool_unavailable']) {
     const outcome = sanitizeWireEvent({ type: 'tool.result', call_id: secret, is_error: true,
       result: JSON.stringify({ ok: false, code, message: secret, arguments: { object: secret }, view: { hidden: secret } }) }, 'sent', references);
     assert.equal(outcome?.outcomeCode, code);

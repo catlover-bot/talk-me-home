@@ -90,7 +90,7 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
       const normalized = text.replace(/north[ -]east/g, 'northeast').replace(/north[ -]west/g, 'northwest').replace(/south[ -]east/g, 'southeast').replace(/south[ -]west/g, 'southwest');
       const matches = memory.gates.filter(gate => new RegExp(`\\b${gate.label}\\b`).test(normalized) || normalized.includes(gate.id));
       if (matches.length !== 1 || /\b(and|or|then)\b/.test(normalized)) return { message: 'Which gate do you mean? Use one compass label from my local report. I can look around again if needed.' };
-      if (/\b(inspect|examine|check|look at)\b/.test(text)) return call('inspect_object', { object: matches[0]!.id });
+      if (/\b(inspect|examine|check|look at)\b/.test(text)) return call('inspect_gate', { direction: matches[0]!.label });
       return call('propose_move', { target: matches[0]!.id });
     }
   }

@@ -28,9 +28,10 @@ class LifecycleSocket implements VoiceSocket {
 class LifecycleAudio implements VoiceAudio {
   closed = false;
   stopped = false;
+  played = 0;
   input?: (data: string) => void;
   async prepare(_microphone: boolean, onChunk: (data: string) => void): Promise<void> { this.input = onChunk; }
-  play(): void {}
+  play(): void { this.played++; }
   stopPlayback(): void { this.stopped = true; }
   async close(): Promise<void> { this.closed = true; }
 }
@@ -43,6 +44,7 @@ async function pendingWorkFixture(maxSessionSeconds: 600 | 900 = 600, endGraceMs
   const statuses: VoiceStatus[] = [];
   const captions: string[] = [];
   const microphone: boolean[] = [];
+  const executedTools: string[] = [];
   let actionSignal: AbortSignal | undefined;
   let socketCount = 0;
   const live = new LiveVoice({
@@ -51,7 +53,7 @@ async function pendingWorkFixture(maxSessionSeconds: 600 | 900 = 600, endGraceMs
   }, { createAudio: () => audio, createSocket: () => { socketCount++; return socket; }, endGraceMs });
   const starting = live.start({
     token: async () => ({ token: 'offline-temporary-placeholder', config: {}, maxSessionSeconds }), microphone: true,
-    executeTool: (_call, signal) => { actionSignal = signal; return physicalWork.promise; },
+    executeTool: (call, signal) => { executedTools.push(call.name); actionSignal = signal; return physicalWork.promise; },
     cancelPending: () => cancellation.promise,
   });
   await tick(); socket.open(); socket.emit({ type: 'session.ready' }); await starting;
@@ -60,7 +62,66 @@ async function pendingWorkFixture(maxSessionSeconds: 600 | 900 = 600, endGraceMs
   socket.emit({ type: 'reply.done', reply_id: 'pending-reply', status: 'completed' });
   await tick();
   assert.ok(actionSignal);
-  return { live, socket, audio, cancellation, physicalWork, statuses, captions, microphone, actionSignal, get socketCount() { return socketCount; } };
+  return { live, socket, audio, cancellation, physicalWork, statuses, captions, microphone, actionSignal, executedTools, get socketCount() { return socketCount; } };
+}
+
+for (const acknowledge of [false, true]) {
+  test(`Goal005B ending audit: late ordinary reply cannot restart work; ${acknowledge ? 'constructed late ACK remains receivable' : 'missing ACK remains unknown'}`, async t => {
+    // The rounded ordinary-reply offsets follow retained attempt13. The extra
+    // late tool/audio and optional 9.2s ACK are constructed adversarial inputs,
+    // not claims that these events occurred in that historical failed attempt.
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+    let now = 100_000;
+    t.mock.method(performance, 'now', () => now);
+    const h = await pendingWorkFixture();
+    let settled = false;
+    const stopping = h.live.end();
+    const ending = stopping.then(() => { settled = true; });
+    const advance = async (ms: number) => { now += ms; t.mock.timers.tick(ms); await tick(); };
+    try {
+      assert.equal(h.live.end(), stopping);
+      assert.equal(h.live.stop(), stopping);
+      assert.equal(h.actionSignal.aborted, true);
+      assert.equal(h.audio.closed, true);
+      assert.equal(h.audio.stopped, true);
+      assert.equal(h.live.sendText('Must not send after End.'), false);
+      h.audio.input?.('must-not-send');
+      await advance(2742);
+      h.socket.emit({ type: 'reply.started', reply_id: 'late-reply' });
+      h.socket.emit({ type: 'reply.audio', reply_id: 'late-reply', audio: 'AAAA' });
+      h.socket.emit({ type: 'tool.call', reply_id: 'late-reply', call_id: 'late-action', name: 'propose_move', arguments: { target: 'untrusted-late-target' } });
+      await advance(5882);
+      h.socket.emit({ type: 'transcript.agent', reply_id: 'late-reply', text: 'The Southeast gate is open and the passage is clear of any cargo. Should I move through it?' });
+      await advance(346);
+      h.socket.emit({ type: 'reply.done', reply_id: 'late-reply', status: 'completed' });
+      h.socket.emit({ type: 'session.ready' });
+      assert.equal(h.live.endAcknowledged, false, 'An ordinary completed reply is not an ending ACK.');
+      assert.equal(h.audio.played, 0);
+      assert.deepEqual(h.captions, []);
+      assert.deepEqual(h.executedTools, ['observe_room']);
+      assert.equal(h.microphone.at(-1), false);
+      assert.equal(h.socket.sent.filter(event => event.type === 'session.end').length, 1);
+      assert.equal(h.socket.sent.some(event => ['input.audio', 'conversation.message', 'tool.result', 'reply.create'].includes(String(event.type))), false);
+      await advance(230);
+      if (acknowledge) h.socket.emit({ type: 'session.ended', session_duration_seconds: 9.2 });
+      await tick();
+      assert.equal(h.live.endAcknowledged, acknowledge);
+      assert.equal(settled, false, 'The intentionally hung cancellation is still bounded by the existing deadline.');
+      await advance(800);
+      await ending;
+      assert.equal(settled, true);
+      assert.equal(h.socket.readyState, 3);
+      assert.equal(h.socket.onmessage, null);
+      assert.equal(h.statuses.filter(status => status === 'ended').length, 1);
+      assert.equal(h.socketCount, 1);
+      h.socket.emit({ type: 'session.ended', session_duration_seconds: 11 });
+      assert.equal(h.live.endAcknowledged, acknowledge, 'An event outside the closed observation window cannot retroactively confirm ending.');
+    } finally {
+      h.cancellation.resolve();
+      h.physicalWork.resolve({ ok: false, message: 'Offline fixture cleanup.' });
+      await advance(10_000); await ending;
+    }
+  });
 }
 
 for (const acknowledgement of ['delayed', 'absent'] as const) {

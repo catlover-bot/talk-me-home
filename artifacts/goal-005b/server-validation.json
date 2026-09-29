@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "source": "Constructed offline server regressions; not real-model acceptance",
+  "recordedAt": "2026-09-29T13:34:07.376Z",
+  "baseline": {
+    "tests": 2,
+    "passed": 0,
+    "failed": 2,
+    "log": ".validation/goal-005b/inspection-before.log",
+    "findings": [
+      "New direction tool/envelope was unavailable",
+      "Legacy invalid, unknown and nonlocal inspection results had no classified codes"
+    ],
+    "historicalBoundary": "Attempts12/13 omitted rejected arguments; no historical wrong-handle claim is inferred."
+  },
+  "intermediate": {
+    "tests": 74,
+    "passed": 73,
+    "failed": 1,
+    "log": ".validation/goal-005b/inspection-after.log",
+    "failure": "Privacy-test regex inadvertently matched the legitimate invalid_arguments code; corrected to check unrestricted arguments JSON keys, retaining secret-content checks."
+  },
+  "final": {
+    "tests": 89,
+    "passed": 89,
+    "failed": 0,
+    "log": ".validation/goal-005b/inspection-final.log",
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/gallery-inspection.test.ts tests/gallery-perception.test.ts tests/proposals.test.ts tests/rescue-state.test.ts tests/state.test.ts tests/rescue-http.test.ts tests/production.test.ts",
+    "typecheck": "PASS",
+    "diffCheck": "PASS",
+    "validDirectionLayoutRelayChecks": 48
+  },
+  "coverage": [
+    "Current observed local directions in both layouts",
+    "Door/power distinct from clear/blocked/unchecked passage",
+    "Missing, invalid, absent, ambiguous, unobserved and stale targets",
+    "Delayed call after movement and return to same room",
+    "Current chapter/action generation and stopped mission",
+    "Same-visit Relay updates without needless new survey",
+    "Idempotent observations and unchanged exact proposal/confirmation isolation",
+    "HTTP classified errors and private allowlisted diagnostics",
+    "Loopback-only opt-in diagnostic file; new .validation path; no symlinks; 2000-record cap"
+  ],
+  "diagnostics": {
+    "environment": "GAME_LOCAL_TOOL_DIAGNOSTICS",
+    "example": ".validation/goal-005b/new-inspection-diagnostics.jsonl",
+    "default": "disabled",
+    "clock": "Server-process performance.now monotonic milliseconds, not browser-clock alignment",
+    "privacy": "Recognized tool/target/direction allowlist and hashed identifiers/unexpected strings; no raw arguments, conversation, cookies, credentials or configuration; never HumanView"
+  },
+  "sourceSha256": {
+    "game/shared/contracts.ts": "1e2250b0a96b5f68d46cdac6da5dd5a4246a0d8a424c2ec7c249c1f4ef5462c3",
+    "game/server/gallery.ts": "faaa01602d107f7d719a40ac947f9bd70fd6e41353d4a071a24506102b8e4f0d",
+    "game/server/state.ts": "74475dcdfedacdc54feb4afc7100befbe7a29764020d1843ce444d357b49ee8c",
+    "game/server/sessions.ts": "055d508bcf573dfe3f2bdeffdb8c6f29080c07f280245082a52922c1caa090ec",
+    "game/server/errors.ts": "877fa58734d4df8e14c711d0e5906aa92212d5d2e3b8ea645e4d57917ac78e02",
+    "game/server/http.ts": "c8269cdb3661b2a499868fccb68deff3eb2dffaf71e158654709a39d6563aaaf",
+    "game/server/index.ts": "ef89a903ecb99ed90c980b28826776d4494619524185e95c950d558e7f8632b8",
+    "game/server/production.ts": "2aa7f61f3fa6adbd963868ee013cca85fe8917386d3a2e498fa198b1f7ecdb06",
+    "game/server/tool-diagnostics.ts": "63f304d5c2cdbe44ce825d611e781debb09967368e9790d4607848c2b21725b8",
+    "tests/gallery-inspection.test.ts": "a64e4b3db64e7ef66890e01d2caead4fd9553e8145f3eb787dacef860d5fad55"
+  },
+  "testSha256": {
+    "tests/gallery-inspection.test.ts": "a64e4b3db64e7ef66890e01d2caead4fd9553e8145f3eb787dacef860d5fad55",
+    "tests/gallery-perception.test.ts": "d11044616f7fff01a52353f75b8a1e82899d5be330d4d777db0b296c6c91c691",
+    "tests/proposals.test.ts": "987eab87bd6b7b30e6468b2d7a226530133b36de02ed112f5885fad6f794368c",
+    "tests/rescue-state.test.ts": "29bff16c12371ad7247c557ae16cef81d8d5cb23b5bcd2ca94396d1bbfa29d14",
+    "tests/state.test.ts": "db181f6174bb529d36068d237407f7ef4ea80436f370ebe6dfb2b21dc1dbd886",
+    "tests/rescue-http.test.ts": "a1f051121a6bcd490192c0f93832397cc014800506b313f2d3306b6213435251",
+    "tests/production.test.ts": "e2758f4e3d9c2f81dffde7e35aab91ea72d214af6eaa5528adccd4aa5c30cb5c"
+  },
+  "logSha256": {
+    ".validation/goal-005b/inspection-before.log": "9f71a238a8398579b7720f40734af1e0f9b33c48441279b6bfb41fa3ed460ab5",
+    ".validation/goal-005b/inspection-after.log": "bab116c8e04674aa37e467826a712a92dea7bd8a29049720a51f188a63400eea",
+    ".validation/goal-005b/inspection-final.log": "261d14d48339edf5e109c75b9eb6f88b519dd3d1f3f8fe8d4144f0cf75158da5"
+  },
+  "externalUse": {
+    "providerRequests": 0,
+    "tokenRequests": 0,
+    "newAllowanceWrites": 0,
+    "builds": 0
+  },
+  "cleanup": {
+    "ownedServers": 0,
+    "ownedBrowsers": 0,
+    "temporaryDiagnosticTestFilesRemoved": true
+  },
+  "limitations": [
+    "Offline test coverage does not prove model selection of inspect_gate or real latency improvement.",
+    "No ending behavior is changed by this server subtask.",
+    "The delivered2edf791 successful candidate and old evidence/media are retained by the parent preservation audit."
+  ]
+}

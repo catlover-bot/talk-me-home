@@ -1,0 +1,1444 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-29T13:30:34.062Z",
+  "sourceKind": "Retained actual attempt, not a constructed reproduction",
+  "sources": [
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+      "sha256": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764"
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/audio-evidence.json",
+      "sha256": "3bbd822b831a7ec4f31e0e47fe336fc965ef266898ee63a2361580d7ae828b6f"
+    },
+    {
+      "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/lifecycle.jsonl",
+      "sha256": "22f375b31acffdb438d21395ac0d66f30ca58b6d914b16e3b97ca93410b41e41"
+    }
+  ],
+  "identity": {
+    "commit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+    "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+    "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+    "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7"
+  },
+  "outcome": {
+    "completion": false,
+    "failure": "QA fork southeast passage recovery exceeded 120 seconds.",
+    "endAcknowledged": false,
+    "providerDurationSeconds": null,
+    "localConnectedSeconds": 567.446199999988
+  },
+  "clocks": {
+    "browser": "events.atMs = browser performance.now minus instrumentation installation. All turn-stage deltas use this clock only.",
+    "acquisition": "report.acquisitions uses driver Node performance.now. It has a different origin and is not directly subtracted from browser timestamps.",
+    "receipt": "lifecycle driver elapsed and UTC fields timestamp receipt across browser/driver transport; they are not exact clock synchronization.",
+    "server": "Not recorded independently in this attempt."
+  },
+  "finalSubgoal": {
+    "subject": "fork southeast passage",
+    "nodeStartedAtMs": 443630.487752,
+    "nodeDeadlineAtMs": 563630.487752,
+    "nodeStoppedAtMs": 563631.833606,
+    "observedElapsedMs": 120001.3459,
+    "deadlineOverrunMs": 1.3459,
+    "outcome": "failed",
+    "retroactiveSuccess": false
+  },
+  "turns": [
+    {
+      "turnId": 1,
+      "fixture": "speech-2be6102764acc7db",
+      "input": "Pip, please look around.",
+      "browserClock": {
+        "queuedAtMs": 10351,
+        "scheduledSourceStartAtMs": 10401,
+        "sourceEndedAtMs": 13538.2,
+        "inputCaptureDrainedAtMs": 13548.6,
+        "captureSampleClockAtDrainMs": 13543.1667,
+        "asrFinalAtMs": 13220.4,
+        "finalInputToAsrMs": -317.8,
+        "captureDrainToAsrMs": -328.2
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 3.1395,
+        "scheduledStartToOnendedSeconds": 3.1372,
+        "differenceFromDecodedFixtureMs": -2.3,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 6,
+          "name": "observe_room",
+          "callReceivedAtMs": 14121.2,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 14365.2,
+          "resultSentAtMs": 14373.1,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 251.9,
+          "replyDoneToSentResultMs": 7.9,
+          "continuationReplyRef": 7,
+          "continuationStartedAtMs": 14602.6,
+          "resultToContinuationMs": 229.5,
+          "finalTranscriptAtMs": 23093.8,
+          "continuationDoneAtMs": 23413.2,
+          "playbackDrainedAtMs": 23502,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 2,
+      "fixture": "speech-53096f2dea894462",
+      "input": "Please inspect the Latch.",
+      "browserClock": {
+        "queuedAtMs": 24448.1,
+        "scheduledSourceStartAtMs": 24498.1,
+        "sourceEndedAtMs": 27206.5,
+        "inputCaptureDrainedAtMs": 27215.3,
+        "captureSampleClockAtDrainMs": 27209.8667,
+        "asrFinalAtMs": 27005.8,
+        "finalInputToAsrMs": -200.7,
+        "captureDrainToAsrMs": -209.5
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 2.7095,
+        "scheduledStartToOnendedSeconds": 2.7084,
+        "differenceFromDecodedFixtureMs": -1.1,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 12,
+          "name": "inspect_object",
+          "callReceivedAtMs": 28239.3,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 28297.4,
+          "resultSentAtMs": 28316.6,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 77.3,
+          "replyDoneToSentResultMs": 19.2,
+          "continuationReplyRef": 13,
+          "continuationStartedAtMs": 28519,
+          "resultToContinuationMs": 202.4,
+          "finalTranscriptAtMs": 38298.4,
+          "continuationDoneAtMs": 38616.9,
+          "playbackDrainedAtMs": 39327.7,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 3,
+      "fixture": "speech-c9959c8f2ee9f139",
+      "input": "My diagram says the Door and Conveyor share one Power supply.",
+      "browserClock": {
+        "queuedAtMs": 40363.4,
+        "scheduledSourceStartAtMs": 40413.4,
+        "sourceEndedAtMs": 45334.1,
+        "inputCaptureDrainedAtMs": 45340.4,
+        "captureSampleClockAtDrainMs": 45335.0667,
+        "asrFinalAtMs": 45252,
+        "finalInputToAsrMs": -82.1,
+        "captureDrainToAsrMs": -88.4
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.9245,
+        "scheduledStartToOnendedSeconds": 4.9207,
+        "differenceFromDecodedFixtureMs": -3.8,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 4,
+      "fixture": "speech-2d830fba1d8bd141",
+      "input": "Please engage the Latch.",
+      "browserClock": {
+        "queuedAtMs": 55715.9,
+        "scheduledSourceStartAtMs": 55765.9,
+        "sourceEndedAtMs": 58451.3,
+        "inputCaptureDrainedAtMs": 58464.8,
+        "captureSampleClockAtDrainMs": 58459.4667,
+        "asrFinalAtMs": 58547.2,
+        "finalInputToAsrMs": 95.9,
+        "captureDrainToAsrMs": 82.4
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 2.6795,
+        "scheduledStartToOnendedSeconds": 2.6854,
+        "differenceFromDecodedFixtureMs": 5.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 21,
+          "name": "propose_interaction",
+          "callReceivedAtMs": 59490.1,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 59710,
+          "resultSentAtMs": 59717.9,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 227.8,
+          "replyDoneToSentResultMs": 7.9,
+          "continuationReplyRef": 23,
+          "continuationStartedAtMs": 59894.7,
+          "resultToContinuationMs": 176.8,
+          "finalTranscriptAtMs": 67253.4,
+          "continuationDoneAtMs": 67609.5,
+          "playbackDrainedAtMs": 67635.1,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 5,
+      "fixture": "speech-96f2c4645e12b18d",
+      "input": "Please set the Latch to hold the Door open.",
+      "browserClock": {
+        "queuedAtMs": 74704.6,
+        "scheduledSourceStartAtMs": 74754.6,
+        "sourceEndedAtMs": 78212.5,
+        "inputCaptureDrainedAtMs": 78226.8,
+        "captureSampleClockAtDrainMs": 78221.4667,
+        "asrFinalAtMs": 78295.2,
+        "finalInputToAsrMs": 82.7,
+        "captureDrainToAsrMs": 68.4
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 3.4645,
+        "scheduledStartToOnendedSeconds": 3.4579,
+        "differenceFromDecodedFixtureMs": -6.6,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 30,
+          "name": "propose_interaction",
+          "callReceivedAtMs": 81212.2,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 81433.6,
+          "resultSentAtMs": 81442.4,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 230.2,
+          "replyDoneToSentResultMs": 8.8,
+          "continuationReplyRef": 32,
+          "continuationStartedAtMs": 81593.6,
+          "resultToContinuationMs": 151.2,
+          "finalTranscriptAtMs": 88118.3,
+          "continuationDoneAtMs": 88482.7,
+          "playbackDrainedAtMs": 88594,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 6,
+      "fixture": "speech-6e0d46b1f102dd5b",
+      "input": "Power is now off.",
+      "browserClock": {
+        "queuedAtMs": 95159.7,
+        "scheduledSourceStartAtMs": 95209.7,
+        "sourceEndedAtMs": 97683.1,
+        "inputCaptureDrainedAtMs": 97697.7,
+        "captureSampleClockAtDrainMs": 97692.3667,
+        "asrFinalAtMs": 97862.8,
+        "finalInputToAsrMs": 179.7,
+        "captureDrainToAsrMs": 165.1
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 2.4695,
+        "scheduledStartToOnendedSeconds": 2.4734,
+        "differenceFromDecodedFixtureMs": 3.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 7,
+      "fixture": "speech-8eb4a3082dfea69b",
+      "input": "Please cross to the far side.",
+      "browserClock": {
+        "queuedAtMs": 107963.4,
+        "scheduledSourceStartAtMs": 108013.4,
+        "sourceEndedAtMs": 110950.5,
+        "inputCaptureDrainedAtMs": 110962.7,
+        "captureSampleClockAtDrainMs": 110957.3667,
+        "asrFinalAtMs": 111180.3,
+        "finalInputToAsrMs": 229.8,
+        "captureDrainToAsrMs": 217.6
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 2.9445,
+        "scheduledStartToOnendedSeconds": 2.9371,
+        "differenceFromDecodedFixtureMs": -7.4,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 42,
+          "name": "propose_move",
+          "callReceivedAtMs": 114100.2,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 114329.1,
+          "resultSentAtMs": 114393.5,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 293.3,
+          "replyDoneToSentResultMs": 64.4,
+          "continuationReplyRef": 44,
+          "continuationStartedAtMs": 114637.6,
+          "resultToContinuationMs": 244.1,
+          "finalTranscriptAtMs": 121497.1,
+          "continuationDoneAtMs": 121803.9,
+          "playbackDrainedAtMs": 121929.8,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 8,
+      "fixture": "speech-202ae002c37b3be3",
+      "input": "Please inspect the east gate and tell me whether anything blocks it.",
+      "browserClock": {
+        "queuedAtMs": 133433,
+        "scheduledSourceStartAtMs": 133483,
+        "sourceEndedAtMs": 138086.9,
+        "inputCaptureDrainedAtMs": 138095.1,
+        "captureSampleClockAtDrainMs": 138089.7667,
+        "asrFinalAtMs": 138183.6,
+        "finalInputToAsrMs": 96.7,
+        "captureDrainToAsrMs": 88.5
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.6045,
+        "scheduledStartToOnendedSeconds": 4.6039,
+        "differenceFromDecodedFixtureMs": -0.6,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 52,
+          "name": "inspect_object",
+          "callReceivedAtMs": 141037.6,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 141237.7,
+          "resultSentAtMs": 141244,
+          "isError": true,
+          "outcomeCode": "precondition_failed",
+          "callToSentResultMs": 206.4,
+          "replyDoneToSentResultMs": 6.3,
+          "continuationReplyRef": 53,
+          "continuationStartedAtMs": 141413,
+          "resultToContinuationMs": 169,
+          "finalTranscriptAtMs": 147155.4,
+          "continuationDoneAtMs": 147461.2,
+          "playbackDrainedAtMs": 147536.5,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 9,
+      "fixture": "speech-3d4f2f8d68fc54bf",
+      "input": "Is the opening of the east gate physically clear or blocked?",
+      "browserClock": {
+        "queuedAtMs": 149593,
+        "scheduledSourceStartAtMs": 149643,
+        "sourceEndedAtMs": 154020.2,
+        "inputCaptureDrainedAtMs": 154031.4,
+        "captureSampleClockAtDrainMs": 154026.0667,
+        "asrFinalAtMs": 154138.7,
+        "finalInputToAsrMs": 118.5,
+        "captureDrainToAsrMs": 107.3
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.3745,
+        "scheduledStartToOnendedSeconds": 4.3772,
+        "differenceFromDecodedFixtureMs": 2.7,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 58,
+          "name": "observe_room",
+          "callReceivedAtMs": 155006.3,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 155215.3,
+          "resultSentAtMs": 155266.6,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 260.3,
+          "replyDoneToSentResultMs": 51.3,
+          "continuationReplyRef": 59,
+          "continuationStartedAtMs": 155535.8,
+          "resultToContinuationMs": 269.2,
+          "finalTranscriptAtMs": 162735.9,
+          "continuationDoneAtMs": 163045.5,
+          "playbackDrainedAtMs": 163101.3,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 10,
+      "fixture": "speech-97048dfc6477b0ba",
+      "input": "Please check the east gate again and report whether cargo blocks passage.",
+      "browserClock": {
+        "queuedAtMs": 165335,
+        "scheduledSourceStartAtMs": 165385,
+        "sourceEndedAtMs": 170594.4,
+        "inputCaptureDrainedAtMs": 170599.9,
+        "captureSampleClockAtDrainMs": 170594.5667,
+        "asrFinalAtMs": 170757.6,
+        "finalInputToAsrMs": 163.2,
+        "captureDrainToAsrMs": 157.7
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 5.2045,
+        "scheduledStartToOnendedSeconds": 5.2094,
+        "differenceFromDecodedFixtureMs": 4.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 64,
+          "name": "inspect_object",
+          "callReceivedAtMs": 171787,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 171965.7,
+          "resultSentAtMs": 171971.9,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 184.9,
+          "replyDoneToSentResultMs": 6.2,
+          "continuationReplyRef": 65,
+          "continuationStartedAtMs": 172765.4,
+          "resultToContinuationMs": 793.5,
+          "finalTranscriptAtMs": 176987.2,
+          "continuationDoneAtMs": 177320.9,
+          "playbackDrainedAtMs": 177691.7,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 11,
+      "fixture": "speech-583e2a1d006c2863",
+      "input": "Please go through the east gate.",
+      "browserClock": {
+        "queuedAtMs": 179828.2,
+        "scheduledSourceStartAtMs": 179878.2,
+        "sourceEndedAtMs": 182799.8,
+        "inputCaptureDrainedAtMs": 182810.6,
+        "captureSampleClockAtDrainMs": 182805.2667,
+        "asrFinalAtMs": 182914.1,
+        "finalInputToAsrMs": 114.3,
+        "captureDrainToAsrMs": 103.5
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 2.9245,
+        "scheduledStartToOnendedSeconds": 2.9216,
+        "differenceFromDecodedFixtureMs": -2.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 70,
+          "name": "propose_move",
+          "callReceivedAtMs": 185879.7,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 186011.5,
+          "resultSentAtMs": 186058.7,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 179,
+          "replyDoneToSentResultMs": 47.2,
+          "continuationReplyRef": 72,
+          "continuationStartedAtMs": 186257.2,
+          "resultToContinuationMs": 198.5,
+          "finalTranscriptAtMs": 192407.8,
+          "continuationDoneAtMs": 192777.1,
+          "playbackDrainedAtMs": 192814.5,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 12,
+      "fixture": "speech-b52ae54ffd8e25dc",
+      "input": "Please inspect the northeast gate and tell me whether anything blocks it.",
+      "browserClock": {
+        "queuedAtMs": 208011.4,
+        "scheduledSourceStartAtMs": 208061.4,
+        "sourceEndedAtMs": 212822.2,
+        "inputCaptureDrainedAtMs": 212835.3,
+        "captureSampleClockAtDrainMs": 212829.8667,
+        "asrFinalAtMs": 212947.6,
+        "finalInputToAsrMs": 125.4,
+        "captureDrainToAsrMs": 112.3
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.7645,
+        "scheduledStartToOnendedSeconds": 4.7608,
+        "differenceFromDecodedFixtureMs": -3.7,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 80,
+          "name": "inspect_object",
+          "callReceivedAtMs": 213815,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 214001.4,
+          "resultSentAtMs": 214026.8,
+          "isError": true,
+          "outcomeCode": "precondition_failed",
+          "callToSentResultMs": 211.8,
+          "replyDoneToSentResultMs": 25.4,
+          "continuationReplyRef": 81,
+          "continuationStartedAtMs": 214237.1,
+          "resultToContinuationMs": 210.3,
+          "finalTranscriptAtMs": 222457,
+          "continuationDoneAtMs": 222689.5,
+          "playbackDrainedAtMs": 222902.5,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 13,
+      "fixture": "speech-e91901a64bbeec98",
+      "input": "Is the opening of the northeast gate physically clear or blocked?",
+      "browserClock": {
+        "queuedAtMs": 225596.2,
+        "scheduledSourceStartAtMs": 225646.2,
+        "sourceEndedAtMs": 230188.3,
+        "inputCaptureDrainedAtMs": 230197.4,
+        "captureSampleClockAtDrainMs": 230191.9667,
+        "asrFinalAtMs": 230431.8,
+        "finalInputToAsrMs": 243.5,
+        "captureDrainToAsrMs": 234.4
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.5395,
+        "scheduledStartToOnendedSeconds": 4.5421,
+        "differenceFromDecodedFixtureMs": 2.6,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 86,
+          "name": "observe_room",
+          "callReceivedAtMs": 233516.2,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 233592.9,
+          "resultSentAtMs": 233627.9,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 111.7,
+          "replyDoneToSentResultMs": 35,
+          "continuationReplyRef": 87,
+          "continuationStartedAtMs": 233978.9,
+          "resultToContinuationMs": 351,
+          "finalTranscriptAtMs": 240787.2,
+          "continuationDoneAtMs": 241086.6,
+          "playbackDrainedAtMs": 241254.5,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 14,
+      "fixture": "speech-0273533a473a4c59",
+      "input": "Please check the northeast gate again and report whether cargo blocks passage.",
+      "browserClock": {
+        "queuedAtMs": 244077.3,
+        "scheduledSourceStartAtMs": 244127.3,
+        "sourceEndedAtMs": 249498.5,
+        "inputCaptureDrainedAtMs": 249507.7,
+        "captureSampleClockAtDrainMs": 249502.3667,
+        "asrFinalAtMs": 249650.3,
+        "finalInputToAsrMs": 151.8,
+        "captureDrainToAsrMs": 142.6
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 5.3645,
+        "scheduledStartToOnendedSeconds": 5.3712,
+        "differenceFromDecodedFixtureMs": 6.7,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 92,
+          "name": "inspect_object",
+          "callReceivedAtMs": 250604.1,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 250724.7,
+          "resultSentAtMs": 250730.7,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 126.6,
+          "replyDoneToSentResultMs": 6,
+          "continuationReplyRef": 93,
+          "continuationStartedAtMs": 250928.8,
+          "resultToContinuationMs": 198.1,
+          "finalTranscriptAtMs": 256366.9,
+          "continuationDoneAtMs": 256687.3,
+          "playbackDrainedAtMs": 256827.1,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 15,
+      "fixture": "speech-a6ba50d01867340d",
+      "input": "Please go through the northeast gate.",
+      "browserClock": {
+        "queuedAtMs": 259713.9,
+        "scheduledSourceStartAtMs": 259763.9,
+        "sourceEndedAtMs": 262846.2,
+        "inputCaptureDrainedAtMs": 262852.8,
+        "captureSampleClockAtDrainMs": 262847.4667,
+        "asrFinalAtMs": 262999.5,
+        "finalInputToAsrMs": 153.3,
+        "captureDrainToAsrMs": 146.7
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 3.0845,
+        "scheduledStartToOnendedSeconds": 3.0823,
+        "differenceFromDecodedFixtureMs": -2.2,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 98,
+          "name": "propose_move",
+          "callReceivedAtMs": 265927,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 266115.7,
+          "resultSentAtMs": 266174.3,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 247.3,
+          "replyDoneToSentResultMs": 58.6,
+          "continuationReplyRef": 100,
+          "continuationStartedAtMs": 266410.2,
+          "resultToContinuationMs": 235.9,
+          "finalTranscriptAtMs": 273023.2,
+          "continuationDoneAtMs": 273431.4,
+          "playbackDrainedAtMs": 273459.1,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 16,
+      "fixture": "speech-1c3cde0475a64b0c",
+      "input": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "browserClock": {
+        "queuedAtMs": 287602.3,
+        "scheduledSourceStartAtMs": 287652.3,
+        "sourceEndedAtMs": 292517.9,
+        "inputCaptureDrainedAtMs": 292526,
+        "captureSampleClockAtDrainMs": 292520.6667,
+        "asrFinalAtMs": 292684.6,
+        "finalInputToAsrMs": 166.7,
+        "captureDrainToAsrMs": 158.6
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.8695,
+        "scheduledStartToOnendedSeconds": 4.8656,
+        "differenceFromDecodedFixtureMs": -3.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 108,
+          "name": "inspect_object",
+          "callReceivedAtMs": 293776.3,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 293870.1,
+          "resultSentAtMs": 293904.9,
+          "isError": true,
+          "outcomeCode": "precondition_failed",
+          "callToSentResultMs": 128.6,
+          "replyDoneToSentResultMs": 34.8,
+          "continuationReplyRef": 109,
+          "continuationStartedAtMs": 294310.2,
+          "resultToContinuationMs": 405.3,
+          "finalTranscriptAtMs": 302478,
+          "continuationDoneAtMs": 302956.4,
+          "playbackDrainedAtMs": 303272.7,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 17,
+      "fixture": "speech-d25144756fc10db1",
+      "input": "Is the opening of the southeast gate physically clear or blocked?",
+      "browserClock": {
+        "queuedAtMs": 306257,
+        "scheduledSourceStartAtMs": 306307,
+        "sourceEndedAtMs": 310956.4,
+        "inputCaptureDrainedAtMs": 310962.6,
+        "captureSampleClockAtDrainMs": 310957.2667,
+        "asrFinalAtMs": 310856.3,
+        "finalInputToAsrMs": -100.1,
+        "captureDrainToAsrMs": -106.3
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.6445,
+        "scheduledStartToOnendedSeconds": 4.6494,
+        "differenceFromDecodedFixtureMs": 4.9,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 114,
+          "name": "observe_room",
+          "callReceivedAtMs": 312256.8,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 312257.4,
+          "resultSentAtMs": 312336.1,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 79.3,
+          "replyDoneToSentResultMs": 78.7,
+          "continuationReplyRef": 115,
+          "continuationStartedAtMs": 312486.5,
+          "resultToContinuationMs": 150.4,
+          "finalTranscriptAtMs": 319074.8,
+          "continuationDoneAtMs": 319530.7,
+          "playbackDrainedAtMs": 319534.1,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 18,
+      "fixture": "speech-9b801381e6501610",
+      "input": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "browserClock": {
+        "queuedAtMs": 323159.7,
+        "scheduledSourceStartAtMs": 323209.7,
+        "sourceEndedAtMs": 328673.1,
+        "inputCaptureDrainedAtMs": 328686,
+        "captureSampleClockAtDrainMs": 328680.6667,
+        "asrFinalAtMs": 328865.6,
+        "finalInputToAsrMs": 192.5,
+        "captureDrainToAsrMs": 179.6
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 5.4695,
+        "scheduledStartToOnendedSeconds": 5.4634,
+        "differenceFromDecodedFixtureMs": -6.1,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 120,
+          "name": "inspect_object",
+          "callReceivedAtMs": 329761.2,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 330016.7,
+          "resultSentAtMs": 330166.5,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 405.3,
+          "replyDoneToSentResultMs": 149.8,
+          "continuationReplyRef": 121,
+          "continuationStartedAtMs": 330599.4,
+          "resultToContinuationMs": 432.9,
+          "finalTranscriptAtMs": 336702.3,
+          "continuationDoneAtMs": 337026.1,
+          "playbackDrainedAtMs": 337203.5,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 19,
+      "fixture": "speech-74fcdb6c821e056d",
+      "input": "Please inspect the southwest gate and tell me whether anything blocks it.",
+      "browserClock": {
+        "queuedAtMs": 341654.6,
+        "scheduledSourceStartAtMs": 341704.6,
+        "sourceEndedAtMs": 346610.6,
+        "inputCaptureDrainedAtMs": 346620.7,
+        "captureSampleClockAtDrainMs": 346615.3667,
+        "asrFinalAtMs": 346841.1,
+        "finalInputToAsrMs": 230.5,
+        "captureDrainToAsrMs": 220.4
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.8995,
+        "scheduledStartToOnendedSeconds": 4.906,
+        "differenceFromDecodedFixtureMs": 6.5,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 126,
+          "name": "inspect_object",
+          "callReceivedAtMs": 347672.9,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 347853.1,
+          "resultSentAtMs": 348061.8,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 388.9,
+          "replyDoneToSentResultMs": 208.7,
+          "continuationReplyRef": 127,
+          "continuationStartedAtMs": 348239,
+          "resultToContinuationMs": 177.2,
+          "finalTranscriptAtMs": 368996.4,
+          "continuationDoneAtMs": 369151.9,
+          "playbackDrainedAtMs": 369637.2,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 20,
+      "fixture": "speech-5241f3b04c9fac89",
+      "input": "Please go through the southwest gate.",
+      "browserClock": {
+        "queuedAtMs": 372956.2,
+        "scheduledSourceStartAtMs": 373006.2,
+        "sourceEndedAtMs": 376232.1,
+        "inputCaptureDrainedAtMs": 376243.5,
+        "captureSampleClockAtDrainMs": 376238.1667,
+        "asrFinalAtMs": 389180.3,
+        "finalInputToAsrMs": 12948.2,
+        "captureDrainToAsrMs": 12936.8
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 3.2195,
+        "scheduledStartToOnendedSeconds": 3.2259,
+        "differenceFromDecodedFixtureMs": 6.4,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 132,
+          "name": "propose_move",
+          "callReceivedAtMs": 392038,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 392281.2,
+          "resultSentAtMs": 392456,
+          "isError": false,
+          "outcomeCode": "awaiting_confirmation",
+          "callToSentResultMs": 418,
+          "replyDoneToSentResultMs": 174.8,
+          "continuationReplyRef": 134,
+          "continuationStartedAtMs": 405319.2,
+          "resultToContinuationMs": 12863.2,
+          "finalTranscriptAtMs": 411670.9,
+          "continuationDoneAtMs": 411969.8,
+          "playbackDrainedAtMs": 412294.2,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 21,
+      "fixture": "speech-1c3cde0475a64b0c",
+      "input": "Please inspect the southeast gate and tell me whether anything blocks it.",
+      "browserClock": {
+        "queuedAtMs": 441193.1,
+        "scheduledSourceStartAtMs": 441243.1,
+        "sourceEndedAtMs": 446098.5,
+        "inputCaptureDrainedAtMs": 446113.3,
+        "captureSampleClockAtDrainMs": 446107.9667,
+        "asrFinalAtMs": 459078.5,
+        "finalInputToAsrMs": 12980,
+        "captureDrainToAsrMs": 12965.2
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.8695,
+        "scheduledStartToOnendedSeconds": 4.8554,
+        "differenceFromDecodedFixtureMs": -14.1,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 142,
+          "name": "inspect_object",
+          "callReceivedAtMs": 462030.7,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 462294.9,
+          "resultSentAtMs": 462457.8,
+          "isError": true,
+          "outcomeCode": "precondition_failed",
+          "callToSentResultMs": 427.1,
+          "replyDoneToSentResultMs": 162.9,
+          "continuationReplyRef": 143,
+          "continuationStartedAtMs": 475520.8,
+          "resultToContinuationMs": 13063,
+          "finalTranscriptAtMs": 482330.7,
+          "continuationDoneAtMs": 482584.9,
+          "playbackDrainedAtMs": 482721.3,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 22,
+      "fixture": "speech-d25144756fc10db1",
+      "input": "Is the opening of the southeast gate physically clear or blocked?",
+      "browserClock": {
+        "queuedAtMs": 486632.6,
+        "scheduledSourceStartAtMs": 486682.7,
+        "sourceEndedAtMs": 491315.1,
+        "inputCaptureDrainedAtMs": 491320.9,
+        "captureSampleClockAtDrainMs": 491315.5667,
+        "asrFinalAtMs": 504109.5,
+        "finalInputToAsrMs": 12794.4,
+        "captureDrainToAsrMs": 12788.6
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 4.6445,
+        "scheduledStartToOnendedSeconds": 4.6324,
+        "differenceFromDecodedFixtureMs": -12.1,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 148,
+          "name": "observe_room",
+          "callReceivedAtMs": 505186.6,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 505315.1,
+          "resultSentAtMs": 505366.8,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 180.2,
+          "replyDoneToSentResultMs": 51.7,
+          "continuationReplyRef": 149,
+          "continuationStartedAtMs": 518272.6,
+          "resultToContinuationMs": 12905.8,
+          "finalTranscriptAtMs": 525732.7,
+          "continuationDoneAtMs": 526050.4,
+          "playbackDrainedAtMs": 526778,
+          "continuationAfterEnd": false,
+          "finalTranscriptAfterEnd": false
+        }
+      ],
+      "driverObservedTurnSettled": true
+    },
+    {
+      "turnId": 23,
+      "fixture": "speech-9b801381e6501610",
+      "input": "Please check the southeast gate again and report whether cargo blocks passage.",
+      "browserClock": {
+        "queuedAtMs": 530552.5,
+        "scheduledSourceStartAtMs": 530602.5,
+        "sourceEndedAtMs": 536059.8,
+        "inputCaptureDrainedAtMs": 536066.7,
+        "captureSampleClockAtDrainMs": 536061.3667,
+        "asrFinalAtMs": 549232.8,
+        "finalInputToAsrMs": 13173,
+        "captureDrainToAsrMs": 13166.1
+      },
+      "audioComparison": {
+        "decodedFixtureSeconds": 5.4695,
+        "scheduledStartToOnendedSeconds": 5.4573,
+        "differenceFromDecodedFixtureMs": -12.2,
+        "boundary": "Source start is scheduled, source end is a main-thread callback, and the fixture includes padding. This is not a transport delay or measured event-loop lag."
+      },
+      "toolCalls": [
+        {
+          "callRef": 154,
+          "name": "inspect_object",
+          "callReceivedAtMs": 550198.1,
+          "serverValidationAtMs": null,
+          "serverResponseReceivedAtMs": null,
+          "toolReplyDoneAtMs": 550392.9,
+          "resultSentAtMs": 550400.4,
+          "isError": false,
+          "outcomeCode": null,
+          "callToSentResultMs": 202.3,
+          "replyDoneToSentResultMs": 7.5,
+          "continuationReplyRef": 155,
+          "continuationStartedAtMs": 563185,
+          "resultToContinuationMs": 12784.6,
+          "finalTranscriptAtMs": 569067,
+          "continuationDoneAtMs": 569413.1,
+          "playbackDrainedAtMs": null,
+          "continuationAfterEnd": true,
+          "finalTranscriptAfterEnd": true
+        }
+      ],
+      "driverObservedTurnSettled": false
+    }
+  ],
+  "finalBrowserEvents": [
+    {
+      "atMs": 446098.5,
+      "type": "synthetic.speech.ended",
+      "id": "speech-1c3cde0475a64b0c"
+    },
+    {
+      "atMs": 446113.3,
+      "type": "synthetic.speech.drained",
+      "id": "speech-1c3cde0475a64b0c",
+      "captureAtMs": 446107.9666666786
+    },
+    {
+      "atMs": 455658.9,
+      "type": "playback.stop",
+      "generation": 21
+    },
+    {
+      "atMs": 459078.5,
+      "direction": "received",
+      "type": "transcript.user",
+      "role": "human",
+      "final": true,
+      "text": "Please inspect the Southeast gate and tell me whether anything blocks it.",
+      "reference": 139
+    },
+    {
+      "atMs": 459084.7,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 140,
+      "itemRef": 141
+    },
+    {
+      "atMs": 462030.7,
+      "direction": "received",
+      "type": "tool.call",
+      "callRef": 142,
+      "name": "inspect_object"
+    },
+    {
+      "atMs": 462294.9,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 140,
+      "status": "completed"
+    },
+    {
+      "atMs": 462457.8,
+      "direction": "sent",
+      "type": "tool.result",
+      "callRef": 142,
+      "isError": true,
+      "outcomeCode": "precondition_failed"
+    },
+    {
+      "atMs": 475520.8,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 143,
+      "itemRef": 144
+    },
+    {
+      "atMs": 475832.6,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 476232.3,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 476240.6,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 476896.3,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 477552,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 477554.5,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 478247.6,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 481654.9,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 482330.7,
+      "direction": "received",
+      "type": "transcript.agent",
+      "role": "robot",
+      "final": true,
+      "text": "I am sorry, I could not inspect that gate. Could you please tell me the correct label or try asking me to inspect it again?",
+      "reference": 143,
+      "interrupted": false
+    },
+    {
+      "atMs": 482584.9,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 143,
+      "status": "completed"
+    },
+    {
+      "atMs": 482721.3,
+      "type": "playback.drained",
+      "generation": 21
+    },
+    {
+      "atMs": 491315.1,
+      "type": "synthetic.speech.ended",
+      "id": "speech-d25144756fc10db1"
+    },
+    {
+      "atMs": 491320.9,
+      "type": "synthetic.speech.drained",
+      "id": "speech-d25144756fc10db1",
+      "captureAtMs": 491315.56666670245
+    },
+    {
+      "atMs": 501081.6,
+      "type": "playback.stop",
+      "generation": 22
+    },
+    {
+      "atMs": 504109.5,
+      "direction": "received",
+      "type": "transcript.user",
+      "role": "human",
+      "final": true,
+      "text": "Is the opening of the Southeast gate physically clear or blocked?",
+      "reference": 145
+    },
+    {
+      "atMs": 504110.1,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 146,
+      "itemRef": 147
+    },
+    {
+      "atMs": 505186.6,
+      "direction": "received",
+      "type": "tool.call",
+      "callRef": 148,
+      "name": "observe_room"
+    },
+    {
+      "atMs": 505315.1,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 146,
+      "status": "completed"
+    },
+    {
+      "atMs": 505366.8,
+      "direction": "sent",
+      "type": "tool.result",
+      "callRef": 148,
+      "isError": false
+    },
+    {
+      "atMs": 518272.6,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 149,
+      "itemRef": 150
+    },
+    {
+      "atMs": 518975.7,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 519671.7,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 521065.5,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 522439.4,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 522540.2,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 525732.7,
+      "direction": "received",
+      "type": "transcript.agent",
+      "role": "robot",
+      "final": true,
+      "text": "The Southeast gate is open, but I cannot see if the passage is physically clear. Should I inspect it to see if it is blocked?",
+      "reference": 149,
+      "interrupted": false
+    },
+    {
+      "atMs": 526050.4,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 149,
+      "status": "completed"
+    },
+    {
+      "atMs": 526778,
+      "type": "playback.drained",
+      "generation": 22
+    },
+    {
+      "atMs": 536059.8,
+      "type": "synthetic.speech.ended",
+      "id": "speech-9b801381e6501610"
+    },
+    {
+      "atMs": 536066.7,
+      "type": "synthetic.speech.drained",
+      "id": "speech-9b801381e6501610",
+      "captureAtMs": 536061.3666667143
+    },
+    {
+      "atMs": 545297.2,
+      "type": "playback.stop",
+      "generation": 23
+    },
+    {
+      "atMs": 549232.8,
+      "direction": "received",
+      "type": "transcript.user",
+      "role": "human",
+      "final": true,
+      "text": "Please check the Southeast gate again and report whether cargo blocks passage.",
+      "reference": 151
+    },
+    {
+      "atMs": 549233.7,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 152,
+      "itemRef": 153
+    },
+    {
+      "atMs": 550198.1,
+      "direction": "received",
+      "type": "tool.call",
+      "callRef": 154,
+      "name": "inspect_object"
+    },
+    {
+      "atMs": 550392.9,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 152,
+      "status": "completed"
+    },
+    {
+      "atMs": 550400.4,
+      "direction": "sent",
+      "type": "tool.result",
+      "callRef": 154,
+      "isError": false
+    },
+    {
+      "atMs": 560441.5,
+      "type": "playback.stop",
+      "generation": 24
+    },
+    {
+      "atMs": 560441.6,
+      "type": "playback.stop",
+      "generation": 25
+    },
+    {
+      "atMs": 560441.6,
+      "type": "playback.stop",
+      "generation": 26
+    },
+    {
+      "atMs": 560442.9,
+      "direction": "sent",
+      "type": "session.end"
+    },
+    {
+      "atMs": 563185,
+      "direction": "received",
+      "type": "reply.started",
+      "replyRef": 155,
+      "itemRef": 156
+    },
+    {
+      "atMs": 569067,
+      "direction": "received",
+      "type": "transcript.agent",
+      "role": "robot",
+      "final": true,
+      "text": "The Southeast gate is open and the passage is clear of any cargo. Should I move through it?",
+      "reference": 155,
+      "interrupted": false
+    },
+    {
+      "atMs": 569413.1,
+      "direction": "received",
+      "type": "reply.done",
+      "replyRef": 155,
+      "status": "completed"
+    },
+    {
+      "atMs": 570697,
+      "type": "socket.close",
+      "code": 1005,
+      "clean": true
+    }
+  ],
+  "ending": {
+    "endSentAtMs": 560442.9,
+    "closeAtMs": 570697,
+    "endToLocalCloseMs": 10254.1,
+    "closeCode": 1005,
+    "closeClean": true,
+    "peerAckObserved": false,
+    "lateProviderAudioOnsets": 1,
+    "queuedPlaybackEventsAfterEnd": 0,
+    "renderedAudioOnsetsAfterEnd": 0,
+    "toolCallsAfterEnd": 0,
+    "boundary": "Late ordinary reply/audio was received but not played. No ACK is inferred from local close or cleanup."
+  },
+  "measuredLoad": {
+    "toolCalls": 21,
+    "sentResults": 21,
+    "maximumUnmatchedToolCalls": 1,
+    "unmatchedToolCallsAtEnd": 0,
+    "awaitedNormalContinuationAtEnd": true,
+    "playbackQueuedChunksTotal": 19882,
+    "playbackQueuedSamplesTotal": 4771680,
+    "playbackPendingAtFinalSnapshot": false,
+    "boundary": "Queued chunks/samples are cumulative admissions, not instantaneous queue depth. Only call/result pairs and pending playback state are measured."
+  },
+  "audioComparison": {
+    "counters": {
+      "input": {
+        "samples": 13356288,
+        "sampleDurationSecondsAt24kHz": 556.512,
+        "lastChunkAtMs": 560432.4667,
+        "lastNonzeroAtMs": 535006.9667
+      },
+      "provider": {
+        "samples": 4912320,
+        "sampleDurationSecondsAt24kHz": 204.68,
+        "lastChunkAtMs": 569309.8,
+        "lastNonzeroAtMs": 569112.3
+      },
+      "rendered": {
+        "samples": 13437600,
+        "sampleDurationSecondsAt24kHz": 559.9,
+        "lastChunkAtMs": 560405.1,
+        "lastNonzeroAtMs": 526605.1
+      },
+      "postVolume": {
+        "samples": 13434880,
+        "sampleDurationSecondsAt24kHz": 559.7867,
+        "lastChunkAtMs": 560535.8667,
+        "lastNonzeroAtMs": 526882.5333
+      }
+    },
+    "elapsedSnapshotSeconds": 570.7212,
+    "exportedWavDurationSeconds": 570.7212000000477,
+    "boundary": "WAVs are aligned to the snapshot timeline with silence; sample counters describe observed chunks and are not wall-clock or provider-duration measures. Per-fixture scheduled/ended comparison is recorded above."
+  },
+  "unknownMeasurements": [
+    "Rejected arguments and actual target handle",
+    "Independent server request/validation/result timestamps",
+    "Server HTTP round-trip time",
+    "Browser or Node event-loop delay",
+    "WebSocket bufferedAmount and network queue depth",
+    "Provider input/output backlog, processing time and model scheduling",
+    "Exact playback queue depth in samples at each instant",
+    "Exact browser/driver monotonic clock offset",
+    "Remote ending and provider session duration"
+  ],
+  "interpretation": "Observed delays and repeated rejections are established; their attribution to browser, network, server, model or provider is not. Call-to-sent-result includes the reply.done delivery boundary. Temporal next-reply matching is identified explicitly; a tool result has no direct continuation reply identifier.",
+  "providerRequestsMadeByAudit": 0
+}

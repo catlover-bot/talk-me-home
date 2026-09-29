@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-09-29T13:33:23.971Z",
+  "deliveredCommit": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6",
+  "demonstratedCommit": "2edf7914a008143843923b04a9bf3a1fe41f1f68",
+  "runtimeSha256": "bf8fe9ef044561064164cf537380559d1a5e92d06f290399d20c472cae6fa401",
+  "harnessSha256": "d29a380dc055da2a2bcd6012d652f154a6133b3c3a6dea307f32fcfd6e9bd486",
+  "fixtureSha256": "d144ff1bc96bf34f0721d93ce6e93e3cf24c5290a019fec1cf68642461744bf7",
+  "sessionUpdateSha256": "f24d678be5f5fb0b2b96649e5be160cafbf1bc9a8031544f9df45d01782e8f24",
+  "mediaProvenance": {
+    "path": "submission/goal-005-deliverables/media-provenance.json",
+    "sha256": "f5d500cc8fa2d85910c3d34e62f68b411d8d53e38bba5059fad307cc4532c205"
+  },
+  "mediaFiles": [
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Demo.mp4",
+      "bytes": 11872746,
+      "sha256": "74d9dcbf24c5778c231e7718bed88c87b1168ae0f0374cc5d64700b4efecea3e"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pptx",
+      "bytes": 1213455,
+      "sha256": "adea18b75ef494a375f90e3e9edc9b4df466bd97c5ff2dec25706c325f453adb"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pdf",
+      "bytes": 778771,
+      "sha256": "2546dac4dafc8031c300dfde5080422970a1c99c3ad56dc2b77fb9bff699a7d5"
+    },
+    {
+      "path": ".validation/goal-005-media/Goal005_Attempt12_Success_Uncut.mp4",
+      "bytes": 27913490,
+      "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812"
+    }
+  ],
+  "allMediaMatchesDeliveredProvenance": true,
+  "demoDurationSeconds": 178.021354,
+  "rawFinalAttempts": [
+    {
+      "attempt": 12,
+      "path": ".validation/goal-004c-live/2026-09-29T11-10-24-116Z-voice-mission/report.json",
+      "sha256": "ee15f44547487e297d0c903f0184b98f60d78e9e4391137d992bf6d8a24db974",
+      "unchanged": true
+    },
+    {
+      "attempt": 13,
+      "path": ".validation/goal-004c-live/2026-09-29T11-21-06-378Z-voice-mission/report.json",
+      "sha256": "428810a4036d33f9f3b3ec1bf5f1cb6fda82f4c561dc9fa5d41dbd2da101f764",
+      "unchanged": true
+    }
+  ],
+  "unchangedJournalFiles": 18,
+  "accounting": {
+    "newConsumed": 8,
+    "newReservedSeconds": 7760,
+    "newEstimateDollars": 9.7,
+    "remainingSlots": 0,
+    "aggregateAttempts": 13,
+    "aggregateReservedSeconds": 11110,
+    "aggregateEstimateDollars": 13.8875
+  },
+  "newProviderUse": 0,
+  "sourceBoundary": "The old immutable execution manifests identify the demonstrated build. Subsequent offline rebuilding does not make these recordings evidence of the stabilization build."
+}

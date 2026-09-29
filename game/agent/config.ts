@@ -16,8 +16,16 @@ export const robotTools = [
   },
   {
     type: 'function', name: 'inspect_object',
-    description: 'Inspect one observed, reachable local object without changing it. Complete a relevant check before reporting, without asking permission. Use its current available interactions to match the requested operation. State, labels and available interactions describe capabilities, not authorization to operate. Clarify an ambiguous object.',
+    description: 'Inspect one observed, reachable local object without changing it. For a Gallery gate, prefer inspect_gate with its observed compass direction. Complete the requested read before reporting; no extra permission is needed. Available interactions describe capabilities, not authorization to operate. Clarify an ambiguous object.',
     parameters: { type: 'object', properties: { object: objectParameter }, required: ['object'], additionalProperties: false },
+  },
+  {
+    type: 'function', name: 'inspect_gate',
+    description: 'Check one already observed Gallery gate by its compass direction, without moving or operating it. The game resolves that direction in your current local visit. Report the gate open or closed separately from passage clear or blocked. Perform a requested check directly; do not ask for another permission or an internal identifier. If the result asks for a fresh survey, observe_room once, then use a direction in that report. This tool grants no movement authority.',
+    parameters: { type: 'object', properties: {
+      direction: { type: 'string', enum: ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'],
+        description: 'One lowercase compass direction from the current local report, for example southeast. Do not supply a room, gate identifier, destination or scope.' },
+    }, required: ['direction'], additionalProperties: false },
   },
   {
     type: 'function', name: 'propose_interaction',

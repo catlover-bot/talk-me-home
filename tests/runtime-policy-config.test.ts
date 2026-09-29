@@ -115,7 +115,7 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.match(wire.session.system_prompt, /Checking a known proposal is read-only and needs no extra permission/)
       assert.match(wire.session.system_prompt, /Continue the current clear request after that check/)
       assert.match(wire.session.system_prompt, /A verified committed receipt is sufficient evidence for its exact past action/)
-      assert.deepEqual(wire.session.tools.map(tool => tool.name), ['observe_room', 'inspect_object', 'propose_interaction', 'propose_move', 'get_action_status'])
+      assert.deepEqual(wire.session.tools.map(tool => tool.name), ['observe_room', 'inspect_object', 'inspect_gate', 'propose_interaction', 'propose_move', 'get_action_status'])
       for (const name of ['propose_interaction', 'propose_move']) {
         const tool = wire.session.tools.find(tool => tool.name === name)
         assert.ok(tool)
@@ -134,7 +134,11 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.match(statusTool.description, /without asking permission/)
       assert.deepEqual(Object.keys(wire.session), ['system_prompt', 'greeting', 'tools', 'input', 'output'])
       // Developer-only regression facts stay out of the transmitted instructions.
-      assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor|"enum"/)
+      assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor/)
+      // Only universal compass vocabulary may be enumerated, never hidden objects or routes.
+      const enums = wire.session.tools.flatMap(tool => Object.entries(tool.parameters.properties)
+        .filter(([, value]) => 'enum' in value).map(([key, value]) => [tool.name, key, (value as { enum: string[] }).enum]));
+      assert.deepEqual(enums, [['inspect_gate', 'direction', ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest']]])
       assert.deepEqual(errors, [])
     } finally {
       await live.end()

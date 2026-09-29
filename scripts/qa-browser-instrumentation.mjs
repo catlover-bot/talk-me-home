@@ -25,13 +25,13 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
   if (type === 'tool.call' || type === 'tool.result') {
     event.callRef = reference(value.call_id);
     event.replyRef = reference(value.reply_id);
-    if (['observe_room', 'inspect_object', 'interact_object', 'move_to', 'propose_interaction', 'propose_move', 'get_action_status'].includes(value.name)) event.name = value.name;
+    if (['observe_room', 'inspect_object', 'inspect_gate', 'interact_object', 'move_to', 'propose_interaction', 'propose_move', 'get_action_status'].includes(value.name)) event.name = value.name;
     if (typeof value.is_error === 'boolean') event.isError = value.is_error;
     if (type === 'tool.result' && direction === 'sent') {
       let result; try { result = typeof value.result === 'string' ? JSON.parse(value.result) : value.result; } catch { /* Raw payload is never retained. */ }
       // Fixed local outcome categories distinguish cancellation from validation
       // failure without retaining arguments, private observations or error prose.
-      if (['awaiting_confirmation', 'cancelled_before_execution', 'not_executed', 'precondition_failed', 'outcome_unknown'].includes(result?.code)) event.outcomeCode = result.code;
+      if (['awaiting_confirmation', 'cancelled_before_execution', 'not_executed', 'precondition_failed', 'outcome_unknown', 'invalid_arguments', 'unknown_target', 'nonlocal_target', 'direction_unavailable', 'direction_ambiguous', 'target_unobserved', 'stale_scope', 'mission_stopped', 'tool_unavailable'].includes(result?.code)) event.outcomeCode = result.code;
       if (result?.proposal && ['awaiting_confirmation', 'committed', 'declined', 'expired', 'invalidated', 'failed'].includes(result.proposal.status)) {
         event.proposalRef = reference(result.proposal.id);
         event.actionStatus = result.proposal.status;

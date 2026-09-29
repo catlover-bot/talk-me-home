@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-09-29T13:32:46.628Z",
+  "baselinePath": ".validation/goal-005b/preservation-baseline.json",
+  "baselineSha256": "189351cb52bb860f6883487fb304a31b9c64cc000b9c42afda051e9828ee57fd",
+  "legacyBudgetAnchor": "artifacts/goal-005b/historical-budget-anchor.json",
+  "legacyBudgetAnchorSha256": "f6eb49a5cfca9e1c47c04fc29acaa81c999575b037604647954330383eb041ea",
+  "checkedFiles": 496,
+  "unchangedFiles": 496,
+  "missing": [],
+  "changed": [],
+  "excludedPaths": [],
+  "passed": true,
+  "providerRequestsMadeByAudit": 0,
+  "accountingWritesMadeByAudit": 0
+}
