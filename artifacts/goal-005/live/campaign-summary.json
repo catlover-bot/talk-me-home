@@ -1,10 +1,10 @@
 {
   "label": "AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI",
-  "attempts": 9,
-  "productionAttempts": 9,
-  "remainingAttempts": 4,
-  "reservedSeconds": 7230,
-  "estimatedReservedDollars": 9.0375,
+  "attempts": 10,
+  "productionAttempts": 10,
+  "remainingAttempts": 3,
+  "reservedSeconds": 8200,
+  "estimatedReservedDollars": 10.25,
   "verifiedRateDollarsPerHour": 4.5,
   "localConnectedSeconds": [
     71.08180000000074,
@@ -15,9 +15,11 @@
     562.6221000000238,
     509.6797999999523,
     205.48260000002384,
-    645.8465999999643
+    645.8465999999643,
+    183.3817000000477
   ],
   "endAcknowledgements": [
+    true,
     true,
     true,
     true,
@@ -30,22 +32,22 @@
   ],
   "nextPermittedAt": null,
   "admissionStatus": "requires_current_frozen_candidate_batch_admission",
-  "inspectedAt": "2026-09-29T10:18:40.466Z",
+  "inspectedAt": "2026-09-29T10:29:49.197Z",
   "ledgerSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "amendmentId": "goal-005-gallery-live-completion-2026-09-29",
   "historicalAttempts": 5,
-  "newAttempts": 4,
+  "newAttempts": 5,
   "historicalReservedSeconds": 3350,
-  "newReservedSeconds": 3880,
+  "newReservedSeconds": 4850,
   "historicalProductionAttempts": 5,
-  "newProductionAttempts": 4,
-  "remainingReservedCapacitySeconds": 3880,
+  "newProductionAttempts": 5,
+  "remainingReservedCapacitySeconds": 2910,
   "maximumAggregatePlanningDollars": 13.8875,
   "approvedAggregatePlanningCeiling": 14.1875,
   "originalCampaignSha256": "72391b60ceba2b56da77336a4b54d7c8e6d184bb6aca26ef24fcd1217451b0e0",
   "originalAllowanceSha256": "0c870762bf49809f26ee8bba0861fdafe36a8c890fab98722eb6c3bed9530a24",
-  "amendmentLedgerSha256": "33423502c561c26800475bc827a8d61118f9bc5acbd641810b6216e2797a02c3",
-  "amendedAllowanceSha256": "6e6697c3a15dd6a3681de347561e38f606cf529a68e89619e6daafd0ac7deb94",
+  "amendmentLedgerSha256": "0c9e5fcbf7730d9e1118c75fb21b24713f4a0d17d2d23e99089012c03f52cec4",
+  "amendedAllowanceSha256": "e0b253371e7c89f4e67160a0ff02d1f9a6357936b306db392efce07729b1d088",
   "amendedSequence": {
     "mode": "voice_or_reasoned_text_diagnostic",
     "passed": false,
@@ -57,7 +59,7 @@
   "approvedNewReservedSeconds": 7760,
   "approvedNewDollars": 10,
   "permanentStop": null,
-  "estimatedNewReservedDollars": 4.85,
+  "estimatedNewReservedDollars": 6.0625,
   "historicalEvidence": "Five unchanged historical attempts remain linked through the fixed predecessor hashes; their compact exports are not duplicated.",
   "results": [
     {
@@ -150,6 +152,29 @@
         "browserClosedObserved": true,
         "serverClosedObserved": true,
         "supervisorClosedAt": "2026-09-29T10:15:29.851Z"
+      }
+    },
+    {
+      "evidenceDirectory": "2026-09-29T10-24-48-370Z-voice-mission",
+      "mode": "voice",
+      "label": "AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI",
+      "runtimeSha256": "172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee",
+      "failure": "QA current Gallery location remained unknown after 4 purposeful exchanges.",
+      "completion": false,
+      "endAcknowledged": true,
+      "accountingAttempt": 10,
+      "historical": false,
+      "behaviorStatus": "pass",
+      "materialDefects": 0,
+      "cleanup": {
+        "activeTracks": 0,
+        "activeSources": 0,
+        "openApplicationContexts": 0
+      },
+      "processCleanup": {
+        "browserClosedObserved": true,
+        "serverClosedObserved": true,
+        "supervisorClosedAt": "2026-09-29T10:27:59.816Z"
       }
     }
   ],

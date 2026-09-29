@@ -3,6 +3,24 @@
   "boundary": "Generic installed offline voice. Synthetic player input only; no cloned or human-recorded voice. Large WAV files remain local and ignored.",
   "fixtures": [
     {
+      "id": "speech-06d7679e7a42a973",
+      "text": "Please check the local emblem once more and say its name clearly. I need your current observation.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-06d7679e7a42a973.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 7.2345,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 6.153416666666667,
+      "nonzeroSamples": 115728,
+      "rms": 0.09506754032155201,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "53f5b74db991a0fd7f332be7222a4b20d09dfe22bdbbd2d75752adfa3d49a21d"
+    },
+    {
       "id": "speech-1ad365e9e67bc908",
       "text": "Please board the capsule.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -91,6 +109,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "b58a652bb1d083805d4a4c2e25a5c3603f7d452add69d67af3526c37ed8a4470"
+    },
+    {
+      "id": "speech-3675d104a4f60ed8",
+      "text": "Please observe the room now and tell me which emblem is beside you.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-3675d104a4f60ed8.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.6895,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 3.6085833333333333,
+      "nonzeroSamples": 77446,
+      "rms": 0.09638269475119016,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "cd12e2c383045adf86dad2ef52b773dc8cd6bb02bcf34e4de4a551f6282a7e6c"
     },
     {
       "id": "speech-43c4bd05a1b19eca",
@@ -379,6 +415,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "bf0f67ca81048419321a47485b387f96e38c02f949e0c3a74cbe7f0179ad6448"
+    },
+    {
+      "id": "speech-95ab425c58458d3e",
+      "text": "Which one emblem marks your current platform? Please distinguish it from the room you left.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-95ab425c58458d3e.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 6.8145,
+      "speechStartSeconds": 0.28125,
+      "speechEndSeconds": 5.725375,
+      "nonzeroSamples": 103468,
+      "rms": 0.0923759497749086,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "38d2fa466153c3c92332da15a6df43a37f59a9dc5a72078b3eb0bc446334bc33"
     },
     {
       "id": "speech-a5f5eb31d431a7d2",

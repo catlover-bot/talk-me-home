@@ -119,12 +119,13 @@ export function communicatedEmblemClaim(text, visibleNames) {
     // Synonyms remain communicated shape descriptions matched to the visible atlas.
     const value = clause.value.replace(/\b(?:circle|circular|annular)(?:[- ]shaped)? (emblem|symbol|mark)\b/g, 'ring $1')
       .replace(/\b(?:y-shaped|branching|three-pronged) (emblem|symbol|mark)\b/g, 'fork $1')
-      .replace(/\b(?:sailboat|sail-shaped) (emblem|symbol|mark)\b/g, 'sail $1');
+      .replace(/\b(?:sailboat|sail-shaped) (emblem|symbol|mark)\b/g, 'sail $1')
+      .replace(/\bnext to me\b/g, 'beside me');
     const labels = names.filter(name => new RegExp(`\\b${escape(name)}\\b`).test(value));
-    if (labels.length || /\bemblem\b/.test(value)) locationTopic = true;
+    if (labels.length || /\b(?:emblem|symbol|mark)\b/.test(value)) locationTopic = true;
     else if (/\b(?:latch|contact|conveyor|energy|gate|passage)\b/.test(value)) locationTopic = false;
     if (clause.question || clause.conditional || clause.quoted || /\b(?:will|would|could|earlier|previously|was|were|had|left|leave|toward|heading|beyond|next|ahead)\b/.test(value)) continue;
-    const locationReport = /\b(?:emblem|my location|where i am)\b/.test(value)
+    const locationReport = /\b(?:emblem|symbol|mark|my location|where i am)\b/.test(value)
       || labels.length > 0 && /\b(?:i am|i'm|i might be|i may be|now|reached|arrived|not at)\b/.test(value);
     if (locationReport) mentioned = true;
     if (locationTopic && /\b(?:can't|cannot) confirm (?:that|it)\b/.test(value)) { mentioned = true; uncertain = true; }
@@ -136,8 +137,8 @@ export function communicatedEmblemClaim(text, visibleNames) {
     for (const name of names) {
       const literal = escape(name);
       const bare = new RegExp(`^(?:(?:it(?: is|'s)|it looks like|the (?:current )?emblem is) )?(?:a |the )?${literal}(?:[- ]shaped)?(?: (?:emblem|symbol|mark))?$`);
-      const emblem = new RegExp(`\\b${literal}(?:[- ]shaped)? (?:emblem|symbol|mark)\\b|\\b(?:emblem|symbol|mark) (?:is|looks like) (?:a |the )?${literal}\\b`);
-      const position = new RegExp(`\\b(?:i am|i'm|i am now|i'm now) (?:at|by) (?:the |a )?${literal}\\b|\\b(?:reached|arrived at) (?:the |a )?${literal}\\b|\\bnow (?:at )?${literal}\\b`);
+      const emblem = new RegExp(`\\b${literal}(?:[- ]shaped)? (?:emblem|symbol|mark)\\b|\\b(?:emblem|symbol|mark)(?: (?:here|beside me|next to me|on (?:my|this) platform|in this room))? (?:is|looks like) (?:a |the )?${literal}\\b`);
+      const position = new RegExp(`\\b(?:i am|i'm)(?: (?:now|currently))? (?:(?:at|by) (?:the |a )?${literal}\\b|(?:in|inside) (?:the |a )?${literal} (?:room|chamber)\\b)|\\b(?:reached|arrived at) (?:the |a )?${literal}\\b|\\bnow (?:at )?${literal}\\b`);
       if (bare.test(value) || emblem.test(value) || position.test(value)) { mentioned = true; candidates.add(name); }
     }
   }

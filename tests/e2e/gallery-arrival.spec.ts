@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import { test, expect } from './rescue-fixture';
 import { fakeProvider, confirmLocalReadiness, confirmFixtureProposal, fixtureScreenshot } from './fake-provider';
 import type { ActionProposal, RobotLocalPerception, ToolResponse } from '../../game/shared/contracts';
+import { runRescuePlayer } from '../../scripts/qa-mission-player.mjs';
 
 test.use({ compiledProduction: true });
 type Provider = Awaited<ReturnType<typeof fakeProvider>>;
@@ -71,7 +72,14 @@ test('compiled confirmed movement preserves robot-only typed perception through 
   const provider = await start(page);
   try {
     await enterGallery(page, provider);
-    await page.getByRole('button', { name: 'Relay Beacon', exact: true }).click();
+    const requests: string[] = [];
+    const playerReport = { route: [] as string[], steps: [] as unknown[], acquisitions: [] as Array<{ outcome: string; value?: string; exchanges: unknown[] }> };
+    await expect(runRescuePlayer({ page, report: playerReport, say: async text => {
+      requests.push(text); throw new Error('Synthetic entry-consumption probe finished before submitting another request.');
+    } })).rejects.toThrow(/Synthetic entry-consumption probe finished/);
+    expect(requests).toEqual(['Please inspect the east gate and tell me whether anything blocks it.']);
+    expect(playerReport.acquisitions[0]).toMatchObject({ outcome: 'already_reported', value: 'ring', exchanges: [] });
+    if (await page.getByTestId('acknowledged-relay').textContent() !== 'Beacon') await page.getByRole('button', { name: 'Relay Beacon', exact: true }).click();
     await expect(page.getByTestId('acknowledged-relay')).toHaveText('Beacon');
     const pending = await provider.tool('propose_move', { target: 'gallery.g1' }, 'arrival-east');
     await finishProposalReply(page, provider, 'east');
@@ -91,7 +99,7 @@ test('compiled confirmed movement preserves robot-only typed perception through 
     expect(JSON.stringify([result.view, result.proposal, result.decisionEvent])).not.toMatch(/Fork|gallery\.g2|gallery\.g4|perception|visitId/);
     expect(rescueServer.store.record(result.view.sessionId, result.view.roundId).annotations?.location).toBeNull();
     expect(rescueServer.commits).toHaveLength(3);
-    await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
+    if (await page.getByRole('button', { name: 'Open transcript history', exact: true }).getAttribute('aria-expanded') !== 'true') await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
     await expect(page.locator('.history-message').filter({ has: page.locator('p', { hasText: reply.text }) })).toHaveCount(1);
     await fixtureScreenshot(page, info.outputPath('constructed-scoped-arrival.png'));
     const count = acknowledgements(provider).length;

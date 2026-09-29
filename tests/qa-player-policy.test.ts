@@ -125,6 +125,31 @@ test('QA player recognizes communicated current emblems, including a short clari
   assert.equal(communicatedEmblem('I am not at Fork.', visibleMapLabels), null);
 });
 
+test('retained attempt-ten local room and beside-me emblem grammar preserves unrelated gate uncertainty', () => {
+  const reports = [
+    "I am in the Ring room. The east gate is closed and unpowered, and I can't tell if the path through it is clear. Should I inspect the gate?",
+    'The emblem beside me is the Ring. The east gate is closed and has no power.',
+  ];
+  for (const quote of reports) assert.deepEqual(communicatedEmblemClaim(quote, visibleMapLabels), { mentioned: true, value: 'ring' });
+  for (const [quote, value] of [
+    ["I'm inside the Fork chamber. I cannot tell whether the gate is clear.", 'fork'],
+    ['I am currently in the Sail room.', 'sail'],
+    ['The symbol here is Fork.', 'fork'],
+    ['The mark on my platform is Sail.', 'sail'],
+    ['The emblem in this room is Leaf.', 'leaf'],
+    ['I left the Ring room. I am now in the Fork room.', 'fork'],
+    ['The emblem next to me looks like a Leaf.', 'leaf'],
+  ]) assert.equal(communicatedEmblem(quote!, visibleMapLabels), value, quote);
+  for (const quote of [
+    'I am not in the Ring room.', 'I may be in the Fork room.', 'Am I in the Sail room?',
+    'I was in the Ring room.', 'I will be in the Fork room.', 'If I am in the Leaf room, the gate is open.',
+    'The emblem beside me is Ring or Fork.', 'The symbol here is not Fork.',
+    'The mark on my platform might be Sail.', 'The emblem in the next room is Leaf.',
+    'The emblem beside you is Ring.', 'You said the emblem beside me is Ring.',
+    'I am in the Ring room. Actually, I cannot confirm that.',
+  ]) assert.equal(communicatedEmblem(quote, visibleMapLabels), null, quote);
+});
+
 test('QA player separates open gates from physically clear openings and handles explicit negation', () => {
   for (const text of ['The gate is open, but the opening is blocked.', 'Cargo blocks the opening.', 'The gate is obstructed.', 'Debris is blocking it.']) assert.equal(communicatedPassability(text), 'blocked', text);
   for (const text of ['The opening is clear.', 'No cargo blocks it.', "It isn't blocked.", 'There is no obstruction.', 'It is unobstructed.', 'Nothing is blocking the gate.']) assert.equal(communicatedPassability(text), 'clear', text);

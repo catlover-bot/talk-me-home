@@ -178,12 +178,17 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
   const atDock = async () => await heading('Return Dock') || await home();
   let chapter = 'Cargo Bay'; let phase = chapter;
   const memory = createPlayerMemory({ round, chapter });
+  let atlasLabelsLoaded = false;
   const currentCallReports = new Set();
   async function consume(context = {}) {
     if (await home()) return;
     if (!await panel.evaluate(element => element.isConnected)) throw new Error('QA player scope ended: Restart replaced the current round.');
     if (await page.getByLabel('Type a message', { exact: true }).isDisabled()) throw new Error('QA player scope ended: stopped or resumed knowledge requires a fresh player invocation.');
     for (const title of ['Cargo Bay', 'Relay Gallery', 'Return Dock']) if (await heading(title)) chapter = title;
+    if (chapter === 'Relay Gallery' && !atlasLabelsLoaded) {
+      const labels = await page.locator('.gallery-document .atlas-room .room-name').allTextContents();
+      if (labels.length) { memory.visibleNames(labels.map(label => label.trim().toLowerCase())); atlasLabelsLoaded = true; }
+    }
     memory.scope({ round, chapter });
     const visible = await readVisiblePlayerReports(page, round);
     for (const item of visible) {

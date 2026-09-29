@@ -12,6 +12,26 @@ const record = (text: string, id: string, overrides: Partial<PlayerReport> = {})
 });
 const confirm = (memory: ReturnType<typeof createPlayerMemory>, say: (text: string) => Promise<unknown>, checkpoint = async () => false) => confirmReportedAction({memory, consume:async () => {}, say, request:'Please engage the Latch.', clarify:'Is the Latch engaged now?', retry:'Please set the Latch to hold the Door open.', action:'latch', checkpoint});
 
+test('current local-room paraphrases establish only fresh scoped Gallery memory', () => {
+  const memory = createPlayerMemory({ round, chapter: 'Relay Gallery', visibleNames: ['ring', 'fork', 'sail', 'leaf'] });
+  const location = (text: string, id: string, time: string, overrides: Partial<PlayerReport> = {}) => record(text, id, { chapter: 'Relay Gallery', displayedAt: time, ...overrides });
+  const first = location("I am in the Ring room. The east gate is closed and unpowered, and I can't tell if the path through it is clear. Should I inspect the gate?", 'ring-current', '2026-09-29T10:26:56.221Z');
+  memory.consume([first]); assert.equal(memory.value('location'), 'ring'); assert.equal(memory.value('passage', 'ring:east'), null);
+  memory.depart('2026-09-29T10:27:00.000Z');
+  memory.consume([first, location('The emblem beside me is the Ring.', 'ring-delayed', '2026-09-29T10:26:59.999Z')]);
+  assert.equal(memory.value('location'), null);
+  for (const overrides of [{ final: false }, { interrupted: true }, { historical: true }, { round: 'other round' }, { chapter: 'Cargo Bay' }]) {
+    memory.consume([location('The emblem beside me is the Ring.', `ineligible-${JSON.stringify(overrides)}`, '2026-09-29T10:27:11.382Z', overrides)]);
+    assert.equal(memory.value('location'), null);
+  }
+  memory.consume([location('The emblem beside me is the Ring. The east gate is closed and has no power.', 'ring-fresh', '2026-09-29T10:27:11.382Z')]);
+  assert.equal(memory.value('location'), 'ring');
+  memory.consume([location('I left the Ring room. I am currently in the Fork room.', 'fork-current', '2026-09-29T10:28:00.000Z')]);
+  assert.equal(memory.value('location'), 'fork');
+  memory.consume([location('The symbol here is not Fork.', 'fork-retracted', '2026-09-29T10:28:02.000Z')]);
+  assert.equal(memory.value('location'), null);
+});
+
 test('offline continuation retains historical wiring report, omits duplicate engage, and reaches next human Power decision', async () => {
   const metrics = JSON.parse(readFileSync(new URL('../artifacts/goal-004c/live/2026-09-25T17-58-10-565Z-text-mission-metrics.json', import.meta.url), 'utf8'));
   const original = metrics.visibleHistory.find((entry: {text:string}) => entry.text === quote);

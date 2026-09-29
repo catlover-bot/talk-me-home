@@ -151,7 +151,37 @@ The raw run remains local at `.validation/goal-004c-live/2026-09-29T10-04-30-971
 
 The existing compiled-browser case was extended to reproduce the actual shared player's post-home `session_ended` failure. The repaired player skips the next-input wait only when the expected terminal Return action is committed and home is visible. The unchanged waiter still rejects an ended session in other cases; application runtime and driver ACK/cleanup checks are unchanged. The focused browser case passed in 33.3 seconds, with typecheck and whitespace checks also passing. Failing-first and repaired logs remain at `.validation/goal-005-terminal-wait-before.log` and `.validation/goal-005-terminal-wait-after.log`. This offline repair does not rewrite attempt 9 or establish a fresh final-harness Live pass.
 
-Goal 005 currently has **one verified functional home, four recorded failed automated runs, and zero of the two required final-harness acceptance passes**. Four slots remain in the existing grant, subject to the same frozen-candidate and supervised-admission checks. Defaults and CI remain provider-disabled; `RELEASE_NOT_LIVE_VERIFIED` remains the release status.
+After the fourth sample, Goal 005 had one verified functional home, four recorded failed automated runs and zero of the two required final-harness acceptance passes, with four slots remaining.
+
+### Fifth Goal 005 Voice attempt — fresh Ring reports missed by the player
+
+Aggregate attempt 10 used clean frozen commit `78fa583af5a4c17c7eda53ae07873deacaf46836`, after typecheck, 426 unit tests, production build, all 142 compiled-browser tests, whitespace checks and the fresh-context production Practice check passed. The application runtime remained `172f9a5da49507899fe4146af8646bcc948e803c4639510ea1e3ceb2b32fa8ee`; the harness SHA-256 was `44162d461b65b96f1fc652dc8331c1ca9b38f5bb2ee800fdf4251f84409b5185`. [Attempt 10 identity, accounting and preservation receipt](../artifacts/goal-005/live/attempt-10-accounting.json).
+
+This ordinary sample crossed Cargo after two exact confirmations, then failed Gallery location acquisition. The visible, finalized seventh-turn reply said “I am in the Ring room.” The eighth said “The emblem beside me is the Ring.” Both were fresh current-location statements, but the shared player still recorded `needs_fresh_report`. The ninth exchange produced no new visible Pip reply; the tenth reported a sensor error. After four purposeful exchanges, the player stopped with `QA current Gallery location remained unknown after 4 purposeful exchanges.` This failure includes a player recognition defect; it is not evidence that Pip never supplied the location. The coarse behavior evaluator reported `pass`, which does not establish a mission or acceptance pass. A narrow parser repair is pending; no completed fix is claimed here. [Actual conversation](../artifacts/goal-005/live/2026-09-29T10-24-48-370Z-voice-mission-conversation.md) and [compact metrics](../artifacts/goal-005/live/2026-09-29T10-24-48-370Z-voice-mission-metrics.json).
+
+| Observed measure | Fifth sample result |
+| --- | --- |
+| Token requests / provider sockets / synthetic turns | 1 / 1 / 10 |
+| Exact UI confirmations / physical commits | 2 / 2; matching receipts in both directions |
+| Local socket-open to remote ACK | 183.3817 seconds |
+| Provider-reported session duration | 183.183735 seconds |
+| Ending and cleanup | Explicit end and remote ACK; clean socket close; zero audio resources and supervisor survivors; browser/server closure observed |
+| Goal 005 consumed after this result | 5 slots, 4,850 reserved seconds, USD 6.0625 estimated |
+| Same-batch capacity remaining | 3 slots, 2,910 reserved seconds, USD 3.6375 estimated |
+
+Aggregate linked accounting is now ten attempts and ten production admissions, 8,200 reserved seconds and USD 10.25 estimated. **The approved USD 10 ceiling applies to the additional Goal 005 batch**, whose consumed reservation estimate is USD 6.0625; the aggregate also includes USD 4.1875 of historical reservations. These are reservation estimates, not invoices or a refreshed account balance. No permanent account-refusal stop was recorded. No slot was refunded. All 15 historical accounting/cleanup journals, 76 checked raw/accounting files and 13 prior compact evidence files were preserved.
+
+Raw evidence remains local at `.validation/goal-004c-live/2026-09-29T10-24-48-370Z-voice-mission/`. The immutable manifest is `.validation/goal-004c-live/goal-005-attempt-10-78fa583af5a4c17c7eda53ae07873deacaf46836.json`; the clean validation receipt is `.validation/goal-005-offline/78fa583af5a4c17c7eda53ae07873deacaf46836-2026-09-29T10-20-34-926Z.json`.
+
+Goal 005 currently has **one verified functional home from attempt 9, five recorded failed automated runs, and zero of the two required final-harness acceptance passes**. Three slots remain under the same grant and admission checks. This sample did not reach Return Dock or home. Defaults and CI remain provider-disabled; `RELEASE_NOT_LIVE_VERIFIED` remains the release status.
+
+### Current-room language and initial arrival repair
+
+The two retained Ring replies failed before the repair in direct policy and scoped-memory tests. Location interpretation now supports present self-location in a named room/chamber and an emblem, symbol or mark qualified as local to the speaker. It still rejects historical destinations, next-room statements, other speakers, alternatives, uncertainty and negation; unrelated gate uncertainty does not erase a clear location. Focused checks passed 48 cases, including stale/partial/interrupted/history and wrong-scope exclusions. Local logs are `.validation/goal-005-location-grammar-before.log` and `goal-005-location-grammar-after.log`.
+
+The initial arrival was also processed before the player had read the visible atlas labels. The player now reads those rendered human labels before first consuming Gallery reports. It does not clear history eligibility, reprocess stale reports or obtain a location from the map. A failing-first compiled-browser probe checks that the already communicated Ring arrival leads directly to a gate inspection rather than an unnecessary location survey. Existing A/B full-player cases exercise the new natural wording and continued recovery. The first updated browser run retained fixture failures: an obsolete wording assertion and a redundant click on an already selected Relay. No runtime, tool protocol, speech fixture or paid service changes are part of this repair.
+
+The corrected compiled arrival and A/B shared-player cases passed 3/3 in 25.2 seconds; typecheck and whitespace checks passed. Final focused logs are `.validation/goal-005-location-browser-final.log` and `goal-005-location-grammar-final.log`. No real attempt was open during these changes.
 
 ## Delivery checklist
 

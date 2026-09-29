@@ -112,14 +112,14 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
     const count = (surveyCounts.get(emblem) ?? 0) + 1; surveyCounts.set(emblem, count);
     if (locationQuality === 'unknown') return 'I cannot identify the current emblem yet.';
     if (locationQuality === 'imperfect') {
-      if (emblem === 'Ring') return 'I am beside the circular emblem. The compass points north.';
+      if (emblem === 'Ring') return "I am in the Ring room. The east gate is closed and unpowered, and I can't tell if the path through it is clear. Should I inspect the gate?";
       if (emblem === 'Fork' && count === 1) {
         const quote = 'I cannot see an emblem right now, as I have just arrived through the gate. Should I observe the room to see what is around me?';
         events.push({ kind: 'retained-fifth-attempt-quote', text: quote }); return quote;
       }
       if (emblem === 'Fork' && count === 2) return 'The current emblem may be Ring or Fork; I cannot tell yet.';
       const shape = emblem === 'Fork' ? 'branching' : emblem === 'Sail' ? 'sail-shaped' : emblem.toLowerCase();
-      const report = `${departedEmblem ? `I left the ${departedEmblem} room. ` : ''}I am now at the ${shape} emblem.`;
+      const report = `${departedEmblem ? `I left the ${departedEmblem} room. ` : ''}${emblem === 'Fork' && count === 3 ? 'The emblem beside me is the Fork.' : `I am now at the ${shape} emblem.`}`;
       events.push({ kind: 'fresh-shape-report', text: report }); return report;
     }
     return result.message;
@@ -438,7 +438,7 @@ for (const profile of ['a', 'b'] as const) {
       expect(recovered.every(action => !action.strictFirstResponse && action.exchanges.length === (action.expectedLabel === 'Engage the Latch' ? 2 : 3))).toBe(true);
       expect(report.actionRequests.filter(action => action.strictFirstResponse)).toHaveLength(report.confirmations.length - recovered.length);
       expect(events.filter(event => event.kind === 'retained-fifth-attempt-quote')).toHaveLength(1);
-      expect(events.some(event => event.kind === 'fresh-shape-report' && /left the Ring room.*branching emblem/.test(event.text!))).toBe(true);
+      expect(events.some(event => event.kind === 'fresh-shape-report' && /left the Ring room\. The emblem beside me is the Fork\./.test(event.text!))).toBe(true);
       expect(report.acquisitions.some(acquisition => acquisition.subject === 'current Gallery location' && acquisition.recovered && acquisition.value === 'fork' && acquisition.exchanges.length === 3)).toBe(true);
       expect(report.acquisitions.every(acquisition => acquisition.exchanges.length <= 4 && acquisition.exchanges.every(exchange => !!exchange.reason))).toBe(true);
       if (profile === 'b') expect(report.recoveryExercise).toEqual(expect.objectContaining({ kind: 'deliberate_decline', completed: true }));
