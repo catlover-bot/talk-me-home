@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { simulationReply, simulationSpeech, rememberLocalResult } from "../game/client/mock.ts";
+import type { RobotLocalPerception } from '../game/shared/contracts';
+import { currentRobotPerception } from '../game/client/robot-perception';
 
 test('Practice routes only by locally learned compass labels and never substitutes the hidden route', () => {
   const empty = { chapter: 'gallery' as const, gates: [] };
@@ -12,6 +14,43 @@ test('Practice routes only by locally learned compass labels and never substitut
   const moved = rememberLocalResult(memory, 'You are in a room with the Sail emblem. Southwest gate (gallery.g2) is open. Southeast gate (gallery.g3) is closed.', 'gallery');
   assert.equal(simulationReply('Go through the west gate', moved).call, undefined);
   assert.deepEqual(rememberLocalResult(moved, 'You reached the Return Dock.', 'return_dock').gates, []);
+});
+
+test('Practice inspection preserves the scoped full local gate set and a later arrival replaces departed-room gates', () => {
+  const leaf: RobotLocalPerception = {
+    origin: 'gate_inspection', roundId: 'practice-round', chapter: 'gallery', chapterEpoch: 2,
+    visitId: 'leaf-visit', observationRevision: 5, stateRevision: 9, actionEpoch: 4, observedAt: 1000,
+    emblem: 'Leaf', compass: 'north', gates: [
+      { handle: 'gallery.g4', direction: 'Northwest', power: 'powered', door: 'open', passage: 'unchecked' },
+      { handle: 'gallery.g5', direction: 'Northeast', power: 'unpowered', door: 'closed', passage: 'blocked' },
+    ],
+  };
+  const before = rememberLocalResult({ chapter: 'gallery', gates: [] }, 'Northwest gate (gallery.g4) is open. Northeast gate (gallery.g5) is closed.', 'gallery');
+  const inspected = rememberLocalResult(before, 'Northeast gate (gallery.g5) is closed. Cargo blocks this gate opening. You remain in the safe room.', 'gallery', leaf);
+  assert.deepEqual(inspected.gates, before.gates, 'A focused inspection is not a replacement survey of one gate.');
+  assert.deepEqual(simulationReply('Go through the northwest gate', inspected).call?.arguments, { target: 'gallery.g4' });
+  const fork: RobotLocalPerception = { ...leaf, origin: 'confirmed_arrival', visitId: 'fork-return-visit', emblem: 'Fork',
+    observationRevision: 6, stateRevision: 10, actionEpoch: 5, observedAt: 1100, gates: [
+      { handle: 'gallery.g1', direction: 'West', power: 'powered', door: 'open', passage: 'unchecked' },
+      { handle: 'gallery.g2', direction: 'Northeast', power: 'unpowered', door: 'closed', passage: 'unchecked' },
+      { handle: 'gallery.g4', direction: 'Southeast', power: 'powered', door: 'open', passage: 'unchecked' },
+    ] };
+  const arrived = rememberLocalResult(inspected, 'You passed through the gate into the Fork room.', 'gallery', fork);
+  assert.equal(simulationReply('Go through the northwest gate', arrived).call, undefined, 'A departed-room direction must not survive by merging lists.');
+  assert.deepEqual(simulationReply('Go through the northeast gate', arrived).call?.arguments, { target: 'gallery.g2' });
+  assert.deepEqual(simulationReply('Go through the southeast gate', arrived).call?.arguments, { target: 'gallery.g4' });
+  const currentView = { status: 'active' as const, roundId: fork.roundId, chapter: 'gallery' as const, chapterEpoch: fork.chapterEpoch, revision: fork.stateRevision, actionEpoch: fork.actionEpoch };
+  const historicalMessage = 'Historical action receipt. You arrived at Leaf. Northwest gate (gallery.g4) is open. Northeast gate (gallery.g5) is closed.';
+  // A stale status query omits perception, while a delayed old decision may
+  // carry its original snapshot. Neither can restore departed-room labels.
+  for (const snapshot of [undefined, leaf]) {
+    const eligible = currentRobotPerception(snapshot, currentView);
+    assert.equal(eligible, undefined);
+    const retained = rememberLocalResult(arrived, historicalMessage, 'gallery', eligible ?? null);
+    assert.deepEqual(retained, arrived);
+    assert.equal(simulationReply('Go through the northwest gate', retained).call, undefined);
+    assert.deepEqual(simulationReply('Go through the northeast gate', retained).call?.arguments, { target: 'gallery.g2' });
+  }
 });
 
 test('Practice Dock requests preserve actor roles, require explicit return intent, and respect waits', () => {

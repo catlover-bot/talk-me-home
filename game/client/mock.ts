@@ -1,13 +1,20 @@
 import type { RobotCall } from "./api";
 import { requestId } from "./api";
-import type { Chapter, ToolResult } from '../shared/contracts';
+import type { Chapter, RobotLocalPerception, ToolResult } from '../shared/contracts';
 
 /** Practice retains only labels in validated local reports, never the human route map. */
 export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string }
-export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter): PracticeMemory {
-  const gates = [...message.matchAll(/\b(Northeast|Northwest|Southeast|Southwest|East|West|North|South) gate \((gallery\.g[1-5])\)/gi)]
-    .map(match => ({ label: match[1]!.toLowerCase(), id: match[2]! }));
-  return { chapter, gates: gates.length ? gates : memory.chapter === chapter ? memory.gates : [],
+export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter, perception?: RobotLocalPerception | null): PracticeMemory {
+  // Null means a current result did not carry an eligible local observation.
+  // Omission retains the legacy text path used for explicitly historical recap.
+  if (chapter === 'gallery' && perception === null) return memory;
+  // The caller admits only perception matching the current view. Even a focused
+  // inspection contains the complete local set; replace it, never merge visits.
+  const gates = perception && chapter === 'gallery'
+    ? perception.gates.map(gate => ({ label: gate.direction.toLowerCase(), id: gate.handle }))
+    : [...message.matchAll(/\b(Northeast|Northwest|Southeast|Southwest|East|West|North|South) gate \((gallery\.g[1-5])\)/gi)]
+      .map(match => ({ label: match[1]!.toLowerCase(), id: match[2]! }));
+  return { chapter, gates: perception && chapter === 'gallery' || gates.length ? gates : memory.chapter === chapter ? memory.gates : [],
     ...(memory.chapter === chapter && memory.proposalId ? { proposalId: memory.proposalId } : {}) };
 }
 

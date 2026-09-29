@@ -32,6 +32,8 @@ The compiled arrival/shared-player checks passed 17 distinct cases across the in
 
 The first implementation commit is `2b3db8a`. Goal 005 local speech fixtures were prepared offline before connection; no paid synthesis or replacement transcripts are used. The evaluator also recognizes the new purposeful read-only and proposal requests while retaining wrong-target and unconfirmed-execution rejection.
 
+The first clean full candidate, `b468405742d11106cb6e62d50e4ca674d6ed560a`, passed typecheck, 418 unit tests and production build. Browser coverage passed 134/136 cases; both failed cases exposed the same Practice backtracking regression. The richer blocked-gate inspection named its direction/handle, and the existing prose memory replaced all known gates with that single gate. The repair uses the admitted typed local perception's complete reachable gate set, replacing it on a new visit rather than merging rooms. A failing-first unit case reproduced the lost northwest backtrack and checks that a later Fork arrival discards the departed-room handles. No real attempt was spent on this regression.
+
 Goal 005 real token attempts so far: **not yet executed**. Historical five-attempt ledgers remain exhausted and preserved. Defaults and CI remain provider-disabled.
 
 ## Delivery checklist

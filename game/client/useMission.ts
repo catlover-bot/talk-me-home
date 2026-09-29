@@ -226,10 +226,11 @@ export function useMission() {
     if (signal.aborted) return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal };
     applyView(result.view);
     if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
-    if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
+    const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
+    if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter, perception ?? null);
     if (result.proposal) practiceMemory.current = { ...practiceMemory.current, proposalId: result.proposal.id };
     return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal,
-      ...(result.perception ? { perception: currentRobotPerception(result.perception, viewRef.current ?? undefined) } : {}) };
+      ...(perception ? { perception } : {}) };
   };
 
   const start = (connectionMode: TransportOrigin = mode) => {
@@ -445,7 +446,8 @@ export function useMission() {
         }
       }
       if (result.ok && result.proposal?.status === 'committed') {
-        practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter);
+        practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter,
+          currentRobotPerception(result.perception, viewRef.current ?? undefined) ?? null);
         effects.current.play('acknowledge');
       }
       await refreshRecord(result.view);
