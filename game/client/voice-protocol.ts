@@ -38,6 +38,7 @@ export interface ProtocolHooks {
   onTranscript(entry: TranscriptEntry, context?: unknown): void;
   onStatus(status: VoiceStatus): void;
   onError(message: string): void;
+  onWarning?(message: string): void;
   playAudio(data: string): void;
   stopAudio(): void;
   onPlayback?(active: boolean): void;
@@ -119,6 +120,7 @@ interface InterruptedTool {
 
 /** Contains no network or DOM dependencies, so protocol races can be tested. */
 export class VoiceProtocol {
+  private recoveryWarningActive = false;
   readonly transcripts = new TranscriptStore();
   ready = false;
   private stopped = false;
@@ -427,6 +429,10 @@ export class VoiceProtocol {
       ok: false, code: 'cancelled_before_execution',
       message: 'This request belongs to an interrupted reply and was not executed. Respond to the latest player request. If it still requires an action, use a new tool call.',
     }) }) });
+    if (!pending.result && !this.recoveryWarningActive) {
+      this.recoveryWarningActive = true;
+      this.hooks.onWarning?.('An interrupted request was canceled before it executed. Finish your message, then ask Pip to check or propose it again.');
+    }
     this.hooks.onDiagnostic?.({ event: 'tool.result.sent', pendingCalls: this.calls.size + this.interruptedCalls.size });
   }
 
@@ -456,6 +462,10 @@ export class VoiceProtocol {
         } : {}) }
         : { ok: false, code: 'outcome_unknown', message: 'The local action result could not be verified. Observe again before acting.' };
       this.retainOutcome(pending, { result: JSON.stringify(safe), is_error: !safe.ok });
+      if (safe.ok && this.valid(pending) && this.recoveryWarningActive) {
+        this.recoveryWarningActive = false;
+        this.hooks.onWarning?.('');
+      }
     } catch {
       const readOnly = ['observe_room', 'inspect_object', 'get_action_status'].includes(pending.call.name);
       this.retainOutcome(pending, { result: JSON.stringify({ ok: false, code: 'outcome_unknown', message: readOnly

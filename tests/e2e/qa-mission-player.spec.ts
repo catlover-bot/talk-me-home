@@ -244,7 +244,7 @@ function syntheticPeer(provider: Provider, events: PeerEvent[], recover = false,
         expect(result.ok, result.message).toBe(true);
         return result.message;
       }
-      if (/confirm the (?:authorized )?return/i.test(request)) {
+      if (request === PHRASES.home || /confirm the (?:authorized )?return/i.test(request)) {
         await invoke('inspect_object', { object: 'return.capsule' });
         return mutate('return.capsule', 'confirm_return');
       }

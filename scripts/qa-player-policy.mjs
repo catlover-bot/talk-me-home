@@ -205,9 +205,9 @@ export function classifyProposalResponse({ expectedLabel, before, current, reply
 
 export function proposalRecoveryPhrases(expectedLabel, current) {
   if (expectedLabel === 'Confirm the authorized return') return {
-    clarify: 'Please inspect the capsule for its local departure operation and tell me how to confirm the authorized return.',
-    retry: 'Please confirm the authorized return using the capsule operation you just inspected. Propose that local interaction for my console confirmation.',
-    propose: "Please create one new proposal to confirm the authorized return using the capsule's inspected local operation. I will decide on the console.",
+    clarify: 'Please inspect the capsule return panel and report its operation.',
+    retry: 'Please propose confirming the return with the inspected capsule operation.',
+    propose: 'Please create one new proposal to confirm the authorized return.',
   };
   const receipt = current?.status === 'committed' ? `The console confirms "${current.label}" completed. ` : '';
   const clarify = `${receipt}Please check the relevant proposal result and local conditions needed for "${expectedLabel}".`;

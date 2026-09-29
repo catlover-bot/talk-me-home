@@ -20,6 +20,7 @@ function requestIntent(request) {
   if (/^(?:please )?(?:release|let go of) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'release_contact', permitted: ['interact_object'] };
   if (/^(?:please )?(?:hold|grip) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'hold_contact', permitted: ['interact_object'] };
   if (/^(?:please )?confirm (?:the )?(?:authorized )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
+  if (/^(?:please )?(?:inspect the capsule and )?propose confirming (?:the )?(?:authorized )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
   if (/^(?:please )?go through (?:the )?gate[.!?]?$/.test(command)) return { name: 'ambiguous_movement', permitted: [] };
   if (/^(?:please )?(?:cross|go through|board|move to|move through)\b/.test(command)) return { name: 'movement', permitted: ['move_to'] };
   if (/\b(?:is (?:the )?latch (?:engaged|secured)|(?:what|tell me).*latch.*status)\b/.test(text)) return { name: 'latch_status', permitted: [] };

@@ -111,6 +111,7 @@ export class LiveVoice {
       stopAudio: () => this.audio?.stopPlayback(),
       onInputState: (state) => this.callbacks.onInputState?.(this.microphoneActive ? state : 'inactive'),
       onBoundaryChange: () => this.scheduleAcknowledgement(),
+      onWarning: (message) => { if (!this.connectionLimitWarning) this.callbacks.onWarning?.(message); },
       onError: (message) => this.fail(message),
     });
     let stage: 'audio' | 'token' | 'connection' = 'audio';

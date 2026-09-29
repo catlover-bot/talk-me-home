@@ -15,7 +15,7 @@ export const PHRASES = {
   controller: 'The controller is ready to charge.', release: 'Please release the contact.',
   retryRelease: 'Please let go of the contact.',
   board: 'Please board the capsule.',
-  home: 'Please confirm the authorized return. Inspect the capsule first, then propose its local departure operation. My console shows Ready and authorization Granted.',
+  home: 'Please inspect the capsule and propose confirming the return.',
   wait: 'Please wait.',
 };
 

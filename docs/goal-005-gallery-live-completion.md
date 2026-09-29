@@ -67,7 +67,36 @@ Small prompt/tool-description changes favor completing useful read-only checks, 
 
 Inspection of the real failed-run screenshot also found a fixed 10-minute label despite the correctly enforced approved 900-second cap. The display now follows the token-selected limit (15 minutes for the approved path, 10 for the public/default path) and resets on a new connection. Enforcement and allowance checks are unchanged; an injected browser case covers the display across 900, 600 and absent cap responses.
 
-Goal 005 currently has **one failed real Voice attempt and zero of the two required final-candidate passes**. `RELEASE_NOT_LIVE_VERIFIED` remains the release status. Defaults and CI remain provider-disabled.
+### Second Goal 005 Voice attempt — failed return, improved location reports
+
+The next ordinary Voice sample used clean frozen commit `8351617b1202d78c3f173cca4835d22ccf148f27`, after typecheck, 420 unit tests, production build, all 138 compiled-browser tests, whitespace checks and the fresh-context production Practice check passed. Its runtime SHA-256 is `bb4e5178f7025236e1ec6027168a2c7f675ab2c8c37b57af91b3257abe23acc8`; its harness SHA-256 is `99b0a13bd0e469d54b7fc83c40bc5fe1959caac8adb34bbe96fb4eb5da6c90c8`. The exact session configuration was sent once and matched the frozen hash. Full identity and validation links are retained in the [attempt 7 accounting receipt](../artifacts/goal-005/live/attempt-07-accounting.json).
+
+Arrival location names were now Ring, Fork, Sail and Return Dock. This improved location naming does not establish every spoken gate fact: the Fork arrival named a southeast gate, and the first northeast inspection response repeated that mismatch. A purposeful clarification recovered a clear northeast passage report. At Sail, the first southeast inspection was reported unreachable, and a second exchange recovered its clear passage report. Both recoveries used real communicated replies, without a hidden-state shortcut. The information-only canary again passed with no physical change. Eight exact UI confirmations matched eight physical commits in both directions, including capsule boarding.
+
+The final return still failed after four exchanges. Initial capsule inspection failed; the clarification recovered an actual inspection and a spoken report of the local confirm-return operation. The subsequent proposal requests failed, leaving the previous committed boarding receipt visible and no new matching return proposal. No server-confirmed home occurred. The final failure remained `QA action recovery exhausted after 4 exchanges for Confirm the authorized return`; the behavior report remained `review_required`. The cause of the remaining proposal failure is under investigation; this report does not claim a completed repair. [Actual conversation](../artifacts/goal-005/live/2026-09-29T09-28-09-963Z-voice-mission-conversation.md) and [compact metrics](../artifacts/goal-005/live/2026-09-29T09-28-09-963Z-voice-mission-metrics.json).
+
+| Observed measure | Second sample result |
+| --- | --- |
+| Token requests / provider sockets / synthetic turns | 1 / 1 / 25 |
+| Local socket-open to remote ACK | 509.6798 seconds |
+| Provider-reported session duration | 509.541203 seconds |
+| Ending and cleanup | Explicit end and remote ACK; clean socket close; zero audio resources and supervisor survivors; browser/server closure observed |
+| Goal 005 consumed after this result | 2 slots, 1,940 reserved seconds, USD 2.425 estimated |
+| Same-batch capacity remaining | 6 slots, 5,820 reserved seconds, USD 7.275 estimated |
+
+Aggregate linked accounting is now seven attempts and seven production admissions, 5,290 reserved seconds and USD 6.6125 estimated. Both failed Goal 005 reservations remain consumed. No account-refusal stop was recorded; the six remaining slots still require a repaired, clean, validated frozen candidate and supervised admission. The 15 historical accounting/cleanup journals remain unchanged. Export verification preserved all 42 checked raw/accounting files and the three first-attempt compact evidence files. New audio observations again establish synthetic input, real ASR and nonzero digital playback, without extending the physical-device or human-play claims.
+
+The second raw run remains local at `.validation/goal-004c-live/2026-09-29T09-28-09-963Z-voice-mission/`. Its immutable manifest is `.validation/goal-004c-live/goal-005-attempt-7-8351617b1202d78c3f173cca4835d22ccf148f27.json`; its clean validation receipt is `.validation/goal-005-offline/8351617b1202d78c3f173cca4835d22ccf148f27-2026-09-29T09-24-18-069Z.json`. Original ledgers, browser media and audio remain local and preserved.
+
+Goal 005 currently has **two failed real Voice attempts and zero of the two required final-candidate passes**. `RELEASE_NOT_LIVE_VERIFIED` remains the release status. Defaults and CI remain provider-disabled.
+
+### Split-speech recovery repair after attempt 7
+
+The final failed calls used the correct `inspect_object` / `propose_interaction` classes. Each failed result followed `reply.done` by less than 1 ms; additional speech segments had started while its original reply was open. This is consistent with the client's interrupted-request guard, not proof of the omitted error body. The unchanged compiled server separately accepted the exact aboard-capsule inspection, return proposal and one confirmed return in an isolated offline fixture; no server guard defect was reproduced.
+
+A constructed replay of the observed event order verifies that a late request from an interrupted reply never executes, while a fresh request can create the intended proposal. The product now displays a recoverable cancellation explanation, keeps the microphone/controls/Pause available, and clears that notice after a fresh successful check. Cancellation, proposal matching and current return authorization remain unchanged. The four final-return utterances are now single ordinary sentences of 9–10 words. Existing longer utterances and their actual ASR remain preserved in the failed attempt. The evaluator recognizes the new explicit Return proposal synonym without changing safety thresholds. Future sanitized evidence retains only an allowlisted local outcome code, so cancellation and precondition failures can be distinguished without exposing arguments or private tool payloads.
+
+Focused policy/protocol tests passed 53 cases, focused voice/evidence tests passed 84 cases (overlapping suites, not additive), and the actual compiled cancellation-notice browser test passed at both viewports. `.validation/goal-005-return-split-before.log` preserves the old multi-sentence fixture failure and a corrected test expectation about clearing the warning; `goal-005-return-split-after.log` preserves the repaired checks. Product-browser evidence is `.validation/goal-005/attempt-8-recovery-notice-browser.log`. The relevant [official interruption documentation](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/turn-detection-and-interruptions) was rechecked; no provider event, interrupt setting, or paid service was added.
 
 ## Delivery checklist
 

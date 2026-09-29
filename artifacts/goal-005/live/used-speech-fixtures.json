@@ -129,6 +129,24 @@
       "sha256": "b912fcf675eeadf17f487b207818878988ae6a2884b57c2888743a773b667a7c"
     },
     {
+      "id": "speech-48b4e1439915aa89",
+      "text": "Please create one new proposal to confirm the authorized return using the capsule's inspected local operation. I will decide on the console.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-48b4e1439915aa89.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 9.6895,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 8.605,
+      "nonzeroSamples": 170556,
+      "rms": 0.1000484495958575,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "83aab85fcd49794da515dbec0f10b8b12f75b3c492027a6564e6a46a0d7bb03e"
+    },
+    {
       "id": "speech-4e3767eda80eea4f",
       "text": "The controller is ready to charge.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -291,6 +309,24 @@
       "sha256": "783e3f6506ea90ed1feddda138b4baa26d051669a168ece5762d6c2ca41eabab"
     },
     {
+      "id": "speech-87dd4f38d46077c6",
+      "text": "Please inspect the capsule for its local departure operation and tell me how to confirm the authorized return.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-87dd4f38d46077c6.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 7.1145,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 6.034916666666667,
+      "nonzeroSamples": 130004,
+      "rms": 0.09634197622323007,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "c4b047ae446936806e7d5d16ae9ac270afb95d1b4b4ede75c3fe5db31d858cce"
+    },
+    {
       "id": "speech-8eb4a3082dfea69b",
       "text": "Please cross to the far side.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -343,6 +379,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "c1352417981a8fed71866a50afd28e838c5597dc088f62095fd82ed61fc3aae8"
+    },
+    {
+      "id": "speech-a6ccc832aef16b8b",
+      "text": "Please confirm the authorized return using the capsule operation you just inspected. Propose that local interaction for my console confirmation.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-a6ccc832aef16b8b.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 10.0145,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 8.933416666666666,
+      "nonzeroSamples": 178169,
+      "rms": 0.10060454070978053,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "528dd06c43f43b249134dd4b4a9254cdebaf206a9d406ed0285c50a253052a54"
     },
     {
       "id": "speech-b52ae54ffd8e25dc",
@@ -399,6 +453,42 @@
       "sha256": "a5a713f773ef52b02743fa0814bae1b0fd45b42b43d9463e3b50a850a980ed14"
     },
     {
+      "id": "speech-d25144756fc10db1",
+      "text": "Is the opening of the southeast gate physically clear or blocked?",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-d25144756fc10db1.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.6445,
+      "speechStartSeconds": 0.27591666666666664,
+      "speechEndSeconds": 3.556125,
+      "nonzeroSamples": 71735,
+      "rms": 0.08975214602447279,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "6ae755a25a65f27e4e3cbe92032bb150ea12b808e0c4b67742a0147d819d507a"
+    },
+    {
+      "id": "speech-dfb78c6c17045b3c",
+      "text": "Please confirm the authorized return. Inspect the capsule first, then propose its local departure operation. My console shows Ready and authorization Granted.",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-dfb78c6c17045b3c.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 12.2295,
+      "speechStartSeconds": 0.285,
+      "speechEndSeconds": 11.138125,
+      "nonzeroSamples": 200171,
+      "rms": 0.09241484823267494,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "05924c3f69dda34c98f73e745189e0bb1839de373de2ee03c72d6078b4f0809e"
+    },
+    {
       "id": "speech-e504505bbd4b585e",
       "text": "Please release the contact.",
       "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
@@ -415,6 +505,24 @@
       "cleanStart": true,
       "cleanEnd": true,
       "sha256": "cc281c7aeda14adb291e69067a9eece048472f2437e37d0b13d02dfda25b1723"
+    },
+    {
+      "id": "speech-e91901a64bbeec98",
+      "text": "Is the opening of the northeast gate physically clear or blocked?",
+      "source": "Offline Windows System.Speech generic installed English voice; synthetic player speech",
+      "voice": "Microsoft Zira Desktop",
+      "file": "speech-e91901a64bbeec98.wav",
+      "sampleRate": 24000,
+      "channels": 1,
+      "bits": 16,
+      "durationSeconds": 4.5395,
+      "speechStartSeconds": 0.27591666666666664,
+      "speechEndSeconds": 3.4522083333333335,
+      "nonzeroSamples": 69235,
+      "rms": 0.08967176851868894,
+      "cleanStart": true,
+      "cleanEnd": true,
+      "sha256": "55b4ce3ebf41c8055e34173f63778de0f1a5b8d2187460ac28e7fd2c21f3d3c6"
     }
   ]
 }

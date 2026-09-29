@@ -11,10 +11,15 @@ test('final return requests obtain the capsule operation without confusing its c
   assert.equal(proposalLabelForRequest(PHRASES.home), 'Confirm the authorized return');
   assert.match(PHRASES.home, /inspect the capsule/i);
   const recovery = proposalRecoveryPhrases('Confirm the authorized return', board);
+  for (const request of [PHRASES.home, recovery.clarify, recovery.retry, recovery.propose]) {
+    assert.equal(request.match(/[.!?]/g)?.length, 1, 'one spoken sentence per Return exchange');
+    assert.ok(request.split(/\s+/).length <= 12, `bounded single-breath wording: ${request}`);
+    assert.doesNotMatch(request, /return\.capsule|confirm_return|propose_interaction/);
+  }
   assert.match(recovery.clarify, /inspect the capsule/i);
   assert.doesNotMatch(recovery.clarify, /proposal result|proposal status|board.*again/i);
   assert.match(recovery.retry, /capsule.*propos|propos.*capsule/i);
-  assert.match(recovery.propose, /capsule/i);
+  assert.match(recovery.propose, /new proposal.*authorized return/i);
   const context = { expectedLabel: 'Confirm the authorized return', before: board, confirmedIds: [board.proposalId] };
   assert.equal(classifyProposalResponse({ ...context, current: board, reply: 'I have successfully boarded the capsule.' }).kind, 'verified_committed_receipt');
   for (const reply of ['I have boarded the capsule.', 'I am aboard the capsule.', "I've boarded the capsule."]) {

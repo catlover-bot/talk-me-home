@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { evaluateAcceptanceBehavior, type AcceptanceStep, type AcceptanceEvent } from '../scripts/qa-acceptance-behavior.mjs';
 import { LOCATION_REQUESTS, passageRequests } from '../scripts/qa-player-recovery.mjs';
 import { proposalRecoveryPhrases } from '../scripts/qa-player-policy.mjs';
+import { PHRASES } from '../scripts/qa-mission-player.mjs';
 
 const step = (utterance: string, reply = 'The Latch is engaged.', extra: Partial<AcceptanceStep> = {}): AcceptanceStep => ({
   turnId: 'turn-1', utterance, startedAtMs: 100, endedAtMs: 200, settled: true,
@@ -12,6 +13,24 @@ const tool = (name: string, isError = false, callRef = 1, atMs = 150): Acceptanc
   { type: 'tool.call', name, callRef, replyRef: callRef + 10, atMs },
   { type: 'tool.result', callRef, atMs: atMs + 10, isError },
 ];
+
+test('short Return proposal requests retain exact action matching and read-only clarification', () => {
+  const recovery = proposalRecoveryPhrases('Confirm the authorized return', null);
+  for (const request of [PHRASES.home, recovery.retry, recovery.propose]) {
+    const events = tool('propose_interaction');
+    Object.assign(events[1]!, { actionStatus: 'awaiting_confirmation', proposalRef: 1 });
+    const pending = step(request, 'The return proposal awaits confirmation.', { proposal: { proposalId: 'return-proposal', label: 'Confirm the authorized return', status: 'awaiting_confirmation' } });
+    const result = evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [pending], events });
+    assert.equal(result.status, 'pass', request);
+    assert.equal(result.turns[0]!.intent, 'confirm_return', request);
+    pending.proposal!.label = 'Board the recovery capsule';
+    assert.equal(evaluateAcceptanceBehavior({ contract: 'confirmed_actions', steps: [pending], events }).status, 'blocked', request);
+    assert.equal(evaluateAcceptanceBehavior({ steps: [step(request, 'I moved aboard.')], events: tool('move_to') }).status, 'blocked', request);
+  }
+  const read = step(recovery.clarify, 'The capsule return panel has a local departure operation.');
+  assert.equal(evaluateAcceptanceBehavior({ steps: [read], events: tool('inspect_object') }).status, 'pass');
+  assert.equal(evaluateAcceptanceBehavior({ steps: [read], events: tool('interact_object') }).status, 'blocked');
+});
 
 test('purposeful report recovery stays read-only and explicit proposal recovery retains exact target checks', () => {
   for (const request of [...LOCATION_REQUESTS, ...passageRequests('east')]) {

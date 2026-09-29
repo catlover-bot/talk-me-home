@@ -29,6 +29,9 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
     if (typeof value.is_error === 'boolean') event.isError = value.is_error;
     if (type === 'tool.result' && direction === 'sent') {
       let result; try { result = typeof value.result === 'string' ? JSON.parse(value.result) : value.result; } catch { /* Raw payload is never retained. */ }
+      // Fixed local outcome categories distinguish cancellation from validation
+      // failure without retaining arguments, private observations or error prose.
+      if (['awaiting_confirmation', 'cancelled_before_execution', 'not_executed', 'precondition_failed', 'outcome_unknown'].includes(result?.code)) event.outcomeCode = result.code;
       if (result?.proposal && ['awaiting_confirmation', 'committed', 'declined', 'expired', 'invalidated', 'failed'].includes(result.proposal.status)) {
         event.proposalRef = reference(result.proposal.id);
         event.actionStatus = result.proposal.status;

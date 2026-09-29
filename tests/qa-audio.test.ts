@@ -49,6 +49,13 @@ test('QA wire allowlist excludes config, result payloads, URLs, cookie values an
   const canonical = sanitizeWireEvent({ type: 'reply.done', reply_id: `fc-${secret}`, status: 'completed' }, 'received', references);
   assert.equal(canonical?.callRef, request?.callRef);
   assert.equal(JSON.stringify(canonical).includes(secret), false);
+  for (const code of ['cancelled_before_execution', 'precondition_failed', 'outcome_unknown']) {
+    const outcome = sanitizeWireEvent({ type: 'tool.result', call_id: secret, is_error: true,
+      result: JSON.stringify({ ok: false, code, message: secret, arguments: { object: secret }, view: { hidden: secret } }) }, 'sent', references);
+    assert.equal(outcome?.outcomeCode, code);
+    assert.equal(JSON.stringify(outcome).includes(secret), false);
+  }
+  assert.equal(sanitizeWireEvent({ type: 'tool.result', result: JSON.stringify({ code: secret }) }, 'sent')?.outcomeCode, undefined);
 });
 
 test('QA digital recording preserves time gaps and real PCM sample values', () => {
