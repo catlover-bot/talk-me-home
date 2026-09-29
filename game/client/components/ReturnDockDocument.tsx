@@ -1,9 +1,18 @@
-/** A static human procedure sheet. Live acknowledged instruments live in HumanControls. */
-export function ReturnDockDocument() {
+import type { HumanView } from '../../shared/contracts';
+
+/** Local contact and boarding remain Pip's observations; only existing public instruments can light this sheet. */
+export function ReturnDockDocument({ instruments }: { instruments?: HumanView['returnDock'] }) {
   return <section className="mission-documents return-document" aria-label="Mission Control documents">
     <div className="document-heading"><div><p className="section-kicker">Mission Control documents</p><h2>Return capsule procedure</h2></div><span className="document-reference">03 / RD</span></div>
     <div className="procedure-sheet">
       <div className="procedure-intro"><span className="procedure-stamp">RETURN<br />SERVICE</span><p>Prepare the energy supply together. The controller is yours; the local checks and departure are Pip’s.</p></div>
+      <div className="return-state-strip" aria-label="Return sequence and acknowledged state">
+        <div className="return-state observed-by-pip"><span className="return-state-symbol" aria-hidden="true">⌁</span><strong>Hold contact</strong><small>Pip checks locally</small></div>
+        <div className="return-state" data-active={instruments?.energy === 'primed'}><span className="return-state-symbol temporary-energy" aria-hidden="true">≋</span><strong>Charge</strong><small>{instruments?.energy === 'primed' ? 'Primed · temporary' : instruments?.energy === 'stored' ? 'Transferred to Store' : 'Not primed'}</small></div>
+        <div className="return-state" data-active={instruments?.energy === 'stored'}><span className="return-state-symbol stored-energy" aria-hidden="true">▰</span><strong>Store</strong><small>{instruments?.energy === 'stored' ? 'Stored · retained' : 'Not stored'}</small></div>
+        <div className="return-state observed-by-pip" data-active={instruments?.readyForReturn}><span className="return-state-symbol" aria-hidden="true">⌂</span><strong>Release &amp; board</strong><small>{instruments?.readyForReturn ? 'Ready interlock' : 'Pip checks locally'}</small></div>
+        <div className="return-state" data-active={instruments?.returnAuthorized}><span className="return-state-symbol grant-symbol" aria-hidden="true">{instruments?.returnAuthorized ? '✓' : '○'}</span><strong>Return grant</strong><small>{instruments?.returnAuthorized ? 'Granted · Pip confirms' : 'Separate permission'}</small></div>
+      </div>
       <div className="return-drawing-scroll" role="region" aria-label="Return energy drawing. Scroll horizontally on a narrow screen." tabIndex={0}>
       <svg className="return-schematic" viewBox="0 0 720 235" role="img" aria-labelledby="return-schematic-title return-schematic-desc">
         <title id="return-schematic-title">Return energy and authorization schematic</title>

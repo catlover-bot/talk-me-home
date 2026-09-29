@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Chapter, Scenario } from "../../shared/contracts";
+import type { Chapter, HumanView, Scenario } from "../../shared/contracts";
 import { GalleryDocument, type GalleryDocumentProps } from './GalleryDocument';
 import { ReturnDockDocument } from './ReturnDockDocument';
 
@@ -38,14 +38,15 @@ function CargoMap() {
 }
 
 function WiringNote() {
-  return <div className="wiring-note">
+  return <div className="wiring-note shared-supply-note">
+    <div className="supply-question"><span>Read together</span><strong>One switch.<br/>Two machines.</strong></div>
     <svg viewBox="0 0 340 88" role="img" aria-label="One Power supply branches to the Door and the Conveyor">
       <path d="M98 44H129V23H165 M129 44V68H165" fill="none" stroke="#526b57" strokeWidth="2.5" /><circle cx="129" cy="44" r="4" fill="#526b57" />
       <rect x="4" y="24" width="94" height="40" rx="2" fill="#e4ddc7" stroke="#63725b" strokeWidth="1.5" /><path d="M10 30H18 M10 58H18 M85 30H92 M85 58H92" stroke="#9c8d6e" />
       <rect x="165" y="5" width="168" height="36" rx="2" fill="#faf5e7" stroke="#63725b" /><rect x="165" y="50" width="168" height="36" rx="2" fill="#faf5e7" stroke="#63725b" />
       <g fill="#344b3d" fontSize="18" fontFamily="inherit" fontWeight="600" textAnchor="middle"><text x="51" y="50">Power</text><text x="249" y="29">Door</text><text x="249" y="74">Conveyor</text></g>
     </svg>
-    <p><strong>One shared supply.</strong> The Door and Conveyor use the same Power. Pip cannot see this diagram.</p>
+    <p><strong>One shared supply.</strong> The Door and Conveyor use the same Power. What changes on Pip's side?</p>
   </div>;
 }
 
@@ -82,12 +83,12 @@ function ModuleMark({ shape }: { shape: "crescent" | "kite" }) {
   );
 }
 
-export function MissionDocuments({ scenario, chapter = 'cargo', ...galleryProps }: {
-  scenario: Scenario; chapter?: Chapter;
+export function MissionDocuments({ scenario, chapter = 'cargo', returnDock, ...galleryProps }: {
+  scenario: Scenario; chapter?: Chapter; returnDock?: HumanView['returnDock'];
 } & GalleryDocumentProps) {
   const [tab, setTab] = useState<"map" | "manual">("map");
   if (chapter === 'gallery') return <GalleryDocument {...galleryProps} />;
-  if (chapter === 'return_dock') return <ReturnDockDocument />;
+  if (chapter === 'return_dock') return <ReturnDockDocument instruments={returnDock} />;
   return (
     <section
       className="mission-documents"
@@ -138,6 +139,7 @@ export function MissionDocuments({ scenario, chapter = 'cargo', ...galleryProps 
         aria-labelledby="map-tab"
         hidden={tab !== "map"}
       >
+        <WiringNote />
         <div className="cargo-drawing-scroll" role="region" aria-label="Cargo route drawing. Scroll horizontally on a narrow screen." tabIndex={0}><CargoMap /></div>
         <div className="document-caption">
           <span>
@@ -146,7 +148,6 @@ export function MissionDocuments({ scenario, chapter = 'cargo', ...galleryProps 
           </span>
           <span>Static plan · ask Pip for local conditions</span>
         </div>
-        <WiringNote />
       </div>
       <div
         id="manual-document"

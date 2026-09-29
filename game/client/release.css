@@ -144,3 +144,9 @@
  .desk-extras > summary > span { float: none; display: block; margin-top: 5px; }
 }
 @media (prefers-reduced-motion: reduce) { .control-ack { animation: none; } }
+
+.recorder-choice { display: flex; align-items: start; gap: 10px; margin-top: 14px; padding: 12px 14px; border: 1px solid #87977a; border-radius: 3px; background: #ececdb; cursor: pointer; }
+.recorder-choice input { flex: 0 0 auto; width: 18px; height: 18px; margin: 2px 0 0; accent-color: #486749; }
+.recorder-choice strong, .recorder-choice small { display: block; }
+.recorder-choice strong { font-size: 14px; }
+.recorder-choice small { margin-top: 4px; line-height: 1.5; color: #475646; }

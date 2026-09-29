@@ -3,8 +3,9 @@ import { requestId } from "./api";
 import type { Chapter, RobotLocalPerception, ToolResult } from '../shared/contracts';
 
 /** Practice retains only labels in validated local reports, never the human route map. */
-export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string }
+export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string; visitId?: string; recorder?: 'observed' | 'secured' }
 export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter, perception?: RobotLocalPerception | null): PracticeMemory {
+  if (chapter === 'gallery' && message.startsWith('You secured the flight recorder in your carrying pouch.')) return { ...memory, recorder: 'secured' };
   // Null means a current result did not carry an eligible local observation.
   // Omission retains the legacy text path used for explicitly historical recap.
   if (chapter === 'gallery' && perception === null) return memory;
@@ -14,7 +15,12 @@ export function rememberLocalResult(memory: PracticeMemory, message: string, cha
     ? perception.gates.map(gate => ({ label: gate.direction.toLowerCase(), id: gate.handle }))
     : [...message.matchAll(/\b(Northeast|Northwest|Southeast|Southwest|East|West|North|South) gate \((gallery\.g[1-5])\)/gi)]
       .map(match => ({ label: match[1]!.toLowerCase(), id: match[2]! }));
+  const recorder = perception && chapter === 'gallery'
+    ? memory.recorder === 'secured' ? 'secured' : message.includes('flight recorder (flight_recorder)') ? 'observed'
+      : memory.visitId === perception.visitId ? memory.recorder : undefined
+    : memory.recorder === 'secured' ? 'secured' : memory.chapter === chapter ? memory.recorder : undefined;
   return { chapter, gates: perception && chapter === 'gallery' || gates.length ? gates : memory.chapter === chapter ? memory.gates : [],
+    ...(perception && chapter === 'gallery' ? { visitId: perception.visitId } : {}), ...(recorder ? { recorder } : {}),
     ...(memory.chapter === chapter && memory.proposalId ? { proposalId: memory.proposalId } : {}) };
 }
 
@@ -48,7 +54,7 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
   }
   if (
     /\b(stop|wait|pause|hold on|cancel)\b/.test(text) ||
-    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select|release|board|return|confirm)\b/.test(
+    /\b(do not|don't|never)\b.*\b(latch|move|cross|go|pull|engage|use|operate|hold|keep|set|select|release|board|return|confirm|pick|take|collect|retrieve)\b/.test(
       text,
     )
   ) {
@@ -84,6 +90,13 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
     };
   }
   if (/\blook away\b/.test(text)) return { message: 'Do you want me to look around, or wait? I will keep your words as they were received.' };
+  if (/\b(?:flight )?recorder\b/.test(text)) {
+    if (memory?.recorder === 'secured') return { message: 'I have the flight recorder secured. We can carry on with the rescue.' };
+    if (memory?.chapter !== 'gallery' || memory.recorder !== 'observed') return { message: 'I have not observed a recorder within reach during this visit. I can look around; your documents may help us decide where to go.' };
+    if (/\b(inspect|examine|check|look at|describe|tell me about)\b/.test(text)) return call('inspect_object', { object: 'flight_recorder' });
+    if (/^(?:pip[, ]+)?(?:please |(?:can|could|would) you )?(?:pick up|take|collect|retrieve|bring back)\b/.test(text)) return call('propose_interaction', { object: 'flight_recorder', action: 'pick_up' });
+    return { message: 'The recorder is within reach. We can inspect it, leave it here, or you can ask me to propose picking it up.' };
+  }
   if (memory?.chapter === 'gallery') {
     if (/\b(beacon|harbor|relay|circuit)\b/.test(text) && /\b(switch|set|select|said|turn)\b/.test(text)) return { message: 'Mission Control owns the Relay. Tell me which local gate to check after you set the circuit.' };
     if (/\b(gate|move|go|head|walk|take|cross|backtrack|return)\b/.test(text) && !/\b(see|around|where|describe|observe|surroundings)\b/.test(text)) {
@@ -210,6 +223,9 @@ export function simulationReply(raw: string, memory?: PracticeMemory): MockReply
 /** Render confirmed local results as simulation dialogue without reading technical identifiers. */
 export function simulationSpeech(message: string): string {
   return message
+    .replace(/ \(flight_recorder\)/g, '')
+    .replace(' The local interaction is pick_up on flight_recorder; a pickup needs Mission Control\'s exact confirmation.', ' I can propose securing it, if you choose.')
+    .replace('You secured the flight recorder in your carrying pouch.', 'I secured the flight recorder in my carrying pouch.')
     .replace(/ \((?:gallery\.g[1-5]|return\.(?:contact|capsule|aboard))\)/g, '')
     .replace(/\b(?:Target|Available (?:action|interaction|movement)s?|Local (?:action|interaction|movement))[^.]*?(?:return\.[a-z_]+|hold_contact|release_contact|confirm_return)[^.]*\./g, '')
     .replace(/ Available interactions? on return\.(?:contact|capsule) (?:are|is) [^.]*\./g, '')

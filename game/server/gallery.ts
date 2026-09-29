@@ -31,6 +31,20 @@ const obstructed = (state: GameState, gate: Gate) => gate.id === (state.gallery.
 const reject = (message: string): ToolResult => ({ ok: false, message })
 const inspectionReject = (code: ToolResult['code'], message: string): ToolResult => ({ ok: false, code, message, recovery: 'observe_room' })
 
+/** Fixed authored side branch, independent of the obstructed final gate. Never export a route to the robot. */
+export function recorderIsObservedLocally(state: GameState): boolean {
+  return state.flightRecorder.selected && !state.flightRecorder.secured && state.chapter === 'gallery'
+    && state.gallery.room === 'leaf' && state.flightRecorder.observedVisitId === state.gallery.visitId
+}
+
+function recorderScopeFailure(state: GameState, scope?: ToolRequest['inspectionScope']): ToolResult | null {
+  if (!state.flightRecorder.selected || state.flightRecorder.secured) return inspectionReject('unknown_target', 'That object is unavailable. Observe the objects currently within reach.')
+  if (state.gallery.room !== 'leaf') return inspectionReject('nonlocal_target', 'That object is not within reach here. Observe the current room; no pickup occurred.')
+  if (!scope || scope.visitId !== state.gallery.visitId) return inspectionReject('stale_scope', 'That object request belongs to an earlier or unobserved visit. Observe the current room again.')
+  if (!recorderIsObservedLocally(state)) return inspectionReject('target_unobserved', 'Observe the local objects during this visit before inspecting or proposing a pickup.')
+  return null
+}
+
 function localPerception(state: GameState, origin: RobotLocalPerception['origin'], observedAt: number, inspectedGate?: string): RobotLocalPerception {
   const { room, relay, visitId } = state.gallery
   const emblems = { ring: 'Ring', fork: 'Fork', sail: 'Sail', leaf: 'Leaf' } as const
@@ -53,11 +67,22 @@ export function perceptionIsCurrent(state: GameState, perception: RobotLocalPerc
 export function galleryView(state: GameState, origin: RobotLocalPerception['origin'] = 'local_survey', observedAt = Date.now()): ToolResult {
   const { room, relay } = state.gallery
   const emblem = room[0]!.toUpperCase() + room.slice(1)
-  return { ok: true, perception: localPerception(state, origin, observedAt), message: `You are in a safe room with the ${emblem} emblem. A fixed compass mark points north. ${adjacent(room).map(gate => `${direction(gate, room)} gate (${gate.id}) is ${relay === gate.circuit ? 'open' : 'closed'}.`).join(' ')} Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.` }
+  const recorderVisible = state.flightRecorder.selected && !state.flightRecorder.secured && room === 'leaf'
+  if (recorderVisible) state.flightRecorder.observedVisitId = state.gallery.visitId
+  return { ok: true, perception: localPerception(state, origin, observedAt), message: `You are in a safe room with the ${emblem} emblem. A fixed compass mark points north. ${adjacent(room).map(gate => `${direction(gate, room)} gate (${gate.id}) is ${relay === gate.circuit ? 'open' : 'closed'}.`).join(' ')} Inspect a reachable gate to check the opening. Use its exact observed gate identifier as a movement target. You cannot see Mission Control's route map.${recorderVisible ? ' A small flight recorder (flight_recorder) rests in an archive cradle within reach. You can inspect it.' : ''}` }
 }
 
 export function applyGalleryTool(state: GameState, name: string, args: unknown, observedAt = Date.now(), inspectionScope?: ToolRequest['inspectionScope']): ToolResult {
   if (name === 'observe_room') return exactObject(args, []) ? galleryView(state, 'local_survey', observedAt) : inspectionReject('invalid_arguments', 'Observation takes no arguments. Call observe_room without arguments.')
+  if ((name === 'inspect_object' || name === 'interact_object') && typeof args === 'object' && args !== null && 'object' in args && args.object === 'flight_recorder') {
+    if (!exactObject(args, name === 'inspect_object' ? ['object'] : ['object', 'action']) || name === 'interact_object' && (!('action' in args) || args.action !== 'pick_up')) return inspectionReject('invalid_arguments', 'Inspect this observed object or propose its one local pickup action.')
+    const failure = recorderScopeFailure(state, inspectionScope)
+    if (failure) return failure
+    if (name === 'inspect_object') return { ok: true, message: 'The flight recorder is a palm-sized case, worn smooth at the edges. Its label reads: "Pip / flight notes." It is loose in the archive cradle. The local interaction is pick_up on flight_recorder; a pickup needs Mission Control\'s exact confirmation. Bringing it home is optional.' }
+    state.flightRecorder.secured = true
+    state.revision += 1
+    return { ok: true, message: 'You secured the flight recorder in your carrying pouch. The cradle is empty. The rescue route and equipment are unchanged.' }
+  }
   if (name === 'inspect_gate') {
     if (!exactObject(args, ['direction']) || typeof args.direction !== 'string' || !gateDirections.includes(args.direction as GateDirection)) return inspectionReject('invalid_arguments', 'Inspect one compass direction using the direction enum. Observe the current room if the direction is uncertain.')
     if (!inspectionScope || inspectionScope.visitId !== state.gallery.visitId) return inspectionReject('stale_scope', 'The inspection has no matching current-visit scope. Observe the current room, then inspect the requested direction again.')
@@ -81,6 +106,7 @@ export function applyGalleryTool(state: GameState, name: string, args: unknown, 
     state.gallery.room = gate.from === state.gallery.room ? gate.to : gate.from
     state.gallery.visitId = randomUUID()
     state.gallery.observed = undefined
+    state.flightRecorder.observedVisitId = undefined
     state.revision += 1
     // A queued intent from the previous room must not turn into an accidental backtrack.
     state.actionEpoch += 1

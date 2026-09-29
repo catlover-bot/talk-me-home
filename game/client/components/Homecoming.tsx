@@ -4,7 +4,7 @@ import { chapterNames } from './ChapterHeader';
 import { PipPortrait } from './PipPortrait';
 
 /** Only mounted for server-confirmed home. This recovery bay is an ending illustration. */
-export function Homecoming({ chaptersCleared }: { chaptersCleared: Chapter[] }) {
+export function Homecoming({ chaptersCleared, recoveredFlightRecorder = false }: { chaptersCleared: Chapter[]; recoveredFlightRecorder?: boolean }) {
   const id = useId().replace(/:/g, '');
   return <figure className="homecoming" aria-label="Pip’s confirmed journey home">
     <div className="homecoming-scene">
@@ -43,6 +43,7 @@ export function Homecoming({ chaptersCleared }: { chaptersCleared: Chapter[] }) 
           <path d="M19 115V171H-8" stroke="#1c382b" strokeWidth="7" fill="none" /><path d="M19 115V171H-8" stroke="#75816b" strokeWidth="2" fill="none" />
         </g>
         <g fill="#283f33" stroke="#7c886f" strokeWidth="1.5"><path d="M36 361H98V414H36Z" /><path d="M36 372H98 M48 361V414 M86 361V414" /></g>
+        {recoveredFlightRecorder && <g className="homecoming-recorder" role="img" aria-label="Recovered flight recorder on the recovery bay shelf" transform="translate(80 305)"><path d="M-49 34H49V43H-49Z M-33 43V61 M34 43V61" fill="#8e805e" stroke="#c4b08a" strokeWidth="2"/><rect x="-32" y="-8" width="64" height="40" rx="4" fill="#b78958" stroke="#e4cf9e" strokeWidth="2"/><path d="M-14-8V-18H14V-8" fill="none" stroke="#cbb087" strokeWidth="4"/><path d="M-24 0H-10 M-24 7H-10 M11 0H23 M11 7H23 M-6-8V32" stroke="#4d4e3b" strokeWidth="2"/><circle cx="18" cy="21" r="4" fill="#e9d9ae"/><text x="0" y="83" textAnchor="middle" fill="#ded5b8" fontSize="11" letterSpacing="1">FLIGHT RECORDER</text></g>}
         <path d="M14 463H192L211 478H395L414 463H585" fill="none" stroke="#b28d57" strokeWidth="3" opacity=".75" />
         <path d="M454 392 481 417H542L565 392" fill="none" stroke="#a0aa84" strokeWidth="2" />
         <g fill="#b9c0a1"><circle cx="46" cy="43" r="2.5" /><circle cx="553" cy="43" r="2.5" /><circle cx="46" cy="343" r="2.5" /><circle cx="553" cy="343" r="2.5" /></g>

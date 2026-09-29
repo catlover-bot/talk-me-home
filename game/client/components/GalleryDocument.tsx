@@ -28,6 +28,7 @@ function RoomEmblem({ room }: { room: Room }) {
 
 export interface GalleryDocumentProps {
   annotation?: GalleryAnnotation; record?: MissionRecord | null;
+  optionalObjective?: 'flight_recorder';
   onAnnotation?(change: AnnotationChange): Promise<unknown>; busy?: boolean;
   onPin?(messageId: string): Promise<unknown>;
   onQuickRequest?(kind: 'surroundings' | 'repeat_report'): Promise<boolean>;
@@ -42,16 +43,18 @@ export function latestGalleryReport(record?: MissionRecord | null): RecordedMess
 
 function RoomMount({ room }: { room: Room }) {
   if (room === 'ring') return <circle className="room-mount" r="34" />;
-  if (room === 'fork') return <path className="room-mount" d="M-35-13-16-33H17L35-13V13L17 33H-16L-35 13Z" />;
-  if (room === 'sail') return <path className="room-mount" d="M-30 31V-20L0-38 30-20V31Z" />;
-  if (room === 'leaf') return <path className="room-mount" d="M-33-18Q0-40 33-18V18Q0 40-33 18Z" />;
-  return <path className="room-mount" d="M-35-27H35V27H-35Z" />;
+  if (room === 'fork') return <path className="room-mount" d="M-35 15V-15L-19-35 0-26 19-35 35-15V15L15 34H-15Z" />;
+  if (room === 'sail') return <path className="room-mount" d="M-35 31-5-39 35 31Z" />;
+  if (room === 'leaf') return <path className="room-mount" d="M-35 17Q-38-31 27-35Q43 18-17 35Z" />;
+  return <path className="room-mount" d="M-36-29H36V19H18V34H-18V19H-36Z" />;
 }
 
-export function GalleryDocument({ annotation, record, onAnnotation, busy = false, onPin, onQuickRequest, requestEnabled = false }: GalleryDocumentProps) {
+export function GalleryDocument({ annotation, record, optionalObjective, onAnnotation, busy = false, onPin, onQuickRequest, requestEnabled = false }: GalleryDocumentProps) {
   const [saving, setSaving] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(true);
   const [error, setError] = useState('');
+  const [undo, setUndo] = useState<AnnotationChange[][]>([]);
+  const [focusedTarget, setFocusedTarget] = useState<string | null>(null);
   const [markMode, setMarkMode] = useState<'planned_gate' | 'explored_gate' | 'blocked_gate' | 'location'>('planned_gate');
   const [reportTarget, setReportTarget] = useState('');
   const [dynamic, setDynamic] = useState(true);
@@ -65,7 +68,26 @@ export function GalleryDocument({ annotation, record, onAnnotation, busy = false
     if (!onAnnotation || saving) return;
     setSaving(true);
     setError('');
-    try { await onAnnotation(change); } catch { setError('Your mark could not be saved. Try again.'); } finally { setSaving(false); }
+    const inverse: AnnotationChange[] = change.kind === 'clear_plan' ? planned.map(target => ({ kind: 'planned_gate', target, marked: true }))
+      : change.kind === 'location' ? [{ kind: 'location', target: annotation?.location ?? null }]
+        : change.kind === 'planned_gate' || change.kind === 'explored_gate' || change.kind === 'blocked_gate'
+          ? [{ ...change, marked: (change.kind === 'planned_gate' ? planned : change.kind === 'explored_gate' ? explored : annotation?.blockedGates ?? []).includes(change.target) }] : [];
+    try {
+      await onAnnotation(change);
+      if (inverse.length) setUndo(previous => [...previous.slice(-19), inverse]);
+      if ('target' in change && change.target && (change.kind === 'report_link' || annotation?.reportLinks?.some(link => link.target === change.target))) setFocusedTarget(change.target);
+    } catch { setError('Your mark could not be saved. Try again.'); } finally { setSaving(false); }
+  };
+  const undoMark = async () => {
+    const changes = undo.at(-1);
+    if (!onAnnotation || saving || !changes) return;
+    setSaving(true); setError('');
+    try {
+      // Reversing a cleared plan restores only the player's own ink, never game state.
+      for (const change of changes) await onAnnotation(change);
+      setUndo(previous => previous.slice(0, -1));
+    } catch { setError('Your last mark could not be fully restored. Check the map and try again.'); }
+    finally { setSaving(false); }
   };
   const quickRequest = async (kind: 'surroundings' | 'repeat_report') => {
     if (!onQuickRequest || requesting || !requestEnabled) return;
@@ -73,13 +95,16 @@ export function GalleryDocument({ annotation, record, onAnnotation, busy = false
     try { await onQuickRequest(kind); } finally { setRequesting(false); }
   };
   const targetName = (target: string) => rooms.find(room => room.id === target)?.label ?? gates.find(gate => gate.id === target)?.label ?? 'Unknown association';
+  const focus = focusedTarget ?? annotation?.reportLinks?.at(-1)?.target;
+  const focusedReports = annotation?.reportLinks?.filter(link => link.target === focus) ?? [];
   return <section className="mission-documents gallery-document" aria-label="Mission Control documents">
     <div className="document-heading"><div><p className="section-kicker">Mission Control documents</p><h2>Relay Gallery atlas</h2></div><span className="document-reference">02 / RG</span></div>
     <div className="atlas-key"><span><i className="beacon-swatch" aria-hidden="true" />B · Beacon circuit</span><span><i className="harbor-swatch" aria-hidden="true" />H · Harbor circuit</span><span>Gates work both ways</span></div>
-    <div className="atlas-planning-bar" aria-label="Private route planning"><button type="button" aria-pressed={editing && markMode === 'planned_gate'} onClick={() => { setMarkMode('planned_gate'); setEditing(value => !(value && markMode === 'planned_gate')); }}>Plan route</button><button type="button" disabled={disabled || planned.length === 0} onClick={() => { void save({ kind: 'clear_plan' }); }}>Erase plan</button><span>Choose corridors. Your plan stays private.</span></div>
+    <div className="atlas-planning-bar" aria-label="Private route planning"><button type="button" aria-pressed={editing && markMode === 'planned_gate'} onClick={() => { setMarkMode('planned_gate'); setEditing(true); }}>Plan route</button><button type="button" aria-pressed={editing && markMode === 'blocked_gate'} onClick={() => { setMarkMode('blocked_gate'); setEditing(true); }}>Cross out</button><button type="button" disabled={disabled || undo.length === 0} onClick={() => { void undoMark(); }}>Undo mark</button><button type="button" disabled={disabled || planned.length === 0} onClick={() => { void save({ kind: 'clear_plan' }); }}>Erase plan</button><span>Click a corridor. Pencil marks stay private.</span></div>
+    {error && <p className="atlas-save-error" role="alert">{error}</p>}
     <div className="atlas-scroll" role="region" aria-label="Gallery atlas. Scroll horizontally on a narrow screen." tabIndex={0}>
     <div className="atlas-surface" data-editing={editing}>
-    <svg className="gallery-map" viewBox="0 0 720 320" role="img" aria-labelledby="gallery-map-title gallery-map-desc">
+    <svg className="gallery-map" viewBox="0 0 720 320" role="group" aria-labelledby="gallery-map-title gallery-map-desc">
       <title id="gallery-map-title">Relay Gallery documented routes and emblems</title>
       <desc id="gallery-map-desc">Ring connects to Fork through Beacon. Fork connects to Sail through Harbor and Leaf through Beacon. Sail connects to Dock through Beacon. Leaf connects to Dock through Harbor. All gates work both ways. This static atlas does not show Pip’s location or obstructions. Dashed circles and crosses, if present, are your private guesses.</desc>
       <defs><pattern id="atlas-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#627969" strokeWidth=".5" opacity=".16" /></pattern><pattern id="atlas-engraving" width="5" height="5" patternUnits="userSpaceOnUse"><path d="m0 5 5-5" stroke="#456756" strokeWidth=".6" opacity=".35" /></pattern></defs>
@@ -93,7 +118,7 @@ export function GalleryDocument({ annotation, record, onAnnotation, busy = false
         const path = `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
         return <g key={gate.id} className={`atlas-gate ${gate.circuit.toLowerCase()}`}><path d={path} className="atlas-track-bed" /><path d={path} className="atlas-track" />{planned.includes(gate.id) && <path d={path} className="atlas-plan-mark" aria-label={`Planned: ${gate.label}`} />}{explored.includes(gate.id) && <path d={path} className="atlas-explored-mark" aria-label={`Player-marked explored: ${gate.label}`} />}<g transform={`translate(${gate.x} ${gate.y})`}><rect x="-41" y="-15" width="82" height="30" rx="2" /><text className="gate-full-name" textAnchor="middle" y="6">{gate.circuit}</text><text className="gate-short-name" textAnchor="middle" y="7" aria-hidden="true">{gate.circuit[0]}</text>{marked && <g className="private-path-mark" aria-label={`Your suspected obstruction: ${gate.label}`}><circle cy="-29" r="12" /><path d="M-5-34 5-24 M-5-24 5-34" /></g>}</g></g>;
       })}
-      {rooms.map(room => <g key={room.id} transform={`translate(${room.x} ${room.y})`} className="atlas-room"><RoomMount room={room.id}/><circle r="26" className="room-disc" /><circle r="22" className="room-inner-ring" /><g className="room-emblem"><RoomEmblem room={room.id} /></g><text className="room-name" textAnchor="middle" y={room.id === 'sail' ? -41 : 52}>{room.label}</text>{annotation?.location === room.id && <><circle className="private-location-mark" r="40" /><text className="private-marker-label" y={room.id === 'sail' ? 56 : -47} textAnchor="middle">YOUR MARK</text></>}</g>)}
+      {rooms.map(room => <g key={room.id} transform={`translate(${room.x} ${room.y})`} className="atlas-room" data-focused={focus === room.id} role="button" tabIndex={0} aria-label={`Read attached reports for ${room.label}`} onClick={() => setFocusedTarget(room.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setFocusedTarget(room.id); } }}><RoomMount room={room.id}/><circle r="26" className="room-disc" /><circle r="22" className="room-inner-ring" /><g className="room-emblem"><RoomEmblem room={room.id} /></g><text className="room-name" textAnchor="middle" y={room.id === 'sail' ? -41 : 52}>{room.label}</text>{optionalObjective === 'flight_recorder' && room.id === 'leaf' && <g className="archive-map-label"><path d="M38 10H75V35H38Z M38 17H75 M46 25H66" fill="none" stroke="currentColor" strokeWidth="1.5"/><text x="82" y="26">Archive</text></g>}{annotation?.location === room.id && <><circle className="private-location-mark" r="40" /><text className="private-marker-label" y={room.id === 'sail' ? 56 : -47} textAnchor="middle">YOUR MARK</text></>}</g>)}
       <text className="atlas-route-note" x="75" y="232" textAnchor="middle">Entry</text><text className="atlas-route-note" x="640" y="232" textAnchor="middle">To Return Dock</text><text className="atlas-imprint" x="31" y="293">ALL GATES · TWO-WAY</text>
     </svg>
     {editing && <div className="atlas-direct-marks" aria-label="Direct private map marks">
@@ -102,6 +127,9 @@ export function GalleryDocument({ annotation, record, onAnnotation, busy = false
     </div>
     </div>
     <div className="document-caption atlas-mark-key"><span><i className="planned-swatch"/>Planned</span><span><i className="explored-swatch"/>Player-marked explored</span><span>Location unknown until you mark it</span></div>
+    <p className="atlas-reading-rule"><strong>Power opens a gate. A report checks the passage.</strong> Circuit lines never mean “clear”.</p>
+    {optionalObjective === 'flight_recorder' && <p className="archive-document-note"><strong>Optional · Leaf archive.</strong> Pip's flight recorder was filed here. Ask Pip what is within reach when you visit, or choose a direct rescue.</p>}
+    {focus && <section className="map-associated-focus" aria-label={`Attached reports for ${targetName(focus)}`}><div><strong>{targetName(focus)}</strong><span>Your map association · not a position reading</span><button className="text-button" onClick={() => setFocusedTarget('')}>Clear focus</button></div>{focusedReports.length ? focusedReports.map(link => <article key={`${link.messageId}:${link.targetKind}:${link.target}`} data-historical={link.earlier}><blockquote tabIndex={0}>{link.text}</blockquote><p>{link.dynamic ? link.earlier ? 'Earlier gate conditions · recheck' : 'Reported conditions · not live' : 'Reported clue'} · {originLabel[link.origin]} · <time dateTime={new Date(link.reportedAt).toISOString()}>{new Date(link.reportedAt).toLocaleTimeString('en')}</time>{link.interrupted && ' · Interrupted / incomplete speech'}</p></article>) : <p>No quote attached here. Choose “Quote & attach to map” below to place Pip's exact words beside your plan.</p>}</section>}
     <section className="gallery-field-report" aria-label="Last communicated Gallery report">
       <div className="field-report-heading"><strong>Last report</strong>{latest ? <span>{originLabel[latest.origin]} · <time dateTime={new Date(latest.timestamp).toISOString()}>{new Date(latest.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time></span> : <span>Unknown · ask Pip</span>}</div>
       {latest ? <blockquote data-testid="gallery-report-excerpt" tabIndex={0}>{latest.text}</blockquote> : <p>No complete Gallery report yet. The atlas does not know where Pip is.</p>}
@@ -120,7 +148,6 @@ export function GalleryDocument({ annotation, record, onAnnotation, busy = false
       <div className="annotation-location"><label htmlFor="map-location">Where I think Pip is</label><select id="map-location" value={annotation?.location ?? ''} disabled={busy || saving || !onAnnotation} onChange={event => { void save({ kind: 'location', target: event.target.value ? event.target.value as Room : null }); }}><option value="">No location marked</option>{rooms.map(room => <option key={room.id} value={room.id}>{room.label}</option>)}</select></div>
       <fieldset className="blocked-gate-choices"><legend>Paths I suspect are obstructed</legend>{gates.map(gate => <label key={gate.id}><input type="checkbox" checked={annotation?.blockedGates.includes(gate.id) ?? false} disabled={busy || saving || !onAnnotation} onChange={event => { void save({ kind: 'blocked_gate', target: gate.id, marked: event.target.checked }); }} /><span>{gate.label}<small>{gate.circuit}</small></span></label>)}</fieldset>
       {saving && <p role="status">Saving your private mark…</p>}
-      {error && <p role="alert">{error}</p>}
     </details>
   </section>;
 }

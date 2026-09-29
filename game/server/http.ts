@@ -106,6 +106,7 @@ export function createGameServer(options: ServerOptions = {}) {
         const setup = await jsonBody(request)
         const owner = browserAccess.owner(request, response)
         if (exactObject(setup, [])) return reply(response, 201, store.create('classic', 'training', owner))
+        if (exactObject(setup, ['missionKind', 'scenario', 'optionalObjective']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance') && (setup.optionalObjective === null || setup.optionalObjective === 'flight_recorder')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner, setup.optionalObjective))
         if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner))
         if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
         return reply(response, 201, store.create(setup.scenario, 'training', owner))

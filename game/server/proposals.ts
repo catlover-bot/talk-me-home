@@ -1,5 +1,5 @@
 import type { ProposedAction } from '../shared/contracts.js'
-import { localGateDirection } from './gallery.js'
+import { localGateDirection, recorderIsObservedLocally } from './gallery.js'
 import { exactObject, type GameState } from './state.js'
 
 export function proposalLocation(state: GameState): string {
@@ -22,6 +22,7 @@ export function describeProposal(state: GameState, name: string, args: Record<st
   }
   if (!['propose_interaction', 'interact_object'].includes(name) || !exactObject(args, ['object', 'action']) || typeof args.object !== 'string' || typeof args.action !== 'string') return null
   let label: string | undefined
+  if (args.object === 'flight_recorder' && args.action === 'pick_up' && recorderIsObservedLocally(state)) label = 'Secure the flight recorder'
   if (state.chapter === 'cargo' && state.robotLocation === 'near_side' && args.object === 'latch') {
     if (args.action === 'latch_open') label = 'Engage the Latch'
     if (state.scenario === 'maintenance' && ['select_neutral', 'select_anchor', 'select_bridge'].includes(args.action)) {

@@ -23,7 +23,7 @@ if (target) {
   if (url.protocol !== 'https:' && !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('A remote approved target requires HTTPS.');
 }
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-const evidenceBase = `.validation/goal-005-offline/${sourceCommit}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+const evidenceBase = `.validation/goal-006-offline/${sourceCommit}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 const directory = resolve(evidenceBase);
 mkdirSync(join(directory, 'screenshots'), { recursive: true });
 const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', GAME_QA_PREBUILT: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };

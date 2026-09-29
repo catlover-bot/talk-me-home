@@ -2,6 +2,7 @@
 export type SessionStatus = 'active' | 'stopped' | 'ended'
 export type Scenario = 'classic' | 'maintenance'
 export type MissionKind = 'training' | 'rescue'
+export type OptionalObjective = 'flight_recorder'
 export type Chapter = 'cargo' | 'gallery' | 'return_dock'
 export type Relay = 'off' | 'beacon' | 'harbor'
 export type DockControl = 'charge' | 'store' | 'authorize_return' | 'revoke_return'
@@ -21,6 +22,10 @@ export interface HumanView {
   chapter: Chapter
   chapterEpoch: number
   chaptersCleared: Chapter[]
+  /** Explicit mission selection, never a live inventory or location instrument. */
+  optionalObjective?: OptionalObjective
+  /** Published only after server-confirmed home, and only if actually secured. */
+  recoveredFlightRecorder?: true
   relay?: Relay
   /** Working Return Dock instruments, not a local room camera. */
   returnDock?: { energy: 'empty' | 'primed' | 'stored'; readyForReturn: boolean; returnAuthorized: boolean }
@@ -115,6 +120,8 @@ export interface LifecycleRequest {
   requestId: string
   scenario?: Scenario
   missionKind?: MissionKind
+  /** Omission on Restart starts a core mission; the old modifier never carries over. */
+  optionalObjective?: OptionalObjective | null
   chapterEpoch?: number
   reason?: CancelReason
 }

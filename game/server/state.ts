@@ -1,5 +1,5 @@
 import { randomInt, randomUUID } from 'node:crypto'
-import type { Chapter, HumanView, MissionKind, Scenario, SessionStatus, ToolRequest, ToolResult } from '../shared/contracts.js'
+import type { Chapter, HumanView, MissionKind, OptionalObjective, Scenario, SessionStatus, ToolRequest, ToolResult } from '../shared/contracts.js'
 import { applyGalleryTool, galleryView, type GalleryConfiguration, type GalleryState } from './gallery.js'
 import { applyDockTool, dockReady, dockView, type DockState } from './return-dock.js'
 
@@ -25,10 +25,11 @@ export interface GameState {
   chapterEpoch: number
   gallery: GalleryState
   dock: DockState
+  flightRecorder: { selected: boolean; secured: boolean; observedVisitId?: string }
 }
 
 /** Tests may supply a profile here; the ordinary browser API never accepts one. */
-export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration): GameState {
+export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration, optionalObjective?: OptionalObjective | null): GameState {
   return {
     sessionId, roundId: randomUUID(), revision: 0, actionEpoch: 0,
     powerOn: true, doorLatched: false, robotLocation: 'near_side', status: 'active',
@@ -37,6 +38,7 @@ export function initialState(sessionId: string = randomUUID(), scenario: Scenari
     missionKind, chapter: 'cargo', chapterEpoch: 0,
     gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b'), visitId: randomUUID(), observationRevision: 0 },
     dock: { location: 'platform', contactHeld: false, energy: 'empty', readinessVersion: 0, grant: null },
+    flightRecorder: { selected: missionKind === 'rescue' && optionalObjective === 'flight_recorder', secured: false },
   }
 }
 
@@ -61,6 +63,8 @@ export function humanView(state: GameState): HumanView {
     completed: missionCompleted(state),
     scenario: state.scenario,
     missionKind: state.missionKind, chapter: state.chapter, chapterEpoch: state.chapterEpoch, chaptersCleared: clearedChapters(state),
+    ...(state.flightRecorder.selected ? { optionalObjective: 'flight_recorder' as const } : {}),
+    ...(missionCompleted(state) && state.flightRecorder.secured ? { recoveredFlightRecorder: true as const } : {}),
     ...(state.chapter === 'gallery' ? { relay: state.gallery.relay } : {}),
     ...(state.chapter === 'return_dock' ? { returnDock: { energy: state.dock.energy, readyForReturn: dockReady(state), returnAuthorized: state.dock.grant !== null } } : {}),
   }

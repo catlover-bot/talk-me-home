@@ -45,7 +45,7 @@ export function Debrief({
         <span className="arrival-stamp">
           <span aria-hidden="true">✓</span>Arrival confirmed
         </span>
-        {rescue && view.completed ? <Homecoming chaptersCleared={view.chaptersCleared} /> : <PipPortrait state="success" />}
+        {rescue && view.completed ? <Homecoming chaptersCleared={view.chaptersCleared} recoveredFlightRecorder={view.recoveredFlightRecorder === true} /> : <PipPortrait state="success" />}
         <p>
           {rescue ? 'One small robot. Two good partners.' : 'A safe crossing. A shared effort.'}
         </p>
@@ -61,9 +61,11 @@ export function Debrief({
         </p>
         <h1 id="debrief-title">{rescue ? 'You brought Pip home.' : 'You got Pip through.'}</h1>
         <p className="debrief-intro">
-          You brought the documents and remote controls. Pip brought local eyes and
-          hands. This is what you did together.
+          {rescue ? 'The station is behind you. Your partner is home.' : 'You brought the documents and remote controls. Pip brought local eyes and hands. This is what you did together.'}
         </p>
+        {rescue && <p className="home-story" data-testid="home-story"><span>Recovery bay · story</span>{view?.recoveredFlightRecorder ? 'And on the shelf: the flight recorder you chose to bring back.' : 'A safe arrival. That was always enough.'}</p>}
+        {closingCaption}
+        <details className="debrief-record" open={rescue ? undefined : true}><summary>{rescue ? 'Remember the journey' : 'Your collaboration record'}</summary>
         <div className="contribution-strip" aria-label="Retained collaboration record counts">
           <span>
             <strong>{record?.debrief ? humanActions : '—'}</strong>acknowledged remote{" "}
@@ -90,9 +92,9 @@ export function Debrief({
             history limit.
           </p>
         )}
-        {closingCaption}
+        </details>
         <div className="debrief-actions">
-          <button className="primary-button" onClick={onReplay} disabled={busy}>
+          <button className={rescue ? 'secondary-button' : 'primary-button'} onClick={onReplay} disabled={busy}>
             {rescue ? 'Start another rescue' : `Play ${scenario === "classic" ? "Classic" : "Maintenance"} again`}
             <span aria-hidden="true">↗</span>
           </button>

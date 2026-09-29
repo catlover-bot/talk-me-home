@@ -49,7 +49,7 @@ export const requestId = () => crypto.randomUUID();
 export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string }
 export const demoAccess = (signal?: AbortSignal) => request<DemoAccess>('/access', undefined, signal);
 export const unlockDemo = (code: string) => request<DemoAccess>('/access', { code });
-export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training') => request<HumanView>("/sessions", { scenario, missionKind });
+export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training', optionalObjective?: HumanView['optionalObjective']) => request<HumanView>("/sessions", { scenario, missionKind, ...(optionalObjective ? { optionalObjective } : {}) });
 export const getSession = (sessionId: string) =>
   request<HumanView>(`/sessions/${encodeURIComponent(sessionId)}`);
 
@@ -69,7 +69,7 @@ export function setPower(view: HumanView, powerOn: boolean) {
 export function lifecycle(
   view: HumanView,
   action: "stop" | "resume" | "reset" | "end" | "cancel",
-  options: { scenario?: Scenario; missionKind?: MissionKind; reason?: CancelReason } = {},
+  options: { scenario?: Scenario; missionKind?: MissionKind; optionalObjective?: HumanView['optionalObjective']; reason?: CancelReason } = {},
 ) {
   return request<HumanView>(
     `/sessions/${encodeURIComponent(view.sessionId)}/${action}`,
@@ -96,6 +96,10 @@ export function executeTool(
   call: RobotCall,
   signal?: AbortSignal,
 ) {
+  const localObject = call.arguments && typeof call.arguments === 'object' && !Array.isArray(call.arguments)
+    ? (call.arguments as Record<string, unknown>).object : undefined;
+  const needsVisit = call.name === 'inspect_gate' || (localObject === 'flight_recorder'
+    && ['inspect_object', 'propose_interaction', 'interact_object'].includes(call.name));
   return request<ToolResponse>(
     `/sessions/${encodeURIComponent(view.sessionId)}/tools`,
     {
@@ -105,7 +109,7 @@ export function executeTool(
       callId: call.callId,
       name: call.name,
       arguments: call.arguments,
-      ...(call.name === 'inspect_gate' && view.inspectionScope ? { inspectionScope: { visitId: view.inspectionScope.visitId } } : {}),
+      ...(needsVisit && view.inspectionScope ? { inspectionScope: { visitId: view.inspectionScope.visitId } } : {}),
     },
     signal,
   );

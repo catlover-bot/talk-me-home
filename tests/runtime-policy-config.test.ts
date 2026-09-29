@@ -134,7 +134,7 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
       assert.match(statusTool.description, /without asking permission/)
       assert.deepEqual(Object.keys(wire.session), ['system_prompt', 'greeting', 'tools', 'input', 'output'])
       // Developer-only regression facts stay out of the transmitted instructions.
-      assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor/)
+      assert.doesNotMatch(socket.sent[0], /Door and Conveyor share one Power supply|Door and Conveyor use one supply|Cargo Bay|Relay Gallery|Return Dock|latch_open|far_side|Beacon|Harbor|flight_recorder|flight recorder|archive/)
       // Only universal compass vocabulary may be enumerated, never hidden objects or routes.
       const enums = wire.session.tools.flatMap(tool => Object.entries(tool.parameters.properties)
         .filter(([, value]) => 'enum' in value).map(([key, value]) => [tool.name, key, (value as { enum: string[] }).enum]));

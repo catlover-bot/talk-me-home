@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto'
-import type { ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
+import type { ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, OptionalObjective, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
 import { applyHumanPower, applyRobotTool, exactObject, humanView, initialState, missionCompleted, type GameState } from './state.js'
 import { GameError } from './errors.js'
 import { RoundRecords } from './records.js'
@@ -31,6 +31,8 @@ interface StoredProposal {
   value: ActionProposal
   owner?: string
   location: string
+  /** Only the optional pickup needs this private observed-visit binding. */
+  recorderScope?: { visitId: string; actionEpoch: number }
   /** Detailed robot-local outcome never enters the human proposal or Game caption. */
   outcome?: ToolResult
   decision?: 'confirm' | 'decline'
@@ -61,6 +63,7 @@ function integer(value: unknown): value is number {
 
 function scenario(value: unknown): value is Scenario { return value === 'classic' || value === 'maintenance' }
 function missionKind(value: unknown): value is MissionKind { return value === 'training' || value === 'rescue' }
+function optionalObjective(value: unknown): value is OptionalObjective | null | undefined { return value === undefined || value === null || value === 'flight_recorder' }
 function fields(value: unknown, required: string[], optional: string[] = []): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value)
     && required.every(key => Object.hasOwn(value, key)) && Object.keys(value).every(key => required.includes(key) || optional.includes(key))
@@ -92,13 +95,14 @@ export class SessionStore {
   /** Server bootstrap only; no browser/model route can enable this sink. */
   enableLocalToolDiagnostics(sink: (event: ToolDiagnostic) => void): void { this.toolDiagnosticSink = sink }
 
-  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string): HumanView {
+  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string, objective?: OptionalObjective | null): HumanView {
     if (!scenario(selectedScenario) || !missionKind(kind) || (kind === 'rescue' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission or Classic/Maintenance Training.')
+    if (!optionalObjective(objective) || objective && kind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
     for (const [id, session] of this.sessions) {
       if (this.now() - session.touchedAt > (this.options.idleMilliseconds ?? 7_200_000)) this.sessions.delete(id)
     }
     if (this.sessions.size >= (this.options.maxSessions ?? 100)) throw new GameError(429, 'The local server has reached its session limit. Try again later or restart it.')
-    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration)
+    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration, objective)
     this.sessions.set(state.sessionId, { owner, state, touchedAt: this.now(), requests: new Map(), safetyRequests: new Map(), lastTokenAt: -Infinity, records: new RoundRecords(state.roundId, selectedScenario, this.now), proposals: new Map(), latestProposal: null, proposalRevision: 0 })
     return this.get(state.sessionId)
   }
@@ -121,7 +125,8 @@ export class SessionStore {
     const state = this.session(id).state
     return createHash('sha256').update(JSON.stringify({ powerOn: state.powerOn, doorLatched: state.doorLatched, robotLocation: state.robotLocation,
       selector: state.selector, chapter: state.chapter, gallery: { room: state.gallery.room, relay: state.gallery.relay },
-      dock: { location: state.dock.location, contactHeld: state.dock.contactHeld, energy: state.dock.energy } })).digest('hex')
+      dock: { location: state.dock.location, contactHeld: state.dock.contactHeld, energy: state.dock.energy },
+      ...(state.flightRecorder.selected ? { flightRecorderSecured: state.flightRecorder.secured } : {}) })).digest('hex')
   }
 
   private refreshProposal(session: Session): StoredProposal | undefined {
@@ -129,7 +134,8 @@ export class SessionStore {
     if (proposal?.value.status === 'awaiting_confirmation') {
       const state = session.state
       if (proposal.value.expiresAt <= this.now()) this.invalidateProposal(session, proposal, 'expired', 'This proposal expired without execution. Ask Pip for a new proposal.')
-      else if (state.status !== 'active' || proposal.value.roundId !== state.roundId || proposal.value.chapterEpoch !== state.chapterEpoch || proposal.location !== proposalLocation(state)) {
+      else if (state.status !== 'active' || proposal.value.roundId !== state.roundId || proposal.value.chapterEpoch !== state.chapterEpoch || proposal.location !== proposalLocation(state)
+        || proposal.recorderScope && (proposal.recorderScope.visitId !== state.gallery.visitId || proposal.recorderScope.actionEpoch !== state.actionEpoch)) {
         this.invalidateProposal(session, proposal, 'invalidated', 'This proposal belongs to an earlier mission context and was not executed.')
       }
     }
@@ -241,6 +247,11 @@ export class SessionStore {
         if (scope.chapter && scope.action && current.chapter !== 'gallery') return finish({ ok: false, code: 'tool_unavailable', recovery: 'observe_room', message: 'Direction-based gate inspection is available only in the Relay Gallery. Observe the current local equipment.' })
         if (!scope.chapter || !scope.action || scope.visit !== true) return finish({ ok: false, code: 'stale_scope', recovery: 'observe_room', message: 'This inspection belongs to an earlier or unobserved visit or action generation. Observe the current room, then inspect the requested direction again.' }, 'scope')
       }
+      const recorderRequest = ['inspect_object', 'propose_interaction', 'interact_object'].includes(request.name) && request.arguments.object === 'flight_recorder'
+      if (recorderRequest) {
+        if (current.status !== 'active') return finish({ ok: false, code: 'mission_stopped', recovery: 'resume_mission', message: 'The mission is stopped. Wait for Mission Control to resume before checking or proposing a pickup.' }, 'scope')
+        if (!scope.chapter || !scope.action || scope.visit !== true) return finish({ ok: false, code: 'stale_scope', recovery: 'observe_room', message: 'This object request belongs to an earlier or unobserved visit or action generation. Observe the current room again.' }, 'scope')
+      }
       currentChapter(current, request.chapterEpoch)
       if (request.actionEpoch !== current.actionEpoch) return finish({ ok: false, code: 'cancelled_before_execution', recovery: 'wait_for_control', message: 'This pending action was canceled before it committed. Observe again when Mission Control is ready.' }, 'scope')
       stage = 'tool_validation'
@@ -258,7 +269,8 @@ export class SessionStore {
           if (canonical(pending.value.action) === canonical(descriptor.action)) return finish(this.proposalResult(pending, current))
           return finish({ ok: false, code: 'not_executed', message: 'A different proposal is still awaiting a decision. It was not replaced. Mission Control must decline or cancel it before a different action is proposed.', proposal: structuredClone(pending.value) })
         }
-        const proposal: StoredProposal = { owner: session.owner, location: proposalLocation(current), value: {
+        const proposal: StoredProposal = { owner: session.owner, location: proposalLocation(current),
+          ...(recorderRequest ? { recorderScope: { visitId: current.gallery.visitId, actionEpoch: current.actionEpoch } } : {}), value: {
           id: randomUUID(), roundId: current.roundId, chapter: current.chapter, chapterEpoch: current.chapterEpoch,
           ...descriptor, status: 'awaiting_confirmation', expiresAt: this.now() + 90_000,
         } }
@@ -306,7 +318,7 @@ export class SessionStore {
           const before = current.revision
           const action = proposal.value.action
           result = action.kind === 'interaction'
-            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action }, this.now())
+            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action }, this.now(), proposal.recorderScope)
             : applyRobotTool(current, 'move_to', { target: action.target }, this.now())
           if (!result.ok) result = { ...result, code: 'precondition_failed' }
           proposal.outcome = { ...result }
@@ -339,9 +351,10 @@ export class SessionStore {
   }
 
   lifecycle(id: string, action: 'stop' | 'resume' | 'reset' | 'end' | 'cancel', input: unknown): Promise<HumanView> {
-    const optional = ['chapterEpoch', ...(action === 'reset' ? ['scenario', 'missionKind'] : []), ...(action === 'cancel' ? ['reason'] : [])]
+    const optional = ['chapterEpoch', ...(action === 'reset' ? ['scenario', 'missionKind', 'optionalObjective'] : []), ...(action === 'cancel' ? ['reason'] : [])]
     if (!fields(input, ['roundId', 'requestId'], optional) || !identifier(input.roundId) || !identifier(input.requestId)
       || ('scenario' in input && !scenario(input.scenario)) || ('missionKind' in input && !missionKind(input.missionKind))
+      || ('optionalObjective' in input && !optionalObjective(input.optionalObjective))
       || ('reason' in input && (typeof input.reason !== 'string' || !['interrupt', 'supersede', 'stop'].includes(input.reason)))) throw new GameError(400, 'This command requires the current round and a request identifier. Only Restart may choose Classic or Maintenance.')
     const request = input as unknown as LifecycleRequest
     const session = this.session(id, request.roundId)
@@ -352,7 +365,8 @@ export class SessionStore {
         const nextKind = request.missionKind ?? current.missionKind
         const nextScenario = request.scenario ?? current.scenario
         if (nextKind === 'rescue' && nextScenario !== 'classic') throw new GameError(400, 'Rescue Mission starts with Classic Cargo Bay rules.')
-        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration)
+        if (request.optionalObjective && nextKind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
+        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration, request.optionalObjective)
         session.records = new RoundRecords(session.state.roundId, session.state.scenario, this.now)
         session.requests.clear()
         session.safetyRequests.clear()

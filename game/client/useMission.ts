@@ -29,6 +29,8 @@ export function useMission() {
   const [stage, setStage] = useState<'briefing' | 'mission' | 'debrief'>('briefing');
   const [scenario, setScenario] = useState<Scenario>('classic');
   const [missionKind, setMissionKind] = useState<MissionKind>('rescue');
+  const [optionalObjective, setOptionalObjective] = useState<HumanView['optionalObjective']>();
+  const chooseMissionKind = (kind: MissionKind) => { setMissionKind(kind); setOptionalObjective(undefined); };
   const [mode, setMode] = useState<TransportOrigin>('practice');
   const [view, setView] = useState<HumanView | null>(null);
   const viewRef = useRef<HumanView | null>(null);
@@ -101,7 +103,7 @@ export function useMission() {
     if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
       setHint('');
       setRecapNotice('Checkpoint confirmed. Earlier reports remain in history with their original chapter.');
-      practiceMemory.current = { chapter: next.chapter, gates: [] };
+      practiceMemory.current = { chapter: next.chapter, gates: [], ...(practiceMemory.current.recorder === 'secured' ? { recorder: 'secured' } : {}) };
       void refreshRecord(next).catch(showError);
     }
     if (next.completed) {
@@ -263,7 +265,7 @@ export function useMission() {
     const prepareMission = async () => {
       let current = viewRef.current;
       const retained = !!current && !current.completed && current.status !== 'ended' && stage !== 'briefing';
-      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind === 'rescue' ? 'classic' : scenario, missionKind }) : await api.createSession(missionKind === 'rescue' ? 'classic' : scenario, missionKind);
+      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind === 'rescue' ? 'classic' : scenario, missionKind, ...(missionKind === 'rescue' && optionalObjective ? { optionalObjective } : {}) }) : await api.createSession(missionKind === 'rescue' ? 'classic' : scenario, missionKind, missionKind === 'rescue' ? optionalObjective : undefined);
       else current = await api.lifecycle(current!, 'resume');
       if (expected !== generation.current) {
         await api.lifecycle(current!, 'stop');
@@ -492,6 +494,7 @@ export function useMission() {
   };
 
   const newBriefing = async (nextScenario: Scenario = scenario, nextKind: MissionKind = missionKind) => {
+    setOptionalObjective(undefined);
     await stop();
     setBusyNow(true);
     try {
@@ -537,7 +540,10 @@ export function useMission() {
     try {
       await api.annotate(current, change);
       if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) await refreshRecord(viewRef.current);
-    } catch (cause) { if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) showError(cause); }
+    } catch (cause) {
+      if (currentRound(current.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) showError(cause);
+      throw cause; // The private-map editor must not record an undo for a rejected write.
+    }
   };
   const chooseMode = (next: TransportOrigin) => {
     if (next === 'game') return;
@@ -596,7 +602,7 @@ export function useMission() {
       : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' || status === 'awaiting_reply' ? 'considering'
         : view?.proposal?.status === 'awaiting_confirmation' ? 'awaiting_confirmation' : inputState !== 'inactive' ? 'listening' : 'ready';
   return {
-    stage, scenario, setScenario, missionKind, setMissionKind, mode, chooseMode, view, record, captions, segment, activeCaption,
+    stage, scenario, setScenario, missionKind, setMissionKind: chooseMissionKind, optionalObjective, setOptionalObjective, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
     error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, reducedMotion, pipState,
