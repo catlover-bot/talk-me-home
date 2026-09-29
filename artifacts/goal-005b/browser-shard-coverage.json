@@ -1,0 +1,18 @@
+[
+    {
+        "viewport":  "1280",
+        "total":  73,
+        "firstShard":  37,
+        "secondShard":  36,
+        "omitted":  0,
+        "duplicates":  0
+    },
+    {
+        "viewport":  "1440",
+        "total":  73,
+        "firstShard":  37,
+        "secondShard":  36,
+        "omitted":  0,
+        "duplicates":  0
+    }
+]

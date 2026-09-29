@@ -252,7 +252,17 @@ try {
     // Browser tests and screenshots exercise this exact compiled candidate.
     const frozen = buildHash();
     environment.GAME_QA_PREBUILT = '1';
-    await command('compiled-production browser tests', 'npm', ['run', 'test:e2e']);
+    // Match the existing CI matrix without dropping cases or enlarging deadlines.
+    // Each viewport keeps both shards; individual and suite timeouts stay unchanged.
+    const browserStarted = performance.now();
+    const firstBrowserCheck = report.checks.length;
+    for (const project of ['chromium-1280', 'chromium-1440']) for (const shard of ['1/2', '2/2']) {
+      await command(`compiled browser ${project} shard ${shard}`, 'npm', ['run', 'test:e2e', '--', `--project=${project}`, `--shard=${shard}`]);
+    }
+    const shards = report.checks.slice(firstBrowserCheck);
+    report.checks.push({ label: 'compiled-production browser tests', status: 'passed', durationMs: Math.round(performance.now() - browserStarted),
+      passedCases: shards.reduce((total, shard) => total + shard.passedCases, 0),
+      shards: shards.map(shard => ({ label: shard.label, passedCases: shard.passedCases, diagnosticLog: shard.diagnosticLog })) });
     assert.equal(buildHash(), frozen, 'Compiled candidate changed during browser tests.');
     await command('diff whitespace', 'git', ['diff', '--check']);
   }

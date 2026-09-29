@@ -74,11 +74,15 @@ for (const acknowledge of [false, true]) {
     let now = 100_000;
     t.mock.method(performance, 'now', () => now);
     const h = await pendingWorkFixture();
+    const audioEvent = { type: 'reply.audio', data: 'AQABAA==' };
+    h.socket.emit(audioEvent);
+    const playsBeforeEnd = h.audio.played;
     let settled = false;
     const stopping = h.live.end();
     const ending = stopping.then(() => { settled = true; });
     const advance = async (ms: number) => { now += ms; t.mock.timers.tick(ms); await tick(); };
     try {
+      assert.equal(playsBeforeEnd, 1, 'Positive control: valid PCM reaches the playback adapter before End.');
       assert.equal(h.live.end(), stopping);
       assert.equal(h.live.stop(), stopping);
       assert.equal(h.actionSignal.aborted, true);
@@ -88,7 +92,7 @@ for (const acknowledge of [false, true]) {
       h.audio.input?.('must-not-send');
       await advance(2742);
       h.socket.emit({ type: 'reply.started', reply_id: 'late-reply' });
-      h.socket.emit({ type: 'reply.audio', reply_id: 'late-reply', audio: 'AAAA' });
+      h.socket.emit(audioEvent);
       h.socket.emit({ type: 'tool.call', reply_id: 'late-reply', call_id: 'late-action', name: 'propose_move', arguments: { target: 'untrusted-late-target' } });
       await advance(5882);
       h.socket.emit({ type: 'transcript.agent', reply_id: 'late-reply', text: 'The Southeast gate is open and the passage is clear of any cargo. Should I move through it?' });
@@ -96,7 +100,7 @@ for (const acknowledge of [false, true]) {
       h.socket.emit({ type: 'reply.done', reply_id: 'late-reply', status: 'completed' });
       h.socket.emit({ type: 'session.ready' });
       assert.equal(h.live.endAcknowledged, false, 'An ordinary completed reply is not an ending ACK.');
-      assert.equal(h.audio.played, 0);
+      assert.equal(h.audio.played, playsBeforeEnd, 'The same valid PCM must not start additional playback after End.');
       assert.deepEqual(h.captions, []);
       assert.deepEqual(h.executedTools, ['observe_room']);
       assert.equal(h.microphone.at(-1), false);

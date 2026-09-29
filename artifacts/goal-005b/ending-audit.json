@@ -238,6 +238,7 @@
     "expanded": {
       "passed": 11,
       "failed": 0,
+      "coverageLimitation": "Initial observation: the late reply.audio fixture used audio instead of the supported data field. This run did not establish suppression of a valid PCM event. Its original log and source hashes are retained; the corrected positive-control run is recorded below.",
       "log": {
         "path": ".validation/goal-005b/ending-audit-regressions.log",
         "bytes": 1282,
@@ -257,7 +258,7 @@
     "coverage": [
       "delayed and absent ACK",
       "six-second and constructed 9.2-second ACK",
-      "late ordinary reply/audio/tool events",
+      "late ordinary reply/tool events; valid-audio coverage corrected below",
       "repeated End and hung cancellation",
       "manual/automatic cap exhaustion at both 600 and 900 seconds",
       "one End and finite cleanup",
@@ -282,6 +283,42 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     }
+  },
+  "audioFixtureCorrection": {
+    "recordedAt": "2026-09-29T13:43:01.4374265Z",
+    "priorReceipt": {
+      "commit": "7473ea791745be20a44997789a76602ac7767bb1",
+      "path": "artifacts/goal-005b/ending-audit.json",
+      "bytes": 11873,
+      "sha256": "c04b10c6f6aae977e79dfa1791bf01a13e07ddf4371878e6e7d903f64c363715"
+    },
+    "finding": "Review found a test-fixture field error, not a production ending defect. The initial late-audio assertion did not use the supported data field and therefore provided limited coverage.",
+    "change": "Both adverse schedules now send the same valid data event containing two PCM16 samples before and after End. A positive control proves exactly one playback-adapter invocation before End; the count remains one after End.",
+    "productionEndingChanged": false,
+    "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/voice-lifecycle.test.ts",
+    "passed": 11,
+    "failed": 0,
+    "log": {
+      "path": ".validation/goal-005b/ending-audio-correction.log",
+      "bytes": 1280,
+      "sha256": "67ce3f482670552840ebf4a6f71d30b662fa6580f192a6c922621c535d2c4ddd"
+    },
+    "testSource": {
+      "path": "tests/voice-lifecycle.test.ts",
+      "bytes": 13514,
+      "sha256": "e8bb1c1df3054cca820f9be329441e78aa8679e64428b04acbaf694fbc71a740"
+    },
+    "typecheck": {
+      "command": "GAME_DISABLE_LIVE=1 npm run typecheck",
+      "exitCode": 0,
+      "log": {
+        "path": ".validation/goal-005b/ending-audio-correction-typecheck.log",
+        "bytes": 55,
+        "sha256": "7f2b44c31228841cfdc61c145ce1019e332e292f8fe8ed5235c6628158c2887b"
+      }
+    },
+    "diffCheck": { "command": "git diff --check", "exitCode": 0, "evidence": "Tool output; no separate corrected log." },
+    "interpretation": "Test-only coverage strengthening with a positive control, not a failing production repair or new provider evidence. Initial logs/hashes and historical outcomes remain unchanged. This proves adapter event handling, not physical speaker playback or human listening."
   },
   "disposition": "Retain the existing finite ending policy and historical missing-ACK outcomes. No deadline enlargement, fabricated ACK, real call, accounting mutation or production ending edit is justified by this audit."
 }
