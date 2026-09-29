@@ -91,11 +91,14 @@ async function command(label, executable, arguments_, timeout = 240_000) {
   try { code = await new Promise((done, reject) => { child.on('error', reject); child.on('close', done); }); }
   finally { clearTimeout(timer); await stop(child); }
   const result = { label, status: code === 0 && !timedOut ? 'passed' : 'failed', durationMs: Math.round(performance.now() - started), exitCode: code, timedOut };
+  // Retain bounded diagnostics so a failing suite can be investigated directly.
+  const log = `${label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.log`;
+  writeFileSync(join(directory, log), output);
+  result.diagnosticLog = `${evidenceBase}/${log}`;
   const passed = output.match(/(?:#|\u2139) pass (\d+)/)?.[1] ?? output.match(/(\d+) passed(?:\s|\()/)?.[1];
   if (passed) result.passedCases = Number(passed);
   report.checks.push(result);
-  // Keep evidence to metadata. Raw test diagnostics are available in an explicit rerun.
-  assert.equal(result.status, 'passed', `${label} failed; rerun the named ordinary offline command for diagnostics.`);
+  assert.equal(result.status, 'passed', `${label} failed; inspect ${result.diagnosticLog}.`);
 }
 async function freePort() {
   const listener = createServer();
