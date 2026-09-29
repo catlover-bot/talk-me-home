@@ -35,6 +35,34 @@ test('unresolved recovery has a fixed 120-second deadline and scope invalidity i
   assert.equal(calls, 2);
 });
 
+test('a never-resolving exchange expires at 120 seconds without another request and clears its deadline timer', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const scheduled = t.mock.method(globalThis, 'setTimeout');
+  const cleared = t.mock.method(globalThis, 'clearTimeout');
+  let time = 0; let calls = 0; let settled = false;
+  let exchangeStarted!: () => void;
+  const started = new Promise<void>(resolve => { exchangeStarted = resolve; });
+  const report: Record<string, any> = {};
+  const acquisition = acquirePlayerReport({ subject: 'location', read: () => null, requests: LOCATION_REQUESTS, report, now: () => time,
+    exchange: () => { calls++; exchangeStarted(); return new Promise<string>(() => {}); } });
+  const rejected = assert.rejects(acquisition, /location recovery exceeded 120 seconds/).then(() => { settled = true; });
+  await started;
+  assert.equal(scheduled.mock.calls.length, 1);
+  const deadline = scheduled.mock.calls[0]!;
+  assert.equal(deadline.arguments[1], 120_000);
+  time = 119_999; t.mock.timers.tick(119_999); await Promise.resolve();
+  assert.equal(settled, false); assert.equal(calls, 1);
+  assert.equal(cleared.mock.calls.length, 0);
+  time = 120_000; t.mock.timers.tick(1); await rejected;
+  assert.equal(report.acquisitions[0].outcome, 'failed');
+  assert.equal(report.acquisitions[0].endedAt, 120_000);
+  assert.equal(report.acquisitions[0].exchanges.length, 1);
+  assert.equal(cleared.mock.calls.length, 1);
+  assert.equal(cleared.mock.calls[0]!.arguments[0], deadline.result);
+  t.mock.timers.tick(120_000); await Promise.resolve();
+  assert.equal(calls, 1); assert.equal(scheduled.mock.calls.length, 1);
+});
+
 test('open gate never supplies passability and read-only obstruction clarification can recover', async () => {
   const replies = ['The east gate is open.', 'Should I inspect the opening?', 'The east opening is unobstructed.'];
   let passage: 'clear' | 'blocked' | null = null;

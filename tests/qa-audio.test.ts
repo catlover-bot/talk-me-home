@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { runInNewContext } from 'node:vm';
 import type { Page } from '@playwright/test';
 import { encodePcmWav, parsePcmWav, validateSpeechWav } from '../scripts/qa-speech-fixtures.mjs';
 import { sanitizeWireEvent, assembleRecording, installAudioInstrumentation } from '../scripts/qa-browser-instrumentation.mjs';
@@ -67,3 +68,37 @@ test('QA proposal metadata records nonexecution and an aliased identity without 
   assert.equal(sanitizeWireEvent({ type: 'tool.call', name: 'propose_move' }, 'received')?.name, 'propose_move');
   assert.equal(sanitizeWireEvent({ type: 'tool.call', name: 'get_action_status' }, 'received')?.name, 'get_action_status');
 });
+
+test('received provider errors retain only explicit account refusal classification', () => {
+  for (const [error, expected] of [
+    [{ code: 'insufficient_credits', message: 'PRIVATE_DETAIL' }, 'provider_credit_refused'],
+    [{ message: 'Insufficient balance: PRIVATE_DETAIL' }, 'provider_credit_refused'],
+    [{ error: 'Workspace mismatch: PRIVATE_DETAIL' }, 'provider_credential_or_account_refused'],
+    [{ error: { message: 'ACCOUNT DOES NOT MATCH: PRIVATE_DETAIL' } }, 'provider_credential_or_account_refused'],
+    [{ code: 'server_error', message: 'PRIVATE_DETAIL' }, undefined],
+  ] as const) {
+    const safe = sanitizeWireEvent({ type: 'session.error', ...error }, 'received');
+    assert.equal(safe?.failed, true);
+    assert.equal(safe?.accountRefusal, expected);
+    assert.doesNotMatch(JSON.stringify(safe), /PRIVATE_DETAIL|message|server_error|insufficient_credits/);
+  }
+});
+
+
+test('actual installed QA instrumentation blocks a second socket before native construction', async () => {
+  let script = '';
+  const page = { addInitScript: async (value: { content: string }) => { script = value.content; } } as unknown as Page;
+  await installAudioInstrumentation(page, { label: 'OFFLINE QA \u2014 FAKE PROVIDER \u2014 SYNTHETIC AUDIO', maxProviderSockets: 1 });
+  let constructed = 0;
+  class FakeSocket { constructor() { constructed++; } addEventListener() {} send() {} }
+  class FakeAudioNode { connect() {} }
+  class FakeWorklet { addModule() {} }
+  const globals = { WebSocket: FakeSocket, AudioContext: class {}, AudioWorkletNode: class {}, AudioNode: FakeAudioNode, AudioWorklet: FakeWorklet,
+    URL: { createObjectURL: () => 'blob:offline', revokeObjectURL() {} }, navigator: { mediaDevices: {} }, document: { addEventListener() {} }, performance: { now: () => 0 } };
+  runInNewContext(script, globals);
+  new globals.WebSocket();
+  assert.equal(constructed, 1);
+  assert.throws(() => new globals.WebSocket(), /one provider socket/);
+  assert.equal(constructed, 1, 'the second attempt never reaches the native constructor');
+  assert.match(runInNewContext('JSON.stringify(__qaAudio.snapshot())', globals), /socket.attempt.blocked/);
+})

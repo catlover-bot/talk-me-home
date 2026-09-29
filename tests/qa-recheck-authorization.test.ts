@@ -12,11 +12,14 @@ import { writeGoal004EConfirmedHistory } from './fixtures/goal-004c-history.js'
 import { initializeAmendment, AmendedCampaignBudget } from '../scripts/qa-amended-budget.mjs'
 
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
-test('the frozen configuration pin covers the exact shipped session.update envelope, not the bare config', () => {
-  assert.equal(hash({ type: 'session.update', session: sessionConfig }), GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
-  assert.equal(hash(sessionConfig), '2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1')
-  assert.notEqual(hash(sessionConfig), GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
+test('the historical recheck keeps its exact session.update pin while Goal005 delivers a changed configuration', () => {
+  const historical = JSON.parse(readFileSync('artifacts/goal-004e/recheck-live/execution-identity.json', 'utf8'))
+  assert.equal(historical.identity.sessionUpdateSha256, GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
+  assert.equal(historical.identity.runtimeSha256, GOAL_004E_RECHECK_RUNTIME_SHA256)
+  assert.notEqual(hash({ type: 'session.update', session: sessionConfig }), GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
+  assert.notEqual(hash({ type: 'session.update', session: sessionConfig }), hash(sessionConfig))
 })
+
 function fixture() {
   const files = JSON.parse(readFileSync('artifacts/goal-004e/follow-up/candidate.json', 'utf8')).files
   const harnessFiles = { 'constructed-activation.mjs': 'a'.repeat(64) }

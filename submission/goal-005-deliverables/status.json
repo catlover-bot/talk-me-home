@@ -1,0 +1,14 @@
+{
+  "phase": "IN_PROGRESS",
+  "displayStatus": "Goal 005 draft · live acceptance in progress",
+  "acceptanceHeadline": "The final live result is still being established.",
+  "acceptanceCopy": "Current images show deterministic Practice. Final-candidate Voice completion, recovery and ending evidence will replace this status after the approved batch.",
+  "verifiedBuild": null,
+  "publicDemoUrl": null,
+  "uploadedVideoUrl": null,
+  "evidencePath": "artifacts/goal-005/ui/gallery-validation.json",
+  "uiCaptures": {
+    "wide": "artifacts/goal-005/ui/goal-005-gallery-chromium-1440.png",
+    "report": "artifacts/goal-005/ui/goal-005-gallery-zoom-chromium-1280.png"
+  }
+}

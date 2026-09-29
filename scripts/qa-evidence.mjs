@@ -8,7 +8,7 @@ import { inspectCampaign } from './qa-budget.mjs'
 import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE,
   QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE,
   QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE,
-  QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
+  QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE, QA_GOAL005_AMENDMENT_ID, QA_GOAL005_AMENDMENT_LEDGER, QA_GOAL005_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs'
 import { assertGoal004CAmendedNextAttempt, assertGoal004DNextAttempt } from './qa-live-authorization.mjs'
 import { validateSpeechWav } from './qa-speech-fixtures.mjs'
 
@@ -118,7 +118,7 @@ export function durationBounds(report, evidence, reservation) {
     documentedDisconnectGraceSeconds: acknowledged ? 0 : 30,
     remoteSecondsWithDocumentedGraceUpperEstimate: Number.isFinite(localUpper) ? round(localUpper + (acknowledged ? 0 : 30)) : null,
     supervisorClosedAt: iso(reservation?.closedAt),
-    accountingBoundary: 'Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the durable 670-second reservation.',
+    accountingBoundary: 'Derived observation bounds only; missing socket-close or session.ended events remain missing. The remote upper estimate assumes documented disconnect grace and verified owned-process cleanup, is not an invoice, and does not reduce the full durable reservation.',
   }
 }
 
@@ -178,18 +178,29 @@ export function summarizeAttempt(report, evidence, reservation) {
     ...(report.identity?.fixtureSha256 ? { fixtureSha256: /^[0-9a-f]{64}$/.test(report.identity.fixtureSha256) ? report.identity.fixtureSha256 : null } : {}),
     nodeVersion: /^v\d+\.\d+\.\d+$/.test(report.identity?.node) ? report.identity.node : null,
     browserVersion: /^\d+(?:\.\d+){1,4}$/.test(report.browserVersion) ? report.browserVersion : null,
+    ...(report.accountRefusal ? { accountRefusal: choice(report.accountRefusal, ['provider_credit_refused', 'provider_credential_or_account_refused']) } : {}),
     inputMode: text(report.inputMode), completion: report.completion === true, route: (report.route ?? []).map(text), failure: text(report.failure), tokenRequests: count(report.tokenRequests),
     ...(report.voicePath ? { voicePath: Object.fromEntries(['syntheticMicrophoneOnly', 'actualAsrFinalObserved', 'nonzeroInput', 'nonzeroProviderAudio', 'nonzeroRenderedAudio', 'nonzeroPostVolumeAudio'].map(key => [key, report.voicePath[key] === true])) } : {}),
     ending: { explicitEndSent: Boolean(endSent), endAcknowledged: Boolean(ended), endSentAtMs: round(endSent?.atMs), endAcknowledgedAtMs: round(ended?.atMs), endAcknowledgementDelayMs: ended && endSent ? round(ended.atMs - endSent.atMs) : null, socketCloseCode: socketClose?.code ?? null, socketCloseWasClean: socketClose?.clean ?? null, localConnectedSeconds: socketOpen && (ended || socketClose) ? round(((ended ?? socketClose).atMs - socketOpen.atMs) / 1000) : null, providerSessionSeconds: Number.isFinite(report.providerDurationSeconds) ? report.providerDurationSeconds : null },
     durationBounds: durationBounds(report, evidence, reservation),
     checkpoints: (report.checkpoints ?? []).filter(checkpoint => ['Cargo Bay', 'Relay Gallery', 'Return Dock', 'You brought Pip home.', 'Home'].includes(checkpoint.title) && Number.isFinite(checkpoint.observedAtMs)).map(checkpoint => ({ title: checkpoint.title, observedAtMs: round(checkpoint.observedAtMs), source: 'Human-visible chapter/completion heading observed by the browser driver' })),
     audio, utterances, typedTurns, tools, finalTranscripts, visibleHistory: visible,
+    decisionReceipts: events.filter(event => event.type === 'conversation.message' && event.purpose === 'decision_receipt').map(event => ({ atMs: round(event.atMs), proposalRef: count(event.proposalRef), perceptionPresent: event.perceptionPresent === true, perceptionOrigin: text(event.perceptionOrigin), visitRef: count(event.visitRef), observationRevision: count(event.observationRevision) })),
+    responseRequests: events.filter(event => event.type === 'reply.create').map(event => ({ atMs: round(event.atMs), purpose: text(event.purpose), reportKind: text(event.reportKind), perceptionPresent: event.perceptionPresent === true, perceptionOrigin: text(event.perceptionOrigin), visitRef: count(event.visitRef), observationRevision: count(event.observationRevision) })),
     ...((report.steps ?? []).some(step => step.turnId !== undefined) ? { inputSteps: report.steps.map(step => ({
       inputMode: ['text', 'voice'].includes(step.inputMode) ? step.inputMode : null, utterance: text(step.utterance),
       fixture: text(step.fixture), ...stepProvenance(step), failureLayer: text(step.failureLayer), reason: text(step.reason),
     })) } : {}),
     ...(report.behavior ? { behavior: summarizeBehavior(report.behavior) } : {}),
     ...(Array.isArray(report.actionRequests) ? { actionRequests: report.actionRequests.map(actionRequestSummary) } : {}),
+    ...(Array.isArray(report.acquisitions) ? { acquisitions: report.acquisitions.map(item => ({
+      subject: text(item.subject), outcome: text(item.outcome), strictFirstResponse: item.strictFirstResponse === true, recovered: item.recovered === true,
+      startedAt: round(item.startedAt), endedAt: round(item.endedAt), deadlineAt: round(item.deadlineAt), failure: text(item.failure),
+      exchanges: (item.exchanges ?? []).map(exchange => ({ text: text(exchange.text), reason: text(exchange.reason), reply: text(exchange.reply), outcome: text(exchange.outcome), startedAt: round(exchange.startedAt), endedAt: round(exchange.endedAt) })),
+    })) } : {}),
+    ...(report.recoveryExercise ? { recoveryExercise: Object.fromEntries(Object.entries(report.recoveryExercise).filter(([key]) => ['status', 'label', 'proposalId', 'reason', 'source', 'outcome', 'kind', 'declined', 'recovered', 'completed'].includes(key)).map(([key, value]) => [key, typeof value === 'boolean' ? value : text(value)])) } : {}),
+    ...(Array.isArray(report.boundaryWaits) ? { boundaryWaits: report.boundaryWaits.map(preSubmitSummary) } : {}),
+    decisionContextDeliveries: events.filter(event => event.type === 'decision.context.delivery').map(event => ({ atMs: round(event.atMs), sha256: digest(event.sha256), proposalRef: count(event.proposalRef), perceptionPresent: event.perceptionPresent === true, boundary: text(event.boundary) })),
     ...(Array.isArray(report.preSubmitWaits) ? { preSubmitWaits: report.preSubmitWaits.map(preSubmitSummary) } : {}),
     ...(Array.isArray(report.confirmations) ? { confirmations: report.confirmations.map(receipt => ({ proposalId: text(receipt.proposalId), label: text(receipt.label), intendedRequest: text(receipt.intendedRequest), status: text(receipt.status),
       confirmationRequestedAtMs: round(receipt.confirmationRequestedAtMs), confirmedAtMs: round(receipt.confirmedAtMs), source: text(receipt.source) })) } : {}),
@@ -297,6 +308,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   // A partial/corrupt supplement must never silently fall back to the old ledger.
   let amendment
   for (const candidate of [
+    { id: QA_GOAL005_AMENDMENT_ID, ledger: QA_GOAL005_AMENDMENT_LEDGER, allowance: QA_GOAL005_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-005/live' },
     { id: QA_RECHECK_AMENDMENT_ID, ledger: QA_RECHECK_AMENDMENT_LEDGER, allowance: QA_RECHECK_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004e/recheck-live' },
     { id: QA_CONFIRMED_AMENDMENT_ID, ledger: QA_CONFIRMED_AMENDMENT_LEDGER, allowance: QA_CONFIRMED_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004e/live' },
     { id: QA_RUNTIME_AMENDMENT_ID, ledger: QA_RUNTIME_AMENDMENT_LEDGER, allowance: QA_RUNTIME_AMENDMENT_ALLOWANCE, output: 'artifacts/goal-004d/retest/live' },
@@ -308,6 +320,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
   const state = amended ? inspectAmendedCampaign(directory, amendment.id) : inspectCampaign(directory)
   output = resolve(output ?? amendment?.output ?? 'artifacts/goal-004b/live')
   const historicalOutputs = ['artifacts/goal-004b/live', 'artifacts/goal-004c/live',
+    ...(amendment?.id === QA_GOAL005_AMENDMENT_ID ? ['artifacts/goal-004d/retest/live', 'artifacts/goal-004e/live', 'artifacts/goal-004e/recheck-live'] : []),
     ...(amendment?.id !== QA_AMENDMENT_ID ? ['artifacts/goal-004c/final-acceptance/live'] : []),
     ...([QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID].includes(amendment?.id) ? ['artifacts/goal-004d/retest/live'] : []),
     ...(amendment?.id === QA_RECHECK_AMENDMENT_ID ? ['artifacts/goal-004e/live'] : [])]
@@ -337,6 +350,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
         ?? state.attempts.find(row => !linkedReservations.has(row.attempt) && row.name === report.scenario)
     if (report.reservation && !reservation) throw new Error('Recorded attempt reservation does not match one unused campaign reservation.')
     if (reservation) linkedReservations.add(reservation.attempt)
+    if (amendment?.id === QA_GOAL005_AMENDMENT_ID && (!reservation || reservation.attempt <= 5)) continue
     const attempt = summarizeAttempt(report, evidence, reservation)
     attempt.accountingAttempt = reservation?.attempt ?? null
     for (const utterance of attempt.utterances) if (/^speech-[a-f0-9]{16}$/.test(utterance.fixture)) usedFixtureIds.add(utterance.fixture)
@@ -368,7 +382,7 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
       : last.name === 'text-mission' && last.result?.outcome === 'passed' && last.result.endAcknowledged && last.closedAt !== null ? 'requires_identical_candidate_voice_guard' : 'voice_blocked_by_text_result_or_cleanup'
     : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'ready_for_explicit_supervised_attempt'
   let amendedSequence
-  if (amended) {
+  if (amended && amendment.id !== QA_GOAL005_AMENDMENT_ID) {
     const recheckVoice = amendment.id === QA_RECHECK_AMENDMENT_ID
     const finalVoice = recheckVoice || amendment.id === QA_CONFIRMED_AMENDMENT_ID
     const candidate = reports.find(report => report.reservation?.attempt === state.historicalAttempts + 1)?.identity
@@ -390,6 +404,13 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
     admissionStatus = remainingAttempts === 0 ? 'exhausted' : recheckVoice ? 'requires_recheck_voice_frozen_candidate_admission' : finalVoice ? 'requires_final_voice_frozen_candidate_admission' : state.newAttempts === 0 ? 'requires_explicit_supervised_amended_text_attempt'
       : amendedSequence.passed ? 'requires_identical_frozen_candidate_voice_admission' : 'conditional_voice_blocked'
   }
+  if (amendment?.id === QA_GOAL005_AMENDMENT_ID) {
+    admissionStatus = state.halt ? 'permanently_stopped_provider_account_refusal' : remainingAttempts === 0 ? 'exhausted' : !last?.result || !Number.isSafeInteger(last.closedAt) ? 'waiting_for_independent_cleanup' : nextPermittedAt > Date.now() ? 'waiting_for_uncertain_session_lease' : 'requires_current_frozen_candidate_batch_admission';
+    amendedSequence = { mode: state.newAttempts === 0 ? 'voice' : 'voice_or_reasoned_text_diagnostic', passed: false,
+      diagnosticTextAttemptsUsed: state.attempts.slice(5).filter(attempt => attempt.name === 'text-mission').length,
+      reason: 'Each attempt requires the current immutable runtime/player/fixture freeze and aggregate supervisor lock. Repairs between attempts do not refund reservations.',
+      boundary: 'Read-only accounting, not a new grant or an executable admission approval.' };
+  }
   const summary = {
     label: attempts.some(attempt => attempt.mode === 'text') ? MIXED_LABEL : LABEL, attempts: state.attempts.length, productionAttempts: state.productionAttempts, remainingAttempts,
     reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars, verifiedRateDollarsPerHour: state.header.hourlyRate,
@@ -406,6 +427,9 @@ export async function exportCampaign({ directory = resolve('.validation/goal-004
       amendmentLedgerSha256: sha256(await readFile(join(directory, amendment.ledger))),
       amendedAllowanceSha256: sha256(await readFile(join(directory, amendment.allowance))),
       amendedSequence,
+      ...(amendment.id === QA_GOAL005_AMENDMENT_ID ? { approvedNewAttempts: 8, approvedNewReservedSeconds: 7760, approvedNewDollars: 10, permanentStop: state.halt ? { reason: state.halt.reason, attempt: state.halt.attempt, haltedAt: iso(state.halt.haltedAt) } : null,
+        estimatedNewReservedDollars: state.newReservedSeconds * state.header.hourlyRate / 3600,
+        historicalEvidence: 'Five unchanged historical attempts remain linked through the fixed predecessor hashes; their compact exports are not duplicated.' } : {}),
     } : {}),
     results: attempts, accountingBoundary: 'Conservative campaign reservations never decrease. These are planning estimates, not an invoice or an account-wide cap. Balance and unrelated account usage are unknown.',
     redaction: 'Narrow allowlist export: no keys, tokens, cookies, signed URLs, access codes, tool arguments, tool-result payloads, configuration echoes, or hidden state. Provider final transcripts and visible history retain distinct source labels.',

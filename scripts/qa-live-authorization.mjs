@@ -1,9 +1,11 @@
 // Explicit owner approval on September 26, 2026 JST activates this one fixed campaign.
+import { execFileSync } from 'node:child_process'
+import { createRequire } from 'node:module'
 import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync, readdirSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { join, resolve, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID } from './qa-amended-budget.mjs'
+import { inspectAmendedCampaign, QA_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ID, QA_GOAL005_AMENDMENT_ID } from './qa-amended-budget.mjs'
 
 export const GOAL_004C_PROPOSAL = Object.freeze({
   status: 'AUTHORIZED_BOUNDED_CAMPAIGN',
@@ -424,4 +426,103 @@ export function assertGoal004DReservationAuthorized({ directory, mode, identity 
     reports.push(JSON.parse(readFileSync(path, 'utf8')))
   }
   assertGoal004DNextAttempt({ campaign: inspectAmendedCampaign(campaignDirectory, QA_RUNTIME_AMENDMENT_ID), mode, identity, reports })
+}
+
+
+// The September 29 Goal 005 instruction approves a repair-and-test batch, not
+// renewal of any historical allowance. Each call still consumes its full slot.
+export const GOAL_005_AMENDMENT = Object.freeze({
+  id: QA_GOAL005_AMENDMENT_ID, approvedOnJst: '2026-09-29', historicalAttempts: 5,
+  maxNewAttempts: 8, maxAttempts: 13, reservationSeconds: 970, newCapacitySeconds: 7760,
+  capacitySeconds: 11110, maxSessionSeconds: 900, concurrentConnections: 1,
+  hourlyRate: 4.5, maxNewDollars: 10, estimatedNewReservedDollars: 9.70,
+  maxDiagnosticTextAttempts: 2, existingBalanceOnly: true, automaticReplenishment: false,
+})
+export const GOAL_005_HARNESS_FILES = Object.freeze(['qa-live-browser.mjs', 'qa-live-speech.mjs', 'qa-production-observer.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-player-recovery.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs'])
+export function goal005FrozenFile(attempt, commit) {
+  if (!Number.isInteger(attempt) || attempt < 6 || attempt > 13 || !/^[a-f0-9]{40}$/.test(commit)) throw new Error('Invalid Goal 005 candidate identity.')
+  return `goal-005-attempt-${attempt}-${commit}.json`
+}
+export function assertGoal005LiveAuthorized() {
+  if (process.env.CI !== undefined || process.env.GAME_DISABLE_LIVE !== undefined) throw new Error('LIVE_DISABLED: CI and GAME_DISABLE_LIVE prohibit real Goal 005 calls.')
+  let campaign
+  try {
+    const stat = lstatSync(campaignDirectory)
+    if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error('Invalid directory')
+    campaign = inspectAmendedCampaign(campaignDirectory, QA_GOAL005_AMENDMENT_ID)
+  } catch { throw new Error('APPROVED_CAMPAIGN_UNAVAILABLE: The fixed Goal 005 grant must already exist; nothing was initialized.') }
+  if (campaign.halt) throw new Error('APPROVED_CAMPAIGN_STOPPED: Provider credit or credential/account refusal permanently stopped this batch; no further attempt is permitted.')
+  if (campaign.attempts.length >= 13) throw new Error('APPROVED_CAMPAIGN_EXHAUSTED: The eight additional Goal 005 attempts are consumed; no replenishment is authorized.')
+}
+export function assertGoal005NextAttempt({ campaign, mode, identity, exerciseRecovery = false, diagnosticReason = null, now = Date.now() }) {
+  const header = campaign?.header
+  const attempts = campaign?.attempts
+  if (campaign?.halt || header?.id !== QA_GOAL005_AMENDMENT_ID || header.historicalAttempts !== 5 || header.maxNewAttempts !== 8 || header.maxAttempts !== 13
+    || header.reservationSeconds !== 970 || header.newCapacitySeconds !== 7760 || header.capacitySeconds !== 11110
+    || header.maxSessionSeconds !== 900 || header.hourlyRate !== 4.5 || header.planningDollars !== 14.1875
+    || !Array.isArray(attempts) || attempts.length < 5 || attempts.length >= 13 || !validIdentity(identity)
+    || !identity.fixtureFiles || !Object.keys(identity.fixtureFiles).length || digest(identity.fixtureFiles) !== identity.fixtureSha256
+    || !/^[a-f0-9]{64}$/.test(identity.sessionUpdateSha256) || !/^[a-f0-9]{64}$/.test(identity.browserExecutableSha256)
+    || !['voice', 'text'].includes(mode) || typeof exerciseRecovery !== 'boolean'
+    || mode === 'text' && (attempts.length === 5 || exerciseRecovery || typeof diagnosticReason !== 'string' || diagnosticReason.trim().length < 12 || diagnosticReason.length > 300 || attempts.slice(5).filter(value => value.name === 'text-mission').length >= 2)
+    || mode === 'voice' && diagnosticReason !== null) throw new Error('Goal 005 requires one of eight bounded attempts, Voice first, at most two reasoned Text diagnostics and a frozen candidate.')
+  const previous = attempts.at(-1)
+  if (!previous?.result || !Number.isSafeInteger(previous.closedAt) || previous.closedAt < previous.result.finishedAt || previous.closedAt > now
+    || previous.result.endAcknowledged !== true && previous.leaseUntil > now) throw new Error('The previous attempt needs independent cleanup and ending ACK or expiration of its full conservative lease.')
+}
+export function assertGoal005CurrentIdentity(identity) {
+  const { chromium } = createRequire(import.meta.url)('@playwright/test')
+  if (!validIdentity(identity)) throw new Error('A complete candidate manifest is required.')
+  const root = fileURLToPath(new URL('../', import.meta.url))
+  const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
+  if (git(['branch', '--show-current']) !== 'work/goal-005-gallery-live-completion' || git(['rev-parse', 'HEAD']) !== identity.commit || git(['status', '--porcelain'])) throw new Error('Each Goal 005 call requires a clean committed candidate on its approved branch.')
+  const hash = path => {
+    const stat = lstatSync(path)
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Candidate inputs must be regular files.')
+    return createHash('sha256').update(readFileSync(path)).digest('hex')
+  }
+  const runtime = []
+  const walk = path => { for (const entry of readdirSync(join(root, path), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) { const child = `${path}/${entry.name}`; if (entry.isDirectory()) walk(child); else runtime.push(child) } }
+  walk('dist')
+  if (JSON.stringify(runtime) !== JSON.stringify(Object.keys(identity.files)) || runtime.some(path => hash(join(root, path)) !== identity.files[path])
+    || JSON.stringify(Object.keys(identity.harnessFiles)) !== JSON.stringify(GOAL_005_HARNESS_FILES)
+    || GOAL_005_HARNESS_FILES.some(path => hash(join(root, 'scripts', path)) !== identity.harnessFiles[path])) throw new Error('The runtime or shared player/harness changed after freezing.')
+  const fixtures = readdirSync(join(root, '.validation/goal-004b-media')).filter(name => /^speech-[a-f0-9]{16}\.(?:json|wav)$/.test(name)).sort()
+  if (JSON.stringify(fixtures) !== JSON.stringify(Object.keys(identity.fixtureFiles)) || fixtures.some(path => hash(join(root, '.validation/goal-004b-media', path)) !== identity.fixtureFiles[path])
+    || hash(chromium.executablePath()) !== identity.browserExecutableSha256 || identity.node !== process.version) throw new Error('Speech, browser or Node identity changed after freezing.')
+}
+export function assertGoal005Validation({ validation, identity, firstAttempt = false }) {
+  const required = firstAttempt ? ['typecheck', 'unit tests', 'production build', 'compiled-production browser tests', 'diff whitespace'] : ['typecheck', 'production build', 'diff whitespace']
+  if (!validation || validation.status !== 'passed' || validation.dirty !== false || validation.commit !== identity?.commit
+    || validation.branch !== 'work/goal-005-gallery-live-completion' || validation.realProviderCalls !== 0
+    || validation.runtimeManifestSha256 !== identity.runtimeSha256 || validation.targetBuildIdentity
+    || !Array.isArray(validation.checks) || validation.checks.some(check => check.status !== 'passed' || check.exitCode !== undefined && check.exitCode !== 0)
+    || !required.every(label => validation.checks.some(check => check.label === label))
+    || !validation.checks.some(check => /^(?:unit|focused).*tests$/.test(check.label))) throw new Error('The exact clean Goal 005 candidate needs passing offline checks and its current compiled build receipt before freezing or spending.')
+}
+export function readGoal005Validation(path, identity, firstAttempt = false) {
+  const root = fileURLToPath(new URL('../', import.meta.url))
+  const absolute = resolve(root, path ?? '')
+  const local = relative(join(root, '.validation/goal-005-offline'), absolute)
+  if (!local || local.startsWith('..') || resolve(join(root, '.validation/goal-005-offline'), local) !== absolute || !/\.json$/.test(local)) throw new Error('Select an explicit Goal 005 offline validation receipt.')
+  const stat = lstatSync(absolute)
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('The validation receipt must be an ordinary file.')
+  const bytes = readFileSync(absolute)
+  assertGoal005Validation({ validation: JSON.parse(bytes.toString('utf8')), identity, firstAttempt })
+  return { path: relative(root, absolute), sha256: createHash('sha256').update(bytes).digest('hex') }
+}
+export function assertGoal005ReservationAuthorized({ directory, mode, identity, exerciseRecovery = false, diagnosticReason = null }) {
+  assertGoal005LiveAuthorized()
+  if (resolve(directory) !== resolve(campaignDirectory)) throw new Error('The Goal 005 batch cannot be redirected to a replacement campaign.')
+  const campaign = inspectAmendedCampaign(campaignDirectory, QA_GOAL005_AMENDMENT_ID)
+  assertGoal005NextAttempt({ campaign, mode, identity, exerciseRecovery, diagnosticReason })
+  const path = join(campaignDirectory, goal005FrozenFile(campaign.attempts.length + 1, identity.commit))
+  const stat = lstatSync(path)
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('A regular per-attempt freeze is required.')
+  const frozen = JSON.parse(readFileSync(path, 'utf8'))
+  if (frozen.amendmentId !== QA_GOAL005_AMENDMENT_ID || frozen.attempt !== campaign.attempts.length + 1 || frozen.mode !== mode
+    || frozen.exerciseRecovery !== exerciseRecovery || frozen.diagnosticReason !== diagnosticReason || JSON.stringify(frozen.identity) !== JSON.stringify(identity)) throw new Error('This attempt and its recovery/diagnostic mode must match its immutable freeze.')
+  const validation = readGoal005Validation(frozen.validation?.path, identity, campaign.newAttempts === 0)
+  if (validation.sha256 !== frozen.validation?.sha256) throw new Error('The selected offline validation receipt changed after freezing.')
+  assertGoal005CurrentIdentity(identity)
 }

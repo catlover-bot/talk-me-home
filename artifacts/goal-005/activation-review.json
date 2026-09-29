@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "reviewedOnUtc": "2026-09-29",
+  "historicalAttempts": 5,
+  "historicalReservedSeconds": 3350,
+  "historicalPlanningDollars": 4.1875,
+  "preservedAccountingFiles": 15,
+  "changedHistoricalAccounting": [],
+  "newBatchId": "goal-005-gallery-live-completion-2026-09-29",
+  "maxNewAttempts": 8,
+  "maxConnectedSeconds": 900,
+  "reservationSeconds": 970,
+  "maxNewReservedSeconds": 7760,
+  "maxNewEstimatedDollars": 10,
+  "currentRateDollarsPerHour": 4.5,
+  "estimatePerReservation": 1.2125,
+  "estimateForAllEight": 9.7,
+  "pricingSource": "https://www.assemblyai.com/pricing",
+  "configuredStack": "AssemblyAI managed native STT/LLM/TTS, anna; no external LLM/TTS/telephony",
+  "ownerBalanceEvidence": "Dated owner screenshot: Free plan, USD 1.02 spent/USD 48.98 remaining. Not refreshed. Auto-pay not shown or checked.",
+  "activationStatus": "Not initialized or attempted at this review. Initialize only the single fixed batch after clean-candidate offline validation.",
+  "boundaries": "No purchase, replenishment, deployment, upload, visibility change, main merge or submission."
+}

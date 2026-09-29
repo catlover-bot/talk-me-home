@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-29T08:41:01.555126+00:00",
+  "label": "OFFLINE PRACTICE GALLERY UI VALIDATION; NO REAL PROVIDER",
+  "candidate": {
+    "commit": "d87a898bdc7fa1e6dcb6bbf1debe4be1e9930291",
+    "worktreeHasImplementationChanges": true,
+    "clientJs": {
+      "path": "dist/client/assets/index-CSMT67fw.js",
+      "bytes": 345014,
+      "sha256": "fd50468114e28a60a55ee50396a998a7c6758f11869218cb747ca32b25ce36e9"
+    },
+    "clientCss": {
+      "path": "dist/client/assets/index-DFKTfZbl.css",
+      "bytes": 83970,
+      "sha256": "ca08d5108e3a644ca71b2782ebb67f4601a056df2047270de33c33a58b76e396"
+    }
+  },
+  "before": {
+    "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/gallery-document.spec.ts --workers=2",
+    "passed": 0,
+    "failed": 4,
+    "assertion": "getByTestId(gallery-report-excerpt).toContainText(/Ring/i)",
+    "observed": "The visible Pip caption contained the exact Ring survey, while the new Last report area remained Unknown. No gallery-report-excerpt element existed after the normal final report. All four cases failed at line20 with the unchanged5000ms assertion timeout.",
+    "cause": "useMission.addCaption persisted a robot caption and marked it saved without refreshing record.messages used by the new report area.",
+    "repair": "Root added a scoped refreshRecord after persisted final robot captions; raw caption text is unchanged.",
+    "rawPlaywrightFailureExcerpt": "Error: expect(locator).toContainText(expected) failed\nLocator: getByTestId('gallery-report-excerpt')\nExpected pattern: /Ring/i\nTimeout: 5000ms\nError: element(s) not found\n4 failed"
+  },
+  "after": {
+    "unit": {
+      "command": "GAME_DISABLE_LIVE=1 node --import tsx --test tests/gallery-document.test.ts",
+      "passed": 4,
+      "failed": 0,
+      "coverage": [
+        "Exact eligible robot report, excluding other rounds/chapters/interrupted or human/game messages; no inferred position",
+        "Private planned/explored/blocked marks and stable versus historical dynamic report associations",
+        "Selected request provenance, never microphone speech",
+        "Pending confirmation portrait, never success"
+      ]
+    },
+    "productionBuild": {
+      "command": "GAME_DISABLE_LIVE=1 npm run build:game",
+      "status": "passed",
+      "includes": "typecheck, Vite production client and compiled server"
+    },
+    "browser": {
+      "commands": [
+        "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/gallery-document.spec.ts tests/e2e/readiness.spec.ts --grep Gallery --workers=2",
+        "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/rescue-practice.spec.ts --grep layout --workers=2"
+      ],
+      "distinctPassed": 8,
+      "failed": 0,
+      "viewports": [
+        "1280x720",
+        "1440x900"
+      ],
+      "coverage": [
+        "Route plan edits and erase preserve explored marks",
+        "Exact report association; Relay change and change-back retain stale dynamic notes, stable clue unchanged",
+        "Quick request source remains Selected request in history",
+        "Keyboard planning with map, caption, Relay and Pause visible",
+        "Existing Gallery history and paused controls remain visible",
+        "390px and640px responsive widths; CSS200percent zoom and existing1920/narrow/reduced-motion case"
+      ],
+      "screenshotRecapture": {
+        "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/gallery-document.spec.ts --grep reflow --workers=2",
+        "passed": 2,
+        "includedInDistinctCount": false,
+        "reason": "Second Playwright invocation cleared earlier output screenshots; two unchanged reflow cases were rerun solely to preserve images, not claimed as extra coverage."
+      }
+    },
+    "diffWhitespace": "passed"
+  },
+  "visualReview": {
+    "reviewed": [
+      "goal-005-gallery-chromium-1280.png",
+      "goal-005-gallery-chromium-1440.png",
+      "goal-005-gallery-narrow-chromium-1280.png",
+      "goal-005-gallery-zoom-chromium-1280.png"
+    ],
+    "observations": [
+      "At both desktop sizes the labelled atlas, Relay, Pip, current caption and Pause remain visible; the report below the atlas is reached by ordinary page scroll on short screens.",
+      "Room silhouettes and emblems are distinct; compass alignment stays fixed. Beacon uses a solid line and Harbor a dashed line with text labels. Planned route is separate dashed ochre ink, explored marks dotted ink; no automatic location mark.",
+      "Narrow atlas intentionally scrolls horizontally inside its labelled region; the page itself has no horizontal overflow. Report quote, freshness and selected-request buttons wrap legibly.",
+      "CSS200percent zoom reflows to one column; exact report, stale-condition label and explicit quick-request controls remain readable and keyboard operated."
+    ],
+    "limits": "Practice constructed dialogue and local screenshots only. CSS zoom is a controlled reflow check, not a physical-device or human usability study."
+  },
+  "screenshots": [
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-chromium-1280.png",
+      "bytes": 177745,
+      "sha256": "cd0a422f00e64a19ea38d141f86c454eaf569b3d87724184c666a550f8fe5cd3"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-chromium-1440.png",
+      "bytes": 224511,
+      "sha256": "517b1ae3104b7d90fbe46ed34ad45e976a6b9bb707ef60fddde20ca9dcd2daaa"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-narrow-chromium-1280.png",
+      "bytes": 79173,
+      "sha256": "3b2aeceaa5072b22bcff2305fb5e1a87d3eb44d3a935c313be6720ce19a8cb7e"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-narrow-chromium-1440.png",
+      "bytes": 79173,
+      "sha256": "3b2aeceaa5072b22bcff2305fb5e1a87d3eb44d3a935c313be6720ce19a8cb7e"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-zoom-chromium-1280.png",
+      "bytes": 112879,
+      "sha256": "47d71b24b4a8b66611e7943f47a871a0d6bb43c303a5bf7f42f03515435a298b"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-zoom-chromium-1440.png",
+      "bytes": 112879,
+      "sha256": "47d71b24b4a8b66611e7943f47a871a0d6bb43c303a5bf7f42f03515435a298b"
+    }
+  ],
+  "realProviderCalls": 0,
+  "newFinancialReservations": 0,
+  "ownedBrowserAndServerClosed": true,
+  "fullSuite": "Root coordinates final-candidate full validation; these are focused checks only."
+}

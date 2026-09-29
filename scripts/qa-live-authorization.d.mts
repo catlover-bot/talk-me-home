@@ -41,3 +41,14 @@ export function assertGoal004ERecheckReservationAuthorized(input: { directory: s
 export function assertGoal004CNextAttempt(input: {
   campaign: unknown; mode: unknown; identity: unknown; reports?: unknown[];
 }): void
+
+export const GOAL_005_AMENDMENT: Readonly<Record<string, unknown>>
+export const GOAL_005_HARNESS_FILES: readonly string[]
+export function goal005FrozenFile(attempt: number, commit: string): string
+export function assertGoal005LiveAuthorized(): void
+export function assertGoal005CurrentIdentity(identity: unknown): void
+export function assertGoal005NextAttempt(input: { campaign: unknown; mode: unknown; identity: unknown; exerciseRecovery?: boolean; diagnosticReason?: string | null; now?: number }): void
+export function assertGoal005ReservationAuthorized(input: { directory: string; mode: unknown; identity: unknown; exerciseRecovery?: boolean; diagnosticReason?: string | null }): void
+
+export function assertGoal005Validation(input: { validation: unknown; identity: unknown; firstAttempt?: boolean }): void
+export function readGoal005Validation(path: string, identity: unknown, firstAttempt?: boolean): { path: string; sha256: string }

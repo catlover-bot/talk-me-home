@@ -224,3 +224,68 @@ test('access code rate limits are enforced without contacting the provider', asy
     assert.doesNotMatch(await response.text(), /test-only-demo-access-code/)
   }, { publicLiveEnabled: true, demoAccessCode: code, admission: new LiveAdmission('/deliberately-absent-test-allowance'), apiKey: 'test-only-server-key', allowTestProvider: true, fetch: (async () => { throw new Error('Provider must not be called') }) as typeof fetch })
 })
+
+test('extended QA cap needs its exact allowance and is selected by the server before injected token issuance', async () => {
+  assert.throws(() => createGameServer({ maxVoiceSessionSeconds: 900 }), /matching durable allowance/)
+  assert.throws(() => createGameServer({ maxVoiceSessionSeconds: 901 }), /duration/)
+  const directory = mkdtempSync(join(tmpdir(), 'tmh-qa-cap-'))
+  const path = join(directory, 'allowance.jsonl')
+  writeFileSync(path, JSON.stringify({ version: 1, allowanceSessions: 8, maxSessionSeconds: 900 }) + '\n')
+  let calls = 0
+  try {
+    await fixture(async base => {
+      const first = await mission(base)
+      const exchange = await request(base, '/api/access', { code }, first.cookie)
+      const authorized = cookies(exchange, first.cookie)
+      const route = `/api/sessions/${first.view.sessionId}/voice-token`
+      assert.equal((await request(base, `${route}?max_session_duration_seconds=10800`, { roundId: first.view.roundId }, authorized)).status, 400)
+      assert.equal(calls, 0)
+      const response = await request(base, route, { roundId: first.view.roundId }, authorized)
+      assert.equal(response.status, 200)
+      assert.equal((await response.json()).maxSessionSeconds, 900)
+      assert.equal(calls, 1)
+    }, { maxVoiceSessionSeconds: 900, publicLiveEnabled: true, demoAccessCode: code,
+      admission: new LiveAdmission(path, 1, Date.now, 900), apiKey: 'test-only-key', allowTestProvider: true,
+      fetch: (async input => {
+        calls++
+        const url = new URL(String(input))
+        assert.equal(url.searchParams.get('expires_in_seconds'), '60')
+        assert.equal(url.searchParams.get('max_session_duration_seconds'), '900')
+        const rows = readFileSync(path, 'utf8').trim().split('\n').map(line => JSON.parse(line))
+        assert.equal(rows.length, 2, 'durable admission precedes even injected token fetch')
+        assert.equal(rows[1].leaseUntil - rows[1].reservedAt, 970_000)
+        return Response.json({ token: 'test-only-token' })
+      }) as typeof fetch })
+  } finally { rmSync(directory, { recursive: true, force: true }) }
+})
+
+test('internal account-refusal callback receives only safe classification and ordinary provider failures do not halt', async () => {
+  for (const [status, payload, expected] of [
+    [401, { message: 'PRIVATE_PROVIDER_DETAIL' }, 'provider_credential_or_account_refused'],
+    [403, { message: 'PRIVATE_PROVIDER_DETAIL' }, 'provider_credential_or_account_refused'],
+    [402, { message: 'PRIVATE_PROVIDER_DETAIL' }, 'provider_credit_refused'],
+    [400, { error: { code: 'insufficient_credits', message: 'PRIVATE_PROVIDER_DETAIL' } }, 'provider_credit_refused'],
+    [400, { error: 'Insufficient credits. PRIVATE_PROVIDER_DETAIL' }, 'provider_credit_refused'],
+    [500, { message: 'INSUFFICIENT BALANCE. PRIVATE_PROVIDER_DETAIL' }, 'provider_credit_refused'],
+    [500, { error: { message: 'Workspace mismatch. PRIVATE_PROVIDER_DETAIL' } }, 'provider_credential_or_account_refused'],
+    [400, { message: 'Account does not match. PRIVATE_PROVIDER_DETAIL' }, 'provider_credential_or_account_refused'],
+    [500, { message: 'PRIVATE_PROVIDER_DETAIL' }, null],
+  ] as const) {
+    const directory = mkdtempSync(join(tmpdir(), 'tmh-account-refusal-'))
+    const path = join(directory, 'allowance.jsonl')
+    initializeAllowance(path, 1)
+    const recorded: string[] = []
+    try {
+      await fixture(async base => {
+        const first = await mission(base)
+        const access = await request(base, '/api/access', { code }, first.cookie)
+        const response = await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId }, cookies(access, first.cookie))
+        assert.equal(response.status, 502)
+        assert.doesNotMatch(await response.text(), /PRIVATE_PROVIDER_DETAIL|provider_credit_refused|provider_credential_or_account_refused/)
+        assert.deepEqual(recorded, expected ? [expected] : [])
+        assert.equal(readFileSync(path, 'utf8').trim().split('\n').length, 2, 'every attempted issuance remains consumed')
+      }, { publicLiveEnabled: true, demoAccessCode: code, admission: new LiveAdmission(path), apiKey: 'test-only-key', allowTestProvider: true,
+        onProviderAccountRefusal: async reason => { recorded.push(reason) }, fetch: (async () => Response.json(payload, { status })) as typeof fetch })
+    } finally { rmSync(directory, { recursive: true, force: true }) }
+  }
+})

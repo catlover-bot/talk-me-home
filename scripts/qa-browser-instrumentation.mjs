@@ -42,10 +42,18 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
     if (typeof value.reply_id === 'string' && value.reply_id.startsWith('fc-') && value.reply_id.length > 3) event.callRef = reference(value.reply_id.slice(3));
     if (['completed', 'interrupted', 'failed', 'cancelled'].includes(value.status)) event.status = value.status;
   }
-  if (type === 'session.error') event.failed = true;
+  if (type === 'session.error') {
+    event.failed = true;
+    const error = value.error;
+    const messages = [value.code, value.message, error, error?.code, error?.message].filter(item => typeof item === 'string');
+    if (messages.some(item => /\b(?:workspace|account)[\s_-]+(?:mismatch(?:ed)?|does[\s_-]+not[\s_-]+match)\b/i.test(item))) event.accountRefusal = 'provider_credential_or_account_refused';
+    else if (messages.some(item => /\binsufficient[\s_-]+(?:credits?|balance)\b/i.test(item) || /^(?:payment_required|account_balance_exhausted)$/i.test(item))) event.accountRefusal = 'provider_credit_refused';
+  }
   if (type === 'reply.create' && direction === 'sent' && typeof value.instructions === 'string') {
-    const proposal = value.instructions.match(/^Briefly acknowledge only the verified result for proposal (\S+) in one short sentence\./)?.[1];
+    const arrival = value.instructions.match(/^Give one concise arrival and orientation report for the verified movement proposal (\S+), using only/);
+    const proposal = value.instructions.match(/^Briefly acknowledge only the verified result for proposal (\S+) in one short sentence\./)?.[1] ?? arrival?.[1];
     if (proposal) { event.purpose = 'decision_acknowledgement'; event.proposalRef = reference(proposal); }
+    if (arrival) event.reportKind = 'arrival_orientation';
   }
   // Scheduling records that typed input was sent, never arbitrary recap content.
   if (type === 'conversation.message') event.role = value.role === 'user' ? 'human' : 'other';
@@ -53,6 +61,11 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
     try {
       const receipt = JSON.parse(value.content.slice(value.content.indexOf('\n') + 1));
       if (typeof receipt?.proposal?.id === 'string') { event.purpose = 'decision_receipt'; event.proposalRef = reference(receipt.proposal.id); }
+      if (receipt?.perception?.origin === 'confirmed_arrival') {
+        event.perceptionPresent = true; event.perceptionOrigin = 'confirmed_arrival';
+        event.visitRef = reference(receipt.perception.visitId);
+        if (Number.isSafeInteger(receipt.perception.observationRevision)) event.observationRevision = receipt.perception.observationRevision;
+      }
     } catch { /* Retain neither the raw receipt nor malformed content. */ }
   }
   if (type === 'session.ended' && Number.isFinite(value.session_duration_seconds) && value.session_duration_seconds >= 0 && value.session_duration_seconds < 3600) event.durationSeconds = value.session_duration_seconds;
@@ -111,7 +124,7 @@ function browserInstrumentation(options, sanitize) {
 
   // The socket remains native. Its URL and handshake/config bodies are never retained.
   const observedSockets = new WeakSet();
-  let configurationUpdatesSent = 0;
+  let configurationUpdatesSent = 0; let providerSocketAttempts = 0;
   const observeSocket = socket => {
       if (observedSockets.has(socket)) return socket;
       observedSockets.add(socket);
@@ -153,6 +166,17 @@ function browserInstrumentation(options, sanitize) {
         catch { record({ type: 'audio.input.invalid' }); }
       }
       const safe = sanitize(value, 'sent', references); if (safe) record(safe);
+      if (safe?.purpose === 'decision_receipt') {
+        const sentAtMs = timestamp();
+        void (async () => {
+          try {
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+            const sha256 = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+            record({ type: 'decision.context.delivery', direction: 'sent', atMs: sentAtMs, proposalRef: safe.proposalRef, sha256,
+              perceptionPresent: safe.perceptionPresent === true, boundary: 'Exact successful local send hash; not provider ingestion or comprehension.' });
+          } catch { record({ type: 'decision.context.delivery', direction: 'sent', atMs: sentAtMs, proposalRef: safe.proposalRef, failed: true }); }
+        })();
+      }
       return result;
       };
       return socket;
@@ -161,7 +185,14 @@ function browserInstrumentation(options, sanitize) {
   const wrapCurrentSocket = () => {
     if (globalThis.WebSocket === wrappedSocket) return;
     const original = globalThis.WebSocket;
-    wrappedSocket = new Proxy(original, { construct(Target, args) { return observeSocket(Reflect.construct(Target, args)); } });
+    wrappedSocket = new Proxy(original, { construct(Target, args) {
+      providerSocketAttempts++;
+      if (options.maxProviderSockets === 1 && providerSocketAttempts > 1) {
+        record({ type: 'socket.attempt.blocked' });
+        throw new Error('This reserved QA attempt permits one provider socket only.');
+      }
+      return observeSocket(Reflect.construct(Target, args));
+    } });
     globalThis.WebSocket = wrappedSocket;
   };
   wrapCurrentSocket();
@@ -295,7 +326,7 @@ function browserInstrumentation(options, sanitize) {
       } finally { queuedInput = false; }
     },
     snapshot(includeMedia = false) {
-      return { label: options.label, elapsedMs: timestamp(), counters, events: events.slice(), configurationUpdatesSent, playbackPending: [...playbackStates.values()].some(state => state.pending), activeTracks: destinations.flatMap(destination => destination.stream.getTracks()).filter(track => track.readyState === 'live').length, activeSources: sources.size, openApplicationContexts: contexts.filter(context => context.state !== 'closed').length, ...(includeMedia ? { recordings } : {}) };
+      return { label: options.label, elapsedMs: timestamp(), counters, events: events.slice(), configurationUpdatesSent, providerSocketAttempts, playbackPending: [...playbackStates.values()].some(state => state.pending), activeTracks: destinations.flatMap(destination => destination.stream.getTracks()).filter(track => track.readyState === 'live').length, activeSources: sources.size, openApplicationContexts: contexts.filter(context => context.state !== 'closed').length, ...(includeMedia ? { recordings } : {}) };
     },
     async close() {
       for (const source of sources) { try { source.stop(); } catch {} }
@@ -306,11 +337,12 @@ function browserInstrumentation(options, sanitize) {
   };
 }
 
-export async function installAudioInstrumentation(page, { label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', onLifecycle, expectedSessionUpdateSha256 } = {}) {
+export async function installAudioInstrumentation(page, { label = 'AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', onLifecycle, expectedSessionUpdateSha256, maxProviderSockets } = {}) {
   if (!['AUTOMATED QA — SYNTHETIC PLAYER SPEECH — REAL ASSEMBLYAI', 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI', 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI', 'OFFLINE QA — FAKE PROVIDER — SYNTHETIC AUDIO'].includes(label)) throw new Error('Use an explicit QA evidence label.');
   if (expectedSessionUpdateSha256 !== undefined && !/^[a-f0-9]{64}$/.test(expectedSessionUpdateSha256)) throw new Error('Expected session.update digest must be a lowercase SHA-256 value.');
+  if (maxProviderSockets !== undefined && maxProviderSockets !== 1) throw new Error('The optional QA socket limit must be exactly one.');
   if (onLifecycle) await page.exposeBinding('__qaLifecycle', (_source, event) => onLifecycle(event));
-  await page.addInitScript({ content: `(${browserInstrumentation.toString()})(${JSON.stringify({ label, lifecycle: Boolean(onLifecycle), expectedSessionUpdateSha256 })}, ${sanitizeWireEvent.toString()});` });
+  await page.addInitScript({ content: `(${browserInstrumentation.toString()})(${JSON.stringify({ label, lifecycle: Boolean(onLifecycle), expectedSessionUpdateSha256, maxProviderSockets })}, ${sanitizeWireEvent.toString()});` });
 }
 
 export async function queueSpeech(page, fixture) {

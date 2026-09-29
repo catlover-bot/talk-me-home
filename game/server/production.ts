@@ -6,7 +6,7 @@ import { LiveAdmission } from './admission.js'
 import type { SessionStore } from './sessions.js'
 
 // Production reads hosting environment variables only. It never loads the owner's .env.
-export function startProductionServer(store?: SessionStore) {
+export function startProductionServer(store?: SessionStore, qaOptions?: { maxVoiceSessionSeconds: 900; onProviderAccountRefusal?: (reason: 'provider_credit_refused' | 'provider_credential_or_account_refused') => Promise<void>; confirmedClosed: (reservation: Readonly<{ reservedAt: number; leaseUntil: number }>) => boolean }) {
   const port = Number(process.env.PORT ?? 3001)
   const host = process.env.GAME_BIND_ADDRESS ?? '127.0.0.1'
   const origin = process.env.GAME_ORIGIN ?? `http://127.0.0.1:${port}`
@@ -16,12 +16,15 @@ export function startProductionServer(store?: SessionStore) {
   if (!existsSync(resolve(directory, 'index.html'))) throw new Error('Missing build')
   if (!local && !origin.startsWith('https://')) throw new Error('Public origin requires HTTPS')
   if (!process.env.GAME_ORIGIN && host !== '127.0.0.1') throw new Error('Public bind requires an explicit origin')
-  const admission = process.env.GAME_LIVE_ALLOWANCE_FILE ? new LiveAdmission(process.env.GAME_LIVE_ALLOWANCE_FILE, Number(process.env.GAME_LIVE_CONCURRENT_LIMIT ?? 2)) : undefined
+  if (qaOptions && (qaOptions.maxVoiceSessionSeconds !== 900 || host !== '127.0.0.1' || !local)) throw new Error('The approved extended QA service is local only')
+  const admission = process.env.GAME_LIVE_ALLOWANCE_FILE ? new LiveAdmission(process.env.GAME_LIVE_ALLOWANCE_FILE, Number(process.env.GAME_LIVE_CONCURRENT_LIMIT ?? 2), Date.now, qaOptions?.maxVoiceSessionSeconds ?? 600, qaOptions?.confirmedClosed) : undefined
   const server = createGameServer({
     store,
     production: true, staticDirectory: directory, allowedOrigins: [origin], secureCookies: !local,
     publicLiveEnabled: process.env.GAME_PUBLIC_LIVE_ENABLED === '1', demoAccessCode: process.env.GAME_DEMO_ACCESS_CODE,
     admission,
+    onProviderAccountRefusal: qaOptions?.onProviderAccountRefusal,
+    maxVoiceSessionSeconds: qaOptions?.maxVoiceSessionSeconds ?? 600,
   })
   server.requestTimeout = 15_000
   server.headersTimeout = 10_000

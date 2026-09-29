@@ -4,9 +4,9 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
-import { writeGoal004CHistory, writeGoal004DRetestHistory, writeGoal004EConfirmedHistory } from './fixtures/goal-004c-history.ts'
+import { writeGoal004CHistory, writeGoal004DRetestHistory, writeGoal004EConfirmedHistory, writeGoal004ERecheckHistory } from './fixtures/goal-004c-history.ts'
 // @ts-expect-error This local accounting helper is intentionally a native Node module.
-import { initializeAmendment, AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
+import { initializeAmendment, AmendedCampaignBudget, inspectAmendedCampaign, QA_AMENDMENT_LEDGER, QA_AMENDMENT_ALLOWANCE, QA_RUNTIME_AMENDMENT_ID, QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_ID, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE, QA_GOAL005_AMENDMENT_ID, QA_GOAL005_AMENDMENT_LEDGER, QA_GOAL005_AMENDMENT_ALLOWANCE } from '../scripts/qa-amended-budget.mjs'
 // @ts-expect-error This local CLI helper is intentionally a native Node module.
 import { approximateVideoAlignment, summarizeAttempt, exportCampaign } from '../scripts/qa-evidence.mjs'
 
@@ -330,7 +330,7 @@ test('newest linked export counts all preserved attempts, the single final slot 
 })
 
 test('partial newest runtime, final or recheck supplement never silently exports an older profile', async () => {
-  for (const file of [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE]) {
+  for (const file of [QA_RUNTIME_AMENDMENT_LEDGER, QA_RUNTIME_AMENDMENT_ALLOWANCE, QA_CONFIRMED_AMENDMENT_LEDGER, QA_CONFIRMED_AMENDMENT_ALLOWANCE, QA_RECHECK_AMENDMENT_LEDGER, QA_RECHECK_AMENDMENT_ALLOWANCE, QA_GOAL005_AMENDMENT_LEDGER, QA_GOAL005_AMENDMENT_ALLOWANCE]) {
     const directory = await mkdtemp(join(tmpdir(), 'qa-newest-export-corrupt-'))
     try {
       writeGoal004CHistory(directory)
@@ -377,5 +377,50 @@ test('recheck export retains all four consumed attempts and isolates the single 
     assert.equal(summary.results[0].accountingAttempt, 5); assert.equal(summary.results[0].historical, false)
     assert.equal(summary.amendmentLedgerSha256, createHash('sha256').update(await readFile(join(directory, QA_RECHECK_AMENDMENT_LEDGER))).digest('hex'))
     for (const [index, file] of historicalFiles.entries()) assert.deepEqual(await readFile(join(directory, file)), preserved[index])
+  } finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+
+test('Goal005 compact export links five historical attempts without cloning their reports and keeps arrival proof payload-free', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'qa-goal005-export-'))
+  try {
+    writeGoal004ERecheckHistory(directory)
+    const old = inspectAmendedCampaign(directory, QA_RECHECK_AMENDMENT_ID)
+    initializeAmendment(directory, { amendmentId: QA_GOAL005_AMENDMENT_ID, now: () => 2_000_000_000_000 })
+    const identity = { commit: 'c'.repeat(40), runtimeSha256: 'a'.repeat(64), harnessSha256: 'b'.repeat(64) }
+    const budget = new AmendedCampaignBudget(directory, () => 2_000_000_000_100, QA_GOAL005_AMENDMENT_ID)
+    const reservation = budget.reserve({ name: 'voice-mission', identity, maxRunSeconds: 890 })
+    budget.finish(6, { outcome: 'failed', endAcknowledged: true, connectedSeconds: 10 }); budget.closed(6)
+    const confirmedLabel = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI'
+    for (const row of [old.attempts[4], reservation]) {
+      const name = `${row.attempt === 5 ? '2026-09-29T03-22-38-226' : '2033-05-18T03-33-20-100'}Z-voice-mission`
+      const path = join(directory, name); await mkdir(path)
+      await writeFile(join(path, 'report.json'), JSON.stringify({ label: confirmedLabel, mode: 'voice', scenario: 'mission', reservation: row, identity,
+        acquisitions: [{ subject: 'location', outcome: 'acquired', value: { private: 'excluded payload' }, strictFirstResponse: false, recovered: true,
+          exchanges: [{ text: 'Please look around.', reply: 'I see a star.', reason: 'obtain fresh local report', outcome: 'acquired' }] }],
+        recoveryExercise: { kind: 'deliberate_decline', completed: true, payload: 'excluded payload' }, boundaryWaits: [{ settled: true, reason: 'acknowledgement_and_playback_drained' }],
+      }))
+      await writeFile(join(path, 'audio-evidence.json'), JSON.stringify({ label: confirmedLabel, events: [
+        { type: 'decision.context.delivery', sha256: 'd'.repeat(64), proposalRef: 3, perceptionPresent: true, result: 'excluded payload' },
+        { type: 'conversation.message', purpose: 'decision_receipt', proposalRef: 3, perceptionPresent: true, perceptionOrigin: 'confirmed_arrival', visitRef: 4, observationRevision: 5 },
+        { type: 'reply.create', purpose: 'decision_acknowledgement', reportKind: 'arrival_orientation', instructions: 'excluded payload' },
+      ] }))
+    }
+    const output = join(directory, 'export')
+    const summary = await exportCampaign({ directory, output })
+    assert.equal(summary.amendmentId, QA_GOAL005_AMENDMENT_ID)
+    assert.equal(summary.attempts, 6); assert.equal(summary.productionAttempts, 5)
+    assert.equal(summary.newAttempts, 1); assert.equal(summary.newReservedSeconds, 970)
+    assert.equal(summary.reservedSeconds, 4320); assert.equal(summary.remainingAttempts, 7)
+    assert.equal(summary.approvedNewDollars, 10); assert.equal(summary.approvedNewReservedSeconds, 7760)
+    assert.equal(summary.results.length, 1); assert.equal(summary.results[0].accountingAttempt, 6)
+    const metrics = JSON.parse(await readFile(join(output, '2033-05-18T03-33-20-100Z-voice-mission-metrics.json'), 'utf8'))
+    assert.equal(metrics.acquisitions[0].recovered, true); assert.equal(metrics.recoveryExercise.completed, true)
+    assert.equal(metrics.decisionContextDeliveries[0].sha256, 'd'.repeat(64))
+    assert.equal(metrics.decisionReceipts[0].visitRef, 4)
+    assert.equal(metrics.responseRequests[0].reportKind, 'arrival_orientation')
+    assert.doesNotMatch(JSON.stringify(metrics), /excluded payload/)
+    await assert.rejects(readFile(join(output, '2026-09-29T03-22-38-226Z-voice-mission-metrics.json')))
+    await assert.rejects(exportCampaign({ directory, output: 'artifacts/goal-004e/recheck-live' }), /historical compact/)
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

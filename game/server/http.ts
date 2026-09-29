@@ -12,6 +12,8 @@ interface ServerOptions {
   fetch?: typeof globalThis.fetch
   allowedOrigins?: string[]
   maxVoiceSessionSeconds?: number
+  /** Internal supervised QA only; never exposes raw provider diagnostics. */
+  onProviderAccountRefusal?: (reason: 'provider_credit_refused' | 'provider_credential_or_account_refused') => Promise<void>
   /** Offline tests may exercise an explicitly injected provider while Live is disabled. */
   allowTestProvider?: boolean
   production?: boolean
@@ -79,7 +81,8 @@ export function createGameServer(options: ServerOptions = {}) {
       message: !enabled ? 'Live is unavailable for this demo. Practice is available without a connection.' : status?.message ?? 'Live is available. Connect only when you are ready.',
     }
   }
-  if (!Number.isInteger(maxVoiceSessionSeconds) || maxVoiceSessionSeconds < 60 || maxVoiceSessionSeconds > 600) throw new Error('Voice session duration must be between 60 and 600 seconds.')
+  if (!Number.isInteger(maxVoiceSessionSeconds) || maxVoiceSessionSeconds < 60 || maxVoiceSessionSeconds > 600 && maxVoiceSessionSeconds !== 900) throw new Error('Voice session duration must be 60 to 600 seconds or the approved 900-second QA cap.')
+  if (maxVoiceSessionSeconds === 900 && (!production || options.admission?.validateSessionLimit() !== 900)) throw new Error('The extended QA cap requires its matching durable allowance.')
   return createServer(async (request, response) => {
     try {
       const requestUrl = new URL(request.url ?? '/', 'http://localhost')
@@ -130,6 +133,7 @@ export function createGameServer(options: ServerOptions = {}) {
       if (action === 'hint') return reply(response, 200, await store.hint(id, body))
       if (action === 'record' || action === 'recap') throw new GameError(405, 'Read this mission record with a GET request.')
       if (action === 'voice-token') {
+        if (requestUrl.searchParams.size) throw new GameError(400, 'Voice connection limits are selected by the game server.')
         if (production) {
           if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
           if (!browserAccess.authorized(request)) throw new GameError(403, 'Enter the demo access code before connecting Live, or choose Practice.')
@@ -146,7 +150,21 @@ export function createGameServer(options: ServerOptions = {}) {
         let token: unknown
         try {
           const upstream = await providerFetch(url, { headers: { Authorization: `Bearer ${apiKey}` }, signal: AbortSignal.timeout(10_000) })
-          if (!upstream.ok) throw new Error('Token request failed')
+          if (!upstream.ok) {
+            const denied: unknown = await upstream.json().catch(() => null)
+            const code = denied && typeof denied === 'object' ? ('code' in denied ? denied.code : 'error' in denied && denied.error && typeof denied.error === 'object' && 'code' in denied.error ? denied.error.code : null) : null
+            const error = denied && typeof denied === 'object' && 'error' in denied ? denied.error : null
+            const messages = [denied, code, error,
+              denied && typeof denied === 'object' && 'message' in denied ? denied.message : null,
+              error && typeof error === 'object' && 'message' in error ? error.message : null,
+            ].filter((value): value is string => typeof value === 'string')
+            const accountMismatch = messages.some(value => /\b(?:workspace|account)[\s_-]+(?:mismatch(?:ed)?|does[\s_-]+not[\s_-]+match)\b/i.test(value))
+            const insufficientCredit = messages.some(value => /\binsufficient[\s_-]+(?:credits?|balance)\b/i.test(value))
+            const reason = upstream.status === 401 || upstream.status === 403 || accountMismatch ? 'provider_credential_or_account_refused'
+              : upstream.status === 402 || insufficientCredit || typeof code === 'string' && ['payment_required', 'account_balance_exhausted'].includes(code.toLowerCase()) ? 'provider_credit_refused' : null
+            if (reason) await options.onProviderAccountRefusal?.(reason)
+            throw new Error('Token request failed')
+          }
           const data: unknown = await upstream.json()
           token = data && typeof data === 'object' && 'token' in data ? data.token : undefined
           if (typeof token !== 'string' || token.length === 0) throw new Error('Invalid token response')

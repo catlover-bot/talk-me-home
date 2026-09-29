@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "label": "OFFLINE SERVER PERCEPTION AND PRIVATE MAP RECORD VALIDATION",
+  "createdAt": "2026-09-29T08:35:05.967Z",
+  "baseCommit": "d87a898bdc7fa1e6dcb6bbf1debe4be1e9930291",
+  "node": "v24.20.0",
+  "liveDisabled": true,
+  "providerCalls": 0,
+  "scope": "Source-level deterministic server tests; no compiled-browser or real-model acceptance is claimed here.",
+  "historicalFailure": {
+    "analysis": "artifacts/goal-004e/recheck-live/outcome-analysis.json",
+    "sha256": "2e8fa3f4a43a011eee36660a460f72919fe4421511100ccb52c93c87ef6882ed",
+    "finding": "The fifth real attempt completed Cargo and one confirmed Gallery move, then the current-emblem question received no observation call or emblem. This remains a failed full Rescue with acknowledged termination."
+  },
+  "before": {
+    "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test tests/gallery-perception.test.ts",
+    "passed": 0,
+    "failed": 5,
+    "observed": [
+      "Existing successful Gallery move prose already contained the reached emblem and adjacent gates.",
+      "Four new cases failed because the corresponding typed scoped perception was absent.",
+      "Relay Beacon -> Harbor -> Beacon left the old pending proposal executable, contradicting the requested stale-proposal policy."
+    ],
+    "testAuthoringNote": "An initial test-helper envelope incorrectly included chapterEpoch in the exact decision schema. It was corrected before the five meaningful baseline failures; that authoring error is not a product finding."
+  },
+  "after": {
+    "runs": [
+      {
+        "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test tests/gallery-perception.test.ts tests/proposals.test.ts",
+        "passed": 16,
+        "failed": 0
+      },
+      {
+        "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test tests/records.test.ts tests/rescue-state.test.ts tests/rescue-http.test.ts tests/state.test.ts",
+        "passed": 66,
+        "failed": 2,
+        "note": "The two remaining failures were exact expected empty annotation shapes at reset. The prior five contract assertion differences were migrated without relaxing authority/privacy checks."
+      },
+      {
+        "command": "GAME_DISABLE_LIVE=1 node node_modules/tsx/dist/cli.mjs --test --test-name-pattern=\"annotations and hints|chapter-aware records retain\" tests/rescue-state.test.ts tests/rescue-http.test.ts",
+        "passed": 3,
+        "failed": 0,
+        "note": "Both remaining reset-shape assertions passed after adding the new empty private fields; one existing generation check also matched the name filter."
+      },
+      {
+        "command": "GAME_DISABLE_LIVE=1 npm run typecheck",
+        "exitCode": 0
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "distinctCasesPassingAcrossFocusedRuns": 84,
+    "contractMigrations": [
+      "Empty annotation projections now include plannedGates, exploredGates and reportLinks.",
+      "Hidden-layout comparison equalizes opaque scope identities and clock, then still deep-compares the complete local projection.",
+      "A changed Relay now invalidates the exact old proposal, with a truthful no-execution reason."
+    ]
+  },
+  "coverage": [
+    "Actual arrival survey projected once as typed robot-local facts; Cargo entry and intra-Gallery arrival.",
+    "Round/chapter/opaque visit/observation/state/action revisions and server time; return visits get distinct IDs.",
+    "Survey passages remain unchecked; explicit local inspection distinguishes open blocked and closed clear in both layouts.",
+    "Proposed, declined, expired, failed, duplicate, canceled and departed cases do not create new destination surveys.",
+    "Pause and chapter transition prevent old surveys from being current; committed action history remains accessible.",
+    "Only the current stored perception is re-exposed by action-status queries; historical prose is labelled historical.",
+    "HumanView, public proposal, decision caption and ordinary records exclude local perception.",
+    "Private intended/explored routes and exact report associations stay out of robot recap; delayed pinning and Relay toggles cannot revive dynamic report freshness.",
+    "Quick-request input records preserve non-microphone human provenance."
+  ],
+  "limitations": [
+    "No new real-provider call, full candidate build or browser validation was performed by this server subtask.",
+    "Provider comprehension and arrival wording require separate runtime/browser and real-attempt evidence.",
+    "Controller context on communicated reports describes server record receipt and historical invalidation; it is not independent verification that spoken claims were true.",
+    "Cached original decision responses remain immutable historical receipts; the client must reject delayed perception using scope/revision and connection guards."
+  ],
+  "sourceSha256": {
+    "game/server/gallery.ts": "937ef8dc59d664632fb51b614827a65e93bb3b043c17aa2845645bf595b1aeed",
+    "game/server/state.ts": "9bfc6fc7bf9feed85d0f83d9a280373d629d8f9df34ec77ec7c8db7a87179559",
+    "game/server/sessions.ts": "4a76ae811c4a91feacec0d1837e590177381488fc2ff61450524668e958bc6b9",
+    "game/server/records.ts": "0614533aa52f57b02005e4a8699d9307cbef0af665b80cb4efb39cf3ba711b17",
+    "game/shared/contracts.ts": "d53be804feca399759d613edc02370a19909587a010d71ff50c597f7952f0ca5",
+    "tests/gallery-perception.test.ts": "d11044616f7fff01a52353f75b8a1e82899d5be330d4d777db0b296c6c91c691",
+    "tests/proposals.test.ts": "987eab87bd6b7b30e6468b2d7a226530133b36de02ed112f5885fad6f794368c",
+    "tests/records.test.ts": "45653f2c221a1674c97d42f618e9c604272d5dd62de1e666f184833755e9a717",
+    "tests/rescue-state.test.ts": "8541193ca566da4c70bf80cabe72da6d49c2fbc2f79774fce31e48483cf2ce02",
+    "tests/rescue-http.test.ts": "a1f051121a6bcd490192c0f93832397cc014800506b313f2d3306b6213435251",
+    "tests/state.test.ts": "db181f6174bb529d36068d237407f7ef4ea80436f370ebe6dfb2b21dc1dbd886"
+  }
+}

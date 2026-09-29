@@ -1,12 +1,21 @@
 // Evaluator-only IPC around the actual compiled production entry point.
 // Nothing here is sent to the browser, shared player, prompt or provider.
+import { resolve } from 'node:path';
+import { isGoal005ProductionReservationClosed, QA_GOAL005_AMENDMENT_ID } from './qa-amended-budget.mjs';
 import { SessionStore } from '../dist/server/server/sessions.js';
 import { startProductionServer } from '../dist/server/server/production.js';
 
 if (!process.send) throw new Error('The QA production observer requires its owning process IPC channel.');
 const commits = [];
 const store = new SessionStore({ onRobotCommit: event => commits.push({ ...event, observedAt: Date.now() }) });
-const server = startProductionServer(store);
+const extended = process.env.QA_CAMPAIGN_AMENDMENT === QA_GOAL005_AMENDMENT_ID;
+const server = startProductionServer(store, extended ? { maxVoiceSessionSeconds: 900,
+  onProviderAccountRefusal: reason => new Promise((resolveStop, rejectStop) => {
+    const id = `account-stop-${Date.now()}`;
+    const timer = setTimeout(() => { process.off('message', listener); rejectStop(new Error('The permanent accounting stop was not acknowledged.')); }, 10_000);
+    const listener = message => { if (message?.type === 'qa.account-stop.recorded' && message.id === id) { clearTimeout(timer); process.off('message', listener); message.recorded ? resolveStop() : rejectStop(new Error('The permanent accounting stop failed.')); } };
+    process.on('message', listener); process.send({ type: 'qa.account-stop', id, reason });
+  }), confirmedClosed: reservation => isGoal005ProductionReservationClosed(resolve('.validation/goal-004c-live'), reservation) } : undefined);
 process.on('message', message => {
   if (message?.type !== 'qa.physical' || !Number.isSafeInteger(message.id) || typeof message.sessionId !== 'string') return;
   try {

@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "recordedAt": "2026-09-29T08:47:19.454Z",
+  "label": "OFFLINE COMPILED PRODUCT AND SHARED PLAYER ? CONSTRUCTED PEER; NOT REAL MODEL/ASR ACCEPTANCE",
+  "branch": "work/goal-005-gallery-live-completion",
+  "baseCommit": "2b3db8a24c372805a963649005752279343398b0",
+  "workingTree": "Uncommitted Goal005 implementation; root built the production runtime before these focused tests. This receipt is not a frozen release pass.",
+  "providerUse": {
+    "realRequests": 0,
+    "realTokenIssuance": 0,
+    "realConnections": 0,
+    "accountingMutations": 0
+  },
+  "environment": {
+    "node": "v24.20.0",
+    "GAME_DISABLE_LIVE": "1",
+    "GAME_QA_PREBUILT": "1",
+    "browser": "chromium-1440",
+    "workers": 2,
+    "production": "Compiled production HTTP/store/static handler, isolated local authored A/B fixture, normal ownership cookies and owner UI confirmation"
+  },
+  "validation": {
+    "distinctCasesPassingAcrossRuns": 17,
+    "firstRun": {
+      "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 npx playwright test tests/e2e/qa-mission-player.spec.ts tests/e2e/gallery-arrival.spec.ts --project=chromium-1440 --workers=2",
+      "passed": 12,
+      "failed": 5,
+      "log": {
+        "path": ".validation/goal-005-player-arrival-1440.log",
+        "bytes": 14128,
+        "sha256": "3d07f487eaf5a6bc60087dd471058e3e8ee82930876cb13fd3cb0714648379eb"
+      }
+    },
+    "affectedRerun": {
+      "command": "GAME_DISABLE_LIVE=1 GAME_QA_PREBUILT=1 node node_modules/playwright/cli.js test tests/e2e/qa-mission-player.spec.ts tests/e2e/gallery-arrival.spec.ts --project=chromium-1440 --workers=2 --grep \"compiled confirmed|changing Relay|executes the actual revised|bounded rejected\"",
+      "passed": 5,
+      "failed": 0,
+      "elapsedSeconds": 25.9,
+      "log": {
+        "path": ".validation/goal-005-player-arrival-corrections-1440.log",
+        "bytes": 1054,
+        "sha256": "52f0a8535193fbe88b24131d2c739dab4099cef093ddb5a0edfd6765a1d3dc1f"
+      }
+    },
+    "typecheck": "PASS: GAME_DISABLE_LIVE=1 npm run typecheck",
+    "diffCheck": "PASS: git diff --check",
+    "fullSuite": "Not rerun by this task; root owns frozen candidate release checks."
+  },
+  "fixtureCorrections": [
+    {
+      "cases": 2,
+      "cause": "Arrival fixtures emitted the tool-bearing reply.done before tool.result, then confirmed without a normal post-result continuation; shipped scheduler correctly withheld acknowledgement.",
+      "correction": "Emit one constructed final proposal explanation before each ordinary owner confirmation."
+    },
+    {
+      "cases": 2,
+      "cause": "Both full missions reached confirmed home; waitForReady then queried the proposal strip removed by the completed screen.",
+      "correction": "Require visible confirmed-home heading when the strip is absent; otherwise preserve exact proposal-ID/ACK/playback checks."
+    },
+    {
+      "cases": 1,
+      "cause": "Repeated rejected crossing fixture clicked already-ON disabled Power during the second request.",
+      "correction": "Read the acknowledged human Power instrument and avoid re-clicking its already-selected ON button; all rejection and four-exchange assertions retained."
+    }
+  ],
+  "compiledPath": {
+    "tests": [
+      "compiled confirmed movement preserves robot-only typed perception through one constructed arrival reply and playback",
+      "changing Relay before scheduled arrival dispatch preserves the committed move but makes orientation historical"
+    ],
+    "assertions": [
+      "Actual confirmed server perception equals client serialized robot decision context; no privileged lookup supplies the constructed response.",
+      "Interaction requests one result-only acknowledgement; valid Gallery moves request one arrival-and-orientation response.",
+      "Constructed caption and nonzero PCM reach shipped playback, speaking state, normal final caption and actual worklet drain.",
+      "Human view/proposal/Game event exclude typed local perception; human map remains unmarked.",
+      "Read-only status query does not create another receipt, acknowledgement or original tool result.",
+      "Relay change before dispatch retains committed history but requests only historical result acknowledgement; status omits stale perception."
+    ],
+    "screenshot": {
+      "path": "test-results/gallery-arrival-compiled-c-b1a14--arrival-reply-and-playback-chromium-1440/constructed-scoped-arrival.png",
+      "bytes": 275438,
+      "sha256": "71f9179447262cbb457a7690d67bba9fed3f4b9a05441959c95473b0aebedb40"
+    },
+    "visualInspection": "Inspected actual arrival and both home screenshots. Arrival has exact communicated Last report, readable atlas/compass, no automatic location marker, distinct committed strip and fake-provider label. Home screenshots show confirmed completion with A11/B9 actions and synthetic/offline labels."
+  },
+  "missions": [
+    {
+      "profile": "a",
+      "label": "SYNTHETIC OFFLINE CONFIRMED-ACTION CONTINUATION — CONSTRUCTED PEER — NO REAL PROVIDER",
+      "proof": {
+        "path": "test-results/qa-mission-player-Shared-Q-30109--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-evidence.json",
+        "bytes": 90205,
+        "sha256": "4176e4f55f9aee12ad1f98b8dda1c842d23a88bed9cf4757593f2220530b2a27"
+      },
+      "route": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "ring",
+        "fork",
+        "sail",
+        "fork",
+        "leaf",
+        "dock",
+        "Return Dock",
+        "home"
+      ],
+      "completion": true,
+      "confirmedActions": 11,
+      "strictFirstActions": 6,
+      "recoveredActions": [
+        {
+          "label": "Move to the far-side platform",
+          "exchanges": 3
+        },
+        {
+          "label": "Move through the east gate",
+          "exchanges": 3
+        },
+        {
+          "label": "Hold the charging contact",
+          "exchanges": 3
+        },
+        {
+          "label": "Release the charging contact",
+          "exchanges": 3
+        },
+        {
+          "label": "Board the recovery capsule",
+          "exchanges": 3
+        }
+      ],
+      "recoveredAcquisitions": [
+        {
+          "subject": "ring east passage",
+          "value": "clear",
+          "exchanges": 2
+        },
+        {
+          "subject": "current Gallery location",
+          "value": "fork",
+          "exchanges": 3
+        }
+      ],
+      "deliberateRecovery": null,
+      "realExternalRequests": 0,
+      "realTokenIssuance": 0,
+      "realProviderConnections": 0,
+      "cleanup": {
+        "captures": 0,
+        "activeTracks": 0,
+        "contexts": 2,
+        "closedContexts": 2,
+        "queuedChunks": 0
+      },
+      "screenshot": {
+        "path": "test-results/qa-mission-player-Shared-Q-30109--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-a-home.png",
+        "bytes": 211598,
+        "sha256": "14038103caa438dc4222fc4d4e185364da343402d95a8147692418781f77a7f6"
+      }
+    },
+    {
+      "profile": "b",
+      "label": "SYNTHETIC OFFLINE CONFIRMED-ACTION CONTINUATION — CONSTRUCTED PEER — NO REAL PROVIDER",
+      "proof": {
+        "path": "test-results/qa-mission-player-Shared-Q-4c708--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-evidence.json",
+        "bytes": 75289,
+        "sha256": "f3d7558bb3014367fdf43740a5df4dc948a489249216fc151f7cd870610a7f30"
+      },
+      "route": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "ring",
+        "fork",
+        "sail",
+        "dock",
+        "Return Dock",
+        "home"
+      ],
+      "completion": true,
+      "confirmedActions": 9,
+      "strictFirstActions": 3,
+      "recoveredActions": [
+        {
+          "label": "Engage the Latch",
+          "exchanges": 2
+        },
+        {
+          "label": "Move to the far-side platform",
+          "exchanges": 3
+        },
+        {
+          "label": "Move through the east gate",
+          "exchanges": 3
+        },
+        {
+          "label": "Hold the charging contact",
+          "exchanges": 3
+        },
+        {
+          "label": "Release the charging contact",
+          "exchanges": 3
+        },
+        {
+          "label": "Board the recovery capsule",
+          "exchanges": 3
+        }
+      ],
+      "recoveredAcquisitions": [
+        {
+          "subject": "ring east passage",
+          "value": "clear",
+          "exchanges": 2
+        },
+        {
+          "subject": "current Gallery location",
+          "value": "fork",
+          "exchanges": 3
+        }
+      ],
+      "deliberateRecovery": {
+        "kind": "deliberate_decline",
+        "proposalId": "d05268c0-fe88-4dd2-8974-d1b1de032ef9",
+        "label": "Engage the Latch",
+        "source": "Normal Not yet UI; no physical confirmation",
+        "completed": true
+      },
+      "realExternalRequests": 0,
+      "realTokenIssuance": 0,
+      "realProviderConnections": 0,
+      "cleanup": {
+        "captures": 0,
+        "activeTracks": 0,
+        "contexts": 2,
+        "closedContexts": 2,
+        "queuedChunks": 0
+      },
+      "screenshot": {
+        "path": "test-results/qa-mission-player-Shared-Q-4c708--with-an-unfunded-fake-peer-chromium-1440/synthetic-player-b-home.png",
+        "bytes": 211554,
+        "sha256": "367335618a45bfb561c799903a92323d061e4baf6dddf359df6fa871d87b509a"
+      }
+    }
+  ],
+  "negativeCoverage": [
+    "Four purposeful requests for unknown Gallery location, with two Cargo commits only and controls usable.",
+    "Four-exchange exhausted action, expired proposal and changed-precondition rejection without crossing.",
+    "Immediate hard stop for wrong pending action, stale consumed pending ID, false material crossing claim, unexpected chapter and wrong reply source chapter.",
+    "Stop, Restart and explicit reconnect invalidate shared-player scope; no old report authorizes another action.",
+    "Deliberate exact keyboard confirmation and Not yet do not mutate merely from informational conversation."
+  ],
+  "sourceFiles": [
+    {
+      "path": "tests/e2e/qa-mission-player.spec.ts",
+      "bytes": 39998,
+      "sha256": "75277c9edab8fe2a081d8a1ab1f6caecd27871c9c6d26736c621500a1087ac90"
+    },
+    {
+      "path": "tests/e2e/gallery-arrival.spec.ts",
+      "bytes": 10164,
+      "sha256": "aabec364bee3b765cf2f4174465f660431e351c1cfb0c9f08d986a3eb06dc014"
+    },
+    {
+      "path": "tests/e2e/fake-provider.ts",
+      "bytes": 10757,
+      "sha256": "58323878f3bf5c07d39842d6cdfeee25ba4cb30509c2abfe18b94c216873d39d"
+    },
+    {
+      "path": "tests/e2e/rescue-fixture.ts",
+      "bytes": 3374,
+      "sha256": "96bbc265857ad6323419f34f0d522ce937f6453e15e46257971ad48945b4c27a"
+    },
+    {
+      "path": "scripts/qa-mission-player.mjs",
+      "bytes": 23372,
+      "sha256": "10dce7696d4e936c7f81a7971ddd3e330dc20911ea688aeb208e46241103550e"
+    },
+    {
+      "path": "scripts/qa-player-recovery.mjs",
+      "bytes": 3902,
+      "sha256": "23a42c9458d38da1b9a23dd87531acc130f40ab493f4f90fbac202dbc875b244"
+    },
+    {
+      "path": "scripts/qa-player-policy.mjs",
+      "bytes": 16202,
+      "sha256": "2aab6b379126275dadd7b79b1e3223bb5eca5951ba72b2c3f32c4c998e40d247"
+    },
+    {
+      "path": "scripts/qa-player-memory.mjs",
+      "bytes": 7500,
+      "sha256": "fe78ecaf7066244bfb70f9f7c5c3ce5761c918e31e8301f967ed202c530f7ba6"
+    }
+  ],
+  "compiledFiles": [
+    {
+      "path": "dist/client/assets/index-CSMT67fw.js",
+      "bytes": 345014,
+      "sha256": "fd50468114e28a60a55ee50396a998a7c6758f11869218cb747ca32b25ce36e9"
+    },
+    {
+      "path": "dist/server/server/sessions.js",
+      "bytes": 32942,
+      "sha256": "1280cd9313bd0b6c5041d98ef6e1ce05fe22878e15af1119faca54aa58b7d0d7"
+    },
+    {
+      "path": "dist/server/server/state.js",
+      "bytes": 10698,
+      "sha256": "db747603dfae6600381db3796c4f25c55e03726d0c280ebccc264edbcd02c353"
+    },
+    {
+      "path": "dist/server/server/gallery.js",
+      "bytes": 6736,
+      "sha256": "1eaf5062148280e49def86f96e21e2365e904fcf4a7dc075b628e47a6cf8cf35"
+    },
+    {
+      "path": "dist/server/server/http.js",
+      "bytes": 13118,
+      "sha256": "6900649bd9c868bfcf963b46fc7e13cd76ce632ad83e2f9d65f26f95dfbc16f8"
+    }
+  ],
+  "cleanup": {
+    "port5173": "No listener after owned Playwright command exited.",
+    "ownedBackgroundProcesses": 0,
+    "unrelatedProcessesStopped": 0
+  },
+  "limitations": [
+    "Constructed peer controls its own replies; these tests cannot establish real model comprehension, real ASR, hardware microphone/speaker quality, enjoyment or statistical reliability.",
+    "Only1440 focused browser project run here; root owns integrated two-viewport candidate checks.",
+    "Nonzero output in the direct arrival case is synthetic fixture PCM; full mission peers emit constructed transcript acknowledgements, not real synthesized voice."
+  ]
+}

@@ -2,6 +2,7 @@
 // The player policy reads rendered human documents and finalized visible Pip reports.
 import { chromium, expect } from '@playwright/test';
 import { spawn, execFileSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { readFile, writeFile, mkdir, readdir, rename } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { createHash, randomBytes } from 'node:crypto';
@@ -9,11 +10,10 @@ import { parseEnv } from 'node:util';
 import { resolve, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { release } from 'node:os';
-import { inspectCampaign } from './qa-budget.mjs';
-import { QA_RECHECK_AMENDMENT_ID, QA_RECHECK_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
-import { assertGoal004ERecheckLiveAuthorized, assertGoal004ERecheckReservationAuthorized, GOAL_004E_RECHECK_AMENDMENT, GOAL_004E_RECHECK_FROZEN_FILE, GOAL_004E_RECHECK_RUNTIME_SHA256, GOAL_004E_RECHECK_SESSION_UPDATE_SHA256, GOAL_004E_CANARY_INPUTS } from './qa-live-authorization.mjs';
+import { inspectAmendedCampaign, QA_RECHECK_AMENDMENT_ID, QA_GOAL005_AMENDMENT_ID, QA_GOAL005_AMENDMENT_LEDGER, QA_GOAL005_AMENDMENT_ALLOWANCE } from './qa-amended-budget.mjs';
+import { assertGoal005LiveAuthorized, assertGoal005ReservationAuthorized, assertGoal005NextAttempt, assertGoal005CurrentIdentity, readGoal005Validation, GOAL_005_AMENDMENT, GOAL_005_HARNESS_FILES, goal005FrozenFile, GOAL_004E_CANARY_INPUTS } from './qa-live-authorization.mjs';
 import { evaluateAcceptanceBehavior } from './qa-acceptance-behavior.mjs';
-import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, assertSupervisedParent } from './qa-supervisor.mjs';
+import { runSupervised, requestAttempt, registerOwnedProcess, finishAttempt, haltGoal005Batch, assertSupervisedParent } from './qa-supervisor.mjs';
 import { ensureSpeechFixture } from './qa-speech-fixtures.mjs';
 import { playerSpeechTexts, readFrozenSpeechFixture, validateFrozenPlayerSpeech } from './qa-live-speech.mjs';
 import { installAudioInstrumentation, audioSnapshot, collectAudioEvidence, cleanupAudioInstrumentation } from './qa-browser-instrumentation.mjs';
@@ -23,7 +23,6 @@ import { createLifecycleJournal } from './qa-lifecycle.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const DIRECTORY = resolve('.validation/goal-004c-live');
-const HISTORICAL_DIRECTORY = resolve('.validation/goal-004b-live');
 const LABEL = 'AUTOMATED QA — SYNTHETIC VOICE + UI CONFIRMATION — REAL ASSEMBLYAI';
 // Keep the original multi-clause inputs for explicitly labelled offline stress replay.
 const STRESS_PHRASES = {
@@ -63,7 +62,7 @@ async function buildIdentity() {
   }
   await walk('dist');
   const harnessFiles = {};
-  for (const file of ['qa-live-browser.mjs', 'qa-live-speech.mjs', 'qa-production-observer.mjs', 'qa-player-policy.mjs', 'qa-player-memory.mjs', 'qa-mission-player.mjs', 'qa-turn-pacing.mjs', 'qa-browser-instrumentation.mjs', 'qa-lifecycle.mjs', 'qa-live-authorization.mjs', 'qa-budget.mjs', 'qa-supervisor.mjs', 'qa-speech-fixtures.mjs', 'qa-evidence.mjs', 'qa-amended-budget.mjs', 'qa-acceptance-behavior.mjs']) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
+  for (const file of GOAL_005_HARNESS_FILES) harnessFiles[file] = createHash('sha256').update(await readFile(join('scripts', file))).digest('hex');
   const fixtureFiles = {};
   for (const file of (await readdir('.validation/goal-004b-media')).filter(name => /^speech-[a-f0-9]{16}\.(?:json|wav)$/.test(name)).sort()) fixtureFiles[file] = createHash('sha256').update(await readFile(join('.validation/goal-004b-media', file))).digest('hex');
   const { sessionConfig } = await import(pathToFileURL(resolve('dist/server/agent/config.js')).href);
@@ -82,17 +81,17 @@ async function persistReport(directory, report) {
   await rename(temporary, join(directory, 'report.json'));
 }
 
-async function checkNextAttempt(mode, identity) {
-  assertGoal004ERecheckReservationAuthorized({ directory: DIRECTORY, mode, identity });
+async function checkNextAttempt(mode, identity, options = {}) {
+  assertGoal005ReservationAuthorized({ directory: DIRECTORY, mode, identity, ...options });
 }
 
-async function worker(scenario, mode) {
-  assertGoal004ERecheckLiveAuthorized();
+async function worker(scenario, mode, options) {
+  assertGoal005LiveAuthorized();
   if (process.env.QA_SUPERVISED_WORKER !== '1' || !process.send) throw new Error('An independently supervised worker is required.');
   assertSupervisedParent(DIRECTORY);
-  if (scenario !== 'mission' || mode !== 'voice') throw new Error('The recheck slot permits only mission Voice with UI confirmation.');
+  if (scenario !== 'mission' || !['voice', 'text'].includes(mode)) throw new Error('Goal 005 requires mission Voice or a bounded Text diagnostic.');
   const identity = await buildIdentity();
-  await checkNextAttempt(mode, identity);
+  await checkNextAttempt(mode, identity, options);
   await validateFrozenPlayerSpeech(identity.fixtureFiles);
   // This private parent loader parses dotenv data; it never executes shell content.
   const envFile = parseEnv(await readFile('.env', 'utf8'));
@@ -100,7 +99,7 @@ async function worker(scenario, mode) {
   if (!key) throw new Error('The local provider credential is unavailable.');
   const port = await availablePort(); const origin = `http://127.0.0.1:${port}`;
   const accessCode = randomBytes(24).toString('base64url');
-  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_RECHECK_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '1' };
+  const productionEnv = { ...process.env, ASSEMBLYAI_API_KEY: key, PORT: String(port), GAME_BIND_ADDRESS: '127.0.0.1', GAME_ORIGIN: origin, GAME_PUBLIC_LIVE_ENABLED: '1', GAME_DEMO_ACCESS_CODE: accessCode, GAME_LIVE_ALLOWANCE_FILE: join(DIRECTORY, QA_GOAL005_AMENDMENT_ALLOWANCE), GAME_LIVE_CONCURRENT_LIMIT: '1' };
   delete productionEnv.GAME_DISABLE_LIVE; delete productionEnv.NODE_OPTIONS;
   const server = spawn(process.execPath, ['scripts/qa-production-observer.mjs'], { env: productionEnv, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
   await registerOwnedProcess(server.pid);
@@ -124,7 +123,15 @@ async function worker(scenario, mode) {
   journal.record('worker.started', { outcome: 'observed' });
   server.once('exit', code => journal.record('server.closed', { outcome: 'observed', code }));
   const label = mode === 'voice' ? LABEL : 'AUTOMATED QA — UI LIVE TEXT — REAL ASSEMBLYAI';
-  const report = { label, scenario, mode, identity, player: 'Bounded scripted expert policy; rendered human documents, finalized visible Pip replies, exact visible proposals and human controls steer actions.', pacingBoundary: 'Monotonic browser fixture/capture events and numeric ASR/reply/call aliases establish observed ordering. A 450 ms event quiet window is bounded observation, not a provider guarantee against arbitrarily late events. No end-of-input/commit message is invented.', route: [], steps: [], inputMode: 'synthetic microphone speech plus deliberate matching UI confirmations', completion: false, tokenRequests: 0 };
+  const report = { label, scenario, mode, identity, amendmentId: QA_GOAL005_AMENDMENT_ID, exerciseRecovery: options.exerciseRecovery, diagnosticReason: options.diagnosticReason, player: 'Bounded scripted expert policy; rendered human documents, finalized visible Pip replies, exact visible proposals and human controls steer actions.', pacingBoundary: 'Monotonic browser fixture/capture events and numeric ASR/reply/call aliases establish observed ordering. A 450 ms event quiet window is bounded observation, not a provider guarantee against arbitrarily late events. No end-of-input/commit message is invented.', route: [], steps: [], inputMode: mode === 'voice' ? 'synthetic microphone speech plus deliberate matching UI confirmations' : 'UI typed diagnostic input plus deliberate matching UI confirmations', completion: false, tokenRequests: 0 };
+  let accountingStop;
+  server.on('message', message => {
+    if (message?.type !== 'qa.account-stop' || !['provider_credit_refused', 'provider_credential_or_account_refused'].includes(message.reason)) return;
+    report.accountRefusal = message.reason;
+    failure = 'Provider credit or credential/account refusal stopped the entire Goal 005 batch.';
+    accountingStop ??= haltGoal005Batch(message.reason).then(halt => { report.batchHalt = halt; return true; }, () => false);
+    void accountingStop.then(recorded => { if (server.connected) server.send({ type: 'qa.account-stop.recorded', id: message.id, recorded }); });
+  });
   const end = () => {
     if (endPromise) return endPromise;
     stopping = true;
@@ -160,7 +167,7 @@ async function worker(scenario, mode) {
         void response.json().then(view => { sessionId = view.sessionId; }).catch(() => {});
       }
     });
-    await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: GOAL_004E_RECHECK_SESSION_UPDATE_SHA256, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
+    await installAudioInstrumentation(page, { label, expectedSessionUpdateSha256: identity.sessionUpdateSha256, maxProviderSockets: 1, onLifecycle: event => journal.record(event.type, { ...event, source: 'browser', outcome: 'observed' }) });
     await page.addInitScript(label => {
       document.addEventListener('DOMContentLoaded', () => {
         const badge = document.createElement('div'); badge.textContent = label;
@@ -180,10 +187,10 @@ async function worker(scenario, mode) {
     }, label);
     await page.route('**/voice-token', async route => {
       report.tokenRequests++;
-      if (report.tokenRequests !== 1) { await route.abort(); return; }
+      if (report.tokenRequests !== 1) { failure = 'A reconnect requires a separate reserved attempt.'; await route.abort(); return; }
       try {
-        await checkNextAttempt(mode, identity, directory);
-        reservation = await requestAttempt({ name: `${mode}-mission`, maxRunSeconds: 570, identity });
+        await checkNextAttempt(mode, identity, options);
+        reservation = await requestAttempt({ name: `${mode}-mission`, maxRunSeconds: 890, identity, ...options });
         report.reservation = reservation;
         await persistReport(directory, report);
         await route.continue();
@@ -209,16 +216,17 @@ async function worker(scenario, mode) {
     report.runtimePolicyDelivery = { ...deliveries[0], messageCount: policySnapshot.configurationUpdatesSent };
     await persistReport(directory, report);
     if (deliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
-      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      || report.runtimePolicyDelivery.sha256 !== identity.sessionUpdateSha256 || report.runtimePolicyDelivery.matchesExpected !== true) {
       throw new Error('The actual serialized session.update did not match the frozen repaired runtime policy.');
     }
     await page.getByRole('button', { name: 'Open transcript history', exact: true }).click();
     const visibleHistory = () => page.locator('.history-message').evaluateAll(articles => articles.map((article, historyIndex) => ({ historyIndex, speaker: article.querySelector('strong')?.textContent, text: article.querySelector('p')?.textContent, sourceLabel: article.querySelector('.source-label')?.textContent ?? null, chapterLabel: article.querySelector('.chapter-source')?.textContent ?? null, displayedAt: article.querySelector('time')?.getAttribute('datetime') ?? null, final: !/Partial transcript/.test(article.textContent), interrupted: /Interrupted \/ incomplete speech/.test(article.textContent), provenance: 'Rendered history DOM at this snapshot; index is not a provider message identifier' })).filter(item => item.final && !item.interrupted));
-    const settled = (afterMs = -1, requireReply = true) => waitForTurn(page, { afterMs, mode, requireReply, timeoutMs: 40_000 });
+    const remainingTurnTime = deadlineAt => { const remaining = deadlineAt === undefined ? 40_000 : Math.min(40_000, deadlineAt - performance.now()); if (remaining <= 0) throw new Error('The bounded subgoal recovery deadline elapsed.'); return remaining; };
+    const settled = (afterMs = -1, requireReply = true, deadlineAt) => waitForTurn(page, { afterMs, mode, requireReply, timeoutMs: remainingTurnTime(deadlineAt) });
     await settled();
     report.initialPhysicalTruth = await physicalTruth();
     const captionIdentity = item => JSON.stringify([item.displayedAt, item.sourceLabel, item.chapterLabel, item.speaker, item.text]);
-    async function say(text, { requireReply = true, terminal = false } = {}) {
+    async function say(text, { requireReply = true, terminal = false, deadlineAt } = {}) {
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
       {
         const index = report.steps.length;
@@ -232,7 +240,7 @@ async function worker(scenario, mode) {
       // No speech is queued while its request/reply/tool/playback is unresolved.
       report.preSubmitWaits ??= [];
       let preSubmit;
-      try { preSubmit = await waitBeforePlayerTurn(page, { mode, confirmation: report.confirmations?.at(-1), timeoutMs: 40_000 }); }
+      try { preSubmit = await waitBeforePlayerTurn(page, { mode, confirmation: report.confirmations?.at(-1), timeoutMs: remainingTurnTime(deadlineAt) }); }
       catch (error) { report.preSubmitWaits.push({ beforeTurnId: report.steps.length + 1, ...error.preSubmit }); throw error; }
       if (stopping) throw new Error('The supervised session deadline ended this attempt.');
       report.preSubmitWaits.push({ beforeTurnId: report.steps.length + 1, ...preSubmit });
@@ -243,7 +251,7 @@ async function worker(scenario, mode) {
       await submitPlayerTurn(page, { mode, text, fixture: speech });
       let pacing;
       // The final return first produces a proposal; settle it before UI confirmation.
-      try { pacing = await settled(before.elapsedMs, requireReply); }
+      try { pacing = await settled(before.elapsedMs, requireReply, deadlineAt); }
       catch (error) {
         const endedAtMs = (await audioSnapshot(page)).elapsedMs;
         report.steps.push({ ...step, fixture: speech?.id ?? null, messages: await newMessages(), failureLayer: 'turn_pacing', reason: String(error.message), endedAtMs, elapsedMs: endedAtMs });
@@ -285,7 +293,11 @@ async function worker(scenario, mode) {
       }
       return replies;
     }
-    await runRescuePlayer({ page, say, screenshot, report });
+    await runRescuePlayer({ page, say, screenshot, report, exerciseRecovery: options.exerciseRecovery, waitForReady: async () => {
+      report.boundaryWaits ??= [];
+      try { const boundary = await waitBeforePlayerTurn(page, { mode, confirmation: report.confirmations?.at(-1), timeoutMs: 40_000 }); report.boundaryWaits.push(boundary); }
+      catch (error) { report.boundaryWaits.push(error.preSubmit ?? { status: 'failed' }); throw error; }
+    } });
     report.finalPhysicalTruth = await physicalTruth();
     await page.waitForFunction(() => globalThis.__qaAudio.snapshot().events.some(event => event.type === 'session.ended'), null, { timeout: 12000 });
   } catch (error) {
@@ -315,6 +327,14 @@ async function worker(scenario, mode) {
     }
     // Incremental journal survives a browser disconnect that prevents a final snapshot.
     const events = evidence?.events ?? journal.snapshot().filter(event => event.source === 'browser').map(event => ({ ...event, atMs: event.browserAtMs })); const opened = events.find(event => event.type === 'socket.open'); const ended = events.find(event => event.type === 'session.ended'); const closed = events.find(event => event.type === 'socket.close');
+    const refusal = events.find(event => event.type === 'session.error' && ['provider_credit_refused', 'provider_credential_or_account_refused'].includes(event.accountRefusal))?.accountRefusal;
+    if (refusal && reservation) {
+      report.accountRefusal = refusal;
+      failure = 'Provider credit or credential/account refusal stopped the entire Goal 005 batch.';
+      accountingStop ??= haltGoal005Batch(refusal).then(halt => { report.batchHalt = halt; return true; }, () => false);
+      await accountingStop;
+    }
+    if (reservation && (report.tokenRequests !== 1 || events.filter(event => event.type === 'socket.open').length > 1 || events.some(event => event.type === 'socket.attempt.blocked'))) failure ??= 'This attempt did not retain a single token request and provider socket.';
     report.endAcknowledged = Boolean(ended); report.explicitEndSent = events.some(event => event.type === 'session.end');
     report.providerDurationSeconds = ended?.durationSeconds ?? null;
     report.connectedSeconds = opened && (ended || closed) ? ((ended ?? closed).atMs - opened.atMs) / 1000 : null;
@@ -332,7 +352,7 @@ async function worker(scenario, mode) {
     const finalDeliveries = events.filter(event => event.type === 'configuration.delivery');
     report.runtimePolicyDelivery = { ...finalDeliveries[0], messageCount: evidence?.configurationUpdatesSent ?? null };
     if (finalDeliveries.length !== 1 || report.runtimePolicyDelivery.messageCount !== 1
-      || report.runtimePolicyDelivery.sha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 || report.runtimePolicyDelivery.matchesExpected !== true) {
+      || report.runtimePolicyDelivery.sha256 !== identity.sessionUpdateSha256 || report.runtimePolicyDelivery.matchesExpected !== true) {
       failure ??= 'The actual session configuration delivery was missing, changed or repeated.';
     }
     if (report.regressionCanary?.status !== 'passed' || !report.regressionCanary.explicitLatchRequest) {
@@ -351,7 +371,7 @@ async function worker(scenario, mode) {
     if (!['activeTracks', 'activeSources', 'openApplicationContexts'].every(key => report.cleanup?.[key] === 0)) failure ??= 'Application audio cleanup was missing or incomplete.';
     report.failure = failure ?? 'Cleanup pending; this is not a final acceptance result.';
     report.lifecycle = journal.snapshot();
-    report.watchdogCleanup = 'Independent supervisor amendment-candidate-recheck-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
+    report.watchdogCleanup = 'Independent supervisor amendment-goal-005-cleanup.jsonl; a local cleanup record is not a remote end ACK.';
     if (directory) await persistReport(directory, report);
     const video = page?.video();
     await context?.close().catch(() => {});
@@ -373,6 +393,7 @@ async function worker(scenario, mode) {
     else if (!journal.snapshot().some(event => event.type === 'server.closed')) journal.record('server.closed', { outcome: 'observed', code: server.exitCode });
     report.lifecycle = journal.snapshot();
     if (!['browser.closed', 'server.closed'].every(type => report.lifecycle.some(event => event.type === type && event.outcome === 'observed'))) failure ??= 'Owned process closure was not fully observed.';
+    if (accountingStop && !await accountingStop) failure = 'The permanent provider-refusal stop could not be acknowledged; accounting requires inspection.';
     if (reservation) await finishAttempt({ endAcknowledged: report.endAcknowledged, connectedSeconds: report.connectedSeconds, outcome: failure ? 'failed' : 'passed' }).catch(() => { failure ??= 'The supervisor did not acknowledge the final attempt result.'; });
     report.failure = failure ?? null;
     await persistReport(directory, report);
@@ -383,38 +404,47 @@ async function worker(scenario, mode) {
 }
 
 const args = process.argv.slice(2);
+const runOptions = { exerciseRecovery: args.includes('--recovery'), diagnosticReason: args.includes('--diagnostic-reason') ? args[args.indexOf('--diagnostic-reason') + 1] : null };
+const requestedMode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : 'voice';
 // No flag, environment variable or locally generated file supplies owner approval.
 // This gate executes before fixtures, credentials, allowance reads or child processes.
 if (args.includes('--live') || args.includes('--worker')) {
-  try { assertGoal004ERecheckLiveAuthorized(); }
+  try { assertGoal005LiveAuthorized(); }
   catch (error) { console.error(error.message); process.exitCode = 1; if (process.connected) process.disconnect(); }
 }
 if (process.exitCode) {
   // Deliberately stop without touching either campaign.
 } else if (args.includes('--worker')) {
-  try { await worker(args[args.indexOf('--scenario') + 1], args[args.indexOf('--mode') + 1]); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
+  try { await worker(args[args.indexOf('--scenario') + 1], requestedMode, runOptions); } catch { console.error('QA worker preparation failed before a usable session; inspect the preserved local campaign.'); process.exitCode = 1; if (process.connected) process.disconnect(); }
 } else if (args.includes('--freeze')) {
   if (execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()) throw new Error('Commit activation and clean the worktree before freezing.');
   const identity = await buildIdentity();
   await validateFrozenPlayerSpeech(identity.fixtureFiles);
-  if (identity.runtimeSha256 !== GOAL_004E_RECHECK_RUNTIME_SHA256 || identity.sessionUpdateSha256 !== GOAL_004E_RECHECK_SESSION_UPDATE_SHA256) throw new Error('Compiled runtime differs from the approved recheck candidate.');
-  const frozenPath = join(DIRECTORY, GOAL_004E_RECHECK_FROZEN_FILE);
+  const campaign = inspectAmendedCampaign(DIRECTORY, QA_GOAL005_AMENDMENT_ID);
+  assertGoal005NextAttempt({ campaign, mode: requestedMode, identity, ...runOptions });
+  assertGoal005CurrentIdentity(identity);
+  const validation = readGoal005Validation(args.includes('--validation') ? args[args.indexOf('--validation') + 1] : undefined, identity, campaign.newAttempts === 0);
+  const candidate = { amendmentId: QA_GOAL005_AMENDMENT_ID, attempt: campaign.attempts.length + 1, mode: requestedMode, ...runOptions, validation, identity };
+  const frozenPath = join(DIRECTORY, goal005FrozenFile(candidate.attempt, identity.commit));
   let existing;
   try { existing = JSON.parse(await readFile(frozenPath, 'utf8')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   if (existing) {
-    if (existing.amendmentId !== QA_RECHECK_AMENDMENT_ID || JSON.stringify(existing.identity) !== JSON.stringify(identity)) throw new Error('The one-time frozen runtime candidate already exists with a different identity.');
-  } else await writeFile(frozenPath, JSON.stringify({ amendmentId: QA_RECHECK_AMENDMENT_ID, frozenAt: new Date().toISOString(), identity }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
+    const { frozenAt, ...prior } = existing;
+    if (JSON.stringify(prior) !== JSON.stringify(candidate)) throw new Error('This per-attempt candidate already exists with a different identity or execution mode.');
+  } else await writeFile(frozenPath, JSON.stringify({ ...candidate, frozenAt: new Date().toISOString() }, null, 2) + '\n', { flag: 'wx', mode: 0o600, flush: true });
   console.log(JSON.stringify({ status: 'OFFLINE_CANDIDATE_FROZEN', commit: identity.commit, runtimeSha256: identity.runtimeSha256, harnessSha256: identity.harnessSha256, fixtureSha256: identity.fixtureSha256 }));
 } else if (args.includes('--inspect')) {
-  const state = inspectCampaign(HISTORICAL_DIRECTORY); console.log(JSON.stringify({ historical: 'Goal 004B', attempts: state.attempts.length, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
+  const present = [QA_GOAL005_AMENDMENT_LEDGER, QA_GOAL005_AMENDMENT_ALLOWANCE].some(file => existsSync(join(DIRECTORY, file)));
+  const state = inspectAmendedCampaign(DIRECTORY, present ? QA_GOAL005_AMENDMENT_ID : QA_RECHECK_AMENDMENT_ID);
+  console.log(JSON.stringify({ amendmentId: state.header.id, goal005Initialized: present, attempts: state.attempts.length, newAttempts: present ? state.newAttempts : 0, productionAttempts: state.productionAttempts, reservedSeconds: state.reservedSeconds, estimatedReservedDollars: state.estimatedReservedDollars }));
 } else {
   if (!args.includes('--live')) await prepareFixtures();
-  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 004E candidate recheck Voice test only; aggregate sequencing gates apply.', campaignLimits: GOAL_004E_RECHECK_AMENDMENT }));
+  if (!args.includes('--live')) console.log(JSON.stringify({ status: 'DRY_RUN', result: 'Local standard and retained stress fixtures validated; no credentials loaded, allowance created, or provider contacted.', live: 'Explicit supervised Goal 005 batch: Voice first, at most two reasoned Text diagnostics, immutable freeze per attempt.', campaignLimits: GOAL_005_AMENDMENT }));
   else {
     const scenario = args[args.indexOf('--scenario') + 1]; const mode = args[args.indexOf('--mode') + 1];
-    if (scenario !== 'mission' || mode !== 'voice') throw new Error('Explicit --scenario mission --mode voice required for the recheck slot.');
+    if (scenario !== 'mission' || !['voice', 'text'].includes(mode)) throw new Error('Explicit --scenario mission --mode voice or text is required.');
     // An approved campaign must already exist. Missing accounting never initializes one.
-    await checkNextAttempt(mode, await buildIdentity());
-    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_RECHECK_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode] }); process.exitCode = result.exitCode ?? 1;
+    await checkNextAttempt(mode, await buildIdentity(), runOptions);
+    const result = await runSupervised({ directory: DIRECTORY, worker: SELF, amendmentId: QA_GOAL005_AMENDMENT_ID, args: ['--worker', '--scenario', scenario, '--mode', mode, ...(runOptions.exerciseRecovery ? ['--recovery'] : []), ...(runOptions.diagnosticReason !== null ? ['--diagnostic-reason', runOptions.diagnosticReason] : [])] }); process.exitCode = result.exitCode ?? 1;
   }
 }

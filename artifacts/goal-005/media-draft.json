@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-29T08:46:41.488677+00:00",
+  "status": "DRAFT_PPTX_PDF_RENDERED_AND_INSPECTED; VIDEO_PLAN_ONLY",
+  "draftStatus": "Goal005 live acceptance in progress; no result count claimed. Update status.json and rerender after actual final evidence.",
+  "outputs": [
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pptx",
+      "bytes": 863104,
+      "sha256": "e0b5ed696232f64e0a24636f863fdac8f76216c97db29a57274358c75409508f"
+    },
+    {
+      "path": "submission/Talk_Me_Home_Goal005_Pitch.pdf",
+      "bytes": 473503,
+      "sha256": "2c1803a5f106d9b8126ebd95de303dbaa1f3cecfc0fbb494a099241a2b20d34c"
+    }
+  ],
+  "slides": [
+    {
+      "slide": 1,
+      "editableTextShapes": 5,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-1.png",
+        "bytes": 232559,
+        "sha256": "db9ddc7bc7006b70f4a5fdd43cd6482f4a462793e1b873ee3a48806ee0812aef"
+      },
+      "visuallyInspected": true
+    },
+    {
+      "slide": 2,
+      "editableTextShapes": 12,
+      "pictureShapes": 0,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-2.png",
+        "bytes": 97228,
+        "sha256": "a8e950b4af251451066d8ba3577e52d66dd40a6ab8f98440eedf83eb9eaa7492"
+      },
+      "visuallyInspected": true
+    },
+    {
+      "slide": 3,
+      "editableTextShapes": 9,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-3.png",
+        "bytes": 235186,
+        "sha256": "92b6e0bdd1d6858011d91eb459555679f46cab31c340bcaa013e63c6b2479f56"
+      },
+      "visuallyInspected": true
+    },
+    {
+      "slide": 4,
+      "editableTextShapes": 9,
+      "pictureShapes": 1,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-4.png",
+        "bytes": 142919,
+        "sha256": "e2ae23bbb9f49d4d2cc2fc1b1aac47c254277b8c328554d168458d2f65e400e6"
+      },
+      "visuallyInspected": true
+    },
+    {
+      "slide": 5,
+      "editableTextShapes": 12,
+      "pictureShapes": 0,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-5.png",
+        "bytes": 100679,
+        "sha256": "e72a125f8eff20660e7e4eaa62bd7684dc91e92d1fd9dd97b7db13ba5e732217"
+      },
+      "visuallyInspected": true
+    },
+    {
+      "slide": 6,
+      "editableTextShapes": 10,
+      "pictureShapes": 0,
+      "sourceNotesPresent": true,
+      "render": {
+        "path": ".validation/goal-005-media/rendered-slides/slide-6.png",
+        "bytes": 109471,
+        "sha256": "35e13d1670e856045589f4fb1876502855c25f26153284137be4e088fc978c5b"
+      },
+      "visuallyInspected": true
+    }
+  ],
+  "sourceCaptures": [
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-chromium-1440.png",
+      "bytes": 224511,
+      "sha256": "517b1ae3104b7d90fbe46ed34ad45e976a6b9bb707ef60fddde20ca9dcd2daaa"
+    },
+    {
+      "path": "artifacts/goal-005/ui/goal-005-gallery-zoom-chromium-1280.png",
+      "bytes": 112879,
+      "sha256": "47d71b24b4a8b66611e7943f47a871a0d6bb43c303a5bf7f42f03515435a298b"
+    }
+  ],
+  "recipes": [
+    {
+      "path": "submission/goal-005-deliverables/README.md",
+      "bytes": 3451,
+      "sha256": "bf295c236e2564f867366c7ef95db964d0caeebe0b6065e0af80f9962324bbcd"
+    },
+    {
+      "path": "submission/goal-005-deliverables/make_pitch.py",
+      "bytes": 8724,
+      "sha256": "240d075ca3dce861b81603c33ec196482eeacd5b1189cdbf7270ab4354dfee5c"
+    },
+    {
+      "path": "submission/goal-005-deliverables/make_video.py",
+      "bytes": 4744,
+      "sha256": "3656e4c0af60c00a8a8bdb42183c4eb6896d9e323384ec2061f981506816a7db"
+    },
+    {
+      "path": "submission/goal-005-deliverables/status.json",
+      "bytes": 673,
+      "sha256": "8c1cb60d8a718cef8b5bf60b1ba58cef04a094543e4a50ef9210d50409311c14"
+    },
+    {
+      "path": "submission/goal-005-deliverables/video-plan.json",
+      "bytes": 2325,
+      "sha256": "4047e40f7afe0563c880e5f3f079699222d45f29ddba2f62927f71b1f3694907"
+    }
+  ],
+  "priorDeliverables": [
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pptx",
+      "bytes": 1331075,
+      "sha256": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08",
+      "unchanged": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Pitch.pdf",
+      "bytes": 810438,
+      "sha256": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea",
+      "unchanged": true
+    },
+    {
+      "path": "submission/Talk_Me_Home_Demo_Draft.mp4",
+      "bytes": 4526386,
+      "sha256": "c85a432457a1252ac350483f1a6fb98eaf5b49ea20e6fc1f219327f4481ebb7c",
+      "unchanged": true
+    }
+  ],
+  "toolchain": {
+    "pythonPptx": "1.0.2",
+    "pillow": "12.3.0",
+    "libreoffice": "24.2.7.2",
+    "poppler": "24.02.0",
+    "ffmpegAvailable": "/home/mhirotaka/.local/bin/ffmpeg",
+    "ffprobeAvailable": "/home/mhirotaka/.local/bin/ffprobe"
+  },
+  "inspection": {
+    "actualPptxRenderedToPdf": true,
+    "allSixNativeSlidesViewed": true,
+    "textWrappingImprovedOnSlides": [
+      3,
+      5
+    ],
+    "videoGenerated": false,
+    "audioListeningPerformed": false
+  },
+  "providerCalls": 0,
+  "runtimeOrAccountingChanges": false,
+  "publicDemoUrl": null,
+  "uploadedVideoUrl": null
+}

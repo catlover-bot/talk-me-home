@@ -50,3 +50,10 @@ export function writeGoal004EConfirmedHistory(directory: string) {
     + '{"reservedAt":1790586887067,"leaseUntil":1790587557067}\n'
     + '{"reservedAt":1790591054802,"leaseUntil":1790591724802}\n')
 }
+
+// Exact fifth failed Voice history, copied as sanitized fixture literals only.
+export function writeGoal004ERecheckHistory(directory: string) {
+  writeGoal004EConfirmedHistory(directory)
+  writeFileSync(join(directory, "amendment-candidate-recheck.jsonl"), "{\"type\":\"amendment\",\"version\":1,\"id\":\"goal-004e-candidate-recheck-2026-09-29\",\"originalCampaignSha256\":\"c42a6ede742eb0a6e7259f19084f06f7c666864d751b11d3809240c238b9929c\",\"originalAllowanceSha256\":\"1bc88bc19921daef227a75420c02f2f50af3d2c00de27a941241f097a156cadb\",\"historicalAttempts\":4,\"maxNewAttempts\":1,\"newCapacitySeconds\":670,\"maxAttempts\":5,\"reservationSeconds\":670,\"capacitySeconds\":3350,\"maxSessionSeconds\":600,\"planningDollars\":4.1875,\"disconnectGraceSeconds\":30,\"hourlyRate\":4.5,\"createdAt\":1790652145369,\"previousAmendmentId\":\"goal-004e-confirmed-actions-2026-09-28\"}\n{\"type\":\"reserved\",\"attempt\":5,\"name\":\"voice-mission\",\"reservedAt\":1790652159512,\"reservedSeconds\":670,\"gracefulAt\":1790652729512,\"hardAt\":1790652739512,\"leaseUntil\":1790652829512,\"identitySha256\":\"4fb13ff607c976351bb8c9535fa2ceddc4a050e6036c687fc26e1c6703356952\"}\n{\"type\":\"result\",\"attempt\":5,\"finishedAt\":1790652327174,\"endAcknowledged\":true,\"connectedSeconds\":163.96640000003578,\"outcome\":\"failed\"}\n{\"type\":\"closed\",\"attempt\":5,\"closedAt\":1790652328833}\n")
+  writeFileSync(join(directory, "amendment-candidate-recheck-allowance.jsonl"), "{\"version\":1,\"allowanceSessions\":5,\"maxSessionSeconds\":600}\n{\"reservedAt\":1790359091852,\"leaseUntil\":1790359761852}\n{\"reservedAt\":1790468663487,\"leaseUntil\":1790469333487}\n{\"reservedAt\":1790586887067,\"leaseUntil\":1790587557067}\n{\"reservedAt\":1790591054802,\"leaseUntil\":1790591724802}\n{\"reservedAt\":1790652159525,\"leaseUntil\":1790652829525}\n")
+}

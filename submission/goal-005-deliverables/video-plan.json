@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "status": "PLAN_ONLY",
+  "output": "submission/Talk_Me_Home_Goal005_Demo.mp4",
+  "workingDirectory": ".validation/goal-005-media",
+  "targetDurationSeconds": { "minimum": 120, "maximum": 180 },
+  "story": [
+    { "section": "Premise", "seconds": 10, "content": "You have the map; Pip has local eyes and hands. Original title art is illustration, not gameplay." },
+    { "section": "Explore and plan", "seconds": 25, "content": "Actual improved atlas, a deliberate private route mark, exact source quote and Relay freshness. Label Practice if no real capture shows these operations." },
+    { "section": "Arrival and orientation", "seconds": 35, "content": "Same-attempt request, exact proposal, owner confirmation, actual Pip arrival report and playback. Retain uncertainty or permission questions if present." },
+    { "section": "Recover or reroute", "seconds": 35, "content": "A useful real recovery or backtrack when actually observed. Otherwise show a labelled Practice demonstration and disclose the mode/build boundary." },
+    { "section": "Ending or actual limit", "seconds": 25, "content": "Show server-confirmed home only if that selected mission achieved it. Otherwise retain the real stopping point and truthful prototype status." },
+    { "section": "Availability", "seconds": 10, "content": "Actual final-candidate result; public URL blank unless separately deployed. No submission/upload claim." }
+  ],
+  "sources": {},
+  "segments": [],
+  "sourceRules": {
+    "hashEveryInput": true,
+    "oneAttemptPerContinuousMission": true,
+    "retainUncutSuccessfulRunPrivatelyIfAvailable": true,
+    "explicitModeOrBuildTransition": true,
+    "retainOriginalProviderAudio": true,
+    "replacementPipSpeech": false,
+    "generatedNarration": false,
+    "physicalAudioClaim": false,
+    "historicalFilesWritable": false
+  },
+  "inspectionRequired": [
+    "Inspect every native slide render.",
+    "Inspect video frames before/after every mode, build, chapter and edit boundary.",
+    "Decode/probe audio and review audible content with an audio-capable tool or human if available; record any unperformed listening honestly.",
+    "Verify exact final output hashes, streams, durations and original-input hashes.",
+    "Update status.json and rendered deck after the real result is known."
+  ]
+}

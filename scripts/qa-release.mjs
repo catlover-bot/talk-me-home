@@ -22,7 +22,8 @@ if (target) {
   if (url.origin !== target || url.username || url.password || !['http:', 'https:'].includes(url.protocol)) throw new Error('Target must be an exact HTTP(S) origin without credentials or a path.');
   if (url.protocol !== 'https:' && !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('A remote approved target requires HTTPS.');
 }
-const evidenceBase = '.validation/goal-004e-followup-offline';
+const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const evidenceBase = `.validation/goal-005-offline/${sourceCommit}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 const directory = resolve(evidenceBase);
 mkdirSync(join(directory, 'screenshots'), { recursive: true });
 const environment = { ...process.env, CI: '1', GAME_DISABLE_LIVE: '1', GAME_PUBLIC_LIVE_ENABLED: '0', GAME_QA_PREBUILT: '0', ASSEMBLYAI_API_KEY: '', GAME_DEMO_ACCESS_CODE: '', GAME_LIVE_ALLOWANCE_FILE: '' };
@@ -31,7 +32,7 @@ let browser;
 const report = {
   label: 'AUTOMATED QA - OFFLINE PRACTICE / INJECTED PROVIDERS ONLY',
   startedAt: new Date().toISOString(),
-  commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+  commit: sourceCommit,
   branch: execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim(),
   dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
   node: process.version, platform: process.platform, checks: [], screenshots: [],
