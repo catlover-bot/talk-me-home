@@ -1,0 +1,18 @@
+{
+  "label": "PRE-RESERVATION FREEZE CHECK - NO REAL ATTEMPT",
+  "candidate": "e9fa9f0",
+  "outcome": "Freeze rejected an incorrectly labelled configuration hash before writing any candidate or allowance.",
+  "runtimeFilesCompared": 22,
+  "runtimeFilesUnchanged": true,
+  "runtimeManifestSha256": "f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb",
+  "bareConfigurationSha256": "2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1",
+  "actualSerializedSessionUpdateSha256": "ef98ba9725b19da4c616e9f25f692bfaeb373796ca3221d1b3b5141da2e6cf2e",
+  "serialization": "JSON.stringify({ type: 'session.update', session: sessionConfig })",
+  "correction": "Correct only the new authorization metadata pin and add a test deriving the exact shipped envelope; preserve previous receipts with their historical mislabel unchanged.",
+  "independentReview": "Shipped voice send, buildIdentity and instrumentation agree on the complete ordered wire envelope.",
+  "tokenRequests": 0,
+  "reservations": 0,
+  "newAccountingFiles": 0,
+  "frozenFileWritten": false,
+  "applicationOrPromptChanges": false
+}

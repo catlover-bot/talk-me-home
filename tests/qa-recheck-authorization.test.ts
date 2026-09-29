@@ -5,12 +5,18 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import test from 'node:test'
+import { sessionConfig } from '../game/agent/config.js'
 import { assertGoal004ERecheckNextAttempt, GOAL_004E_RECHECK_AMENDMENT, GOAL_004E_RECHECK_RUNTIME_SHA256, GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 } from '../scripts/qa-live-authorization.mjs'
 import { writeGoal004EConfirmedHistory } from './fixtures/goal-004c-history.js'
 // @ts-expect-error Native executable accounting module has no declaration file.
 import { initializeAmendment, AmendedCampaignBudget } from '../scripts/qa-amended-budget.mjs'
 
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+test('the frozen configuration pin covers the exact shipped session.update envelope, not the bare config', () => {
+  assert.equal(hash({ type: 'session.update', session: sessionConfig }), GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
+  assert.equal(hash(sessionConfig), '2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1')
+  assert.notEqual(hash(sessionConfig), GOAL_004E_RECHECK_SESSION_UPDATE_SHA256)
+})
 function fixture() {
   const files = JSON.parse(readFileSync('artifacts/goal-004e/follow-up/candidate.json', 'utf8')).files
   const harnessFiles = { 'constructed-activation.mjs': 'a'.repeat(64) }

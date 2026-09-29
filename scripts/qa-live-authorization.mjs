@@ -81,7 +81,7 @@ export const GOAL_004E_RECHECK_AMENDMENT = Object.freeze({
 })
 export const GOAL_004E_RECHECK_FROZEN_FILE = 'candidate-recheck-execution-candidate.json'
 export const GOAL_004E_RECHECK_RUNTIME_SHA256 = 'f7b52092d573dd8f83a23fe659e7f095a580ec2be0a0d8a47141a74da3755fdb'
-export const GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 = '2141458acc893db0e4dcdd5b760a18413160e0d26555cf6c8de6a68443c142a1'
+export const GOAL_004E_RECHECK_SESSION_UPDATE_SHA256 = 'ef98ba9725b19da4c616e9f25f692bfaeb373796ca3221d1b3b5141da2e6cf2e'
 export const GOAL_004E_RECHECK_FIXTURE_SHA256 = '7e2f4f97a8363251196ebbbfc4efc43e12a3277c7aa24abeb8794ed29e0045fc'
 const recheckHistoricalReceipt = 'd98af583a942d65434e18d4c74cc93421e46000c31d2c12af8086600eff04216'
 const recheckPreparedReceipt = 'bb1a0a5053c89ff8ee81f357693b492a8fac49ab73ae9a29b70a46d1038d2187'
