@@ -145,12 +145,15 @@ test('Gallery gate compass labels match the fixed map orientation on both servic
 })
 
 test('all Gallery human projections are independent of hidden configuration and surveys reveal only adjacent gates', () => {
+  const observedAt = Date.UTC(2026, 8, 29)
   const local = explore(gallery(), all.map(action => state => { if (state.chapter === 'gallery') action(state) }))
   const visible: Record<string, string[]> = { ring: ['g1'], fork: ['g1', 'g2', 'g4'], sail: ['g2', 'g3'], leaf: ['g4', 'g5'] }
   for (const state of local.filter(state => state.chapter === 'gallery')) {
     const alternative = structuredClone(state); alternative.gallery.configuration = 'b'
     assert.deepEqual(humanView(state), humanView(alternative))
-    assert.deepEqual(robotView(state), robotView(alternative))
+    const observation = robotView(state, observedAt)
+    assert.equal(observation.perception?.observedAt, observedAt)
+    assert.deepEqual(observation, robotView(alternative, observedAt))
     const result = robotView(state).message
     const observed = [...result.matchAll(/gallery\.(g[1-5])/g)].map(match => match[1])
     assert.deepEqual(observed, visible[state.gallery.room])
