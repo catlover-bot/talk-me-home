@@ -4,7 +4,7 @@ Goal 005 local delivery, September 29, 2026. Branch: **`work/goal-005-gallery-li
 
 | Item | Actual status |
 | --- | --- |
-| Source and CI | Runtime/player frozen at `2edf7914a008143843923b04a9bf3a1fe41f1f68` for both last calls. Later delivery commits add evidence, documents and media. Exact final-head CI is recorded in the owner handoff and [Goal 005 report](../docs/goal-005-gallery-live-completion.md). |
+| Source and CI | Runtime/player frozen at `2edf7914a008143843923b04a9bf3a1fe41f1f68` for both last calls. Later delivery commits add evidence, documents, media and CI sharding. Both viewports retain all 71 tests, split 36/35 across two shards each. Exact final-head CI is recorded in the owner handoff and [Goal 005 report](../docs/goal-005-gallery-live-completion.md). |
 | Offline coverage | **PASSED:** typecheck, 437 unit tests, build, 142 browser cases, whitespace and fresh production Practice. Both Gallery variants, backtracking, cancellation, Training, Dock/home, narrow layout and zoom covered. |
 | Ordinary real Voice | **PASSED ONCE:** global attempt 12 / new attempt 7. Cargo, Gallery backtracking, Dock and home; 11 exact confirmed commits. Synthetic microphone, real ASR/model/tools and shipped digital playback. End ACK and cleanup verified. 576.923132 provider seconds. |
 | Deliberate-recovery real Voice | **FAILED:** global attempt 13 / new attempt 8, same candidate. Declined Latch caused no commit; a fresh proposal recovered. Five exact commits; Cargo and Gallery reached. Fork passage recovery exceeded 120 seconds; no Dock/home. End sent, ACK absent, provider duration unknown. 567.4462 local socket seconds; local cleanup verified. |

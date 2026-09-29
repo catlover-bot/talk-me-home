@@ -8,7 +8,7 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
   timeout: 20_000,
-  // The 94-case suite includes direct full-mission player and scope regressions.
+  // CI splits each viewport's suite into two shards, including full-mission regressions.
   // Keep individual deadlines unchanged and leave cleanup margin inside CI's four minutes.
   globalTimeout: 210_000,
   workers: process.env.CI ? 2 : 4,

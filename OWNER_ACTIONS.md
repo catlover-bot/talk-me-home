@@ -2,7 +2,7 @@
 
 **NOT DEPLOYED. RELEASE_NOT_LIVE_VERIFIED.** Public URL and judge access are not provided. Goal 005 produced one complete final-candidate synthetic Voice Rescue with ending ACK; its two-pass target was not met. The fixed eight-attempt additional batch is exhausted. No further provider use is authorized. No hosting, billing settings, visibility or upload was changed.
 
-Use `catlover-bot/talk-me-home`, branch **`work/goal-005-gallery-live-completion`**. Final runtime/player candidate `2edf7914a008143843923b04a9bf3a1fe41f1f68` passed 437 unit tests, 142 browser cases, typecheck, build and production Practice. Both last real attempts used that identical frozen candidate. See the [actual result, remaining defects and final CI](docs/goal-005-gallery-live-completion.md). Later delivery commits contain evidence, documentation and media; use the exact final feature head identified there for any separately approved deployment. Starter `main`, `npm start`, and `render.yaml` do not run this game.
+Use `catlover-bot/talk-me-home`, branch **`work/goal-005-gallery-live-completion`**. Final runtime/player candidate `2edf7914a008143843923b04a9bf3a1fe41f1f68` passed 437 unit tests, 142 browser cases, typecheck, build and production Practice. Both last real attempts used that identical frozen candidate. See the [actual result, remaining defects and final CI](docs/goal-005-gallery-live-completion.md). Later delivery commits contain evidence, documentation, media and CI sharding; use the exact final feature head identified there for any separately approved deployment. Starter `main`, `npm start`, and `render.yaml` do not run this game.
 
 ## 1. Decide whether to publish the prepared service
 
