@@ -1,0 +1,39 @@
+# Goal 006 publication preparation. Applying this file creates paid resources.
+# Owner deployment approval is required; this file creates no service or allowance.
+# Select this custom Blueprint Path; render.game.yaml preserves Goal 005.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: talk-me-home-goal-006
+    runtime: node
+    branch: work/goal-006-gameplay-and-submission
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: 'off'
+    buildCommand: npm ci --include=dev && npm run build:game
+    startCommand: npm run start:game
+    healthCheckPath: /api/health
+    disk:
+      name: talk-me-home-goal-006-admission
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.20.0
+      - key: GAME_BIND_ADDRESS
+        value: 0.0.0.0
+      - key: GAME_ORIGIN
+        sync: false
+      - key: GAME_PUBLIC_LIVE_ENABLED
+        value: '0'
+      - key: GAME_DISABLE_LIVE
+        value: '1'
+      - key: GAME_LIVE_CONCURRENT_LIMIT
+        value: '2'
+      - key: GAME_LIVE_ALLOWANCE_FILE
+        value: /var/data/talk-me-home-live-allowance.jsonl
+# Initial Practice publication needs no provider key, access code or allowance.
+# Future Live requires separate approval, private secrets and finite durable funding.
+# Never initialize an allowance in build/start/deploy hooks or reset an existing ledger.
