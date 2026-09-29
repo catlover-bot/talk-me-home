@@ -12,8 +12,9 @@ import { confirmProposalForRequest, confirmVisibleProposal } from '../../scripts
 const baseline = process.argv.includes('--baseline');
 const recorder = process.argv.includes('--recorder');
 const recordVideo = process.argv.includes('--video');
+const finalCapture = process.argv.includes('--final');
 const source = baseline ? '/home/mhirotaka/workspace/talk-me-home' : process.cwd();
-const label = baseline ? 'before' : recorder ? 'after-recorder' : 'after-core';
+const label = baseline ? 'before' : recordVideo ? 'practice-film' : finalCapture ? (recorder ? 'final-recorder' : 'final-core') : recorder ? 'after-recorder' : 'after-core';
 const output = resolve(`artifacts/goal-006/ui/${label}`);
 const media = resolve(`.validation/goal-006-capture/${label}`);
 mkdirSync(output, { recursive: true }); mkdirSync(media, { recursive: true });
@@ -30,7 +31,7 @@ const report = { label: 'Actual compiled Practice — no provider connection', s
   sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: source, encoding: 'utf8' }).trim(),
   sourceDirty: Boolean(execFileSync('git', ['status', '--porcelain'], { cwd: source, encoding: 'utf8' }).trim()),
   runtimeManifestSha256: createHash('sha256').update(JSON.stringify(files)).digest('hex'), recorderSelected: recorder,
-  screenshots: [], conversations: [], confirmations: [], realProviderCalls: 0, videos: [], startedAt: new Date().toISOString() };
+  screenshots: [], conversations: [], confirmations: [], events: [], realProviderCalls: 0, videos: [], startedAt: new Date().toISOString() };
 const listener = createServer(); await new Promise(done => listener.listen(0, '127.0.0.1', done));
 const port = listener.address().port; await new Promise(done => listener.close(done));
 const origin = `http://127.0.0.1:${port}`;
@@ -70,11 +71,13 @@ try {
       await page.getByRole('button', { name: 'Send message', exact: true }).click();
       let result = await (await response).json();
       if (result.code === 'awaiting_confirmation') {
+        report.events.push({ width, type: 'proposal-visible', request: text, atSeconds: (Date.now()-started)/1000 });
         await pause();
         const decision = page.waitForResponse(r => r.url().endsWith('/proposal-decision'));
         if (text === 'Pick up the flight recorder') await confirmVisibleProposal(page, 'Secure the flight recorder', text, report.confirmations);
         else await confirmProposalForRequest(page, text, report);
         result = await (await decision).json();
+        report.events.push({ width, type: 'confirmation-result', request: text, ok: result.ok, atSeconds: (Date.now()-started)/1000 });
       }
       assert.ok(result.ok, `Practice request failed: ${text}`);
       await expect(page.getByTestId('caption')).not.toHaveText(text); await pause();

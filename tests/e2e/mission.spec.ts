@@ -45,11 +45,19 @@ test('briefing is English, keyboard accessible, and hides local discoveries', as
   await guideToggle.focus();
   await page.keyboard.press('Enter');
   await expect(guide).toHaveAttribute('open', '');
-  await expect(guide).toContainText('remote sensors are damaged');
-  for (const fact of ['Your map', 'Your controls', 'Talk with Pip', 'Pause when needed']) {
+  await expect(page.locator('.briefing-premise')).toContainText('You have the map. Pip has eyes and hands.');
+  await expect(page.locator('.title-frequency')).toContainText('what can you see?');
+  await expect(guide).toContainText('You have the plans and remote switches. Pip sees and handles nearby equipment.');
+  for (const fact of ['Ask, then decide', 'Confirm one action', 'Pause when needed']) {
     await expect(guide.getByText(fact, { exact: true })).toBeVisible();
   }
-  await expect(guide).toContainText('ends any Live call');
+  await expect(guide).toContainText('Compare Pip’s report with your document. Your route marks stay private.');
+  await expect(guide).toContainText('Read Pip’s proposal and confirm it on the console.');
+  await expect(guide).toContainText('Looking and inspecting need no confirmation.');
+  await expect(page.locator('.launch-note')).toContainText('Spoken “yes” is not a confirmation.');
+  await expect(guide).toContainText('Pause keeps progress and ends any Live call. Resume explicitly.');
+  await expect(guide).toContainText('Refresh or server restart loses this mission.');
+  await expect(page.locator('body')).not.toContainText(/Latch|latched/);
   await page.keyboard.press('Space');
   await expect(guide).not.toHaveAttribute('open', '');
   await page.evaluate(() => { (document.activeElement as HTMLElement | null)?.blur(); scrollTo(0, 0); });
