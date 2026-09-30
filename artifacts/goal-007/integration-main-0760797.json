@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "status": "COMMITTED_INCREMENTS_INTEGRATED_MEDIA_PREVIEW_PENDING",
+  "observedAt": "2026-09-30T01:34:48.400591+00:00",
+  "integrationCommit": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+  "mainAndReleaseRefs": {
+    "remoteMain": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "originMain": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "localMain": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "remoteReleaseBranch": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "originReleaseBranch": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "localReleaseBranch": "076079742ff4728dbbf3d78fe1847a4a3259e024"
+  },
+  "publication": {
+    "method": "Normal fast-forward publication",
+    "previousPublishedBaseline": "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+    "previousBaselineIsAncestor": true,
+    "localMainFastForwardObservedInReflog": true
+  },
+  "backupTag": {
+    "name": "archive/pre-goal-007-main-20260930",
+    "commit": "11b4c9508bef682785e8bdf23d5170b30aafb7a6",
+    "localAndRemoteMatch": true
+  },
+  "coverage": {
+    "refObservations": 44,
+    "localBranchHeads": 16,
+    "originTrackingHeads": 13,
+    "remoteAdvertisedHeads": 13,
+    "localAndRemoteTagObservations": 2,
+    "historicalGoalBranches": 11,
+    "remoteGoalBranches": 12,
+    "allObjectsAvailable": true,
+    "allRefsReachable": true,
+    "uniqueCommitsBeyondIntegration": 0,
+    "divergentDiffFiles": 0
+  },
+  "historicalGoalBranches": [
+    {
+      "branch": "work/goal-001-first-door",
+      "commit": "b1be76ef0e2b28a52b3d59fe6a824af96bdfbe26",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-002-companion-polish",
+      "commit": "40583a9f3aad714fe1941591f74eb99c9867ba68",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-003-rescue-mission",
+      "commit": "a212857e00c8ad75a3b630af2b8e0435c48ad899",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-004-release-candidate",
+      "commit": "99bec1634eb3a1e49a2707a6c72f5b775785d12e",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-004b-autonomous-qa",
+      "commit": "00d10e1c21fa8de40a4c9bf5e49dce5126c2b04c",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-004c-live-recovery",
+      "commit": "6521bc0a761e35c36d5deb56538eb77f1f8ebae7",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-004d-runtime-intent-fix",
+      "commit": "52d8c6d4cc68d136890ffa4dfb39c4060602ffb0",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-004e-confirmed-actions",
+      "commit": "d87a898bdc7fa1e6dcb6bbf1debe4be1e9930291",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-005-gallery-live-completion",
+      "commit": "1949b921fc744dc28d0889ca8d30c9d7d8102bd6",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-005b-targeted-stabilization",
+      "commit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-006-gameplay-and-submission",
+      "commit": "5982fb69711f765aaeff33959773b022fce50c27",
+      "reachable": true
+    }
+  ],
+  "mergedGoal007Increments": [
+    {
+      "increment": "Immersion and offline UI evidence",
+      "sourceCommit": "d9ee08bb13df9b45ea8bb15c51c0f7d2975af07d",
+      "normalMergeCommit": "1a9675a5ab87853c1fe57e68ce09692db028f8d2",
+      "reachable": true
+    },
+    {
+      "increment": "Editable submission components with pending labels",
+      "sourceCommit": "f9f4b32c5ffcfab5703674a67745778aca33d76f",
+      "normalMergeCommit": "fd8640f0919fa21c39f3c6cec5380874c7a0e2ca",
+      "reachable": true
+    },
+    {
+      "increment": "Protected hosted admission",
+      "sourceCommit": "ed2a4107350d26e36659147cca51e76db67c6132",
+      "normalMergeCommit": "671ed713cc98ea07db84ad5b9650ee7abb8ceb9a",
+      "reachable": true
+    },
+    {
+      "increment": "Signed transport-mode enforcement",
+      "sourceCommit": "5ced8baa53e4fe2242ba79f94b04353d363ed7c3",
+      "normalMergeCommit": "e273b50ff8b2e8c751d230b4dfbca8039fd66128",
+      "reachable": true
+    },
+    {
+      "increment": "Hosted QA and optional recorder player",
+      "sourceCommit": "fa9e30ea96710929910abad36984766bf796fbb0",
+      "normalMergeCommit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+      "reachable": true
+    },
+    {
+      "increment": "Offline speech preparation receipt",
+      "sourceCommit": "8645cd7f30666c96d64b37965ad09b3ad5592621",
+      "normalMergeCommit": "5e5cef024700efa416a0d0e8a1d8f2dc46ab35a2",
+      "reachable": true
+    },
+    {
+      "increment": "Startup refusal preservation",
+      "sourceCommit": "4c2937d8371c4b1a217a4ba3b10ddd5a173d47fc",
+      "normalMergeCommit": "19d4036e43f1e7efa226b144f5f1cd529a8ca2d9",
+      "reachable": true
+    },
+    {
+      "increment": "Incremental exposure review",
+      "sourceCommit": "0a3ecf11f71b22d40a45fd072353a897b18105b2",
+      "normalMergeCommit": "1c573127ae1ddb81629096338636f00f64738097",
+      "reachable": true
+    }
+  ],
+  "directReleaseCommits": [
+    "c69101909e25e57be880a722bd0952d83a01b7c4",
+    "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+    "88a024999e98dbc139720b4e51318768fd7b10c9",
+    "9936675dacc182dbb406a5c55c688b96e8f8b5ec",
+    "86b2c359bb4d9d4ede057b60b9f4014f72711981",
+    "2a88dc1aaa834e32ec2eca182dfa434f567c5031",
+    "076079742ff4728dbbf3d78fe1847a4a3259e024"
+  ],
+  "isolatedCommittedHeads": [
+    {
+      "branch": "work/goal-007-admission",
+      "commit": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-007-hosted-qa",
+      "commit": "8645cd7f30666c96d64b37965ad09b3ad5592621",
+      "reachable": true
+    },
+    {
+      "branch": "work/goal-007-immersion",
+      "commit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+      "reachable": true
+    }
+  ],
+  "pendingPreview": {
+    "branch": "work/goal-007-immersion",
+    "committedHead": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+    "committedHeadReachable": true,
+    "uncommittedPreviewIncluded": false,
+    "scope": "Practice preview capture/narration recipes, preview SRT and draft provenance report; final committed media not yet inventoried."
+  },
+  "privateInventorySha256": {
+    "beforeLocalMainRefresh": "7d06cdb7c6fddcbc9fb57dd3b9dbabec399b119917ed874ba923d61bcd0a8256",
+    "afterLocalMainRefresh": "3204f3aff590dabdc8a1ec6b8da689a7fe908f5137e74aea1002c59d9ffeef97"
+  },
+  "boundary": "Source reachability snapshot only. Future preview work, hosted Voice acceptance, deployment, public-source approval and final-head CI are separate. Historical records and private credentials, ledgers, fixtures and raw media were not copied into this receipt."
+}
