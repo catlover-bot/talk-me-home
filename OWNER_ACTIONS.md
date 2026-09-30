@@ -1,9 +1,7 @@
-# Goal 006 publication and submission
+# Goal 007 execution access
 
-Goal 006 is the owner's accepted candidate. Features and delivered media are frozen. **NOT DEPLOYED. RELEASE_NOT_LIVE_VERIFIED.**
+The owner has authorized actual main integration, one bounded Render service/disk, one separate hosted QA/reviewer allocation, and Public source after the whole-exposure review. No repeat spending or deployment approval is required within that agreement.
 
-Use the [Goal 006 publication handoff](docs/goal-006-publication-handoff.md) for the exact source, service settings and submission-field mapping. Its dedicated [render.goal-006.yaml](render.goal-006.yaml) selects `work/goal-006-gameplay-and-submission`, with public Live and automatic deploys disabled.
+Current execution is recorded in [Goal 007 release and immersion](docs/goal-007-release-and-immersion.md). The initial missing access is the Render connection for the intended existing workspace/payment method; it was requested once while implementation and main integration continue. Any whole-history private-data finding must be resolved before repository visibility changes. These are access/exposure gates, not a new publication-preparation scope.
 
-The remaining owner decisions are authorization for the prepared hosting service and reviewer access, followed by authenticated media upload and event submission. Initial Practice publication needs no provider credentials or Live allowance. Future public Live requires separate authorization and finite funding.
-
-The [previous Goal 005 owner handoff](OWNER_ACTIONS_GOAL005_HISTORY.md) is preserved byte-for-byte as history. Its candidate choice, deployment branch and media links are superseded by the Goal 006 handoff. `render.game.yaml`, all historical evidence, and every delivered media file remain unchanged.
+LABLAB's final Submit button remains an owner action. Do not create another Goal merely to resume after access is supplied. The prior [Goal 006 handoff](OWNER_ACTIONS_GOAL006_HISTORY.md) and [Goal 005 handoff](OWNER_ACTIONS_GOAL005_HISTORY.md) remain unchanged history and no longer describe current execution authority.

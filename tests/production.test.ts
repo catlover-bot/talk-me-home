@@ -19,6 +19,7 @@ async function fixture(run: (base: string, directory: string) => Promise<void>, 
   writeFileSync(join(directory, 'index.html'), '<!doctype html><title>Talk Me Home</title>Rescue Mission')
   writeFileSync(join(directory, 'assets', 'game-AbCd1234.js'), 'document.title="Talk Me Home"')
   writeFileSync(join(directory, '.env'), 'STATIC_TEST_SECRET')
+  writeFileSync(join(directory, 'third-party-notices.txt'), 'Third-party license notices')
   const server = createGameServer({ production: true, allowedOrigins: [origin], staticDirectory: directory, apiKey: '', ...options })
   await new Promise<void>(done => server.listen(0, '127.0.0.1', done))
   try { await run(`http://127.0.0.1:${(server.address() as AddressInfo).port}`, directory) }
@@ -72,6 +73,10 @@ test('production serves the game build, safe asset types and health, with separa
     assert.match(asset.headers.get('cache-control')!, /immutable/)
     assert.deepEqual(await (await request(base, '/api/health')).json(), { ok: true })
     assert.deepEqual(await (await request(base, '/api/version')).json(), { commit: 'unbuilt', version: 'development' })
+    const notices = await request(base, '/third-party-notices.txt')
+    assert.equal(notices.status, 200)
+    assert.match(notices.headers.get('content-type')!, /text\/plain/)
+    assert.equal(await notices.text(), 'Third-party license notices')
     for (const path of ['/api', '/api/unknown', '/.env', '/%2eenv', '/game/server/http.ts', '/docs/solution.md', '/.live-test-budget.json', '/assets/missing.js', '/assets/game-AbCd1234.js.map']) {
       const response = await request(base, path)
       assert.equal(response.status, 404, path)
