@@ -11,7 +11,7 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
   timeout: 20_000,
-  // CI uses two ordinary shards and a dedicated hosted Voice lane per viewport.
+  // CI uses ordinary shards and dedicated complete-mission lanes per viewport.
   // Keep individual deadlines unchanged and leave cleanup margin inside CI's four minutes.
   globalTimeout: 210_000,
   workers: process.env.CI ? 2 : 4,
