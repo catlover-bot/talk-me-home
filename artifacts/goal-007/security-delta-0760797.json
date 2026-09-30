@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-09-30T01:38:59.557989+00:00",
+  "status": "PRIVATE_ACCOUNT_DISCLOSURE_DECISION_REQUIRED",
+  "incrementalFindings": "NO_NEW_PRIVATE_DATA_IDENTIFIED_IN_REVIEWED_SCOPE",
+  "repository": "catlover-bot/talk-me-home",
+  "sourceCommit": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+  "remoteBranches": {
+    "main": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+    "work/goal-007-release-and-immersion": "076079742ff4728dbbf3d78fe1847a4a3259e024"
+  },
+  "previousReceipts": [
+    "artifacts/goal-007/security-baseline-review.json",
+    "artifacts/goal-007/security-incremental-review.json"
+  ],
+  "scope": {
+    "newReachableObjects": 25,
+    "newTrackedBlobs": 8,
+    "newPngVersionsVisuallyReviewed": 2,
+    "description": "Changes after the preserved initial incremental snapshot through the specified main/feature commit and captured refs; integrated offline receipts, title captures, and security/report documentation."
+  },
+  "newActionRunLogs": [
+    {
+      "id": 36655568130,
+      "head_sha": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+      "status": "completed",
+      "conclusion": "failure",
+      "scan": "scanned",
+      "sha256": "4dc60b8b35e4a26847a504b297433f77c6d6c0b98ab52722a07e9f2fd3af07a0",
+      "bytes": 308112,
+      "entries": 59
+    },
+    {
+      "id": 36655568115,
+      "head_sha": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+      "status": "completed",
+      "conclusion": "failure",
+      "scan": "scanned",
+      "sha256": "7d89284f4b65e8478a8abcdb023eda43787b1fd105994ca2fe9b8788b7b1c19e",
+      "bytes": 312352,
+      "entries": 59
+    }
+  ],
+  "totalReviewedActionRunArchives": 34,
+  "githubExposureInventory": {
+    "branches": 13,
+    "tags": 1,
+    "issues": 0,
+    "comments": 0,
+    "commit-comments": 0,
+    "pulls": 0,
+    "releases": 0,
+    "runs": 34,
+    "artifacts": 0,
+    "workflows": 1,
+    "repository": {
+      "private": true,
+      "default_branch": "main",
+      "has_wiki": false,
+      "has_discussions": false,
+      "license": null
+    }
+  },
+  "ciOutcome": {
+    "main": "failure",
+    "feature": "failure",
+    "mainFailure": "chromium-1280 shard 1/2 reached the unchanged 210-second suite and teardown limit after 46 passing cases; other three jobs passed 48 cases each.",
+    "featureFailure": "chromium-1280 shard 1/2 reached the unchanged 210-second limit with 40 passed and 7 not run; goal007-sound.spec.ts line 55 additionally observed one ending request where two were expected. Other three jobs passed 48 cases each.",
+    "disposition": "Both failures are preserved and reported. This audit initiated no rerun, timeout increase, test suppression or repair."
+  },
+  "findings": {
+    "newCredentialCandidatesInGit": 0,
+    "committedPrivatePaths": 0,
+    "newAccountBalanceFields": 0,
+    "metadata": "Six matches were preserved project GitHub no-reply commit attribution; no new private contact record identified.",
+    "ci": "28 credential-context matches were npm cache keys containing lockfile hashes; reviewed without copying raw logs into tracked evidence.",
+    "images": "Both new PNGs show the current compiled title interface with Practice selected; no account dashboard, credential, personal image or private chat appears.",
+    "receipts": "New receipts preserve offline provenance, failure/repair history and missing hosted/Live acceptance; they contain safe hashes and no raw credentials."
+  },
+  "preservation": [
+    {
+      "receipt": "security-baseline-review.json",
+      "files": 21,
+      "unchanged": true
+    },
+    {
+      "receipt": "security-incremental-review.json",
+      "files": 37,
+      "unchanged": true
+    }
+  ],
+  "privateEvidenceDirectory": ".validation/goal-007/security-delta-0760797/",
+  "privateEvidenceFiles": [
+    {
+      "name": "account-field-occurrences.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "action-log-findings-private.json",
+      "bytes": 13791,
+      "sha256": "40f135c2e59b9e0e66890ff4122c0df55b8261c75d7f4635dd85d4c285ce815c"
+    },
+    {
+      "name": "action-log-receipts.json",
+      "bytes": 587,
+      "sha256": "2b6fc80df2151531acbbd342351f434b0b48f31205ed3d3b0a70ecbce2cca1d5"
+    },
+    {
+      "name": "action-logs/36655568115.zip",
+      "bytes": 312352,
+      "sha256": "7d89284f4b65e8478a8abcdb023eda43787b1fd105994ca2fe9b8788b7b1c19e"
+    },
+    {
+      "name": "action-logs/36655568130.zip",
+      "bytes": 308112,
+      "sha256": "4dc60b8b35e4a26847a504b297433f77c6d6c0b98ab52722a07e9f2fd3af07a0"
+    },
+    {
+      "name": "artifacts.json",
+      "bytes": 54,
+      "sha256": "e37ba7ec8d5c087245f4b4c44bb380cfdec5a188e050a8c9d6ce003450b5443e"
+    },
+    {
+      "name": "audit.py",
+      "bytes": 11374,
+      "sha256": "070c26a93542fe2ce0fac01abed2dba85ddaffa64c9a38043e2044065c72aed6"
+    },
+    {
+      "name": "binary-inventory.json",
+      "bytes": 303,
+      "sha256": "c0c0702105816ad4bd6bcb706903e512acdbc03fc73496bf376e9b7a5b867501"
+    },
+    {
+      "name": "binary-review/contact-1.png",
+      "bytes": 99145,
+      "sha256": "43d1101cf884a4615d1e5781db9026f359d3a353ec4342c8f680acd242415e37"
+    },
+    {
+      "name": "branches.json",
+      "bytes": 3814,
+      "sha256": "59662b3eaaff9f059b98ba94616e9cfbe580c8cd5af9e8a3629c645d2c03603c"
+    },
+    {
+      "name": "case-timings.json",
+      "bytes": 15092,
+      "sha256": "2f60230d15e00ef093d0a6bcd9c308c08ee315c217c0dc37e3ee9fd735cbcb69"
+    },
+    {
+      "name": "comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "commit-comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "findings-private.json",
+      "bytes": 2440,
+      "sha256": "6ed37e017e3d995d6fbe761638340a556488747fc0b519eacd5513f31b6af567"
+    },
+    {
+      "name": "issues.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "metadata-summary.json",
+      "bytes": 318,
+      "sha256": "ddf82da613660456ce615b7831fc2b9080dba1385d0d9e4385780634d5a6f8e3"
+    },
+    {
+      "name": "objects.json",
+      "bytes": 5517,
+      "sha256": "bf9fff84bb6316247afa65c81b2eb122bfd48f3de8bc992831a9621e7e44e023"
+    },
+    {
+      "name": "preservation.json",
+      "bytes": 198,
+      "sha256": "9fa358e64bdbda0b0de5555d3c7464fa8494e7bca8580a31e95fa5995dbcc290"
+    },
+    {
+      "name": "private-paths.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "pulls.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "refs.json",
+      "bytes": 3660,
+      "sha256": "3f994f6bb8c8fe4475af9d4d161c0a0de7789477c4b9629346b09adb3edcf3a6"
+    },
+    {
+      "name": "releases.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "runs.json",
+      "bytes": 531620,
+      "sha256": "871d4e8c8d6427ed3d9ba9c399335d4bdbaeb43f68ef04441ff262d0da1fa5c6"
+    },
+    {
+      "name": "scope.json",
+      "bytes": 312,
+      "sha256": "59de4ffd3bd846c12a648b7c909266dcf7946146cfef7908ce25b93a78f6dd77"
+    },
+    {
+      "name": "tags.json",
+      "bytes": 643,
+      "sha256": "d8b8f4965a1d2e5910386f178646f19e4c36ffc7ac4c4a5134d3191194135e91"
+    },
+    {
+      "name": "visual-review-inventory.json",
+      "bytes": 172,
+      "sha256": "61aac0f396b93fbb8135eefd37a8f6dda78e198506f1bb6cf28907726ab4020d"
+    },
+    {
+      "name": "workflows.json",
+      "bytes": 663,
+      "sha256": "319f49b3f9cc620b018b855e73a4f68b6729917744edc4ed5cfa358cb45a524f"
+    }
+  ],
+  "actionsTaken": {
+    "providerRequests": 0,
+    "fundedGrantsCreated": 0,
+    "visibilityChanges": 0,
+    "uploads": 0,
+    "historyRewrites": 0
+  },
+  "remaining": "The historical five-file account disclosure remains unresolved. Later media/commits and their final CI require a separate last delta. Successful offline CI is not hosted or real-provider acceptance."
+}
