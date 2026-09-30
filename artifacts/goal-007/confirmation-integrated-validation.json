@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T02:09:13.303Z",
+  "status": "OFFLINE_REPAIR_PASS",
+  "builtIdentity": {
+    "commit": "1b8af95ee1309f966a3760b9ec793d3de94b20a8",
+    "version": "0.7.0"
+  },
+  "runtimeSha256": "b563fd660d57268b6c8f58eea65362af6de841e8e855c45e08d8458f3a11cf2e",
+  "sessionUpdateSha256": "8230fdb349ac8cb46cdce86430f28e138a12536e7f6467fa142788c5aac12073",
+  "runtimeRepair": "e04578bc3978ff4a8ef327d80766828a37d75bad",
+  "fixtureRepair": "9c05b027c20ea90e55e0a53be90c3639c8d239e1",
+  "typecheck": "PASS",
+  "productionBuild": "PASS",
+  "whitespace": "PASS",
+  "unit": {
+    "passed": 510,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "2e1c70da9fbc4987b7fcf0412d602f29a3ebb8fd9c915a0da0f5970a6d52acf7"
+  },
+  "focusedBrowser": {
+    "passed": 50,
+    "failed": 0,
+    "skipped": 0,
+    "retries": 0,
+    "globalTimeoutMs": 210000,
+    "elapsed": "1.6m",
+    "files": [
+      "confirmation-record.spec.ts",
+      "qa-player.spec.ts",
+      "qa-mission-player.spec.ts",
+      "goal007-sound.spec.ts"
+    ],
+    "logSha256": "831e53e1057d60ef0e450ed2f9f4c013056150cc0f0b53a12491022ba8ef1959"
+  },
+  "ciPartitionListing": {
+    "cases": 200,
+    "lanes": [
+      {
+        "project": "chromium-1280",
+        "shard": "1/2",
+        "cases": 49,
+        "listingSha256": "5a2165c25f58c92570e7ec0249e966b15abc9cc394201c7f84ca267e1d7d5e16"
+      },
+      {
+        "project": "chromium-1280",
+        "shard": "2/2",
+        "cases": 49,
+        "listingSha256": "77fdc25efa79b1471f90018491ae385226388076230f014e8d92886255e5c174"
+      },
+      {
+        "project": "chromium-1280",
+        "shard": "hosted-voice",
+        "cases": 2,
+        "listingSha256": "e2193194fea46f5a8e617cf124c7230e6cbb70ff61fc5608797107030a533233"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "1/2",
+        "cases": 49,
+        "listingSha256": "f2b28fdea24c696c2f909cb88ec4eec3a618c82e12bbe353e3dc1217aceafc55"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "2/2",
+        "cases": 49,
+        "listingSha256": "ce21210cda2c3f13e4d7edf6aeb54232d12bef651341f1cf734a315180c3ff67"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "hosted-voice",
+        "cases": 2,
+        "listingSha256": "f964e4b9a03d56177a9ffac56c408f70dbef753fb8f3012551a8d704add0d25b"
+      }
+    ],
+    "coverage": "exact disjoint union of all listed cases",
+    "privateReceiptSha256": "1f84e4ad1b8eca3aa605003dc734e2c5ff8131a4a9928b1cae4348344ac1dddc",
+    "executionStatus": "Exact future pushed-head CI is separate; listing is not execution."
+  },
+  "practice": {
+    "scope": "LOCAL_COMPILED_PRODUCTION",
+    "checks": [
+      "health",
+      "exact safe build identity",
+      "private paths rejected",
+      "unknown API remains JSON",
+      "license notices",
+      "fresh visitor unauthorized",
+      "SPA reload and hashed asset MIME/cache",
+      "injected denied microphone keeps explicit Practice alternative"
+    ],
+    "rescues": [
+      {
+        "objective": "collected",
+        "chapters": [
+          "Cargo Bay",
+          "Relay Gallery",
+          "Return Dock",
+          "Confirmed home"
+        ],
+        "confirmations": 12,
+        "declined": 1,
+        "firstQuestionVisibleAfterStartMs": 89,
+        "nonownerTokenStatus": 404,
+        "noCodeTokenStatus": 503,
+        "backtracked": true,
+        "completed": true
+      },
+      {
+        "objective": "selected-skipped",
+        "chapters": [
+          "Cargo Bay",
+          "Relay Gallery",
+          "Return Dock",
+          "Confirmed home"
+        ],
+        "confirmations": 11,
+        "declined": 0,
+        "firstQuestionVisibleAfterStartMs": 82,
+        "nonownerTokenStatus": 404,
+        "noCodeTokenStatus": 503,
+        "backtracked": true,
+        "completed": true
+      }
+    ],
+    "explicitNegativeTokenProbes": 4,
+    "browserTokenRequests": 0,
+    "providerRequests": 0,
+    "browserClosed": true,
+    "ownedServerExitCode": 0,
+    "privateReceiptSha256": "5af3c8310f09fb5bcd70300d60e06e26cd0b3baf873de8ab780d814c526e0c03",
+    "visualInspection": [
+      "collected-home.png",
+      "selected-skipped-home.png"
+    ]
+  },
+  "assets": [
+    {
+      "path": "dist/client/art/mission-control.svg",
+      "bytes": 4595,
+      "gzipBytes": 1835,
+      "sha256": "54da597091f4ad38d191b71e1b8e142a891fd4d11de6cac6c65cb609dddd88af"
+    },
+    {
+      "path": "dist/client/assets/Debrief-CQt0bXQZ.js",
+      "bytes": 12774,
+      "gzipBytes": 4226,
+      "sha256": "f3e35ea46a3077e3082b5bfe81a2e0fccd74a08129683a04941ba96072aa292c"
+    },
+    {
+      "path": "dist/client/assets/index-ANeUkSmb.js",
+      "bytes": 364032,
+      "gzipBytes": 107805,
+      "sha256": "a8cb3e54353ad274ee70e1db58302851838ae34267a198643ab19d93910b9964"
+    },
+    {
+      "path": "dist/client/assets/index-C5uSAqXv.css",
+      "bytes": 95563,
+      "gzipBytes": 19697,
+      "sha256": "07dc401107e28f74eb97a1a782a2a8c071eeb075b6c35ec5e9e97a00a1773b68"
+    },
+    {
+      "path": "dist/client/icon.svg",
+      "bytes": 732,
+      "gzipBytes": 358,
+      "sha256": "6f098e496bb47fb81f972fb1d471a9bfe4c27b33d7cc55989aa3a766afbcc872"
+    },
+    {
+      "path": "dist/client/index.html",
+      "bytes": 698,
+      "gzipBytes": 424,
+      "sha256": "6b4bfbd325986de496ebf0f3b5737591e92c519631afbbf04403aef3943b6a2c"
+    },
+    {
+      "path": "dist/client/third-party-notices.txt",
+      "bytes": 4520,
+      "gzipBytes": 1099,
+      "sha256": "4c2bdd7fec3773be8403658e55ff296d2b2db97ff4ee7117ba42696f2d87b403"
+    }
+  ],
+  "ownedGoal007TestProcessesRemaining": 0,
+  "newProviderAttempts": 0,
+  "newReservations": 0,
+  "fundedGoal007GrantCreated": false,
+  "liveReleaseStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "hostedStatus": "NOT_DEPLOYED",
+  "evidenceLimits": "Compiled local production, deterministic Practice and explicitly injected peers. Not real AssemblyAI, human speech, physical speaker playback or enjoyment. History-delay UI coupling is independently reproduced; the archived CI failure cause remains unproven."
+}
