@@ -12,8 +12,6 @@ const runFile = promisify(execFile);
 const root = resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);
 const usage = 'Offline only: node --import tsx scripts/capture-switchyard-preview.mjs --capture --origin http://127.0.0.1:PORT --source FULL_COMMIT_SHA [--output .validation/goal-008/unique-directory]';
-if (!args.length || args.includes('--help')) { console.log(usage); process.exitCode = 0; }
-else await main();
 
 function options() {
   const parsed = {};
@@ -36,6 +34,9 @@ const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = async path => sha256(await readFile(path));
 const publicPath = path => relative(root, path).split(sep).join('/');
 const delay = ms => new Promise(resolveDelay => setTimeout(resolveDelay, ms));
+
+if (!args.length || args.includes('--help')) { console.log(usage); process.exitCode = 0; }
+else await main();
 
 async function main() {
   const config = options();
