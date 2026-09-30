@@ -8,10 +8,10 @@ A browser-based cooperative rescue for one human and an AI partner. Read the sta
 
 ## Play
 
-**Public game URL: publication in progress; not yet deployed.** Goal 007 is integrating the game into main and publishing one controlled Render service. [Current release evidence](docs/goal-007-release-and-immersion.md) records the actual state.
+**[Play Talk Me Home](https://talk-me-home.onrender.com)** ? the public demo offers Practice. Fresh-browser checks completed Cargo Bay, Relay Gallery, Return Dock and confirmed home with both recorder outcomes, exact confirmations, route controls, Pause/resume and replay. The observed application is version **0.7.0**, commit **`caa896d`**. [Current publication handoff](docs/goal-007-publication-handoff.md) records the deployment and hosted results separately from real Voice evidence.
 
 - **Practice** is deterministic and offline. Start here to learn the shared controls without a provider connection.
-- **Live Voice** uses AssemblyAI speech recognition, dialogue and digital playback. It requires explicit connection and protected access. Live Text also uses a real provider.
+- **Live Voice and Live Text are unavailable on the public demo.** The implemented Voice integration uses AssemblyAI speech recognition, dialogue and digital playback, but these hosted Practice checks made no provider or token requests.
 - You operate Power, Relay and the Dock controller. Pip inspects local equipment and proposes actions. Read each specific proposal, then choose **Confirm this action** or **Not yet**. Saying “yes” does not commit an action.
 - Use the map, quoted reports and reversible private route marks. Pip does not receive your private notes or the full map.
 - **Pause** preserves the running server session. **End** stops the connection. A server restart loses mission progress; there is no durable autosave.
@@ -34,17 +34,19 @@ For development: `npm run dev`. Verification: `npm run typecheck`, `npm test`, a
 
 ## Controlled release
 
-The canonical [render.yaml](render.yaml) selects **main**, one Node instance and one 1 GB disk, with automatic deployment and Live disabled initially. Hosting is an explicitly authorized recurring service; the Goal 007 agreement caps its combined base rate at USD 8/month, with taxes and usage-based overage separate. Only the tested main commit is deployed. `/api/version` exposes the build commit and application version.
+The owner selected the existing Render **Free** service without a persistent disk, superseding the earlier paid-service proposal for this publication. The app can require a cold start; server restarts lose in-memory mission progress. `/api/version` exposes the actual deployed commit and application version. Documentation commits can advance independently of the deployed `caa896d` application.
 
-The new release grant has separately capped QA and reviewer purposes. Reviewer access stays disabled until its hosted acceptance pair passes. Historical grants remain exhausted and are never replenished. Provider credentials, access codes, funded ledgers and raw recordings are never public assets.
+The checked-in [render.yaml](render.yaml) retains the earlier controlled paid-service/disk proposal as history; do not apply it to upgrade or replace the current Free service. Follow the [current publication handoff](docs/goal-007-publication-handoff.md).
+
+The implemented admission mechanism separates QA and reviewer capacity. No Goal 007 grant has been initialized, and Live/reviewer access remains disabled under the current owner instruction. Historical grants remain exhausted and are never replenished. Provider credentials, access codes, funded ledgers and raw recordings are never public assets.
 
 Current Goal 007 gameplay has offline evidence: a shorter radio briefing, a persistent first-question suggestion, clear conversation phases and confirmation receipts, optional quiet radio ambience, and distinct recorder/direct-return homecomings. The existing media's real Voice success is a historical Goal 005 run with a synthetic microphone; another run on that same build failed in Gallery without an ending ACK. Goal 007's current hosted Voice results will be recorded separately. No human enjoyment or statistical reliability claim is made.
 
 ## Source, media and attribution
 
-[Goal 007 editable deck and current screenshots](submission/goal-007/README.md) · [Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
+[Current Free Practice media and submission instructions](submission/goal-007/PUBLICATION.md) · [Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
 
-A separately labelled [209.7-second current Practice preview](submission/goal-007/preview/README.md), its subtitles and a local deliverables-only ZIP are available. The preview uses local presentation narration; it is not current real Voice acceptance or a published release.
+The [current local Free Practice media edition](submission/goal-007/free-publication/README.md) contains a 209.7-second film, subtitles, six editable slides/PDF and a deliverables-only ZIP. Its gameplay retains the labelled local capture identity; updated availability cards use separately recorded hosted evidence. Narration is explicitly local presentation narration. Original media remain unchanged. Media binaries remain local; no GitHub release or real Voice acceptance is claimed.
 
 This project extends [AssemblyAI's voice-agent-starter-js](https://github.com/AssemblyAI/voice-agent-starter-js). Original files and notices remain. No license grant for upstream work is invented; review the included provenance before reuse.
 
