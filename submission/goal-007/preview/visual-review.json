@@ -1,0 +1,169 @@
+{
+  "status": "VISUALLY_REVIEWED",
+  "outputSha256": "984c1cf0a238ad174e8d2aed889cf9371a3e23db9f0f66ac4cf0e1f81c7cb689",
+  "subtitleSha256": "2b09baedf2558a80201a5cde8406b22483b00f35874e9b0abe22cdc30dee8152",
+  "reviewedRepresentativeFrames": [
+    {
+      "section": "briefing",
+      "atSeconds": 8.833333333333334,
+      "sha256": "28401b277d02e6ba0ebe1b7e3f24d15e1fc65e7f9185e2ac50eb4a16ed3a7d5d",
+      "file": "00-briefing.png"
+    },
+    {
+      "section": "roles",
+      "atSeconds": 25.0,
+      "sha256": "fe45fd79cb5822e9a9bfa29a62d517bfde428c9fd83d5b3ccad52cb8aa672a82",
+      "file": "01-roles.png"
+    },
+    {
+      "section": "latch",
+      "atSeconds": 43.89333333333334,
+      "sha256": "b78419cde920b01b9ea9f8fdb64bcdc922aad5933b0278df4904ec8a0f6d0832",
+      "file": "02-latch.png"
+    },
+    {
+      "section": "crossing",
+      "atSeconds": 58.36666666666667,
+      "sha256": "f437b2fd1e51e513e05a448a014ee4b111acf837b4542cc32e4e5ec4175f2b37",
+      "file": "03-crossing.png"
+    },
+    {
+      "section": "gallery",
+      "atSeconds": 79.572,
+      "sha256": "02a5d6c944efc114b63a544ba3f847df0fd6b5f5094958766bfad75000f9884e",
+      "file": "04-gallery.png"
+    },
+    {
+      "section": "recorder",
+      "atSeconds": 97.44933333333334,
+      "sha256": "63b3c039b013a094232552cbed1306b2b543c0e24d4a107a8b453caa6d4878b4",
+      "file": "05-recorder.png"
+    },
+    {
+      "section": "route",
+      "atSeconds": 111.66666666666669,
+      "sha256": "1ff7e9afe098f045e2e8b916208f03c087ad7f9ba00b7b7491a6cc7aa4066656",
+      "file": "06-route.png"
+    },
+    {
+      "section": "dock",
+      "atSeconds": 132.70133333333337,
+      "sha256": "4460b7841899b530ee0b6850cdf71867338ef2ab5042254a9579c2b8419be3c7",
+      "file": "07-dock.png"
+    },
+    {
+      "section": "return",
+      "atSeconds": 146.60000000000002,
+      "sha256": "cc1694b7b7a14f8d1f72cb99663654767bc6b22fb464c034c2ff347acb5de5cc",
+      "file": "08-return.png"
+    },
+    {
+      "section": "home",
+      "atSeconds": 162.75000000000003,
+      "sha256": "f23d0d218e863dbc77a87c363f8e69cbf5a905163a6e4cec4981d33ce43687de",
+      "file": "09-home.png"
+    },
+    {
+      "section": "architecture",
+      "atSeconds": 180.1166666666667,
+      "sha256": "125320d83a42b1044686c9b95acc6c0caa2fae951a4358b27b44293a4258b776",
+      "file": "10-architecture.png"
+    },
+    {
+      "section": "availability",
+      "atSeconds": 199.53333333333336,
+      "sha256": "acf46201965c50bb31f503917b060c50f6172c01006cd52b39eb771c24619f21",
+      "file": "11-availability.png"
+    },
+    {
+      "section": "obstruction-report",
+      "atSeconds": 105.71666666666668,
+      "sha256": "09e012c7a0caf646abbf6b0b721762b70750c62bbea3b0a15486cd6fcabfddf8",
+      "file": "evidence-obstruction-report.png"
+    },
+    {
+      "section": "stored-energy",
+      "atSeconds": 136.94100000000003,
+      "sha256": "d3080169690bc32f0f821f3ff0aab8062a0c3684aa575280cf5ca41f82162290",
+      "file": "evidence-stored-energy.png"
+    },
+    {
+      "section": "confirmed-return",
+      "atSeconds": 153.8,
+      "sha256": "2f65f6ae145971975b6cf16847bd6fc276b0352b3c098b0160a8ebf000bb60ad",
+      "file": "evidence-confirmed-return.png"
+    }
+  ],
+  "reviewedTransitionFrames": [
+    {
+      "section": "gallery",
+      "side": "before",
+      "atSeconds": 67.30000000000001,
+      "sha256": "b624c9945334d34ec56ec5c1e69bc5a315ad1757026daa406383377463ea5eb5",
+      "file": "transition-gallery-before.png"
+    },
+    {
+      "section": "gallery",
+      "side": "after",
+      "atSeconds": 67.5,
+      "sha256": "693a1e0304041eceaaa4db5f2a72feb3c9d8656868465f2877f0d0de48a62e71",
+      "file": "transition-gallery-after.png"
+    },
+    {
+      "section": "home",
+      "side": "before",
+      "atSeconds": 154.50000000000003,
+      "sha256": "b3b7f378391fbcab6b08841ea1d93ca7e013960886f4cca384a7ccfd937e0787",
+      "file": "transition-home-before.png"
+    },
+    {
+      "section": "home",
+      "side": "after",
+      "atSeconds": 154.70000000000002,
+      "sha256": "baba398dfde81bb4e9bd744fc1d760502dc2262e03c6309bcf77939cf475b640",
+      "file": "transition-home-after.png"
+    },
+    {
+      "section": "architecture",
+      "side": "before",
+      "atSeconds": 170.80000000000004,
+      "sha256": "7fdb7d1c14fe3049e4837cb43cbb806394c1f7b7ded9d7bbe2fa4f4073eb017a",
+      "file": "transition-architecture-before.png"
+    },
+    {
+      "section": "architecture",
+      "side": "after",
+      "atSeconds": 171.00000000000003,
+      "sha256": "30061cff2c53b0c3227f4484ef7f545a79c17242c211aa5bd2e8f71a8bcc5086",
+      "file": "transition-architecture-after.png"
+    }
+  ],
+  "findings": [
+    "Persistent current Practice and separate presentation narration labels are clear.",
+    "Exact proposals, observed obstruction, stored energy and recorder home are visible.",
+    "Subtitles fit beneath the recorded UI.",
+    "Gallery, home and architecture transition samples show no blank frame or visible glitch.",
+    "The pending availability card does not claim a current Live pass or public URL."
+  ],
+  "independentFrameReview": {
+    "reviewerRole": "Exposure/inventory agent",
+    "sections": [
+      "briefing",
+      "recorder",
+      "home",
+      "availability",
+      "home transition before and after"
+    ],
+    "result": "No factual or visual correction found in those samples"
+  },
+  "correctionsApplied": [
+    "Normalized segment timestamps; video and audio durations now agree.",
+    "Requested explicit 16 kHz PCM so synthesis word timing matches the audio clock.",
+    "Changed an early Dock now-Stored narration sentence to a general storage explanation."
+  ],
+  "continuousPlaybackReviewed": false,
+  "humanListeningReviewed": false,
+  "audioValidation": "Complete decode, non-silent level checks, no clipping, word events and exact subtitle wording",
+  "preservedGoal007ComponentFiles": 15,
+  "preservedHistoricalFiles": 10
+}
