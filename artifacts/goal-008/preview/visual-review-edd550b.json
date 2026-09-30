@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "status": "LOCAL_SCRIPTED_PREVIEW_REVIEW_PASS",
+  "source": "edd550b06f21196865362c37c85a3b2927439cce",
+  "version": "0.8.0",
+  "captureManifest": "artifacts/goal-008/preview/capture-edd550b06f21-2026-09-30T11-29-30-731Z.json",
+  "video": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/Talk-Me-Home-Goal-008-Switchyard-Local-Preview.mp4",
+  "videoSha256": "58f18aaf8ab1f8667151867cf9da23b3b7e547e0f7645c54ede3fdf85202c1d6",
+  "rawVideoSha256": "01d4ccecbd4737cabe1a01135a57fad704e4c90db8730e9d76a2f34f76501ee7",
+  "durationSeconds": 81.966667,
+  "dimensions": [1920, 1080],
+  "codec": "H.264",
+  "audio": "No audio stream. No microphone, provider speech, historical Voice footage or presentation narration.",
+  "encoding": "Continuous fresh browser capture encoded to MP4; no temporal splices or gameplay substitutions.",
+  "actualOutcome": "Confirmed home by the maintenance bypass after inspecting the lift, deliberately changing the discussed approach, and recovering from one planned pause/resume.",
+  "observedOperations": {
+    "selectedRequests": 26,
+    "exactConfirmations": 11,
+    "committedDecisions": 11,
+    "deliberateDeclines": 1,
+    "acknowledgedRoutingApplies": 3,
+    "guardViolations": 0,
+    "providerCalls": 0
+  },
+  "mediaChecks": {
+    "completeDecode": "PASS",
+    "fullFrameBlackSegmentsAtLeast100ms": [],
+    "representativeFramesFromActualMp4": 13,
+    "additionalDepartureTransitionFrames": [71.8, 72.5],
+    "privateFrameHashes": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/video-review/frames.json",
+    "privateTransitionAndBlackCheck": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/video-review/edges-and-black-check.json"
+  },
+  "visualReview": {
+    "evidenceLabel": "Persistent LOCAL / SCRIPTED PRACTICE, 0.8.0, source edd550b06f21 and selected-text/manual-confirmation label is readable.",
+    "manualAndCircuit": "The reported Kite/Slot labels and corresponding human manual rows are readable. Scrolling deliberately brings the relevant row into view; it does not hide a required pending control.",
+    "confirmation": "Pending and declined proposal states remain readable. Departure is still pending at 71.8 seconds; the actual maintenance-bypass home screen is present after confirmation at 72.5 seconds.",
+    "narrative": "Captions accurately describe the observed plan change, retained bridge progress after pause, separate alignment and separate departure decision.",
+    "layout": "The presentation banner does not cover essential manual rows, local reports, confirmation controls or the ending. Long reports retain their visible scroll cue.",
+    "independentReview": "A second agent inspected the actual manual, service-module, pause-recovery, alignment and home frames and found no actionable visual or factual issue.",
+    "scope": "Representative still frames and two final-transition frames were visually inspected; the entire MP4 was decoded automatically. This is not a human playtest or real-provider compliance result."
+  },
+  "preservedEarlierFailure": "artifacts/goal-008/preview/capture-initialization-failure-386b6a1.json"
+}

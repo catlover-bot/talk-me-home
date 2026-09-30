@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "status": "LOCAL_CAPTURE_AND_DECODE_PASS_PENDING_VISUAL_REVIEW",
+  "startedAt": "2026-09-30T11:29:30.737Z",
+  "source": "edd550b06f21196865362c37c85a3b2927439cce",
+  "evidence": "Fresh local/scripted Practice, ordinary selected text requests and manual UI confirmations; no provider connection or human playtest.",
+  "output": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z",
+  "audio": "Silent browser video; no microphone, provider speech or presentation narration.",
+  "route": "Investigate the direct lift, deliberately choose the maintenance bypass, then confirm actual home departure.",
+  "shots": [
+    {
+      "name": "briefing",
+      "caption": "Choose The Switchyard: a local scripted puzzle with two approaches.",
+      "startsAtSeconds": 0.682,
+      "targetEndSeconds": 4,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/01-briefing.png",
+      "sha256": "2000ac2ed996f12f5464c48fcf6a8312450e580cee7151a1cb49ba307b893848"
+    },
+    {
+      "name": "shared-information",
+      "caption": "You read the installation drawing. Pip reports the equipment within reach.",
+      "startsAtSeconds": 4.348,
+      "targetEndSeconds": 10,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/02-shared-information.png",
+      "sha256": "3110be39f4bedb1f3bbdbac5c3d4f7d2dd5139f047415e3294a04c0cb32d253a"
+    },
+    {
+      "name": "pending-action",
+      "caption": "A request prepares one exact proposal. The action still needs your confirmation.",
+      "startsAtSeconds": 10.101,
+      "targetEndSeconds": 14,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/03-pending-action.png",
+      "sha256": "2be244bff97a2c5e87f91b6aaa50d29e26a90d6693926d023c7acb8116536fbd"
+    },
+    {
+      "name": "deliberate-decline",
+      "caption": "Not yet leaves the movement unexecuted.",
+      "startsAtSeconds": 14.097,
+      "targetEndSeconds": 17,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/04-deliberate-decline.png",
+      "sha256": "cc3097d194e48789efa5da36c9edb3097345301138120442cd092615733c4736"
+    },
+    {
+      "name": "lift-investigation",
+      "caption": "First investigate the direct lift. Its local plate identifies a row in your document.",
+      "startsAtSeconds": 17.364,
+      "targetEndSeconds": 23,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/05-lift-investigation.png",
+      "sha256": "897968879f9616fac6ac2292cdfb75ccd5c26dba65ff49ea3f42284d416e06e8"
+    },
+    {
+      "name": "human-manual",
+      "caption": "The drawing supplies circuit rules that the local companion does not receive.",
+      "startsAtSeconds": 23.081,
+      "targetEndSeconds": 28,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/06-human-manual.png",
+      "sha256": "13b18c2395fc7583a1af77291e21786ca9abb1792c31d11d666d8882b36e8108"
+    },
+    {
+      "name": "change-plan",
+      "caption": "Change the plan after investigation. Completed work stays completed.",
+      "startsAtSeconds": 28.08,
+      "targetEndSeconds": 33,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/07-change-plan.png",
+      "sha256": "546c75305ac9869dbf57a63abe4ea0499a01406d1aee80aa6c0fa6e2b08effa5"
+    },
+    {
+      "name": "service-manual",
+      "caption": "Compare the fitted service module with the manual before changing the supply.",
+      "startsAtSeconds": 33.366,
+      "targetEndSeconds": 39,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/08-service-manual.png",
+      "sha256": "55dd2106451e6253c6a6ea96da6a4582df19ecc6a2b1fc1596aa6b829a6f16bf"
+    },
+    {
+      "name": "bridge-deployed",
+      "caption": "Apply the complete circuit, then confirm the separate local bridge operation.",
+      "startsAtSeconds": 41.579,
+      "targetEndSeconds": 48,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/09-bridge-deployed.png",
+      "sha256": "0a453e43d435e468dbcf226ff1b49f0230b2d3bd236e8c6299924ac8ad22ebb2"
+    },
+    {
+      "name": "fresh-report-after-pause",
+      "caption": "After a pause, request a fresh report. The secured mechanism retains its progress.",
+      "startsAtSeconds": 49.32,
+      "targetEndSeconds": 55,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/10-fresh-report-after-pause.png",
+      "sha256": "e19c7647191b26fc3b6e438a814d6ca47276bd722e6804063e0f67c598238552"
+    },
+    {
+      "name": "alignment",
+      "caption": "The bypass also needs a separate alignment at the transfer table.",
+      "startsAtSeconds": 57.947,
+      "targetEndSeconds": 63,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/11-alignment.png",
+      "sha256": "ba0e5730e17f42c5bdea9af2bf46cbae7e23666da96d513d19951b335c2e0ba4"
+    },
+    {
+      "name": "departure-pending",
+      "caption": "The route is restored. Departure is still a separate confirmed choice.",
+      "startsAtSeconds": 65.945,
+      "targetEndSeconds": 72,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/12-departure-pending.png",
+      "sha256": "773cb0abddbce7e62f0c64c7783893d656b4b70e799b083fc16732537733ef27"
+    },
+    {
+      "name": "confirmed-home",
+      "caption": "Pip is home by the maintenance bypass. Local/scripted Practice candidate preview.",
+      "startsAtSeconds": 72.13,
+      "targetEndSeconds": 82,
+      "screenshot": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/screens/13-confirmed-home.png",
+      "sha256": "5a288426719ea9cb6f99bc0c3c7f365ab4d1f10ceb24b3846b1af1785179afd6"
+    }
+  ],
+  "violations": [],
+  "served": {
+    "commit": "edd550b06f21196865362c37c85a3b2927439cce",
+    "version": "0.8.0"
+  },
+  "rawVideo": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/raw/page@6efae36eef1f4d89190c36c903988bc0.webm",
+  "rawVideoSha256": "01d4ccecbd4737cabe1a01135a57fad704e4c90db8730e9d76a2f34f76501ee7",
+  "finishedAt": "2026-09-30T11:30:54.947Z",
+  "finalVideo": ".validation/goal-008/preview-edd550b06f21-2026-09-30T11-29-30-731Z/Talk-Me-Home-Goal-008-Switchyard-Local-Preview.mp4",
+  "finalVideoSha256": "58f18aaf8ab1f8667151867cf9da23b3b7e547e0f7645c54ede3fdf85202c1d6",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "format": {
+      "duration": "81.966667"
+    }
+  },
+  "counts": {
+    "selectedRequests": 26,
+    "confirmations": 11,
+    "declines": 1,
+    "committedDecisions": 11,
+    "routingApplies": 3
+  }
+}
