@@ -82,6 +82,10 @@ test('incremental lifecycle survives an assertion and separates missing ACK from
     assert.equal(saved.includes(privateValue), false);
     assert.equal(events.some(e => e.type === 'session.ended'), false);
     assert.ok(events.every((e, index) => index === 0 || e.elapsedMs >= events[index - 1].elapsedMs));
+    journal.record('session.error', { source: 'browser', accountRefusal: 'provider_credit_refused', message: privateValue });
+    const refusal = journal.snapshot().at(-1);
+    assert.equal(refusal?.accountRefusal, 'provider_credit_refused');
+    assert.equal(JSON.stringify(refusal).includes(privateValue), false);
     journal.record('watchdog.stop.requested', { outcome: 'observed' });
     journal.record('server.closed', { outcome: 'bounded_timeout' });
     assert.equal(journal.snapshot().at(-1)?.outcome, 'bounded_timeout');

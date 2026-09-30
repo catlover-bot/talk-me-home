@@ -49,7 +49,7 @@ export function sanitizeWireEvent(value, direction, references = new Map()) {
     event.failed = true;
     const error = value.error;
     const messages = [value.code, value.message, error, error?.code, error?.message].filter(item => typeof item === 'string');
-    if (messages.some(item => /\b(?:workspace|account)[\s_-]+(?:mismatch(?:ed)?|does[\s_-]+not[\s_-]+match)\b/i.test(item))) event.accountRefusal = 'provider_credential_or_account_refused';
+    if (value.code === 'session_forbidden' || messages.some(item => /\b(?:workspace|account)[\s_-]+(?:mismatch(?:ed)?|does[\s_-]+not[\s_-]+match)\b/i.test(item))) event.accountRefusal = 'provider_credential_or_account_refused';
     else if (messages.some(item => /\binsufficient[\s_-]+(?:credits?|balance)\b/i.test(item) || /^(?:payment_required|account_balance_exhausted)$/i.test(item))) event.accountRefusal = 'provider_credit_refused';
   }
   if (type === 'reply.create' && direction === 'sent' && typeof value.instructions === 'string') {
@@ -97,7 +97,7 @@ function browserInstrumentation(options, sanitize) {
   const record = value => {
     const event = { atMs: timestamp(), ...value };
     if (events.length < 100_000) events.push(event);
-    if (options.lifecycle && ['end.requested', 'session.end', 'session.ended', 'socket.open', 'socket.close'].includes(event.type)) void globalThis.__qaLifecycle(event).catch(() => {});
+    if (options.lifecycle && ['end.requested', 'session.end', 'session.ended', 'session.error', 'socket.open', 'socket.close'].includes(event.type)) void globalThis.__qaLifecycle(event).catch(() => {});
   };
   const encode = bytes => {
     let binary = ''; for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));

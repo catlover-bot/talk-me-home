@@ -1,0 +1,10 @@
+export const GRANT_ID: string;
+export const HOSTED_LIMITS: Readonly<{ attempts: number; textAttempts: number; connectedSeconds: number; reservationSeconds: number; estimatedDollars: number }>;
+export function hostedOrigin(value: unknown): string;
+export function verifyHostedAllocation(allocation: unknown, options: { mode: string; runtimeSha256: string; now?: number; token?: boolean }): Record<string, unknown>;
+export function verifyPricing(receipt: unknown, now?: number): { checkedAt: string; source: string; usdPerHour: number; perAttemptEstimate: number; fullAllocationEstimate: number };
+export function readHostedCredential(path: string, origin: string, mode: string): Promise<string>;
+export function auditHostedDecisions(input: unknown): { passed: boolean; committed: number; exactConfirmationMatch: boolean; declinedNeverCommitted: boolean; authoritativeHome: boolean; recovered: boolean; recorderPassed: boolean; unexpected: string[] };
+export function publicHostedSummary(report: Record<string, unknown>): Record<string, unknown>;
+export function hostedMeasurements(report: Record<string, unknown>, events?: Array<Record<string, unknown>>): Record<string, unknown>;
+export function finalizeSupervisedReport(report: Record<string, unknown>, receipt: { finished: boolean; workerExitCode: number | null; localCleanupObserved: boolean }): Record<string, unknown>;
