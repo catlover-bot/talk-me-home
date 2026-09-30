@@ -1,0 +1,113 @@
+{
+  "scope": "LOCAL_DETERMINISTIC_PRACTICE",
+  "code": "R1-1A-03-1-00000092-6CD4398D",
+  "trace": [
+    {
+      "kind": "report",
+      "label": "Look around",
+      "report": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Lift Station. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see."
+    },
+    {
+      "kind": "drawing",
+      "label": "Control Bay ↔ Lift Station · Ordinary corridor | Lift Station ↔ Transfer Table · Ordinary corridor | Transfer Table ↔ Service Gallery · Ordinary corridor | Lift Station ↔ Return Platform · Direct lift | Service Gallery ↔ Return Platform · Maintenance bridge"
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Route directory",
+      "report": "The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply. The maintenance bypass needs a seated bridge brace, a deployed bridge and a locked turntable, but the fitted service module determines the preparation order. Read its local plate and procedure before choosing that order. Ordinary corridors follow the station drawing; both approaches have safe ways back before departure. Mission Control has the full installation tables; I can inspect the fitted equipment locally. I am at Control Bay. Within reach: Route directory. Local routes: Go to Lift Station. I can read the route directory; what does your installation drawing show?"
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Lift Station"
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Lift Station"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Go to Lift Station"
+    },
+    {
+      "kind": "result",
+      "label": "Go to Lift Station",
+      "report": "I completed go to lift station. Arrival is confirmed. Committed equipment preparation is retained. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Lift console",
+      "report": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "manual",
+      "label": "Kite: 2 / White only / Amber + White"
+    },
+    {
+      "kind": "proposal",
+      "label": "Set index two"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Set index two"
+    },
+    {
+      "kind": "result",
+      "label": "Set index two",
+      "report": "I set lift index 2. A separate local test is still required; this setting alone does not authorize travel. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "apply",
+      "label": "white",
+      "terminals": [
+        "white"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Test the lift"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Test the lift"
+    },
+    {
+      "kind": "result",
+      "label": "Test the lift",
+      "report": "The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The lift test gives us a local result to compare with your circuit note."
+    },
+    {
+      "kind": "apply",
+      "label": "amber + white",
+      "terminals": [
+        "amber",
+        "white"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Ride the direct lift"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Ride the direct lift"
+    },
+    {
+      "kind": "result",
+      "label": "Ride the direct lift",
+      "report": "I completed ride the direct lift. Arrival is confirmed. The route is restored; departure is still a separate confirmed decision. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Departure console",
+      "report": "The Departure console confirms arrival by the direct lift. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. Inspected controls: Depart for home. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "proposal",
+      "label": "Depart for home"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Depart for home"
+    }
+  ]
+}

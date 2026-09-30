@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "status": "LOCAL_CAPTURE_DECODE_AND_SAMPLED_VISUAL_REVIEW_PASS",
+  "source": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+  "startedAt": "2026-09-30T23:43:39.543Z",
+  "evidence": "LOCAL SCRIPTED PRACTICE. Ordinary visible UI requests and exact manual confirmations. No provider, microphone, human playtest or public deployment.",
+  "presentation": "Continuous normal-speed browser recording with authored presentation captions and pauses for reading actual UI. No cuts, loops, old speech, narration, or time stretching.",
+  "audio": "Silent; no audio stream.",
+  "output": ".validation/goal-010/remix-preview-ef04b87caa39-2026-09-30T23-43-39-521Z",
+  "shots": [
+    {
+      "name": "new-dispatch",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/01-new-dispatch.png",
+      "sha256": "fec2dab8a52ce30ccdaf4a8beeb20c4b0544907c87c5af57d020533cbc61e392"
+    },
+    {
+      "name": "daily-dispatch",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/02-daily-dispatch.png",
+      "sha256": "52fc3b7a24e93b6aed3b96869ba5ccba8726a3be064fd4707ddb6cfa69854247"
+    },
+    {
+      "name": "replay-code",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/03-replay-code.png",
+      "sha256": "1696579dd414d6e5d37eec2e0c096c3219d6076aa54e87cea2520ffe2a0264bb"
+    },
+    {
+      "name": "reported-manual",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/04-reported-manual.png",
+      "sha256": "9744fdf4751e696beab8a06aa591146710990cf39452e5e485dc9435cecaeee3"
+    },
+    {
+      "name": "public-panel-draft",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/05-public-panel-draft.png",
+      "sha256": "3bde0c39de9cba9df575311b4e39febf64263981d16b4ba0b8fcdd02ff5ebb8f"
+    },
+    {
+      "name": "confirmed-home",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/06-confirmed-home.png",
+      "sha256": "1c59490618acf238e2d822f73ee7b1fb03ff91badfb39ccfec7830a113b1127a"
+    },
+    {
+      "name": "explicit-replay-setup",
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/07-explicit-replay-setup.png",
+      "sha256": "01abae05bf9152af68d25149daf2b17ecbbc81e00cde088a189ff391766b57c2"
+    }
+  ],
+  "beats": [
+    {
+      "name": "new-dispatch",
+      "caption": "New dispatch considers recent local journeys. An assignment is optional; rescue remains possible.",
+      "startsAtSeconds": 0.862,
+      "readingSeconds": 3
+    },
+    {
+      "name": "daily-dispatch",
+      "caption": "Daily uses the server\u2019s UTC date. Reading this card does not start a mission.",
+      "startsAtSeconds": 4.007,
+      "readingSeconds": 3
+    },
+    {
+      "name": "replay-code",
+      "caption": "A public code recreates initial conditions and its assignment. Progress and notes start fresh.",
+      "startsAtSeconds": 7.175,
+      "readingSeconds": 4
+    },
+    {
+      "name": "report-1",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 11.676,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "report-3",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 13.091,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "pending-4",
+      "caption": "Read the proposal: Go to Lift Station. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 14.39,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-7",
+      "caption": "Read the proposal: Go to Transfer Table. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 16.575,
+      "readingSeconds": 2
+    },
+    {
+      "name": "report-10",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 18.757,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "reported-manual",
+      "caption": "Compare Pip\u2019s fitted-module report with the full manual. Both possible procedures stay visible.",
+      "startsAtSeconds": 20.057,
+      "readingSeconds": 4
+    },
+    {
+      "name": "public-panel-draft",
+      "caption": "This round has its own public contacts and terminal attachments. Draft turns do not change applied power.",
+      "startsAtSeconds": 24.373,
+      "readingSeconds": 4
+    },
+    {
+      "name": "acknowledged-power-13",
+      "caption": "Apply acknowledges only electrical routing. Local machinery still needs its separately confirmed work.",
+      "startsAtSeconds": 27.832,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-14",
+      "caption": "Read the proposal: Align the turntable. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 29.92,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-17",
+      "caption": "Read the proposal: Go to Service Gallery. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 32.089,
+      "readingSeconds": 2
+    },
+    {
+      "name": "report-20",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 34.28,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "acknowledged-power-21",
+      "caption": "Apply acknowledges only electrical routing. Local machinery still needs its separately confirmed work.",
+      "startsAtSeconds": 35.662,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-22",
+      "caption": "Read the proposal: Seat the bridge brace. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 37.753,
+      "readingSeconds": 2
+    },
+    {
+      "name": "acknowledged-power-25",
+      "caption": "Apply acknowledges only electrical routing. Local machinery still needs its separately confirmed work.",
+      "startsAtSeconds": 39.996,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-26",
+      "caption": "Read the proposal: Deploy the bridge. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 42.107,
+      "readingSeconds": 2
+    },
+    {
+      "name": "report-29",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 44.286,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "acknowledged-power-30",
+      "caption": "Apply acknowledges only electrical routing. Local machinery still needs its separately confirmed work.",
+      "startsAtSeconds": 45.669,
+      "readingSeconds": 2
+    },
+    {
+      "name": "pending-31",
+      "caption": "Read the proposal: Cross the maintenance bridge. This physical step remains unexecuted until confirmed.",
+      "startsAtSeconds": 47.77,
+      "readingSeconds": 2
+    },
+    {
+      "name": "report-34",
+      "caption": "Pip reports only the equipment and passages actually checked here.",
+      "startsAtSeconds": 49.97,
+      "readingSeconds": 1.2
+    },
+    {
+      "name": "pending-35",
+      "caption": "Reaching the platform is not home. Departure still needs this exact confirmation.",
+      "startsAtSeconds": 51.271,
+      "readingSeconds": 3
+    },
+    {
+      "name": "confirmed-home",
+      "caption": "Home is server-confirmed. The journey records the actual bypass and completed optional assignment.",
+      "startsAtSeconds": 54.385,
+      "readingSeconds": 7
+    },
+    {
+      "name": "explicit-replay-setup",
+      "caption": "Other approach prepares the same code and a private intention. A fresh attempt still requires Start.",
+      "startsAtSeconds": 60.817,
+      "readingSeconds": 5
+    }
+  ],
+  "violations": [],
+  "served": {
+    "commit": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+    "version": "0.10.0",
+    "liveEnabled": false
+  },
+  "dispatchCode": "R1-18-03-2-000003F2-AB24D48D",
+  "coverage": "Third public panel; alignment-first service procedure; maintenance bypass with service-restoration assignment.",
+  "setupNoMutation": true,
+  "replayReturnedToSetupWithoutStart": true,
+  "rawVideo": ".validation/goal-010/remix-preview-ef04b87caa39-2026-09-30T23-43-39-521Z/raw/page@f8da62203986d38a724a91a8cdd2c600.webm",
+  "rawVideoSha256": "40d027c638f1e960cca5ebe47ed46decdb5f20dd9f49093010808bbcea309680",
+  "finalVideo": ".validation/goal-010/remix-preview-ef04b87caa39-2026-09-30T23-43-39-521Z/Talk-Me-Home-Goal-010-Switchyard-Remix-Local-Preview.mp4",
+  "finalVideoSha256": "96ece97520488cd0764716b3275dfdfd34da20f5c4e937c5fe1a0968da5b8723",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p",
+        "r_frame_rate": "30/1"
+      }
+    ],
+    "format": {
+      "duration": "65.800000"
+    }
+  },
+  "finishedAt": "2026-09-30T23:44:54.504Z",
+  "counts": {
+    "selectedRequests": 14,
+    "committedDecisions": 8,
+    "routingApplies": 4,
+    "externalRequests": 0,
+    "tokenRequests": 0,
+    "websocketConnections": 0
+  },
+  "visualReview": "visual-review.json",
+  "reviewBoundary": "Seven native stills and seven frames sampled from the actual encoded MP4 were inspected; not continuous human playback or human gameplay."
+}

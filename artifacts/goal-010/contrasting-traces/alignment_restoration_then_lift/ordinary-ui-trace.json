@@ -1,0 +1,234 @@
+{
+  "scope": "LOCAL_DETERMINISTIC_PRACTICE",
+  "code": "R1-0P-02-2-0000007D-76583B1D",
+  "trace": [
+    {
+      "kind": "report",
+      "label": "Look around",
+      "report": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see."
+    },
+    {
+      "kind": "drawing",
+      "label": "Control Bay ↔ Transfer Table · Ordinary corridor | Transfer Table ↔ Lift Station · Ordinary corridor | Transfer Table ↔ Service Gallery · Ordinary corridor | Lift Station ↔ Return Platform · Direct lift | Service Gallery ↔ Return Platform · Maintenance bridge"
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Route directory",
+      "report": "The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply. The maintenance bypass needs a seated bridge brace, a deployed bridge and a locked turntable, but the fitted service module determines the preparation order. Read its local plate and procedure before choosing that order. Ordinary corridors follow the station drawing; both approaches have safe ways back before departure. Mission Control has the full installation tables; I can inspect the fitted equipment locally. I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show?"
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Transfer Table"
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Transfer Table"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Go to Transfer Table"
+    },
+    {
+      "kind": "result",
+      "label": "Go to Transfer Table",
+      "report": "I completed go to transfer table. Arrival is confirmed. Committed equipment preparation is retained. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Transfer turntable",
+      "report": "The Transfer turntable service plate reads Slot. Its alignment is not locked. This is an Alignment-first service module: align this turntable before deploying the service bridge. No deployed bridge is required for alignment; the bridge winch checks this lock before deployment. Alignment uses its own supply alone, different from the winch supply. The lock retains alignment when power changes. Consult the Slot service row; the lift route does not need this operation. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "manual",
+      "label": "Slot: Blue only / White only / Blue + White"
+    },
+    {
+      "kind": "procedure",
+      "label": "Alignment-first service module",
+      "report": "Align the turntable on its alignment supply before deploying the bridge. Seat the bridge brace with power isolated, then deploy on its winch supply. The brace may be seated before or after alignment; both locks retain progress."
+    },
+    {
+      "kind": "apply",
+      "label": "white",
+      "terminals": [
+        "white"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Align the turntable"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Align the turntable"
+    },
+    {
+      "kind": "result",
+      "label": "Align the turntable",
+      "report": "I aligned the turntable and its mechanical lock engaged. Its lock will remain through power changes. The service bridge still needs its seated brace and deployment at Service Gallery before any crossing. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The transfer table holds its new alignment. We have a useful step to build on."
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Service Gallery"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Go to Service Gallery"
+    },
+    {
+      "kind": "result",
+      "label": "Go to Service Gallery",
+      "report": "I completed go to service gallery. Arrival is confirmed. Committed equipment preparation is retained. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Bridge winch",
+      "report": "The Bridge winch plate reads Slot. Its brace is unseated and bridge is retracted. Seat the brace with all output power isolated. This is an Alignment-first service module: align the turntable at Transfer Table before deploying the bridge. The brace may be seated before or after alignment. Deployment uses the winch supply alone and requires both the seated brace and the alignment lock. Crossing uses the paired service supply. The walkway itself is clear. The mechanical detent retains progress if power changes. What does your Slot row specify? I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "apply",
+      "label": "All outputs isolated",
+      "terminals": []
+    },
+    {
+      "kind": "proposal",
+      "label": "Seat the bridge brace"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Seat the bridge brace"
+    },
+    {
+      "kind": "result",
+      "label": "Seat the bridge brace",
+      "report": "I seated the bridge brace. The winch also needs the turntable alignment lock and its own supply before deployment. The brace remains secured during later routing changes. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "apply",
+      "label": "blue",
+      "terminals": [
+        "blue"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Deploy the bridge"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Deploy the bridge"
+    },
+    {
+      "kind": "result",
+      "label": "Deploy the bridge",
+      "report": "I deployed the bridge into its retaining detent against the aligned turntable. Both mechanical preparations are complete and retained. Crossing still requires its paired supply and a separate confirmed movement. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The service bridge is deployed. I can check the crossing from here."
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Transfer Table"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Go to Transfer Table"
+    },
+    {
+      "kind": "result",
+      "label": "Go to Transfer Table",
+      "report": "I completed go to transfer table. Arrival is confirmed. Committed equipment preparation is retained. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "proposal",
+      "label": "Go to Lift Station"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Go to Lift Station"
+    },
+    {
+      "kind": "result",
+      "label": "Go to Lift Station",
+      "report": "I completed go to lift station. Arrival is confirmed. Committed equipment preparation is retained. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Lift console",
+      "report": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "manual",
+      "label": "Crescent: 1 / Blue only / Amber + Blue"
+    },
+    {
+      "kind": "apply",
+      "label": "All outputs isolated",
+      "terminals": []
+    },
+    {
+      "kind": "proposal",
+      "label": "Set index one"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Set index one"
+    },
+    {
+      "kind": "result",
+      "label": "Set index one",
+      "report": "I set lift index 1. A separate local test is still required; this setting alone does not authorize travel. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "apply",
+      "label": "blue",
+      "terminals": [
+        "blue"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Test the lift"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Test the lift"
+    },
+    {
+      "kind": "result",
+      "label": "Test the lift",
+      "report": "The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The lift test gives us a local result to compare with your circuit note."
+    },
+    {
+      "kind": "apply",
+      "label": "amber + blue",
+      "terminals": [
+        "amber",
+        "blue"
+      ]
+    },
+    {
+      "kind": "proposal",
+      "label": "Ride the direct lift"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Ride the direct lift"
+    },
+    {
+      "kind": "result",
+      "label": "Ride the direct lift",
+      "report": "I completed ride the direct lift. Arrival is confirmed. The route is restored; departure is still a separate confirmed decision. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "report",
+      "label": "Inspect Departure console",
+      "report": "The Departure console confirms arrival by the direct lift. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. Inspected controls: Depart for home. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+    },
+    {
+      "kind": "proposal",
+      "label": "Depart for home"
+    },
+    {
+      "kind": "confirmed",
+      "label": "Depart for home"
+    }
+  ]
+}

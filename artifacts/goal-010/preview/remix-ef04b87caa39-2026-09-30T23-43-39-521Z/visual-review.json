@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "source": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+  "scope": "Independent visual inspection of seven native 1920x1080 PNGs and seven actual encoded-MP4 frame PNGs using view_image. This is bounded still-frame review, not continuous playback, audio listening, a human playtest, or independent verification of temporal continuity.",
+  "status": "NATIVE_AND_ENCODED_STILL_REVIEW_PASS",
+  "images": [
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/01-new-dispatch.png",
+      "sha256": "fec2dab8a52ce30ccdaf4a8beeb20c4b0544907c87c5af57d020533cbc61e392",
+      "observation": "Nested Original/Remix and New/Replay/Daily choices, selected optional Service restoration, Practice mode and explicit Start are legible. Caption accurately describes optional assignment and local novelty."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/02-daily-dispatch.png",
+      "sha256": "52fc3b7a24e93b6aed3b96869ba5ccba8726a3be064fd4707ddb6cfa69854247",
+      "observation": "Server UTC date, public code and fixed-assignment/history explanation are visible. Start remains an explicit visible control; no Live claim."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/03-replay-code.png",
+      "sha256": "1696579dd414d6e5d37eec2e0c096c3219d6076aa54e87cea2520ffe2a0264bb",
+      "observation": "Complete replay code and fresh-progress explanation are readable. Local scripted Practice and presentation-caption provenance are persistent."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/04-reported-manual.png",
+      "sha256": "9744fdf4751e696beab8a06aa591146710990cf39452e5e485dc9435cecaeee3",
+      "observation": "Exact quoted Rivet plate, both service rows, both procedure descriptions and actual alignment-first report are visible together. Private approach is clearly labelled; controls remain readable."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/05-public-panel-draft.png",
+      "sha256": "3bde0c39de9cba9df575311b4e39febf64263981d16b4ba0b8fcdd02ff5ebb8f",
+      "observation": "Round panel source at P2 north, relocated labelled outputs and public trace are legible. Draft Amber connected versus all Applied Off, load1/2, applied rotor miniatures and Undo/Reset/Apply are visible."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/06-confirmed-home.png",
+      "sha256": "1c59490618acf238e2d822f73ee7b1fb03ff91badfb39ccfec7830a113b1127a",
+      "observation": "Actual home caption and journey state maintenance bypass, Service restoration completed, committed milestones, public code and local Practice provenance. Same conditions/Other approach/New dispatch remain legible."
+    },
+    {
+      "path": "artifacts/goal-010/preview/remix-ef04b87caa39-2026-09-30T23-43-39-521Z/07-explicit-replay-setup.png",
+      "sha256": "01abae05bf9152af68d25149daf2b17ecbbc81e00cde088a189ff391766b57c2",
+      "observation": "Same replay code appears in setup, local journeys count is1/12, and Start Practice remains explicit. Authored caption distinguishes private intention from starting another attempt."
+    }
+  ],
+  "concreteProductDefects": [],
+  "limitations": [
+    "Fixed capture evidence banner overlaps a scrolled page heading in some manual/panel views; it does not cover the compared reference, panel controls or decision area.",
+    "Confirmed-home shot is scrolled to the journey card, so the top home heading/illustration lies outside this frame; the actual home caption, journey and replay controls are visible.",
+    "Long current report is in the application's scrollable caption area; not every sentence is visible simultaneously."
+  ],
+  "encodedFrames": [
+  {
+    "path": ".validation/goal-010/encoded-review/frame-02.png",
+    "sampleAtSeconds": 2,
+    "sha256": "20aa66153719078659b7bd2cfe37bef30f376c0de04ba65d21166cc81be765e9",
+    "observation": "New-dispatch choices, optional assignment and explicit Start remain readable after encoding. Source and authored-caption labels are clear."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-12.png",
+    "sampleAtSeconds": 12,
+    "sha256": "a9870878b9db1c6a76f04264ef808c55173a3f0e61697965b855f8de0405a13c",
+    "observation": "Actual Control Bay report, private approach and optional guide are readable. The panel continues below the viewport; this frame does not show all rotors."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-24.png",
+    "sampleAtSeconds": 24,
+    "sha256": "48a8a801199cd65d3b745655257dbcc917721dbdf4b4546be132b9c9625cb1ed",
+    "observation": "Quoted Rivet report, both supply rows and both procedure descriptions remain legible. Report area shows alignment-first local wording without an installed-row highlight."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-35.png",
+    "sampleAtSeconds": 35,
+    "sha256": "6ac59a879fb345218457c22c322c787134b9fa75055b0371ff2705b40030c85f",
+    "observation": "Panel source at P2 north, Amber applied power, applied rotor miniatures and revision1 receipt are visible beside the actual Bridge winch report."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-44.png",
+    "sampleAtSeconds": 44,
+    "sha256": "90ac3f3c17d8e7113fac7ad454b5d3ab8f7f0875a69d69298b7993a741e8e90b",
+    "observation": "Deploy the bridge is visibly pending and unexecuted. Exact Confirm this action and Not yet controls are entirely visible; the presentation caption matches the pending state."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-56.png",
+    "sampleAtSeconds": 56,
+    "sha256": "2ca0bd4bb99fe015e86047717ebd4f1eadeaa6a5541285b3fa4ffab38acbfd1e",
+    "observation": "Actual home caption and journey show bypass plus Service restoration completed. Code, Practice provenance and all replay choices are readable."
+  },
+  {
+    "path": ".validation/goal-010/encoded-review/frame-63.png",
+    "sampleAtSeconds": 63,
+    "sha256": "67baffe721a7bb958230d7fbf27068c74510cb4d8ae1e67a68e76d70587f3d8a",
+    "observation": "Same public code is prepared in Replay setup with local journeys1/12 and explicit Start Practice. Caption does not claim another mission has begun."
+  }
+]
+}

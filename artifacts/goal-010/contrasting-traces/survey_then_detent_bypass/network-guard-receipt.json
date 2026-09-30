@@ -1,0 +1,8 @@
+{
+  "scope": "LOCAL_DETERMINISTIC_PRACTICE",
+  "test": "Remix panel 1 procedure 1 reaches home by bypass",
+  "project": "chromium-1280",
+  "statusAtCleanup": "passed",
+  "forbidden": [],
+  "pageErrors": []
+}

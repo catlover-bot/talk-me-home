@@ -1,0 +1,343 @@
+{
+  "schema": "goal-010-browser-plan-v1",
+  "status": "PLANNED_NOT_EXECUTED",
+  "scope": "Developer-only coverage identities; not imported by the runtime, human projection, companion or ordinary-UI player.",
+  "suite": "tests/e2e/remix.spec.ts",
+  "player": "tests/e2e/remix-player.ts",
+  "routeCasesPerViewport": 12,
+  "additionalEdgeCasesPerViewport": 3,
+  "profileCatalog": "R1",
+  "rows": [
+    {
+      "panel": "branch",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "rescue",
+      "profile": 0,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "lift_survey",
+      "profile": 5,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "service_restoration",
+      "profile": 14,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "service_restoration",
+      "profile": 11,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 23,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "lift_survey",
+      "profile": 18,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "service_restoration",
+      "profile": 25,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "rescue",
+      "profile": 28,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "service_restoration",
+      "profile": 32,
+      "assignmentExpected": "skipped"
+    },
+    {
+      "panel": "crown",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 37,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "lift_survey",
+      "profile": 46,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 43,
+      "assignmentExpected": "completed"
+    }
+  ],
+  "pairs": [
+    {
+      "axes": [
+        "panel",
+        "procedure"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "approach"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "layout"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "liftRow"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "serviceRow"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "assignment"
+      ],
+      "covered": 9,
+      "required": 9,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "approach"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "layout"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "layout"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "liftRow",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "liftRow",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "serviceRow",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    }
+  ],
+  "totals": {
+    "coveredPairs": 109,
+    "requiredPairs": 109,
+    "missingPairs": 0
+  },
+  "assignmentNote": "Pair coverage refers to selected assignment. Profile 32 intentionally skips service restoration and must still reach confirmed home with skipped status. All other optional selections assert the appropriate server-confirmed milestone.",
+  "evidenceBoundary": "A planned pair is not a browser pass. Use the clean run's persisted ordinary-ui-trace.json and network-guard-receipt.json files for actual observed outcomes; every approach/panel/procedure combination is exercised through visible UI, and supplied profile codes only choose coverage conditions.",
+  "initialFocusedRun": "Earlier 12 routes passed before four assignment reassignments; those historical results do not establish this updated assignment matrix."
+}

@@ -1,0 +1,874 @@
+{
+  "schemaVersion": 1,
+  "status": "OBSERVED_LOCAL_PRACTICE_TRACE_COMPARISON",
+  "source": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+  "applicationVersion": "0.10.0",
+  "sourceBinding": {
+    "path": "artifacts/goal-010/offline-validation.json",
+    "sha256": "4b05f7192f3b2fb711e79de0abf17a5554b408cfbb739ce73d4bc632b722d59d",
+    "recordedCleanAtStart": true,
+    "recordedTrackedUnchangedAtEnd": true,
+    "recordedStatus": "PASS",
+    "readOnlyGitHeadMatched": true,
+    "originalPrivateReceipt": {
+      "path": ".validation/goal-010/clean-ef04b87caa39/receipt.json",
+      "sha256": "66820eab6635ddb3ead26266b3f8a28df239fb8feb12030f6d42f4c5331db908"
+    }
+  },
+  "inputSourceHashes": [
+    {
+      "path": "tests/e2e/remix.spec.ts",
+      "sha256": "b71bcf98fc28482a7551c72d549241597900c4ba719c2e5359a5277d65ca018c"
+    },
+    {
+      "path": "tests/e2e/remix-player.ts",
+      "sha256": "d4ebf687e047d72796ae564e9efb90a07a1c5c9188924ddaf7a0a7bcf1eab330"
+    }
+  ],
+  "project": "chromium-1280",
+  "scope": "Three observed ordinary-browser UI runs against the compiled local application with deterministic Practice. No provider or public deployment requests were made for this analysis.",
+  "method": "Plan differences derive from the captured displayed drawing, local report, visible manual, Apply acknowledgment and explicit UI-confirmation sequence. No runtime catalog, hidden physical state or finite-validator witness was read to infer these differences. The public code and test title identify the selected cases; source assertions plus passing guard receipts bound end-card/assignment claims not serialized in the trace.",
+  "referenceConvention": {
+    "traceIndex": "Zero-based position in the original trace array.",
+    "line": "One-based line containing the entry's kind property in the unchanged original trace file."
+  },
+  "traces": [
+    {
+      "id": "survey_then_detent_bypass",
+      "test": "Remix panel 1 procedure 1 reaches home by bypass",
+      "code": "R1-05-00-1-00000069-6CD8B0AC",
+      "publicProfileCode": "05",
+      "profileCodeScope": "Public replay-code segment only; no catalog or hidden-state inference is used for the plan comparison.",
+      "approach": "bypass",
+      "assignment": {
+        "selected": "lift_survey",
+        "selectionEvidence": "tests/e2e/remix.spec.ts:69",
+        "completionEvidence": "Passing case asserts the visible journey is completed and the relevant committed milestone at tests/e2e/remix.spec.ts:95-97; the trace itself does not serialize the end-card text."
+      },
+      "reportedServiceProcedure": "Detent-first service module",
+      "rawTrace": {
+        "path": "artifacts/goal-010/contrasting-traces/survey_then_detent_bypass/ordinary-ui-trace.json",
+        "sha256": "9fcf75ad6c605b9bf353a6c5c9ceaf44da7f489998bfa3517c063d1eac3bfb37",
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json"
+      },
+      "networkGuard": {
+        "path": "artifacts/goal-010/contrasting-traces/survey_then_detent_bypass/network-guard-receipt.json",
+        "sha256": "92ca555e109e948bad99841d797b7c0cd59c405a104a4d857c7cca870d369065",
+        "statusAtCleanup": "passed",
+        "forbiddenAttempts": 0,
+        "pageErrors": 0,
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json"
+      },
+      "observedCounts": {
+        "traceEntries": 54,
+        "acknowledgedApplyEvents": 5,
+        "proposalEvents": 13,
+        "uiConfirmations": 12,
+        "confirmedTravelEvents": 6
+      },
+      "confirmedTravelSequence": [
+        {
+          "traceIndex": 6,
+          "line": 33,
+          "label": "Go to Lift Station"
+        },
+        {
+          "traceIndex": 18,
+          "line": 88,
+          "label": "Go to Transfer Table"
+        },
+        {
+          "traceIndex": 24,
+          "line": 115,
+          "label": "Go to Service Gallery"
+        },
+        {
+          "traceIndex": 36,
+          "line": 171,
+          "label": "Go to Transfer Table"
+        },
+        {
+          "traceIndex": 44,
+          "line": 209,
+          "label": "Go to Service Gallery"
+        },
+        {
+          "traceIndex": 49,
+          "line": 235,
+          "label": "Cross the maintenance bridge"
+        }
+      ],
+      "acknowledgedSupplySequence": [
+        {
+          "traceIndex": 13,
+          "line": 64,
+          "label": "blue",
+          "terminals": [
+            "blue"
+          ]
+        },
+        {
+          "traceIndex": 27,
+          "line": 129,
+          "label": "All outputs isolated",
+          "terminals": []
+        },
+        {
+          "traceIndex": 31,
+          "line": 147,
+          "label": "blue",
+          "terminals": [
+            "blue"
+          ]
+        },
+        {
+          "traceIndex": 39,
+          "line": 185,
+          "label": "white",
+          "terminals": [
+            "white"
+          ]
+        },
+        {
+          "traceIndex": 47,
+          "line": 223,
+          "label": "blue + white",
+          "terminals": [
+            "blue",
+            "white"
+          ]
+        }
+      ],
+      "analysis": "The reported Crescent lift was set to index one and passed its Blue-only test before the player prepared and used the maintenance bypass. The reported Slot/Detent-first procedure required deploying at Service Gallery, walking back to Transfer Table for White-only alignment, then returning to Service Gallery for the Blue + White crossing. The lift survey added useful work without selecting the lift as the rescue approach.",
+      "evidence": [
+        {
+          "traceIndex": 0,
+          "line": 6,
+          "kind": "report",
+          "label": "Look around",
+          "report": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Lift Station. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see."
+        },
+        {
+          "traceIndex": 1,
+          "line": 11,
+          "kind": "drawing",
+          "label": "Control Bay ↔ Lift Station · Ordinary corridor | Lift Station ↔ Transfer Table · Ordinary corridor | Transfer Table ↔ Service Gallery · Ordinary corridor | Lift Station ↔ Return Platform · Direct lift | Service Gallery ↔ Return Platform · Maintenance bridge"
+        },
+        {
+          "traceIndex": 8,
+          "line": 42,
+          "kind": "report",
+          "label": "Inspect Lift console",
+          "report": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 9,
+          "line": 47,
+          "kind": "manual",
+          "label": "Crescent: 1 / Blue only / Amber + Blue"
+        },
+        {
+          "traceIndex": 12,
+          "line": 59,
+          "kind": "result",
+          "label": "Set index one",
+          "report": "I set lift index 1. A separate local test is still required; this setting alone does not authorize travel. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 13,
+          "line": 64,
+          "kind": "apply",
+          "label": "blue"
+        },
+        {
+          "traceIndex": 16,
+          "line": 79,
+          "kind": "result",
+          "label": "Test the lift",
+          "report": "The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The lift test gives us a local result to compare with your circuit note."
+        },
+        {
+          "traceIndex": 20,
+          "line": 97,
+          "kind": "report",
+          "label": "Inspect Transfer turntable",
+          "report": "The Transfer turntable service plate reads Slot. Its alignment is not locked. This is a Detent-first service module. The service bridge must first be deployed from Service Gallery. Alignment uses its own supply alone, different from the winch supply. The lock retains alignment when power changes. Consult the Slot service row; the lift route does not need this operation. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 21,
+          "line": 102,
+          "kind": "manual",
+          "label": "Slot: Blue only / White only / Blue + White"
+        },
+        {
+          "traceIndex": 22,
+          "line": 106,
+          "kind": "procedure",
+          "label": "Detent-first service module",
+          "report": "Seat the brace with power isolated. Deploy the bridge on its winch supply. Then align the turntable on its separate alignment supply. Both locks remain set through later power changes."
+        },
+        {
+          "traceIndex": 27,
+          "line": 129,
+          "kind": "apply",
+          "label": "All outputs isolated"
+        },
+        {
+          "traceIndex": 30,
+          "line": 142,
+          "kind": "result",
+          "label": "Seat the bridge brace",
+          "report": "I seated the bridge brace. The winch can now deploy the walkway when its own supply is ready. The brace remains secured during later routing changes. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 31,
+          "line": 147,
+          "kind": "apply",
+          "label": "blue"
+        },
+        {
+          "traceIndex": 34,
+          "line": 162,
+          "kind": "result",
+          "label": "Deploy the bridge",
+          "report": "I deployed the bridge into its retaining detent. The route is not yet aligned at the far end. Return to Transfer Table for its separate local alignment; you can leave this mechanism without holding it. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The service bridge is deployed. I can check the crossing from here."
+        },
+        {
+          "traceIndex": 37,
+          "line": 175,
+          "kind": "result",
+          "label": "Go to Transfer Table",
+          "report": "I completed go to transfer table. Arrival is confirmed. Committed equipment preparation is retained. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Go to Lift Station; Go to Service Gallery. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 39,
+          "line": 185,
+          "kind": "apply",
+          "label": "white"
+        },
+        {
+          "traceIndex": 42,
+          "line": 200,
+          "kind": "result",
+          "label": "Align the turntable",
+          "report": "I aligned the turntable and its mechanical lock engaged. The service approach now has a continuous clear walkway. Rejoin it at Service Gallery and check the paired crossing supply. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The transfer table holds its new alignment. We have a useful step to build on."
+        },
+        {
+          "traceIndex": 45,
+          "line": 213,
+          "kind": "result",
+          "label": "Go to Service Gallery",
+          "report": "I completed go to service gallery. Arrival is confirmed. Committed equipment preparation is retained. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 47,
+          "line": 223,
+          "kind": "apply",
+          "label": "blue + white"
+        },
+        {
+          "traceIndex": 50,
+          "line": 239,
+          "kind": "result",
+          "label": "Cross the maintenance bridge",
+          "report": "I completed cross the maintenance bridge. Arrival is confirmed. The route is restored; departure is still a separate confirmed decision. I am at Return Platform. Within reach: Departure console. Local routes: Return to Service Gallery. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 51,
+          "line": 244,
+          "kind": "report",
+          "label": "Inspect Departure console",
+          "report": "The Departure console confirms arrival by the maintenance bypass. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home. I am at Return Platform. Within reach: Departure console. Local routes: Return to Service Gallery. Inspected controls: Depart for home. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 53,
+          "line": 253,
+          "kind": "confirmed",
+          "label": "Depart for home"
+        }
+      ]
+    },
+    {
+      "id": "alignment_restoration_then_lift",
+      "test": "Remix panel 2 procedure 2 reaches home by lift",
+      "code": "R1-0P-02-2-0000007D-76583B1D",
+      "publicProfileCode": "0P",
+      "profileCodeScope": "Public replay-code segment only; no catalog or hidden-state inference is used for the plan comparison.",
+      "approach": "lift",
+      "assignment": {
+        "selected": "service_restoration",
+        "selectionEvidence": "tests/e2e/remix.spec.ts:69",
+        "completionEvidence": "Passing case asserts the visible journey is completed and the relevant committed milestone at tests/e2e/remix.spec.ts:95-97; the trace itself does not serialize the end-card text."
+      },
+      "reportedServiceProcedure": "Alignment-first service module",
+      "rawTrace": {
+        "path": "artifacts/goal-010/contrasting-traces/alignment_restoration_then_lift/ordinary-ui-trace.json",
+        "sha256": "96435f4f83cc491d5ca3ee05340af94203ef630b85fcd8f4c99c4921f33df357",
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json"
+      },
+      "networkGuard": {
+        "path": "artifacts/goal-010/contrasting-traces/alignment_restoration_then_lift/network-guard-receipt.json",
+        "sha256": "021d9f9c9ba8b535af960da758fe1b9973aba628970028f13ce421b8f2b76ef1",
+        "statusAtCleanup": "passed",
+        "forbiddenAttempts": 0,
+        "pageErrors": 0,
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1280/network-guard-receipt.json"
+      },
+      "observedCounts": {
+        "traceEntries": 49,
+        "acknowledgedApplyEvents": 6,
+        "proposalEvents": 12,
+        "uiConfirmations": 11,
+        "confirmedTravelEvents": 5
+      },
+      "confirmedTravelSequence": [
+        {
+          "traceIndex": 5,
+          "line": 28,
+          "label": "Go to Transfer Table"
+        },
+        {
+          "traceIndex": 15,
+          "line": 75,
+          "label": "Go to Service Gallery"
+        },
+        {
+          "traceIndex": 27,
+          "line": 131,
+          "label": "Go to Transfer Table"
+        },
+        {
+          "traceIndex": 30,
+          "line": 144,
+          "label": "Go to Lift Station"
+        },
+        {
+          "traceIndex": 44,
+          "line": 212,
+          "label": "Ride the direct lift"
+        }
+      ],
+      "acknowledgedSupplySequence": [
+        {
+          "traceIndex": 10,
+          "line": 51,
+          "label": "white",
+          "terminals": [
+            "white"
+          ]
+        },
+        {
+          "traceIndex": 18,
+          "line": 89,
+          "label": "All outputs isolated",
+          "terminals": []
+        },
+        {
+          "traceIndex": 22,
+          "line": 107,
+          "label": "blue",
+          "terminals": [
+            "blue"
+          ]
+        },
+        {
+          "traceIndex": 34,
+          "line": 162,
+          "label": "All outputs isolated",
+          "terminals": []
+        },
+        {
+          "traceIndex": 38,
+          "line": 180,
+          "label": "blue",
+          "terminals": [
+            "blue"
+          ]
+        },
+        {
+          "traceIndex": 42,
+          "line": 200,
+          "label": "amber + blue",
+          "terminals": [
+            "amber",
+            "blue"
+          ]
+        }
+      ],
+      "analysis": "The public drawing first led to Transfer Table. The local Alignment-first report led to White-only turntable alignment before travelling to Service Gallery, isolating power for the brace and deploying with Blue. After both preparations were reported complete, the player walked back through Transfer Table to Lift Station, calibrated the reported Crescent plate, tested on Blue and rode with Amber + Blue. Service restoration was completed while the actual rescue used the lift.",
+      "evidence": [
+        {
+          "traceIndex": 0,
+          "line": 6,
+          "kind": "report",
+          "label": "Look around",
+          "report": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see."
+        },
+        {
+          "traceIndex": 1,
+          "line": 11,
+          "kind": "drawing",
+          "label": "Control Bay ↔ Transfer Table · Ordinary corridor | Transfer Table ↔ Lift Station · Ordinary corridor | Transfer Table ↔ Service Gallery · Ordinary corridor | Lift Station ↔ Return Platform · Direct lift | Service Gallery ↔ Return Platform · Maintenance bridge"
+        },
+        {
+          "traceIndex": 7,
+          "line": 37,
+          "kind": "report",
+          "label": "Inspect Transfer turntable",
+          "report": "The Transfer turntable service plate reads Slot. Its alignment is not locked. This is an Alignment-first service module: align this turntable before deploying the service bridge. No deployed bridge is required for alignment; the bridge winch checks this lock before deployment. Alignment uses its own supply alone, different from the winch supply. The lock retains alignment when power changes. Consult the Slot service row; the lift route does not need this operation. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 8,
+          "line": 42,
+          "kind": "manual",
+          "label": "Slot: Blue only / White only / Blue + White"
+        },
+        {
+          "traceIndex": 9,
+          "line": 46,
+          "kind": "procedure",
+          "label": "Alignment-first service module",
+          "report": "Align the turntable on its alignment supply before deploying the bridge. Seat the bridge brace with power isolated, then deploy on its winch supply. The brace may be seated before or after alignment; both locks retain progress."
+        },
+        {
+          "traceIndex": 10,
+          "line": 51,
+          "kind": "apply",
+          "label": "white"
+        },
+        {
+          "traceIndex": 13,
+          "line": 66,
+          "kind": "result",
+          "label": "Align the turntable",
+          "report": "I aligned the turntable and its mechanical lock engaged. Its lock will remain through power changes. The service bridge still needs its seated brace and deployment at Service Gallery before any crossing. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. Inspected controls: Align the turntable. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The transfer table holds its new alignment. We have a useful step to build on."
+        },
+        {
+          "traceIndex": 16,
+          "line": 79,
+          "kind": "result",
+          "label": "Go to Service Gallery",
+          "report": "I completed go to service gallery. Arrival is confirmed. Committed equipment preparation is retained. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 18,
+          "line": 89,
+          "kind": "apply",
+          "label": "All outputs isolated"
+        },
+        {
+          "traceIndex": 21,
+          "line": 102,
+          "kind": "result",
+          "label": "Seat the bridge brace",
+          "report": "I seated the bridge brace. The winch also needs the turntable alignment lock and its own supply before deployment. The brace remains secured during later routing changes. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 22,
+          "line": 107,
+          "kind": "apply",
+          "label": "blue"
+        },
+        {
+          "traceIndex": 25,
+          "line": 122,
+          "kind": "result",
+          "label": "Deploy the bridge",
+          "report": "I deployed the bridge into its retaining detent against the aligned turntable. Both mechanical preparations are complete and retained. Crossing still requires its paired supply and a separate confirmed movement. I am at Service Gallery. Within reach: Bridge winch. Local routes: Go to Transfer Table; Cross the maintenance bridge. Inspected controls: Seat the bridge brace; Deploy the bridge. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The service bridge is deployed. I can check the crossing from here."
+        },
+        {
+          "traceIndex": 28,
+          "line": 135,
+          "kind": "result",
+          "label": "Go to Transfer Table",
+          "report": "I completed go to transfer table. Arrival is confirmed. Committed equipment preparation is retained. I am at Transfer Table. Within reach: Transfer turntable. Local routes: Return to Control Bay; Go to Lift Station; Go to Service Gallery. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 31,
+          "line": 148,
+          "kind": "result",
+          "label": "Go to Lift Station",
+          "report": "I completed go to lift station. Arrival is confirmed. Committed equipment preparation is retained. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 32,
+          "line": 153,
+          "kind": "report",
+          "label": "Inspect Lift console",
+          "report": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 33,
+          "line": 158,
+          "kind": "manual",
+          "label": "Crescent: 1 / Blue only / Amber + Blue"
+        },
+        {
+          "traceIndex": 34,
+          "line": 162,
+          "kind": "apply",
+          "label": "All outputs isolated"
+        },
+        {
+          "traceIndex": 37,
+          "line": 175,
+          "kind": "result",
+          "label": "Set index one",
+          "report": "I set lift index 1. A separate local test is still required; this setting alone does not authorize travel. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 38,
+          "line": 180,
+          "kind": "apply",
+          "label": "blue"
+        },
+        {
+          "traceIndex": 41,
+          "line": 195,
+          "kind": "result",
+          "label": "Test the lift",
+          "report": "The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride. I am at Lift Station. Within reach: Lift console. Local routes: Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The lift test gives us a local result to compare with your circuit note."
+        },
+        {
+          "traceIndex": 42,
+          "line": 200,
+          "kind": "apply",
+          "label": "amber + blue"
+        },
+        {
+          "traceIndex": 45,
+          "line": 216,
+          "kind": "result",
+          "label": "Ride the direct lift",
+          "report": "I completed ride the direct lift. Arrival is confirmed. The route is restored; departure is still a separate confirmed decision. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 46,
+          "line": 221,
+          "kind": "report",
+          "label": "Inspect Departure console",
+          "report": "The Departure console confirms arrival by the direct lift. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. Inspected controls: Depart for home. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 48,
+          "line": 230,
+          "kind": "confirmed",
+          "label": "Depart for home"
+        }
+      ]
+    },
+    {
+      "id": "kite_survey_direct_lift",
+      "test": "Remix panel 3 procedure 2 reaches home by lift",
+      "code": "R1-1A-03-1-00000092-6CD4398D",
+      "publicProfileCode": "1A",
+      "profileCodeScope": "Public replay-code segment only; no catalog or hidden-state inference is used for the plan comparison.",
+      "approach": "lift",
+      "assignment": {
+        "selected": "lift_survey",
+        "selectionEvidence": "tests/e2e/remix.spec.ts:69",
+        "completionEvidence": "Passing case asserts the visible journey is completed and the relevant committed milestone at tests/e2e/remix.spec.ts:95-97; the trace itself does not serialize the end-card text."
+      },
+      "reportedServiceProcedure": null,
+      "rawTrace": {
+        "path": "artifacts/goal-010/contrasting-traces/kite_survey_direct_lift/ordinary-ui-trace.json",
+        "sha256": "111b9aeb83d7bc61ab7ed437e5681f974f60926d1d04ec196d58293af25165fd",
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json"
+      },
+      "networkGuard": {
+        "path": "artifacts/goal-010/contrasting-traces/kite_survey_direct_lift/network-guard-receipt.json",
+        "sha256": "8a14e85d750c79f8a6bed70cc73687bc01a3aa6ea9c0e99bc86c92016a07b7be",
+        "statusAtCleanup": "passed",
+        "forbiddenAttempts": 0,
+        "pageErrors": 0,
+        "originalPrivatePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1280/network-guard-receipt.json"
+      },
+      "observedCounts": {
+        "traceEntries": 23,
+        "acknowledgedApplyEvents": 2,
+        "proposalEvents": 6,
+        "uiConfirmations": 5,
+        "confirmedTravelEvents": 2
+      },
+      "confirmedTravelSequence": [
+        {
+          "traceIndex": 5,
+          "line": 28,
+          "label": "Go to Lift Station"
+        },
+        {
+          "traceIndex": 18,
+          "line": 91,
+          "label": "Ride the direct lift"
+        }
+      ],
+      "acknowledgedSupplySequence": [
+        {
+          "traceIndex": 12,
+          "line": 59,
+          "label": "white",
+          "terminals": [
+            "white"
+          ]
+        },
+        {
+          "traceIndex": 16,
+          "line": 79,
+          "label": "amber + white",
+          "terminals": [
+            "amber",
+            "white"
+          ]
+        }
+      ],
+      "analysis": "The public drawing connected Control Bay directly to Lift Station. The reported Kite plate and its visible manual row led to index two, White-only testing and an Amber + White running supply. The observed route used the lift without visiting the service equipment; its fitted service procedure was not inspected in this trace.",
+      "evidence": [
+        {
+          "traceIndex": 0,
+          "line": 6,
+          "kind": "report",
+          "label": "Look around",
+          "report": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Lift Station. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see."
+        },
+        {
+          "traceIndex": 1,
+          "line": 11,
+          "kind": "drawing",
+          "label": "Control Bay ↔ Lift Station · Ordinary corridor | Lift Station ↔ Transfer Table · Ordinary corridor | Transfer Table ↔ Service Gallery · Ordinary corridor | Lift Station ↔ Return Platform · Direct lift | Service Gallery ↔ Return Platform · Maintenance bridge"
+        },
+        {
+          "traceIndex": 6,
+          "line": 32,
+          "kind": "result",
+          "label": "Go to Lift Station",
+          "report": "I completed go to lift station. Arrival is confirmed. Committed equipment preparation is retained. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 7,
+          "line": 37,
+          "kind": "report",
+          "label": "Inspect Lift console",
+          "report": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 8,
+          "line": 42,
+          "kind": "manual",
+          "label": "Kite: 2 / White only / Amber + White"
+        },
+        {
+          "traceIndex": 11,
+          "line": 54,
+          "kind": "result",
+          "label": "Set index two",
+          "report": "I set lift index 2. A separate local test is still required; this setting alone does not authorize travel. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 12,
+          "line": 59,
+          "kind": "apply",
+          "label": "white"
+        },
+        {
+          "traceIndex": 15,
+          "line": 74,
+          "kind": "result",
+          "label": "Test the lift",
+          "report": "The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride. I am at Lift Station. Within reach: Lift console. Local routes: Return to Control Bay; Go to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action. The lift test gives us a local result to compare with your circuit note."
+        },
+        {
+          "traceIndex": 16,
+          "line": 79,
+          "kind": "apply",
+          "label": "amber + white"
+        },
+        {
+          "traceIndex": 19,
+          "line": 95,
+          "kind": "result",
+          "label": "Ride the direct lift",
+          "report": "I completed ride the direct lift. Arrival is confirmed. The route is restored; departure is still a separate confirmed decision. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 20,
+          "line": 100,
+          "kind": "report",
+          "label": "Inspect Departure console",
+          "report": "The Departure console confirms arrival by the direct lift. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home. I am at Return Platform. Within reach: Departure console. Local routes: Return to Lift Station. Inspected controls: Depart for home. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action."
+        },
+        {
+          "traceIndex": 22,
+          "line": 109,
+          "kind": "confirmed",
+          "label": "Depart for home"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "dimension": "Service preparation dependency",
+      "finding": "For the same visibly read Slot supplies, trace A deploys the bridge before alignment and walks back to align it; trace B aligns first and then deploys against the retained lock. This is an observed change in operation order, not a name-only difference.",
+      "evidence": [
+        {
+          "trace": "survey_then_detent_bypass",
+          "indices": [
+            20,
+            21,
+            22,
+            34,
+            37,
+            42
+          ]
+        },
+        {
+          "trace": "alignment_restoration_then_lift",
+          "indices": [
+            7,
+            8,
+            9,
+            13,
+            25
+          ]
+        }
+      ]
+    },
+    {
+      "dimension": "Ordinary travel and investigation order",
+      "finding": "A and C start with Control Bay to Lift Station; B starts with Control Bay to Transfer Table. A's detent preparation revisits Transfer Table and then Service Gallery. B instead restores service first and later returns through Transfer Table to reach the lift. C reaches home after only Lift Station and Return Platform.",
+      "evidence": [
+        {
+          "trace": "survey_then_detent_bypass",
+          "indices": [
+            1,
+            7,
+            19,
+            25,
+            37,
+            45,
+            50
+          ]
+        },
+        {
+          "trace": "alignment_restoration_then_lift",
+          "indices": [
+            1,
+            6,
+            16,
+            28,
+            31,
+            45
+          ]
+        },
+        {
+          "trace": "kite_survey_direct_lift",
+          "indices": [
+            1,
+            6,
+            19
+          ]
+        }
+      ]
+    },
+    {
+      "dimension": "Locally selected calibration and supplies",
+      "finding": "The Crescent reports and corresponding visible rows in A/B lead to index one with Blue-only testing. C's actually reported Kite row changes the decision to index two, White-only testing and Amber + White running; B runs on Amber + Blue.",
+      "evidence": [
+        {
+          "trace": "survey_then_detent_bypass",
+          "indices": [
+            8,
+            9,
+            12,
+            13,
+            16
+          ]
+        },
+        {
+          "trace": "alignment_restoration_then_lift",
+          "indices": [
+            32,
+            33,
+            37,
+            38,
+            41,
+            42
+          ]
+        },
+        {
+          "trace": "kite_survey_direct_lift",
+          "indices": [
+            7,
+            8,
+            11,
+            12,
+            15,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "dimension": "Optional work does not select the rescue approach",
+      "finding": "A successfully tests the lift then crosses the maintenance bridge; B reports both service preparations complete then rides the lift. Passing UI cases assert completed Lift survey and Service restoration milestones respectively. C completes the lift survey as part of its direct-lift route.",
+      "evidence": [
+        {
+          "trace": "survey_then_detent_bypass",
+          "indices": [
+            16,
+            50,
+            51
+          ]
+        },
+        {
+          "trace": "alignment_restoration_then_lift",
+          "indices": [
+            25,
+            45,
+            46
+          ]
+        },
+        {
+          "trace": "kite_survey_direct_lift",
+          "indices": [
+            15,
+            19,
+            20
+          ]
+        }
+      ]
+    }
+  ],
+  "exactConfirmationBoundary": {
+    "traceObservation": "Every completed physical action is preceded by a proposal and a separate confirmed event. Each trace includes one additional initial proposal that was deliberately declined by the test; it has no corresponding confirmed event.",
+    "testEvidence": {
+      "declineAndZeroCommits": "tests/e2e/remix.spec.ts:85-91",
+      "uniqueCommittedIdsAndDeclinedIdAbsent": "tests/e2e/remix.spec.ts:98-99",
+      "homeAndActualApproach": "tests/e2e/remix-player.ts:247-252",
+      "traceWrittenAfterAssertions": "tests/e2e/remix.spec.ts:100"
+    },
+    "limitation": "These compact traces do not contain proposal UUIDs or the home card text. Exact commit-id uniqueness and final home/approach assertions are supported by the passing browser cases, not invented from missing trace fields."
+  },
+  "boundaries": [
+    "Different test panel labels and public codes identify three selected cases. The original compact traces do not serialize panel piece geometry, initial/applied rotations or rotation counts. This comparison therefore makes no independent geometric-diversity or rotation-efficiency claim; the separate panel validation and visual evidence cover those questions.",
+    "The third run did not inspect service equipment; its test title must not be mistaken for an observed service-procedure report.",
+    "Apply counts include only successful acknowledged changes logged by the helper; they are not a claimed optimal number of electrical edits.",
+    "These are automated local deterministic Practice runs, not a human playtest, enjoyment/retention result, microphone test, Live Voice result, provider ACK or hosted acceptance.",
+    "Packaging copies only safe gameplay evidence and a derived analysis into artifacts/goal-010. All original private traces, guards, source files, prior analysis and historical evidence are preserved unchanged."
+  ],
+  "packaging": {
+    "originalAnalysis": {
+      "path": ".validation/goal-010/three-trace-analysis.json",
+      "sha256": "4d95a5e23f8eba084e24b7f743bd18646564e9ce59d4a26f8a2f7bdeadc7c98a"
+    },
+    "changes": "Raw trace and guard copies are byte-identical; derived analysis only updates packaged evidence paths and scope wording.",
+    "safety": {
+      "scope": "Selected three traces, three zero-network guard receipts and derived analysis only.",
+      "method": "Allowed-key validation, manual review of captured gameplay reports/code fields, credential-marker pattern review.",
+      "unexpectedFields": 0,
+      "credentialCandidates": 0,
+      "publicCodeMeaning": "R1 mission replay codes select public replay conditions; they are not access codes or credentials.",
+      "historicalExposureGate": "Not re-audited or changed by this bounded packaging."
+    }
+  }
+}
