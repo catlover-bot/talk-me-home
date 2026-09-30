@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "status": "LOCAL_PREVIEW_VISUAL_REVIEW_PASS",
+  "source": "3961d190bded41c68259ce5106c1904266926893",
+  "video": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/Talk-Me-Home-Goal-008B-Switchyard-Polish-Local-Preview.mp4",
+  "sha256": "b1d1323ea064dffe1e3a973b2bbd70f2c7ca00f6f628bc874ce556e22f978a7c",
+  "scope": "Twelve actual frames extracted from encoded MP4; seven root-reviewed and five independently reviewed. Full decode and stream metadata verified by capture. This is not continuous human playback, listening or human playtesting.",
+  "frames": [
+    {
+      "seconds": 4,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/04s.png",
+      "sha256": "fc4a4aa80f9aec91477bf3ec78f9cf77766ce78a3ef470416600528f8e8b9b22"
+    },
+    {
+      "seconds": 13,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/13s.png",
+      "sha256": "0020a73933e211c1a60c039d347c18272b42e52e670fda9fe10cc5de667900eb"
+    },
+    {
+      "seconds": 24,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/24s.png",
+      "sha256": "56b3faf780d3828fd9e5268e48e8dffe955739ae0cbecf470d673d43bed1370c"
+    },
+    {
+      "seconds": 26,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/26s.png",
+      "sha256": "7c37d697196a12716499fc82ddc16cc295d9bd77d1ee4a606cff6c708f6a4fb6"
+    },
+    {
+      "seconds": 30,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/30s.png",
+      "sha256": "a86e6aa48a4ede77abc4d29d8b6df176f06f0d12d3cac1c2e0efc8b7bbf4cba4"
+    },
+    {
+      "seconds": 34,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/34s.png",
+      "sha256": "0859d97c2e5978cb3513c79cfae0fdef77289011e45a02c8b9fa541d3f7fae02"
+    },
+    {
+      "seconds": 40,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/40s.png",
+      "sha256": "96f872762b0b63c277c77db33baee2c2e02208e187191134e62a5a55229d223e"
+    },
+    {
+      "seconds": 43,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/43s.png",
+      "sha256": "7b531c83e08982998dba2260f49a692fd98b5260113a1b094041de6c6b5108f3"
+    },
+    {
+      "seconds": 52,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/52s.png",
+      "sha256": "5fe3a26e34617bb8ee68ce09a7f38716533e760dc6d33ec153e805eb5506b51a"
+    },
+    {
+      "seconds": 64,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/64s.png",
+      "sha256": "24a9dfb06551fb72b512eb165307c05fb381d5386e5257cde13a93fbe2f916a2"
+    },
+    {
+      "seconds": 75,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/75s.png",
+      "sha256": "5b0fcf3db9d77553cc4ed2e5efc64d58b7bc6916238681704d0128c892925f2e"
+    },
+    {
+      "seconds": 84,
+      "path": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/review-frames/84s.png",
+      "sha256": "2dccc0df172255cf1188236461b95eef813dd89208b6fb17c44e754c6c2be125"
+    }
+  ],
+  "findings": [
+    "Local/scripted Practice, source and selected-text/manual-confirmation labeling remains readable.",
+    "Prediction at 26s precedes a connected draft with applied White still Off at 30s.",
+    "Acknowledged White power and report age visible at 34s; actual successful lift test report at 40s.",
+    "Private bypass plan revision visible at 43s with retained applied circuit and test receipt.",
+    "Pending departure at 75s does not claim home; actual confirmed bypass ending appears at 84s."
+  ],
+  "audio": "No audio stream; no audible-playback verification claimed.",
+  "edits": "Continuous normal-speed browser footage with authored overlay captions and deliberate reading pauses; no splicing, narration or time stretching.",
+  "cleanup": "Capture browser contexts and owned loopback server closed; port5522 refused afterward."
+}

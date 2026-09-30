@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "status": "LOCAL_CAPTURE_AND_DECODE_PASS_PENDING_VISUAL_REVIEW",
+  "startedAt": "2026-09-30T13:25:28.882Z",
+  "source": "3961d190bded41c68259ce5106c1904266926893",
+  "evidence": "Fresh local/scripted Practice, ordinary selected text requests and manual UI confirmations; no provider connection or human playtest.",
+  "output": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z",
+  "audio": "Silent browser video; no microphone, provider speech or presentation narration.",
+  "route": "Read the fitted lift plate, set and test the lift, deliberately change to the maintenance bypass, then confirm actual home departure.",
+  "presentation": "Continuous normal-speed local UI recording with deliberate reading pauses and authored overlay captions; no spliced historical footage, narration, or time stretching.",
+  "shots": [
+    {
+      "name": "briefing",
+      "caption": "Choose The Switchyard: a local scripted puzzle with two approaches.",
+      "startsAtSeconds": 0.674,
+      "targetEndSeconds": 4,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/01-briefing.png",
+      "sha256": "c37da254aafedfc548078ad15722fb9eaaa2a5346fdbd0173a5a304b58501ff6"
+    },
+    {
+      "name": "shared-information",
+      "caption": "Choose an approach while comparing your document with Pip’s communicated report.",
+      "startsAtSeconds": 4.39,
+      "targetEndSeconds": 9,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/02-shared-information.png",
+      "sha256": "d497aa3eb4485758eebc2b422ba943d625da23726a86d0b4e5b9f623f530191b"
+    },
+    {
+      "name": "pending-action",
+      "caption": "A request prepares one exact proposal. The action still needs your confirmation.",
+      "startsAtSeconds": 9.106,
+      "targetEndSeconds": 13,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/03-pending-action.png",
+      "sha256": "4e4cedb817c09ebd8f25dbfd294e9bd3376d32265600025d8ac58ab26f16e0a7"
+    },
+    {
+      "name": "lift-investigation",
+      "caption": "Pip’s fitted-plate report identifies a row in the human reference.",
+      "startsAtSeconds": 13.372,
+      "targetEndSeconds": 18,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/04-lift-investigation.png",
+      "sha256": "908e8d5d336d1c4c9c804659301147bd01e74231e83b052b311cd6cc354be8f5"
+    },
+    {
+      "name": "human-manual",
+      "caption": "Compare the quoted report and manual. The local companion does not receive this table.",
+      "startsAtSeconds": 18.056,
+      "targetEndSeconds": 24,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/05-human-manual.png",
+      "sha256": "c633c888786b21365eb3845b4df8f773bd98d5c95077ca09cefc9de0bf359826"
+    },
+    {
+      "name": "prediction",
+      "caption": "The manual calls for white only. Predict that supply before editing the draft.",
+      "startsAtSeconds": 24.172,
+      "targetEndSeconds": 28,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/06-prediction.png",
+      "sha256": "57faea03645c36d27f1fe2f5e1d23cc22ac8667d499a6214663c860926960c2c"
+    },
+    {
+      "name": "draft-prediction",
+      "caption": "The draft shows the predicted connection. Applied power has not changed yet.",
+      "startsAtSeconds": 28.322,
+      "targetEndSeconds": 33,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/07-draft-prediction.png",
+      "sha256": "ee366afe4dcd92273c47ee2827155da960e3e4f8865f9eee384817bccc759e8d"
+    },
+    {
+      "name": "applied-delta",
+      "caption": "Apply acknowledges the power change. The earlier equipment report keeps its age.",
+      "startsAtSeconds": 33.121,
+      "targetEndSeconds": 38,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/08-applied-delta.png",
+      "sha256": "a447c92a0f3e14d54c2b46c5583cfbe9bb906f37098da935e1b05a754cb617f4"
+    },
+    {
+      "name": "communicated-outcome",
+      "caption": "The circuit is applied; a separately confirmed local test reports its actual result.",
+      "startsAtSeconds": 38.189,
+      "targetEndSeconds": 42,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/09-communicated-outcome.png",
+      "sha256": "b3e4f3e925f059b50f89e7602d0c4c09c2bcfc23a294b8eb4803adda374ce59b"
+    },
+    {
+      "name": "change-plan",
+      "caption": "Change the intended approach after a successful test. Completed work stays completed.",
+      "startsAtSeconds": 42.138,
+      "targetEndSeconds": 46,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/10-change-plan.png",
+      "sha256": "c1a8697f1c27505368093bdca9ac953c5b24a85ff2c7ade2bd8299e60b7f49bd"
+    },
+    {
+      "name": "service-manual",
+      "caption": "The bypass uses its own reported module and the matching human reference row.",
+      "startsAtSeconds": 46.421,
+      "targetEndSeconds": 51,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/11-service-manual.png",
+      "sha256": "63dd452754ccac3795dd2afe8eb6359e819e0bdf0af88444cad91dd911900ab6"
+    },
+    {
+      "name": "bridge-deployed",
+      "caption": "Apply the complete circuit, then confirm the separate local bridge operation.",
+      "startsAtSeconds": 51.97,
+      "targetEndSeconds": 59,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/12-bridge-deployed.png",
+      "sha256": "14dc562f06b678baf8978cf5ab741b19f4c17cc82e48943aa3381820cf3277e0"
+    },
+    {
+      "name": "alignment",
+      "caption": "The bypass also needs a separate alignment at the transfer table.",
+      "startsAtSeconds": 59.86,
+      "targetEndSeconds": 65,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/13-alignment.png",
+      "sha256": "68694f985c9914f48e4367e53061d63a4e9d9924f060c6ddea410b01389a9a10"
+    },
+    {
+      "name": "departure-pending",
+      "caption": "The route is restored. Departure is still a separate confirmed choice.",
+      "startsAtSeconds": 65.804,
+      "targetEndSeconds": 75,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/14-departure-pending.png",
+      "sha256": "6c93d4a30a510e58d55d3b6c7443eb8fd9c0f31a30983dccd851c8c615c70428"
+    },
+    {
+      "name": "confirmed-home",
+      "caption": "Pip is home by the maintenance bypass. Local/scripted Practice polish preview.",
+      "startsAtSeconds": 75.136,
+      "targetEndSeconds": 86,
+      "screenshot": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/screens/15-confirmed-home.png",
+      "sha256": "f186e220d2388403288b4dc0f83d793911e438a68b7cf2bbd6d037a550ae0e7f"
+    }
+  ],
+  "violations": [],
+  "served": {
+    "commit": "3961d190bded41c68259ce5106c1904266926893",
+    "version": "0.8.1"
+  },
+  "rawVideo": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/raw/page@9466a7d44494cc39330c6ede9e779534.webm",
+  "rawVideoSha256": "72e82080b63e42e908a90f0701959ce73da08c18ad75c12734fc83a17bf696ec",
+  "finishedAt": "2026-09-30T13:26:57.655Z",
+  "finalVideo": ".validation/goal-008b/preview-3961d190bded-2026-09-30T13-25-28-876Z/Talk-Me-Home-Goal-008B-Switchyard-Polish-Local-Preview.mp4",
+  "finalVideoSha256": "b1d1323ea064dffe1e3a973b2bbd70f2c7ca00f6f628bc874ce556e22f978a7c",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "format": {
+      "duration": "85.933333"
+    }
+  },
+  "counts": {
+    "selectedRequests": 22,
+    "confirmations": 13,
+    "declines": 0,
+    "committedDecisions": 13,
+    "routingApplies": 5,
+    "privatePlanSelections": 2
+  }
+}
