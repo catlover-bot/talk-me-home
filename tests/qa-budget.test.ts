@@ -202,8 +202,22 @@ test('QA independent watchdog survives supervisor death and terminates an unresp
     process.kill(Number(readFileSync(supervisorPidFile, 'utf8')), 'SIGKILL')
     assert.equal((await running).signal, 'SIGKILL')
     const driverPid = Number(readFileSync(driverPidFile, 'utf8'))
-    for (let count = 0; count < 80 && processIdentity(driverPid)?.state !== 'Z' && processIdentity(driverPid); count++) await new Promise(done => setTimeout(done, 50))
+    const cleanupFile = join(directory, 'cleanup.jsonl')
+    const cleanupReceipt = () => existsSync(cleanupFile) ? readFileSync(cleanupFile, 'utf8') : ''
+    // Driver death precedes the watchdog's final write. Wait for both within the
+    // existing budget before deleting the directory underneath that writer.
+    for (let count = 0; count < 80; count++) {
+      const driver = processIdentity(driverPid)
+      if ((!driver || driver.state === 'Z') && cleanupReceipt().endsWith('\n')) break
+      await new Promise(done => setTimeout(done, 50))
+    }
     assert.ok(!processIdentity(driverPid) || processIdentity(driverPid).state === 'Z')
+    const cleanup = cleanupReceipt()
+    assert.ok(cleanup.endsWith('\n'), 'The independent watchdog did not finish its cleanup receipt.')
+    const receipts = cleanup.trimEnd().split('\n').map(line => JSON.parse(line))
+    assert.equal(receipts.length, 1)
+    assert.equal(receipts[0].driverPid, driverPid)
+    assert.equal(receipts[0].survivors, 0)
     assert.equal(inspectCampaign(directory).reservedSeconds, 670)
     assert.throws(() => new CampaignBudget(directory).reserve({ name: 'retry' }), /lease/)
   } finally { rmSync(directory, { recursive: true, force: true }) }
