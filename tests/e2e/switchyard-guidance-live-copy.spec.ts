@@ -26,7 +26,7 @@ test('simulated non-Practice guidance invites a report and preserves raw replies
     await page.getByRole('radio', { name: /Live Text/ }).check();
     await page.getByRole('button', { name: 'Start with Text', exact: true }).click();
     await confirmLocalReadiness(page, 'Text');
-    await provider.waitForSent(event => event.type === 'reply.create');
+    await provider.waitForSent(event => event.type === 'session.update');
     const cue = page.getByTestId('switchyard-guide-radio');
     const guide = page.getByTestId('switchyard-guidance');
     await expect(cue).toHaveText('Ask Pip for a local look, then an inspection. Your documents supply the circuit rules Pip cannot see.');
