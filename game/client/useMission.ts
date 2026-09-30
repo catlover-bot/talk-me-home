@@ -468,6 +468,7 @@ export function useMission() {
     const expected = generation.current; const connection = voice.current;
     const decisionInput = connection?.beginGameDecision();
     proposalDecisionBusy.current = true; setProposalConfirming(proposal.id); setProposalFailure(null); setError('');
+    let recordView: HumanView | null = null;
     try {
       const result = await api.decideProposal(current, proposal.id, decision, api.requestId());
       if (expected !== generation.current || !currentRound(result.view.roundId)) return;
@@ -495,7 +496,7 @@ export function useMission() {
           currentRobotPerception(result.perception, viewRef.current ?? undefined) ?? null);
         effects.current.play('acknowledge');
       }
-      await refreshRecord(result.view);
+      recordView = result.view;
     } catch (cause) {
       if (expected !== generation.current || !currentRound(current.roundId)) return;
       setProposalFailure(proposal.id); showError(cause);
@@ -511,6 +512,11 @@ export function useMission() {
       decisionInput?.finish();
       proposalDecisionBusy.current = false;
       if (expected === generation.current) setProposalConfirming(null);
+    }
+    // History is auxiliary: it cannot extend or overturn the authoritative decision.
+    if (recordView && expected === generation.current && currentRound(recordView.roundId)) {
+      try { await refreshRecord(recordView); }
+      catch (cause) { if (expected === generation.current && currentRound(recordView.roundId)) showError(cause); }
     }
   };
 
