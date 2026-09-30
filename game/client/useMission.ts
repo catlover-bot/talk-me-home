@@ -299,6 +299,7 @@ export function useMission() {
     // Provider call identifiers belong to one connection, not the entire retained mission.
     const localCallIds = new Map<string, string>();
     let issuedReleaseView: HumanView | undefined;
+    let protectedConnectionRefused = false;
     const connection = new LiveVoice({
       onTranscript: (entry, context) => {
         const captured = context as HumanView | undefined;
@@ -314,7 +315,7 @@ export function useMission() {
           const current = viewRef.current;
           if (current) void api.lifecycle(current, 'stop').then(result => {
             if (expected === generation.current && currentRound(result.roundId)) applyView(result);
-          }).catch(showError);
+          }).catch(cause => { if (expected === generation.current && !protectedConnectionRefused) showError(cause); });
         }
       },
       onError: message => { if (expected === generation.current) setError(message); },
@@ -322,6 +323,7 @@ export function useMission() {
       onSessionLimit: () => { if (expected === generation.current) void stop(); },
       onProviderAccountRefusal: reason => {
         if (!issuedReleaseView) return;
+        protectedConnectionRefused = true;
         setProviderAccountStopped(true);
         rememberProtectedLiveStop();
         void api.reportLiveRefusal(issuedReleaseView, reason).catch(() => {
@@ -377,7 +379,11 @@ export function useMission() {
         setConnectedNow(true); liveStarted.current = Date.now(); effects.current.play('connect');
       }
     }).catch(cause => {
-      if (expected === generation.current) { showError(cause); voice.current = null; setConnectedNow(false); setStatus('error'); }
+      if (expected === generation.current) {
+        // A refused startup also rejects start(); retain its specific stop warning.
+        if (!protectedConnectionRefused) showError(cause);
+        voice.current = null; setConnectedNow(false); setStatus('error');
+      }
     }).finally(() => { if (expected === generation.current) setBusyNow(false); });
   };
 

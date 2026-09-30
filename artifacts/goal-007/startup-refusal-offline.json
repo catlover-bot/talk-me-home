@@ -1,0 +1,18 @@
+{
+  "sourceBase": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+  "scope": "Preserve the protected refusal warning when startup rejects before session readiness",
+  "providerRequests": 0,
+  "historicalLedgerMutations": 0,
+  "reproduction": "Both constructed before-readiness cases failed before the fix: the startup catch replaced the account-refusal warning with a generic connection error.",
+  "repair": "A connection-local refusal flag keeps startup rejection and asynchronous stop errors from overwriting the specific refusal warning. The durable local stop and failed-report notice remain intact.",
+  "validation": {
+    "typecheckAndProductionBuild": "PASS",
+    "focusedBrowserTests": 8,
+    "viewports": ["1280x720", "1440x900"],
+    "cases": ["before readiness, report acknowledged", "before readiness, report failed", "after readiness, report acknowledged", "after readiness, report failed"],
+    "checks": ["one token and socket", "exact safe refusal report", "zero active microphone tracks after ending", "no raw provider diagnostics rendered", "Live blocked after reload", "Practice available"],
+    "screenshots": "Before and after the failed-report startup case visually inspected",
+    "diffCheck": "PASS"
+  },
+  "privateEvidence": ".validation/goal-007-startup-refusal/"
+}
