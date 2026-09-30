@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "goal-007-serial-full-player-ci-lane",
+  "baseCommit": "351e7e9656d70c3c252186aa6788e7cb71f6de95",
+  "preservedCi": {
+    "main": {
+      "run": "36658562706",
+      "browserPassed": 200,
+      "browserFailed": 0
+    },
+    "feature": {
+      "run": "36658564431",
+      "browserPassed": 199,
+      "browserFailed": 1,
+      "failure": "chromium-1440 synthetic Gallery A reached its unchanged 45-second test deadline"
+    }
+  },
+  "observed1440Seconds": {
+    "main": {
+      "galleryA": 38.6,
+      "emptyReply": 38.5,
+      "galleryB": 28.2,
+      "approximateAEmptyOverlap": 37.2
+    },
+    "feature": {
+      "galleryATimeout": 45.3,
+      "emptyReply": 42.6,
+      "galleryB": 31.6,
+      "approximateAEmptyOverlap": 41.6
+    }
+  },
+  "change": "Run the three complete synthetic Rescue cases serially in their own lane per viewport; retain separate hosted Voice lanes and ordinary shards.",
+  "lanesPerViewport": [
+    {
+      "lane": "1/2",
+      "cases": 48,
+      "workers": 2
+    },
+    {
+      "lane": "2/2",
+      "cases": 47,
+      "workers": 2
+    },
+    {
+      "lane": "hosted-voice",
+      "cases": 2,
+      "workers": 2
+    },
+    {
+      "lane": "full-player",
+      "cases": 3,
+      "workers": 1
+    }
+  ],
+  "totalLanes": 8,
+  "totalBrowserCases": 200,
+  "exactDisjointCoverage": true,
+  "globalTimeoutMs": 210000,
+  "fullPlayerIndividualTimeoutMs": 45000,
+  "hostedVoiceIndividualTimeoutMs": 90000,
+  "retries": 0,
+  "partitionReceiptSha256": "bb5dc48e822b81067ba63372d992f5383e826867d1b5a618ddabea9b7b93a321",
+  "timingReceiptSha256": "f79b4a910a18c1e02fb14306afad26951366031fb0af868b630aa7ae1792adfc",
+  "workflowSha256": "67ffe4a7205a860c43494eea79064206d4973caa34e5a6a4b86a151633a01325",
+  "runtimeFixtureHarnessMediaChanges": false,
+  "providerCalls": 0,
+  "browserOrServerStartedForPartition": false,
+  "finalCi": "pending after integration",
+  "limits": [
+    "Log-reported durations are rounded; overlap is approximate.",
+    "Overlapping full missions justify isolation but do not prove historical machine-load causality.",
+    "Listing verifies coverage, not execution of the revised CI lanes."
+  ]
+}

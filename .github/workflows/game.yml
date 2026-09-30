@@ -14,6 +14,10 @@ jobs:
             shard: hosted-voice
           - project: chromium-1440
             shard: hosted-voice
+          - project: chromium-1280
+            shard: full-player
+          - project: chromium-1440
+            shard: full-player
     env:
       GAME_DISABLE_LIVE: '1'
       # Ubuntu's AppArmor profile permits the runner's installed Chrome sandbox.
@@ -36,10 +40,14 @@ jobs:
           test -x /opt/google/chrome/chrome
           /opt/google/chrome/chrome --version
       - name: Run ordinary offline browser shard
-        if: matrix.shard != 'hosted-voice'
-        run: npm run test:e2e -- --project=${{ matrix.project }} --shard=${{ matrix.shard }} --grep-invert "Hosted player offline Voice"
+        if: matrix.shard != 'hosted-voice' && matrix.shard != 'full-player'
+        run: npm run test:e2e -- --project=${{ matrix.project }} --shard=${{ matrix.shard }} --grep-invert "Hosted player offline Voice|Shared QA player / synthetic Gallery [AB]|actual shared player recovers after an empty completed Gallery reply without borrowing an old caption"
         timeout-minutes: 4
       - name: Run complete offline hosted Voice cases
         if: matrix.shard == 'hosted-voice'
         run: npm run test:e2e -- --project=${{ matrix.project }} --grep "Hosted player offline Voice"
+        timeout-minutes: 4
+      - name: Run complete offline Rescue player cases serially
+        if: matrix.shard == 'full-player'
+        run: npm run test:e2e -- --project=${{ matrix.project }} --workers=1 --grep "Shared QA player / synthetic Gallery [AB]|actual shared player recovers after an empty completed Gallery reply without borrowing an old caption"
         timeout-minutes: 4
