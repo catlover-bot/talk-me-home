@@ -108,3 +108,4 @@
  .radio-phase { flex-wrap: wrap; }
  .radio-phase small { margin-left: 0; }
 }
+@media (min-width: 601px) { .release-briefing .illustration-label { top: 12px; bottom: auto; right: 16px; } }

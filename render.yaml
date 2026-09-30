@@ -32,8 +32,12 @@ services:
         value: '1'
       - key: GAME_LIVE_CONCURRENT_LIMIT
         value: '1'
-      - key: GAME_LIVE_ALLOWANCE_FILE
-        value: /var/data/talk-me-home-goal007-release.jsonl
+      - key: GAME_RELEASE_PROFILE
+        value: goal-007
+      - key: GAME_RELEASE_ALLOCATION_FILE
+        value: /var/data/talk-me-home-goal-007-release.jsonl
+      - key: GAME_HOSTED_QA_ENABLED
+        value: '0'
 # Initial Practice publication needs no provider key, access code or allowance.
 # Goal 007 Live requires the authorized hosted allocation and current acceptance gates.
 # Never initialize an allowance in build/start/deploy hooks or reset an existing ledger.
