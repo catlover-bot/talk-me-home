@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "source": "aaad60655d4edc107bee436bc02d540e238b108a",
+  "version": "0.9.0",
+  "cleanSourceAtStart": true,
+  "trackedSourceUnchanged": true,
+  "typecheck": "PASS",
+  "productionBuild": "PASS",
+  "unitTests": { "passed": 556, "failed": 0, "skipped": 0 },
+  "browserCases": { "passed": 258, "failed": 0, "perViewport": 129, "retries": 0 },
+  "rawReceipt": ".validation/goal-009/clean-aaad606-validation.json",
+  "realProviderRequests": 0,
+  "realTokenIssuance": 0,
+  "injectedTextNote": "One browser-stubbed token and socket per project in the non-Practice cue case. The fake peer never connects to a server; Practice capture guards remain zero.",
+  "generatedEvidenceNote": "Only new preview artifacts were added during validation; tracked source remained unchanged."
+}

@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "status": "LOCAL_CAPTURE_AND_DECODE_PASS_PENDING_VISUAL_REVIEW",
+  "startedAt": "2026-09-30T14:25:21.207Z",
+  "source": "aaad60655d4edc107bee436bc02d540e238b108a",
+  "evidence": "Fresh local/scripted Practice, ordinary selected text requests and manual UI confirmations; no provider connection or human playtest.",
+  "output": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z",
+  "audio": "Silent browser video; no microphone, provider speech or presentation narration.",
+  "route": "Read optional opening/help, skip/replay without station changes, then compare the reported lift plate with the human manual, test and run the lift and confirm home.",
+  "presentation": "Continuous normal-speed local UI recording with deliberate reading pauses and authored overlay captions; no spliced historical footage, narration, or time stretching.",
+  "shots": [
+    {
+      "name": "briefing",
+      "caption": "Choose The Switchyard: a local scripted puzzle with two approaches.",
+      "startsAtSeconds": 0.737,
+      "targetEndSeconds": 3,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/01-briefing.png",
+      "sha256": "a28b58e06f51eb57df0248f656b8cc753ac32637415d2377f085ae9c9e1b09b9"
+    },
+    {
+      "name": "optional-opening",
+      "caption": "Optional first steps explain your role beside the ordinary controls.",
+      "startsAtSeconds": 3.186,
+      "targetEndSeconds": 7,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/02-optional-opening.png",
+      "sha256": "988c2162b392a9632e4baecb9fe101f32bd97b26e7f85701bdf97de4976ff9d8"
+    },
+    {
+      "name": "first-useful-report",
+      "caption": "Ask explicitly. Pip’s actual report supplies local information for your document.",
+      "startsAtSeconds": 7.113,
+      "targetEndSeconds": 11,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/03-first-useful-report.png",
+      "sha256": "505a471c6398f5fcd708bf76f86ac70e98ebcf230509901f6e05022314c07b87"
+    },
+    {
+      "name": "human-help",
+      "caption": "Optional human guidance: reading it sends no instruction to Pip.",
+      "startsAtSeconds": 10.596,
+      "targetEndSeconds": 15,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/04-human-help.png",
+      "sha256": "ca999455ab16998c5865cb53ae173371af4cfc2e30412c6f51c468542f49572e"
+    },
+    {
+      "name": "investigation-help",
+      "caption": "Help points to an investigation; the player still chooses and performs it.",
+      "startsAtSeconds": 15.263,
+      "targetEndSeconds": 19,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/05-investigation-help.png",
+      "sha256": "3f0a564819a8667b98f8b7a7cb7a0b67ab1d1988d4a30c8ce17302c97d7af29c"
+    },
+    {
+      "name": "replayed-guidance",
+      "caption": "Skip or replay the cues. The report and station remain unchanged.",
+      "startsAtSeconds": 19.383,
+      "targetEndSeconds": 23,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/06-replayed-guidance.png",
+      "sha256": "05c587e3450c473d984433098d96d08877c21da8f802de323acf387550ab48be"
+    },
+    {
+      "name": "approach-choice",
+      "caption": "Choose an approach from its tradeoffs; the private plan is not a command.",
+      "startsAtSeconds": 23.212,
+      "targetEndSeconds": 27,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/07-approach-choice.png",
+      "sha256": "8de7afd8593d92102134af2ad587c2cb4ef5da0e47b92b4a36adde83776e12de"
+    },
+    {
+      "name": "pending-action",
+      "caption": "A request prepares one exact proposal. Confirm it only when you intend the action.",
+      "startsAtSeconds": 27.105,
+      "targetEndSeconds": 31,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/08-pending-action.png",
+      "sha256": "013ddcbd20037acbc8e8dec7763c1de06ac7901ef291e30c34fcf5a9a761f90e"
+    },
+    {
+      "name": "lift-investigation",
+      "caption": "Pip’s fitted-plate report identifies a row in the human reference.",
+      "startsAtSeconds": 31.439,
+      "targetEndSeconds": 36,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/09-lift-investigation.png",
+      "sha256": "a70439c13e646206a44a17b11188e4ed2b876d744f5e88da56790c93b3da95e5"
+    },
+    {
+      "name": "human-manual",
+      "caption": "Compare the exact quote and both manual rows. The table stays on your side.",
+      "startsAtSeconds": 36.045,
+      "targetEndSeconds": 40,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/10-human-manual.png",
+      "sha256": "e12cde7d611a43f2655f615d03dbf089151433aaf422fc7e6bc3e74083c00c96"
+    },
+    {
+      "name": "prediction",
+      "caption": "The manual calls for blue only. Predict that supply before editing the draft.",
+      "startsAtSeconds": 40.18,
+      "targetEndSeconds": 43,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/11-prediction.png",
+      "sha256": "150e45bd89c62fdd86e70ad54368b34d7ca6329b660cb8008cb7e1fca858f480"
+    },
+    {
+      "name": "draft-prediction",
+      "caption": "A real turn changes only the draft. Applied power has not changed yet.",
+      "startsAtSeconds": 42.637,
+      "targetEndSeconds": 49,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/12-draft-prediction.png",
+      "sha256": "5c19c1861f512b0bca9042108f5a8c0e15bac84f6a8859dd80df4c64fe497181"
+    },
+    {
+      "name": "applied-delta",
+      "caption": "Apply acknowledges the circuit. Equipment still needs its own exact confirmed action.",
+      "startsAtSeconds": 49.171,
+      "targetEndSeconds": 55,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/13-applied-delta.png",
+      "sha256": "98ec72a1f6ee389bd5cd84e4131f9cc36ed52782f42b6241e77961a3ed89435c"
+    },
+    {
+      "name": "communicated-outcome",
+      "caption": "The separately confirmed lift test reports its actual result.",
+      "startsAtSeconds": 55.172,
+      "targetEndSeconds": 61,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/14-communicated-outcome.png",
+      "sha256": "9ecf3338215a452f7550fd3eef41eff3c36bd8b3907fe5fdc4a4a9d2bc470f8f"
+    },
+    {
+      "name": "running-circuit",
+      "caption": "The manual separates the test supply from the running circuit.",
+      "startsAtSeconds": 61.221,
+      "targetEndSeconds": 67,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/15-running-circuit.png",
+      "sha256": "10752938aee5d87138ecf5a52d32e6fcc59b6f68bbe65ae4ba48cda4515b6d70"
+    },
+    {
+      "name": "departure-pending",
+      "caption": "The route is restored. Departure is still a separate confirmed choice.",
+      "startsAtSeconds": 67.32,
+      "targetEndSeconds": 75,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/16-departure-pending.png",
+      "sha256": "04d28ee44fc435a26f2ab8e2fb2e5c9a2a5b129734f76b1464e6b833be82fc72"
+    },
+    {
+      "name": "confirmed-home",
+      "caption": "A complete lift rescue. Trying the other approach requires an explicit new mission.",
+      "startsAtSeconds": 74.433,
+      "targetEndSeconds": 86,
+      "screenshot": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/screens/17-confirmed-home.png",
+      "sha256": "122a176256cc3138ce84a43d282a4638eaab021102f7a49ef07a7a564075a047"
+    }
+  ],
+  "violations": [],
+  "served": {
+    "commit": "aaad60655d4edc107bee436bc02d540e238b108a",
+    "version": "0.9.0"
+  },
+  "rawVideo": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/raw/page@20ad87d325be81cbd2064dfc361e06cc.webm",
+  "rawVideoSha256": "f1fc5e0396163b27851a4dd1e69173f84cb7af51e7b4346769faae4d08f190e0",
+  "finishedAt": "2026-09-30T14:26:51.255Z",
+  "finalVideo": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/Talk-Me-Home-Goal-009-Switchyard-First-Play-Local-Preview.mp4",
+  "finalVideoSha256": "7f618bedec33bccb1529302b00603ddbfc8b513ab48e9363ede506ac3b0b20ca",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "format": {
+      "duration": "85.866667"
+    }
+  },
+  "counts": {
+    "selectedRequests": 11,
+    "confirmations": 6,
+    "declines": 0,
+    "committedDecisions": 6,
+    "routingApplies": 2,
+    "privatePlanSelections": 1,
+    "hintReads": 3,
+    "unchangedReadingChecks": 7
+  }
+}
