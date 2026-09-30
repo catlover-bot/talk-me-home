@@ -348,7 +348,7 @@ export function useMission() {
       microphone: connectionMode === 'live_voice',
       token: async () => {
         const { current, recap } = await prepareMission();
-        const token = await api.voiceToken(current);
+        const token = await api.voiceToken(current, connectionMode === 'live_voice' ? 'voice' : 'text');
         if (token.protectedRelease) issuedReleaseView = current;
         if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
         // Mirror the supported server limit for display; LiveVoice still validates and enforces it.
