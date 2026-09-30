@@ -1,0 +1,77 @@
+/* Focused Switchyard reference layout. All diagrams and changes use public or reported information. */
+.switchyard-layout .switchyard-document { order: -1; }
+.switchyard-layout .switchyard-panel { order: 0; }
+.switchyard-layout .switchyard-document .document-heading { padding: 12px 16px 8px; }
+.switchyard-layout .switchyard-document .document-heading h2 { font: 500 22px/1.2 Georgia, serif; }
+.switchyard-layout .switchyard-document .document-body { padding: 12px 16px; }
+.switchyard-private-plan { border: 0; padding: 5px 16px 8px; margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; }
+.switchyard-private-plan legend { padding: 0; font-size: 12px; font-weight: 650; color: #43563c; }
+.switchyard-private-plan label { display: flex; align-items: center; gap: 6px; min-height: 38px; font-size: 12px; padding: 4px 8px; border: 1px solid #b1bba3; border-radius: 4px; background: #f8f4e6; cursor: pointer; }
+.switchyard-private-plan label:has(input:checked) { border: 2px solid #506b49; padding: 3px 7px; background: #e3e8d6; font-weight: 650; }
+.switchyard-private-plan input { width: 15px; height: 15px; margin: 0; accent-color: #38543c; }
+.switchyard-private-plan label:has(input:focus-visible) { outline: 3px solid #895b30; outline-offset: 2px; }
+.switchyard-private-plan p { width: 100%; font-size: 11px; line-height: 1.45; color: #58644c; margin: 1px 0 0; }
+.switchyard-plan-revision { margin: 0 16px 8px; padding: 8px 10px; border-left: 3px solid #8a6844; background: #eee5ce; font-size: 12px; line-height: 1.5; color: #4d5942; }
+.switchyard-layout .switchyard-document .document-tabs { padding-top: 0; }
+.switchyard-layout .switchyard-route-choices { margin-top: 0; gap: 14px; }
+.switchyard-route-choices span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.45; color: #40523a; }
+.switchyard-layout .switchyard-document .switchyard-uncertainty { margin: 10px 0 6px; font-size: 12px; }
+.switchyard-reference-details { font-size: 12px; line-height: 1.5; border-top: 1px solid #c4cbb6; margin-top: 7px; }
+.switchyard-reference-details > summary { cursor: pointer; padding-block: 8px; min-height: 36px; font-weight: 600; color: #435c3d; }
+.switchyard-reference-details p { margin: 8px 0; }
+.switchyard-reference-comparison { display: grid; grid-template-columns: minmax(175px, .85fr) minmax(290px, 1.5fr); gap: 13px; align-items: start; }
+.switchyard-quoted-plate { min-width: 0; padding: 10px 12px; border-left: 3px solid #557351; background: #e5ead9; font-size: 12px; line-height: 1.5; }
+.switchyard-quote-source { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 7px; font-size: 11px; color: #445d3e; }
+.switchyard-quote-source time { font-variant-numeric: tabular-nums; }
+.switchyard-quoted-plate blockquote { margin: 6px 0; font-size: 14px; font-weight: 600; }
+.switchyard-quoted-plate p { margin-top: 5px; }
+.switchyard-quote-visit { font-size: 11px; color: #485b40; }
+.switchyard-quoted-plate > details { margin-top: 5px; }
+.switchyard-quoted-plate summary { cursor: pointer; padding-block: 5px; font-size: 11px; text-decoration: underline; }
+.switchyard-layout .switchyard-manual-table th, .switchyard-layout .switchyard-manual-table td { padding: 8px 7px; }
+.switchyard-manual-table caption { text-align: left; padding: 0 0 6px; font-size: 11px; line-height: 1.4; color: #4e6145; }
+.switchyard-layout .switchyard-document .switchyard-manual-note { margin: 9px 0 4px; padding: 8px 10px; font-size: 12px; }
+.switchyard-layout .companion-console { position: sticky; top: 12px; max-height: calc(100svh - 24px); overflow-y: auto; scrollbar-gutter: stable; }
+.switchyard-layout .companion-console > .pip-portrait .pip-art { height: 58px; }
+.switchyard-layout .companion-console .caption-text { max-height: 135px; }
+.switchyard-layout .radio-phase { margin-block: 8px; }
+.switchyard-layout .switchyard-intents { margin-top: 9px; }
+.switchyard-layout .switchyard-intents > .source-label { margin-block: 5px 7px; }
+.switchyard-departure { width: min(100%, 520px); margin: 0; }
+.switchyard-departure svg { width: 100%; display: block; overflow: visible; }
+.departure-paper { fill: #e7e8d6; stroke: #9bab8c; }
+.departure-guide { fill: none; stroke: #637858; stroke-width: 3; stroke-dasharray: 5 4; }
+.departure-lift-rail, .departure-bridge { fill: none; stroke: #937647; stroke-width: 3; }
+.departure-lift-car rect { fill: #eee5c9; stroke: #436046; stroke-width: 2; }
+.departure-lift-car { animation: switchyard-lift-departure 1.8s ease-out both; }
+.departure-crossing-marker { transform: translate(308px, 45px); animation: switchyard-bypass-departure 2.2s ease-in-out both; }
+.departure-home { fill: #426347; stroke: #253c2a; }
+.departure-check { fill: none; stroke: #fff5d9; stroke-width: 3; }
+.switchyard-departure text { font: 11px 'Segoe UI', sans-serif; fill: #3d5739; }
+.switchyard-departure .departure-home-label { font-size: 9px; font-weight: 700; }
+.switchyard-departure figcaption { margin-top: 4px; color: #49603f; font-size: 11px; }
+.switchyard-reflection { padding: 9px 14px; border-block: 1px solid #bfcaac; }
+.switchyard-reflection > span { display: block; font-size: 10px; letter-spacing: .35px; color: #5d6e51; margin-bottom: 4px; }
+.debrief.switchyard-ending { gap: 9px; padding-top: 18px; }
+.switchyard-ending > .pip-portrait { width: 125px; }
+.switchyard-ending .pip-art { height: 82px; }
+/* The adjacent home heading and departure receipt already name this confirmed arrival. */
+.switchyard-ending > .pip-portrait > figcaption { display: none; }
+@keyframes switchyard-lift-departure { from { transform: translateY(57px); } to { transform: translateY(0); } }
+@keyframes switchyard-bypass-departure { 0% { transform: translate(49px,81px); } 35% { transform: translate(148px,81px); } 55% { transform: translate(148px,45px); } 100% { transform: translate(308px,45px); } }
+@media (max-width: 900px) {
+ .switchyard-layout .companion-console { position: static; max-height: none; overflow-y: visible; }
+ .switchyard-reference-comparison { grid-template-columns: minmax(0, 1fr); }
+}
+@container (max-width: 900px) {
+ .switchyard-layout .companion-console { position: static; max-height: none; overflow-y: visible; }
+ .switchyard-reference-comparison { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+ .switchyard-private-plan { gap: 6px; padding-inline: 13px; }.switchyard-private-plan label { min-height: 44px; font-size: 13px; }
+ .switchyard-layout .switchyard-document .document-heading, .switchyard-layout .switchyard-document .document-body { padding-inline: 13px; }
+ .switchyard-reference-details > summary { min-height: 44px; }
+ .switchyard-quoted-plate summary { min-height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { .departure-lift-car, .departure-crossing-marker { animation: none; } }
+[data-reduced-motion=true] .departure-lift-car, [data-reduced-motion=true] .departure-crossing-marker { animation: none; }
