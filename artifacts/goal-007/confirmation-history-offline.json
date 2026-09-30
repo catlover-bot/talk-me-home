@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-30",
+  "sourceBase": "fb2fda4d2e48eab35878c65df3d71a1446921a56",
+  "scope": "Separate authoritative owner-decision completion from auxiliary conversation-history refresh",
+  "historicalCiCause": "UNPROVEN: an independent UI defect was reproduced; CI logs alone do not establish the cause of the historical timeout",
+  "providerRequests": 0,
+  "historicalLedgerMutations": 0,
+  "reproduction": {
+    "mode": "Practice, compiled production, loopback, Live disabled",
+    "decisionResponseAtMs": 1017,
+    "decisionOk": true,
+    "proposalStatus": "committed",
+    "viewProposalStatus": "committed",
+    "proposalIdentityMatched": true,
+    "heldResponse": "Authentic HTTP 200 auxiliary /record response; body unchanged",
+    "helper": "Existing confirmVisibleProposal with unchanged 5000 ms terminal-status poll",
+    "helperFailedAtMs": 5875,
+    "uiWhileHeld": "confirming",
+    "captionWhileHeld": "Engage the Latch: completed after your confirmation.",
+    "committedAfterReleaseMs": 6,
+    "cleanup": "Browser closed; owned server exited 0; no provider requests"
+  },
+  "repair": {
+    "file": "game/client/useMission.ts",
+    "sha256": "e98f7ba596ecc112221ceb93a84b1a6a95e0d2863078f99089ac59a7918fdf06",
+    "runtimeSha256": "b563fd660d57268b6c8f58eea65362af6de841e8e855c45e08d8458f3a11cf2e",
+    "behavior": "Finalize exact decision and release its input/busy state before auxiliary history; history errors cannot trigger proposal failure or decision recovery",
+    "preserved": ["exact proposal identity", "server authority", "verified decision receipt ordering", "generation and round guards", "record request ordering", "provider protocol", "player deadlines"]
+  },
+  "validation": {
+    "typecheckAndProductionBuild": "PASS",
+    "newBrowserCases": 8,
+    "existingBrowserCases": 26,
+    "viewports": ["1280x720", "1440x900"],
+    "cases": ["held history with unchanged shared confirmation helper", "rejected history with one decision and no recovery GET", "stale rejection after Restart", "frozen-clock injected Text input follows verified receipt before history resolves"],
+    "initialTestCorrections": ["Wait for injected connection before emitting a tool", "Wait for proposal transcript persistence before faulting the decision history read"],
+    "timeoutChanges": 0,
+    "diffCheck": "PASS",
+    "independentReview": "Admission agent found no blocking issue in the narrow runtime diff and regression coverage",
+    "visualReview": "Before release: completed caption with confirming strip; after release: compact committed receipt"
+  },
+  "privateEvidence": {
+    "directory": ".validation/goal-007-confirmation-diagnosis/",
+    "sha256": {
+      "delayed-record.mjs": "41be07824dab41a2413d669d269443ee0296dbea3cbd74eebb3493833368efc5",
+      "delayed-record-receipt.json": "ed0138db8e917213daaa11996208932aca96d608be187f14e621456b0e9ebfa7",
+      "committed-server-confirming-ui.png": "1b8ebc286bdc0bda38f8fdfd34dfaea3d1baa3bab979adbf54255938607ee7f4",
+      "after-record-release.png": "4f15279c584f8d743ab90b2bcc3019ffad23e76d8f426098bd3dc5f81bcff449"
+    }
+  }
+}
