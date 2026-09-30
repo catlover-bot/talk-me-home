@@ -178,13 +178,14 @@ export async function crossCargoWithRecovery({ say, atGallery }) {
 
 /** Bounded observable classification, never hidden physical-state inference. */
 export function classifyProposalResponse({ expectedLabel, before, current, reply = '', terminalIds = [], confirmedIds = [] }) {
-  const relevant = /\b(?:check|inspect|status|proposal|confirm|latch|door|conveyor|gate|passage|contact|capsule|return|cross|board)\b/i.test(reply);
+  const relevant = /\b(?:check|inspect|status|proposal|confirm|latch|door|conveyor|gate|passage|contact|capsule|return|cross|board|recorder)\b/i.test(reply);
   const text = String(reply).replaceAll('\u2019', "'");
   const subject = expectedLabel === 'Engage the Latch' ? 'latch' : /charging contact/.test(expectedLabel) ? 'contact' : expectedLabel === 'Move to the far-side platform' ? 'crossing' : null;
   const claim = subject && communicatedActionClaim(text, subject);
   const completion = expectedLabel === 'Release the charging contact'
     ? claim?.value === 'not_done' && /\b(?:released|let go of) (?:the )?contact\b/i.test(text)
-    : claim?.value === 'reported_done' || /\b(?:i (?:have )?(?:already )?(?:successfully )?(?:moved|went|boarded|returned home)|i've (?:moved|boarded)|i am (?:aboard|home))\b/i.test(text) && !/\b(?:not|haven't|didn't|cannot|can't|will|would|could|might)\b/i.test(text);
+    : claim?.value === 'reported_done' || /\b(?:i (?:have )?(?:already )?(?:successfully )?(?:moved|went|boarded|returned home)|i've (?:moved|boarded)|i am (?:aboard|home))\b/i.test(text) && !/\b(?:not|haven't|didn't|cannot|can't|will|would|could|might)\b/i.test(text)
+      || expectedLabel === 'Secure the flight recorder' && /\b(?:i (?:have )?(?:secured|picked up)|i've (?:secured|picked up)) (?:the )?flight recorder\b/i.test(text) && !/\b(?:not|haven't|didn't|will|would|could|might)\b/i.test(text);
   // The exact retained boarding receipt proves that past step only. It cannot
   // prove a return, or permit a new boarding proposal during return recovery.
   const knownPastBoarding = expectedLabel === 'Confirm the authorized return'
@@ -218,6 +219,7 @@ export function proposalRecoveryPhrases(expectedLabel, current) {
     'Release the charging contact': 'Please let go of the contact.',
     'Move to the far-side platform': 'Please cross to the far side now if the route is clear.',
     'Board the recovery capsule': 'Please board the capsule when it is safe to board.',
+    'Secure the flight recorder': 'Please secure the flight recorder.',
     'Confirm the authorized return': 'Please confirm the return under the current authorization.',
   };
   const direction = expectedLabel.match(/^Move through the (east|west|northeast|northwest|southeast|southwest) gate$/)?.[1];

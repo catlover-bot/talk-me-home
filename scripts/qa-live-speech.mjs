@@ -1,13 +1,13 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { PHRASES, proposalLabelForRequest } from './qa-mission-player.mjs';
+import { PHRASES, RECORDER_DISCOVERY_REQUESTS, proposalLabelForRequest } from './qa-mission-player.mjs';
 import { proposalRecoveryPhrases } from './qa-player-policy.mjs';
 import { LOCATION_REQUESTS, passageRequests } from './qa-player-recovery.mjs';
 import { DEFAULT_MEDIA_DIRECTORY, validateSpeechWav } from './qa-speech-fixtures.mjs';
 
 const directions = ['east', 'west', 'northeast', 'northwest', 'southeast', 'southwest'];
-const actionRequests = [PHRASES.engage, PHRASES.contact, PHRASES.release, PHRASES.board, PHRASES.home, 'Please cross to the far side.',
+const actionRequests = [PHRASES.engage, PHRASES.contact, PHRASES.release, PHRASES.board, PHRASES.home, PHRASES.pickupRecorder, 'Please cross to the far side.',
   ...directions.map(direction => `Please go through the ${direction} gate.`),
   ...['Neutral', 'Anchor', 'Bridge'].map(selector => `Please set the selector to ${selector}.`)];
 const labels = actionRequests.map(proposalLabelForRequest);
@@ -17,7 +17,7 @@ export const speechFixtureId = text => 'speech-' + digest(text).slice(0, 16);
 
 /** The delivered player's existing finite utterances, prepared before freezing. */
 export function playerSpeechTexts() {
-  const texts = [...Object.values(PHRASES), ...LOCATION_REQUESTS.map(request => request.text), 'Please cross to the far side.', 'Please cross to the far side now if the route is clear.', 'Please look around and report the objects you can reach from the platform.'];
+  const texts = [...Object.values(PHRASES), ...LOCATION_REQUESTS.map(request => request.text), ...RECORDER_DISCOVERY_REQUESTS.map(request => request.text), 'Please cross to the far side.', 'Please cross to the far side now if the route is clear.', 'Please look around and report the objects you can reach from the platform.'];
   for (const direction of directions) {
     texts.push(...passageRequests(direction).map(request => request.text));
     texts.push(`Please inspect the ${direction} gate and tell me whether anything blocks it.`, `Please go through the ${direction} gate, then look around and report the emblem where you arrive.`, `Please go through the ${direction} gate.`, `Is the opening of the ${direction} gate physically clear or blocked?`, `Please check the ${direction} gate again and report whether cargo blocks passage.`);

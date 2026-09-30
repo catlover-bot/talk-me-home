@@ -17,6 +17,7 @@ function requestIntent(request) {
     .replace(/^please create one new proposal to /, 'please ');
   if (/^please cross\b.*\bwhen (?:the )?power is off\b/.test(command)) return { name: 'conditional_plan', permitted: [] };
   if (/^(?:please )?(?:engage|secure|set) (?:the )?latch\b/.test(command)) return { name: 'engage_latch', permitted: ['interact_object'] };
+  if (/^(?:please )?(?:pick up|secure) (?:the )?flight recorder\b/.test(command)) return { name: 'secure_recorder', permitted: ['interact_object'] };
   if (/^(?:please )?(?:release|let go of) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'release_contact', permitted: ['interact_object'] };
   if (/^(?:please )?(?:hold|grip) (?:the )?(?:charging )?contact\b/.test(command)) return { name: 'hold_contact', permitted: ['interact_object'] };
   if (/^(?:please )?confirm (?:the )?(?:authorized )?return\b/.test(command)) return { name: 'confirm_return', permitted: ['interact_object'] };
@@ -36,7 +37,7 @@ function eligibleReplies(step) {
 }
 
 function expectedProposalLabel(intent, request) {
-  const fixed = { engage_latch: 'Engage the Latch', hold_contact: 'Hold the charging contact', release_contact: 'Release the charging contact', confirm_return: 'Confirm the authorized return' };
+  const fixed = { engage_latch: 'Engage the Latch', hold_contact: 'Hold the charging contact', release_contact: 'Release the charging contact', confirm_return: 'Confirm the authorized return', secure_recorder: 'Secure the flight recorder' };
   if (fixed[intent.name]) return fixed[intent.name];
   if (intent.name !== 'movement') return null;
   const direction = normalize(request).match(/\b(northeast|northwest|southeast|southwest|east|west|north|south) gate\b/)?.[1];

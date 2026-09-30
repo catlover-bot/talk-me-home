@@ -30,7 +30,7 @@ test('pre-submit gate cannot use an old reply boundary while a confirmation ackn
 });
 
 test('all finite delivered action-label pairs and no-receipt recovery variants are prepared without choosing a route', () => {
-  const labels = ['Engage the Latch', 'Move to the far-side platform', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule', 'Confirm the authorized return',
+  const labels = ['Engage the Latch', 'Move to the far-side platform', 'Hold the charging contact', 'Release the charging contact', 'Board the recovery capsule', 'Confirm the authorized return', 'Secure the flight recorder',
     ...['Neutral', 'Anchor', 'Bridge'].map(value => `Set the Latch selector to ${value}`),
     ...['east', 'west', 'northeast', 'northwest', 'southeast', 'southwest'].map(value => `Move through the ${value} gate`)];
   const texts = new Set(playerSpeechTexts());

@@ -16,6 +16,7 @@ export const PHRASES = {
   retryRelease: 'Please let go of the contact.',
   board: 'Please board the capsule.',
   home: 'Please inspect the capsule and propose confirming the return.',
+  inspectRecorder: 'Please inspect the flight recorder.', pickupRecorder: 'Please pick up the flight recorder.',
   wait: 'Please wait.',
 };
 
@@ -27,6 +28,7 @@ export function proposalLabelForRequest(text) {
   if (['hold the contact', 'grip the contact steadily', 'hold the contact while i store the charge'].includes(request)) return 'Hold the charging contact';
   if (['release the contact', 'let go of the contact'].includes(request)) return 'Release the charging contact';
   if (request === 'board the capsule') return 'Board the recovery capsule';
+  if (['pick up the flight recorder', 'secure the flight recorder'].includes(request)) return 'Secure the flight recorder';
   if (['confirm the return', 'confirm return'].includes(request)) return 'Confirm the authorized return';
   if (['cross to the far side', 'cross to the far side now if the route is clear', 'walk through the door'].includes(request)) return 'Move to the far-side platform';
   const selector = request.match(/^set (?:the )?selector to (neutral|anchor|bridge)$/)?.[1];
@@ -162,7 +164,21 @@ export async function requestConfirmedAction({ page, request, exchange, checkSco
   } catch (error) { diagnostic.outcome = 'failed'; diagnostic.failure = error.message; throw error; }
 }
 
-export async function runRescuePlayer({ page, say: exchange, waitForReady = async () => {}, exerciseRecovery = false, screenshot = async () => {}, report = { route: [], steps: [] } }) {
+export const RECORDER_DISCOVERY_REQUESTS = [
+  { text: 'Please look around and report the objects within reach.', reason: 'observe the current archive locally' },
+  { text: 'Please inspect your immediate surroundings and name any objects you can reach.', reason: 'perform the offered local observation' },
+  { text: 'The document marks an archive here. Please check its cradle and describe what you see.', reason: 'share the authored archive clue without asserting an unseen object' },
+  { text: 'Please look in the archive cradle now and report whether an object is within reach.', reason: 'resolve the current local object report' },
+];
+
+export function communicatedRecorderDiscovery(text) {
+  return typeof text === 'string' && /\bflight recorder\b/i.test(text)
+    && /\b(?:see|rests|here|beside|within reach|in the|on the|there is|there's|small|palm-sized)\b/i.test(text)
+    && !/\b(?:not|no|cannot|can't|could|might|maybe|will|would|was|previously|earlier)\b|\?/.test(text.toLowerCase());
+}
+
+export async function runRescuePlayer({ page, say: exchange, waitForReady = async () => {}, exerciseRecovery = false, optionalObjective, screenshot = async () => {}, report = { route: [], steps: [] } }) {
+  if (optionalObjective !== undefined && optionalObjective !== 'flight_recorder') throw new Error('Unknown player objective.');
   report.route ??= []; report.steps ??= [];
   report.confirmations ??= [];
   report.exerciseRecovery = exerciseRecovery;
@@ -259,6 +275,14 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
       return { rooms, gates };
     });
     report.atlas = atlas; memory.visibleNames(atlas.rooms.map(room => room.name));
+    let archive; let recorderSecured = false;
+    if (optionalObjective === 'flight_recorder') {
+      const clue = await page.locator('.archive-document-note').innerText();
+      const named = atlas.rooms.filter(room => new RegExp(`\\b${room.name}\\b`, 'i').test(clue));
+      if (named.length !== 1 || !/archive|recorder/i.test(clue)) throw new Error('The visible optional archive clue is ambiguous or unavailable.');
+      archive = named[0].name;
+      report.optionalObjective = { selected: 'flight_recorder', clue, targetFromVisibleClue: archive, secured: false };
+    }
     async function location() {
       if (await atDock()) return 'dock';
       await waitForReady(); await consume();
@@ -269,10 +293,30 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
     const blocked = new Set();
     for (let moves = 0; moves < 8 && !await atDock(); moves++) {
       await consume(); current = await location();
+      if (archive && current === archive && !recorderSecured) {
+        let discovery;
+        await acquirePlayerReport({ subject: 'current local archive object', read: () => discovery,
+          exchange: async (text, options) => {
+            const reply = await say(text, options);
+            if (communicatedRecorderDiscovery(reply)) { discovery = 'flight_recorder'; report.optionalObjective.discoveryReport = reply; }
+            return reply;
+          }, requests: RECORDER_DISCOVERY_REQUESTS, report,
+          checkScope: async () => { await consume(); if (memory.value('location') !== archive) throw new Error('The player left the archive before local discovery.'); } });
+        await say(PHRASES.inspectRecorder);
+        await say(PHRASES.pickupRecorder);
+        recorderSecured = report.confirmations.some(receipt => receipt.label === 'Secure the flight recorder' && receipt.status === 'committed');
+        if (!recorderSecured) throw new Error('The optional pickup lacks an exact committed confirmation.');
+        report.optionalObjective.secured = true;
+        await screenshot('recorder-secured');
+      }
+      const destination = archive && !recorderSecured ? archive : 'dock';
       const queue = [[current]]; let path;
       while (queue.length) {
         const candidate = queue.shift(); const last = candidate.at(-1);
-        if (last === 'dock') { path = candidate; break; }
+        if (last === destination) { path = candidate; break; }
+        // Entering Dock changes chapter. It cannot be used as an unobserved
+        // shortcut to an optional archive that has not yet been visited.
+        if (last === 'dock') continue;
         for (const gate of atlas.gates) if (!blocked.has(gate.rooms.join('/')) && gate.rooms.includes(last)) {
           const next = gate.rooms.find(name => name !== last); if (!candidate.includes(next)) queue.push([...candidate, next]);
         }
@@ -298,6 +342,7 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
       current = await location(); report.route.push(current);
     }
     if (!await atDock()) throw new Error('Gallery route did not reach the public Dock checkpoint within its bound.');
+    if (archive && !recorderSecured) throw new Error('Dock was reached before the selected recorder objective was confirmed.');
   }
   if (!await home()) {
     phase = 'Return Dock'; await consume(); report.route.push(phase); await screenshot('dock');
@@ -324,6 +369,10 @@ export async function runRescuePlayer({ page, say: exchange, waitForReady = asyn
   }
   await expect(page.getByRole('heading', { name: 'You brought Pip home.', exact: true })).toBeVisible({ timeout: 25000 });
   report.completion = true; report.route.push('home'); report.communicatedEvidence = memory.snapshot(); await screenshot('home');
+  if (optionalObjective === 'flight_recorder') {
+    await expect(page.locator('.homecoming-recorder')).toBeVisible();
+    report.optionalObjective.homeConsequenceVisible = true;
+  }
   await panel.dispose();
   return report;
 }
