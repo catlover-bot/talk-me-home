@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-09-30T01:27:29.594392+00:00",
+  "status": "PRIVATE_ACCOUNT_DISCLOSURE_DECISION_REQUIRED",
+  "incrementalFindings": "NO_NEW_PRIVATE_DATA_IDENTIFIED_IN_REVIEWED_SCOPE",
+  "repository": "catlover-bot/talk-me-home",
+  "baselineReceipt": "artifacts/goal-007/security-baseline-review.json",
+  "baselinePrivateInventoriesUnchanged": true,
+  "scope": {
+    "requestedRootCandidate": "e273b50ff8b2e8c751d230b4dfbca8039fd66128",
+    "rootCandidateAtHistoryScan": "19d4036e43f1e7efa226b144f5f1cd529a8ca2d9",
+    "hostedHarnessCommit": "fa9e30ea96710929910abad36984766bf796fbb0",
+    "mediaComponentsCommit": "f9f4b32c5ffcfab5703674a67745778aca33d76f",
+    "speechPreparationCommit": "8645cd7f30666c96d64b37965ad09b3ad5592621",
+    "startupRefusalRepairCommit": "4c2937d8371c4b1a217a4ba3b10ddd5a173d47fc",
+    "objectsBeyondBaseline": 296,
+    "trackedBlobsBeyondBaseline": 145,
+    "uniqueNewPngBlobsVisuallyReviewed": 28,
+    "newPdfVersionsTextScannedAndRendered": 1,
+    "newPdfPagesVisuallyReviewed": 6,
+    "newPptxVersionsXmlAndRelationshipsReviewed": 1,
+    "sourceAndMetadata": "All new reachable objects under captured local/origin/tag refs, including superseded versions and commit metadata; no working-tree raw credentials were copied."
+  },
+  "backupTag": {
+    "name": "archive/pre-goal-007-main-20260930",
+    "target": "11b4c9508bef682785e8bdf23d5170b30aafb7a6",
+    "disposition": "Original starter commit already covered by the preserved baseline; tag introduces no new file data."
+  },
+  "githubExposureInventory": {
+    "branches": 13,
+    "tags": 1,
+    "issues": 0,
+    "comments": 0,
+    "commit-comments": 0,
+    "pulls": 0,
+    "releases": 0,
+    "runs": 32,
+    "artifacts": 0,
+    "workflows": 1,
+    "repository": {
+      "private": true,
+      "default_branch": "main",
+      "has_wiki": false,
+      "has_discussions": false,
+      "license": null
+    }
+  },
+  "newActionRunLogs": [
+    {
+      "id": 36653332284,
+      "head_sha": "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+      "status": "completed",
+      "conclusion": "success",
+      "scan": "scanned",
+      "sha256": "01fba1889035975660cc5c4840be3761c9104c00ee5a6c13b97c180b5dd1bf41",
+      "bytes": 291651,
+      "entries": 60
+    },
+    {
+      "id": 36652689293,
+      "head_sha": "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+      "status": "completed",
+      "conclusion": "success",
+      "scan": "scanned",
+      "sha256": "d7a78d118afbb4c7bf64cbee6b8532d1d1cdd33f358b4a055dcbc46a16b7488d",
+      "bytes": 290563,
+      "entries": 60
+    },
+    {
+      "id": 36652444991,
+      "head_sha": "c69101909e25e57be880a722bd0952d83a01b7c4",
+      "status": "completed",
+      "conclusion": "success",
+      "scan": "scanned",
+      "sha256": "d3567e78fcf30b8b7399d9451f94ca762ee09e8f6c184a4afae135c6333886b9",
+      "bytes": 292182,
+      "entries": 60
+    }
+  ],
+  "baselineActionRuns": 29,
+  "totalActionRunsReviewed": 32,
+  "findings": {
+    "committedPrivatePaths": 0,
+    "newAccountBalanceFields": 0,
+    "sourceCredentialCandidates": "Ten assignment matches and one URL match were reviewed as explicit offline fixtures or previously reviewed synthetic values. The URL is an invalid-origin test case.",
+    "actionsCandidates": "Twenty-six credential-context pattern matches were npm cache keys containing lockfile hashes; no actual credential or signed private download URL was identified.",
+    "metadata": "New author metadata uses preserved project GitHub no-reply attribution. The remaining email-shaped match is the same invalid-origin fixture URL.",
+    "media": "New binary versions contain project game screens and local presentation material. PDF text and PPTX XML have no credential matches; PPTX has zero external relationships, embedded fonts or embedded objects. Its five images are project art/screens.",
+    "sourceReview": "New hosted admission, refusal, QA driver and media recipes keep secrets outside tracked evidence; reports use safe fields and private raw paths. Existing account-data disclosures in the five baseline paths remain unresolved."
+  },
+  "historicalPrivateAccountDisclosure": "UNRESOLVED; no balance figures are repeated in this receipt and no consent or remediation is inferred.",
+  "actionsTaken": {
+    "providerRequests": 0,
+    "fundedGrantsCreated": 0,
+    "visibilityChanges": 0,
+    "uploads": 0,
+    "historyRewrites": 0
+  },
+  "privateEvidenceDirectory": ".validation/goal-007/security-incremental-initial/",
+  "privateEvidenceFiles": [
+    {
+      "name": "ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-pdf-findings.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "account-field-occurrences.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "action-log-findings-private.json",
+      "bytes": 13057,
+      "sha256": "3fed23bc501081cff6c7a34ca75a58102e901c78f73d0f587869dba7a956d9a8"
+    },
+    {
+      "name": "action-log-receipts.json",
+      "bytes": 879,
+      "sha256": "c006d155b386c0f3384b4564ca8f850e4e69612daf00ccf0d2bf314dc672f5fd"
+    },
+    {
+      "name": "action-logs/36652444991.zip",
+      "bytes": 292182,
+      "sha256": "d3567e78fcf30b8b7399d9451f94ca762ee09e8f6c184a4afae135c6333886b9"
+    },
+    {
+      "name": "action-logs/36652689293.zip",
+      "bytes": 290563,
+      "sha256": "d7a78d118afbb4c7bf64cbee6b8532d1d1cdd33f358b4a055dcbc46a16b7488d"
+    },
+    {
+      "name": "action-logs/36653332284.zip",
+      "bytes": 291651,
+      "sha256": "01fba1889035975660cc5c4840be3761c9104c00ee5a6c13b97c180b5dd1bf41"
+    },
+    {
+      "name": "artifacts.json",
+      "bytes": 54,
+      "sha256": "e37ba7ec8d5c087245f4b4c44bb380cfdec5a188e050a8c9d6ce003450b5443e"
+    },
+    {
+      "name": "audit.py",
+      "bytes": 15132,
+      "sha256": "7296fa8ed3831d4ab6acffd9123e31767adedc598785178e9aeb9b07edd64d59"
+    },
+    {
+      "name": "binary-inventory.json",
+      "bytes": 4592,
+      "sha256": "58ad9bcaba01c95e79758233c73d7e4058f5010921bf16e55f8b8623511d9d5b"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-1.png",
+      "bytes": 188100,
+      "sha256": "93815a1c866b1939f8ea07f83b2201aee53c87498a20ff580b3878d9c3866413"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-2.png",
+      "bytes": 202698,
+      "sha256": "45e9a2f4bf63f84ff27b868b22c5d8a95357f4adf007f1ff58008ef2664909cd"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-3.png",
+      "bytes": 165384,
+      "sha256": "f752a000a7c5ce421cc3534578d8bbf68f241630668c316f8863c38c951fc5e3"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-4.png",
+      "bytes": 158186,
+      "sha256": "803ee6c35867bef8041f57043d0b9d120b3a3f4cf061322a34bc5278721f3b74"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-5.png",
+      "bytes": 107397,
+      "sha256": "67a3f1f9ce778ba1ada12008e8bfb327bc0c4a8a6799f73264146ba26778d5d2"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e-6.png",
+      "bytes": 102472,
+      "sha256": "43ddd0811c3d4e873e7fbf2c0472f7daa73f1576d4fd0779f7cd9dfc0378da85"
+    },
+    {
+      "name": "binary-review/ac6fe5f285b8fe02ca8260845190ae9b96b9be0e.pdf",
+      "bytes": 1041186,
+      "sha256": "a9fd05e062e64e013df625bdea842d1cea234f471a84f0678297238d1e5ee640"
+    },
+    {
+      "name": "binary-review/contact-1.png",
+      "bytes": 524997,
+      "sha256": "8337bf8467134a883e09a78d02af8a52446f832d22b654b00884fec0d2eb267c"
+    },
+    {
+      "name": "binary-review/contact-2.png",
+      "bytes": 593724,
+      "sha256": "2bcaf5e0815fd96b4a79d02ebd94ee35339ea2b4d5ab8e624090bf6e1c082eee"
+    },
+    {
+      "name": "binary-review/contact-3.png",
+      "bytes": 432127,
+      "sha256": "9f1ff768f051ac66d0f8dacd40e1b4dd6711c37318eb38e3094684a69da701a1"
+    },
+    {
+      "name": "branches.json",
+      "bytes": 3814,
+      "sha256": "f87ca3fb7afec3081f888e0ed0ac1e0c63045777d16ac0ac1c6ed0084b10bba9"
+    },
+    {
+      "name": "comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "commit-comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "findings-private.json",
+      "bytes": 21804,
+      "sha256": "ca7831de65d366db791bf82ce8b47ae154faca36a271edf711698776bb5f8cda"
+    },
+    {
+      "name": "issues.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "main-baseline-job-timings.json",
+      "bytes": 2414,
+      "sha256": "83b6f49010abd926c37739c57b1abb44be8b3969de87c9713b644aa37899d853"
+    },
+    {
+      "name": "metadata-summary.json",
+      "bytes": 318,
+      "sha256": "d375b26e2d023c57f9742530ee0ad16fa92c0332e46aaf887cbc38886412b7e5"
+    },
+    {
+      "name": "objects.json",
+      "bytes": 65636,
+      "sha256": "ca1cd15caaf42576b458ed79dda69669a8a549a39e2aa06dc027742356a0572c"
+    },
+    {
+      "name": "private-paths.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "pulls.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "refs.json",
+      "bytes": 3660,
+      "sha256": "3ba301e9917c3191fd00589e0303308b2231a6ab89b16253fa4f28a2e9b697df"
+    },
+    {
+      "name": "releases.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "review-dispositions.json",
+      "bytes": 1338,
+      "sha256": "4c2d684e2351862f6ad33f767e0185e6bcd17444d4291037034fa7fa6bcc535d"
+    },
+    {
+      "name": "runs.json",
+      "bytes": 500545,
+      "sha256": "d98e5d2b0ee2182d6619175ddb869cdac3d91f374c48ad021fb53b1718c4ad48"
+    },
+    {
+      "name": "tags.json",
+      "bytes": 643,
+      "sha256": "d8b8f4965a1d2e5910386f178646f19e4c36ffc7ac4c4a5134d3191194135e91"
+    },
+    {
+      "name": "visual-review-inventory.json",
+      "bytes": 441,
+      "sha256": "4acaebc59d94940734519e013d569603562ac6f9984f98df5823ef79b9ef1029"
+    },
+    {
+      "name": "workflows.json",
+      "bytes": 663,
+      "sha256": "319f49b3f9cc620b018b855e73a4f68b6729917744edc4ed5cfa358cb45a524f"
+    }
+  ],
+  "followup": "Final integrated pushed-head CI and later exposure deltas still require review. This incremental audit does not authorize visibility change or establish hosted Live acceptance."
+}
