@@ -1,276 +1,49 @@
 # Talk Me Home
 
-You have the map. Pip has eyes and hands. Neither can get home alone.
+**You have the map. Pip has eyes and hands. Neither can get home alone.**
 
-![Original Talk Me Home cover illustration, not gameplay](submission/assets/cover-illustration-1600x900.png)
+A browser-based cooperative rescue for one human and an AI partner. Read the station plans, ask Pip what it can see, and choose a way home through Cargo Bay, Relay Gallery and Return Dock. An optional flight recorder gives you a reason to take a detour; coming straight home is also a complete rescue.
 
-**Current candidate: Goal 006 — A rescue worth remembering**, on `work/goal-006-gameplay-and-submission`, based on delivered stabilization `ec9766dae2ff1eafb0d6559d637a1517a878e08a`. Cargo foregrounds its shared supply, the Gallery supports immediate route revision and Undo, and the Dock separates temporary energy from stored energy. An explicitly selected optional flight recorder adds a choice to visit the Leaf archive or return directly; only an observed, exactly confirmed pickup produces its homecoming shelf item. These changes have **no new Live evidence or spending authorization**. [Gameplay/evidence report](docs/goal-006-gameplay-and-submission.md) · [Actual local submission video, editable deck and package](submission/goal-006/README.md).
+![Original Talk Me Home cover illustration, not gameplay](submission/goal-006/cover-1920x1080.png)
 
-**Preserved Goal 005B stabilization**, on `work/goal-005b-targeted-stabilization`: scoped direction-based inspection, private opt-in validation diagnostics and accurate reply-waiting status. Its 455 unit cases, 146 browser cases and production Practice passed with no new provider use. [Historical stabilization report](docs/goal-005b-targeted-stabilization.md).
+## Play
 
-**Demonstrated build: Goal 005 Gallery and Live completion**, on `work/goal-005-gallery-live-completion`, based on delivered `d87a898`. Pip receives scoped local arrival observations; the Gallery atlas supports private route planning and exact source-linked reports. The shared player uses bounded conversational recovery while confirming only the exact visible proposal. [Implementation and actual results](docs/goal-005-gallery-live-completion.md) | [Deploy/access decisions](OWNER_ACTIONS.md) | [Local deliverables](submission/release-checklist.md).
+**Public game URL: publication in progress; not yet deployed.** Goal 007 is integrating the game into main and publishing one controlled Render service. [Current release evidence](docs/goal-007-release-and-immersion.md) records the actual state.
 
-**OFFLINE_REPAIR_PASS**: 437 unit tests and 142 browser cases passed on clean frozen candidate `2edf7914a008143843923b04a9bf3a1fe41f1f68`, plus typecheck, production build and fresh production Practice. **One full synthetic-microphone Live Voice + UI-confirmation Rescue passed**, including provider ending ACK and cleanup. A second independent run on the same candidate failed the 120-second Gallery recovery bound and had no ending ACK. The two-pass acceptance target was **not met**; retain **RELEASE_NOT_LIVE_VERIFIED**. Public demo: **NOT DEPLOYED**.
+- **Practice** is deterministic and offline. Start here to learn the shared controls without a provider connection.
+- **Live Voice** uses AssemblyAI speech recognition, dialogue and digital playback. It requires explicit connection and protected access. Live Text also uses a real provider.
+- You operate Power, Relay and the Dock controller. Pip inspects local equipment and proposes actions. Read each specific proposal, then choose **Confirm this action** or **Not yet**. Saying “yes” does not commit an action.
+- Use the map, quoted reports and reversible private route marks. Pip does not receive your private notes or the full map.
+- **Pause** preserves the running server session. **End** stops the connection. A server restart loses mission progress; there is no durable autosave.
 
-The fixed Goal 005 batch is **exhausted: 8/8 new attempts, 7,760 reserved seconds, USD 9.70 additional reservation estimate, zero remaining**. The five earlier C/D/E attempts and all historical failures remain preserved. No new calls, retries or replenishment are authorized. [Conversation and accounting](artifacts/goal-005/live/campaign-summary.json) distinguish functional home from complete acceptance and acknowledged ending. The local [Goal 005 PPTX](submission/Talk_Me_Home_Goal005_Pitch.pptx), [PDF](submission/Talk_Me_Home_Goal005_Pitch.pdf), and `submission/Talk_Me_Home_Goal005_Demo.mp4` show actual results with explicit mode and edit provenance. [Media details](submission/goal-005-deliverables/README.md). Human microphone/speaker quality and enjoyment remain untested. Exact final pushed-head CI belongs in the delivery report.
+Classic and Maintenance remain available as Training. The optional recorder starts off; a shelf item appears only after an actual pickup and server-confirmed home.
 
-A browser game for one human at Mission Control and Pip, UNIT 04. Guide a stranded maintenance robot through **Cargo Bay**, the **Relay Gallery**, and the **Return Dock** to a recovery capsule. You read the documents and operate remote controls; Pip observes nearby equipment and proposes local interactions or movement. Read the exact proposal, then choose **Confirm this action** to let the server check and commit it, or **Not yet** to decline. Speaking or typing "yes" does not confirm an action. Inspections need no confirmation, and Practice uses the same boundary. Only a validated return establishes that Pip is home.
+## Run locally
 
-**Rescue Mission** is the recommended complete game. Its Gallery has two authored obstruction configurations, so a route may require backtracking and a new decision. **Training** preserves the short Classic and Maintenance cargo exercises. Content choice is separate from **Practice / Live Voice / Live Text**. There are no accounts, database, or public deployment. The 6–8 minute first-clear target is a pacing hypothesis awaiting human testing.
-
-**Goal 004B autonomous QA:** the separate `work/goal-004b-autonomous-qa` branch adds bounded synthetic-microphone testing and fixes observed ending/cancellation behavior. The three authorized real attempts are consumed. Real speech, validated tools and digital playback were exercised; a full real Rescue clear was **not achieved**. The final prompt repair is offline-verified only. See [the historical QA report](docs/goal-004b-autonomous-qa.md) and [sanitized evidence](artifacts/goal-004b/README.md). No public deployment or human enjoyment result is claimed.
-
-**Goal 004C live recovery history:** work was delivered on `work/goal-004c-live-recovery`. Part A passed with zero new provider use. The owner explicitly approved one bounded Part B campaign on September 26 JST: Text first, then Voice only after successful acknowledged Text on the same frozen candidate, at most two attempts and USD 1.68 estimated. Its later fixed amendment and two failed Text outcomes are preserved in [the recovery report](docs/goal-004c-live-recovery.md) and [trace/regression evidence](artifacts/goal-004c/README.md). The separately approved September 28 Goal 004D retest consumed one additional Text attempt and again failed action control; [new evidence](artifacts/goal-004d/retest/README.md). Under that historical D grant, the conditional Voice slot was preserved and blocked after failed Text. Goal 004E has a separate fixed amendment and offline preconditions; its current status belongs in the [E report](docs/goal-004e-confirmed-actions.md), not in those historical results. `npm run qa:release` stays offline, and ordinary `npm run qa:live` only validates local fixtures.
-
-**Part B result:** real UI Text stopped in Cargo Bay after a Latch-confirmation oracle failure; explicit End and its ACK were observed. One attempt / 670 reserved seconds was consumed. At that time, Voice was not run because the sequencing gate rejected failed Text; the remaining slot was preserved. Its later D/E disposition is recorded separately above. No full real Rescue pass is claimed.
-
-**Historical Goal 004C offline player follow-up:** that QA repair added eligible communicated-report memory and bounded subject-specific claims across Cargo, Gallery and Dock, with synthetic browser regressions. It left application source and authorization unchanged. Goal 004D subsequently changes the shipped runtime policy; neither offline repair establishes real model instruction-following or a Live Rescue pass. The original failed Text evidence and the restrictions that applied to its then-unused slot remain preserved as history. See the [004C repair evidence](docs/goal-004c-live-recovery.md#offline-player-follow-up-after-part-b).
-
-## Run the game
-
-Use Node.js 24 (tested with 24.20.0 and npm 11.19.0). On Windows, open an Ubuntu WSL terminal:
+Node **24** is required.
 
 ```sh
-cd ~/workspace/talk-me-home
-node --version
-npm ci
-npm run dev
+npm ci --include=dev
+npm run build:game
+GAME_DISABLE_LIVE=1 npm start
 ```
 
-Open **http://localhost:5173** in Windows Chrome or Edge. The game server listens on loopback port 3001; Vite forwards `/api` requests. Ctrl+C stops both processes. Nothing starts a paid voice session on page load.
+Open `http://127.0.0.1:3001`. `npm start` and `npm run start:game` serve the compiled game and API from one origin. The production server reads its hosting environment only and never loads an owner `.env`. Practice requires no API key.
 
-Keep the existing working Node.js 24 installation. `.nvmrc` records the tested version for environments that use nvm; a version manager is not required.
+For development: `npm run dev`. Verification: `npm run typecheck`, `npm test`, and `npm run test:e2e`. Default QA and CI stay offline; synthetic devices are not human microphone or physical speaker evidence.
 
-1. Leave **Rescue Mission** and **Practice** selected, then choose **Start Practice** for an API-free complete mission. Pip's deterministic simulation accepts simple inspection and action requests, including local compass directions. Confirm each matching proposal with the visible button; Practice never confirms for you. It does not test AI reasoning or speech recognition.
-2. For real conversation, choose **Play with voice**. Check the microphone and output locally before starting the provider connection. Permission is requested only when you choose the microphone check. **Live Text / Start with Text** uses the same real provider without microphone capture; it still uses provider time. Public deployments require the owner's demo code and an available server allowance. No republishing is needed.
-3. Exchange observations and use your chapter's remote controls: Power, Relay, then the charge controller. Read the fixed documents, mark your inferred Gallery location, and revise your route when Pip reports an obstruction. Your map marks and notes are private guesses. Pin useful finalized captions as **Robot reports**; these retain their source and chapter and are not live telemetry.
-4. **Interrupt** stops playback and uncommitted actions while leaving a Live call connected. **Pause / End call** ends the provider connection and keeps the mission checkpoint. After ending, choose the next mode under **Connection & sound**, then explicitly resume. History retains Practice, Live Voice, or Live Text provenance, including typed input in a voice call. Verified decisions appear separately as **Game event** receipts. They report the server outcome, not new human speech or a room survey.
-5. Cargo and Gallery checkpoints advance the same mission without ending a Live connection. **Restart** confirms loss of the round and returns to briefing. Only final return opens the Rescue debrief; any final Live reply has an eight-second shutdown limit. Replay never opens another Live call automatically.
+## Controlled release
 
-Live mode reads `ASSEMBLYAI_API_KEY` from your existing root `.env`. If you do not have that file, copy `.env.example` once and add your key. Do not overwrite an existing `.env`. No key is needed for Mock, builds, or automated tests. The key stays on the server; the browser receives a temporary token. The game uses inline configuration and does not require publishing the Minimal agent. Missing credentials produce an explicit Live error; the app never silently switches to simulation.
+The canonical [render.yaml](render.yaml) selects **main**, one Node instance and one 1 GB disk, with automatic deployment and Live disabled initially. Hosting is an explicitly authorized recurring service; the Goal 007 agreement caps its combined base rate at USD 8/month, with taxes and usage-based overage separate. Only the tested main commit is deployed. `/api/version` exposes the build commit and application version.
 
-End the call before walking away. Each Live connection shows elapsed time, warns at nine minutes, and ends at ten minutes while preserving the mission checkpoint. Pause and Interrupt revoke an unconsumed return authorization while retaining committed physical progress. Ending explicitly requests provider termination; a broken network can prevent acknowledgement. Resume opens a fresh, explicitly requested connection with a bounded chapter-aware historical recap. Private notes, map annotations, and unread documents are excluded. Server restarts lose missions, notes, and transcripts. The app records no raw microphone audio and stores no transcripts, keys, tokens, or puzzle state in browser storage. AssemblyAI receives Live audio/text for its service.
+The new release grant has separately capped QA and reviewer purposes. Reviewer access stays disabled until its hosted acceptance pair passes. Historical grants remain exhausted and are never replenished. Provider credentials, access codes, funded ledgers and raw recordings are never public assets.
 
-History stays beside the map on desktop, with current captions and Pause available. **Presentation layout** enlarges captions for external recording while retaining the real mode, connection state, errors, and end controls. Optional chapter hints use no provider call. Effects are original local tones, muted by default; voice and effects volume are under **Connection & sound**. Muting output does not end a provider call. Keyboard operation, captions, reduced motion, and narrow-screen reflow are supported; Windows Chrome/Edge microphone and audible playback acceptance remains a separate human check.
+Current Goal 006 gameplay has offline evidence. The existing media's real Voice success is a historical Goal 005 run with a synthetic microphone; another run on that same build failed in Gallery without an ending ACK. Goal 007's current hosted Voice results will be recorded separately. No human enjoyment or statistical reliability claim is made.
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Game UI and local game server |
-| `npm run typecheck` | TypeScript checks |
-| `npm test` | API-free logic, HTTP, and voice-adapter tests |
-| `npm run test:e2e` | Builds once and tests frozen production output with Practice and local fake providers; first run `npx playwright install chromium` |
-| `npm run build` | Typecheck and bundle the browser game into `dist/client` |
-| `npm run build:game` | Build the browser and compiled production Node server |
-| `npm run start:game` | Serve the production game and API from one origin; hosting environment only, no `.env` loading |
-| `npm run game:allowance -- N` | Explicit owner creation of a durable allowance for N full 600-second token attempts |
-| `npm run test:live` | Historical opt-in provider probe; consumes time and is **not authorized automatically for Goal 003** |
-| `npm start` | Original starter diagnostics at port 3000 |
-| `npm run publish` | Original stored-agent publishing workflow |
+## Source, media and attribution
 
-See [architecture](docs/architecture.md), [rescue design](docs/goal-003-design.md), [developer gameplay rules](docs/goal-003-gameplay.md), [recording outline and Practice check](docs/demo-script.md), [pending owner Live acceptance](docs/goal-003-live-acceptance.md), [Goal 003 validation](docs/goal-003-validation.md), [sources](docs/sources.md), [assets](docs/assets.md), and [next steps](docs/roadmap.md). Developer documents and tests contain puzzle details and must never be supplied to Pip as context. Goal 003 automated validation uses **zero real-provider seconds**. [Goal 002 validation](docs/goal-002-validation.md), [Goal 001 validation](docs/validation.md), and the earlier ignored budget ledger remain historical records.
+[Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
 
-## Upstream starter
+This project extends [AssemblyAI's voice-agent-starter-js](https://github.com/AssemblyAI/voice-agent-starter-js). Original files and notices remain. No license grant for upstream work is invented; review the included provenance before reuse.
 
-The accepted Goal 006 candidate uses [render.goal-006.yaml](render.goal-006.yaml), `build:game`, and `start:game`. See the [publication handoff](docs/goal-006-publication-handoff.md) for the frozen source, deployment settings and ready submission files. Public Live and automatic deploys are disabled; no service has been created. [render.game.yaml](render.game.yaml) preserves Goal 005. The original root `render.yaml` and `npm start` below continue to launch starter diagnostics. Never use them as the Rescue release service. Future public Live fails closed without its durable allowance and access configuration. See [OWNER_ACTIONS.md](OWNER_ACTIONS.md).
-
-The original starter and its history are preserved below. Its dependency-free description and telephone examples refer to the original diagnostic commands, not the React game. No telephone functionality was added to Talk Me Home.
-
-<img src="assemblyai.png" width="500"/>
-
----
-
-[![Voice Agent API](https://img.shields.io/badge/docs-Voice%20Agent%20API-2545E6)](https://www.assemblyai.com/docs/voice-agents/voice-agent-api)
-[![Node](https://img.shields.io/badge/node-%E2%89%A518-5FA04E?logo=node.js&logoColor=white)](https://nodejs.org)
-[![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](package.json)
-[![AssemblyAI Twitter](https://img.shields.io/twitter/follow/AssemblyAI?label=%40AssemblyAI&style=social)](https://twitter.com/AssemblyAI)
-[![AssemblyAI YouTube](https://img.shields.io/youtube/channel/subscribers/UCtatfZMf-8EkIwASXM4ts0A)](https://www.youtube.com/@AssemblyAI)
-
-# AssemblyAI Voice Agent Starter for JS
-
-Voice agents defined as JSON files. Publish one to your AssemblyAI account, then talk to it in a browser tab or by calling a phone number.
-
-Each file in [agents/](agents/) is the request body for `POST /v1/agents`. The starter sends it unchanged, saves the agent ID it gets back to `.env`, and both deployments connect using that ID. An agent you already have goes the other way, `npm run import <agent-id>` turns it into one of these files. Built on the [AssemblyAI Voice Agent API](https://www.assemblyai.com/products/voice-agent-api). Node 18 or later, no dependencies.
-
-There is a [Python version of this repo](https://github.com/AssemblyAI/voice-agent-starter-python) with the same agents and the same steps.
-
-## Quickstart
-
-### 1. Clone
-
-```sh
-git clone https://github.com/AssemblyAI/voice-agent-starter-js
-cd voice-agent-starter-js
-cp .env.example .env
-```
-
-### 2. Add your key
-
-From [assemblyai.com/dashboard/api-keys](https://www.assemblyai.com/dashboard/api-keys):
-
-```sh
-# .env
-ASSEMBLYAI_API_KEY=your_key_here
-```
-
-### 3. Get an agent
-
-Publish one of the examples:
-
-```sh
-npm run publish                       # agents/minimal.jsonc
-# AGENT=http-tools npm run publish    # or any other file in agents/
-```
-
-Or import one you already have, shaped in the playground or the dashboard:
-
-```sh
-npm run import <agent-id>          # writes agents/<its-name>.jsonc
-```
-
-Either way you end up with the same pair: a file in `agents/` and its id in `.env` as `AGENT_ID_<NAME>`. Publishing again updates that agent rather than creating another, and each file keeps its own, so switching with `AGENT=` never overwrites the last one.
-
-### 4. Talk to it
-
-```sh
-npm start
-```
-
-Open http://localhost:3000 and start the call.
-
-### 5. Put it on a phone number
-
-```sh
-# .env
-TWILIO_ACCOUNT_SID=AC...                          # console.twilio.com, top of the page
-TWILIO_AUTH_TOKEN=your_token_here                 # same place, hidden until you click it
-TWILIO_PHONE_NUMBER=+15551234567                  # a number already in your account, E.164
-TWILIO_TRUNK_DOMAIN=acme-agent.pstn.twilio.com    # a name you invent, must end .pstn.twilio.com
-```
-
-The trunk domain does not exist yet. You are naming the SIP trunk that gets created for you, and the name has to be unique across all of Twilio, so put something specific to you in front of `.pstn.twilio.com`. The phone number does have to exist already: buy one under Phone Numbers in the Twilio console first.
-
-```sh
-npm run phone
-```
-
-This creates the trunk, routes it to AssemblyAI, attaches your number to it, and binds the agent. Then call the number. Details in [deployment/telephony](deployment/telephony/).
-
----
-
-## Core examples
-
-Nine agent files. Four demonstrate a parameter, five demonstrate an integration.
-
-| `AGENT=` | Demonstrates | Requires |
-| --- | --- | --- |
-| [`minimal`](agents/minimal.jsonc) | the three required fields, and the defaults applied to the rest | |
-| [`keyterms`](agents/keyterms.jsonc) | biasing transcription toward names and jargon | |
-| [`turn-taking`](agents/turn-taking.jsonc) | silence thresholds and interruption handling | |
-| [`byo-llm`](agents/byo-llm.jsonc) | Claude through the AssemblyAI gateway, or your own endpoint | |
-| [`http-tools`](agents/http-tools.jsonc) | tools that AssemblyAI calls on the agent's behalf | |
-| [`exa-search`](agents/exa-search.jsonc) | web search during a call | `EXA_API_KEY` |
-| [`airtable-crm`](agents/airtable-crm.jsonc) | reading a caller record and writing one back | `AIRTABLE_*` |
-| [`cal-booking`](agents/cal-booking.jsonc) | checking availability, then booking a slot | `CAL_*` |
-| [`dtmf`](agents/dtmf.jsonc) | PCI compliance: card entry on the keypad, never in the transcript, the logs or the model | `DTMF_WEBHOOK_URL` |
-
-```sh
-AGENT=exa-search npm run publish
-npm start
-```
-
-To write your own, copy the closest file: `cp agents/http-tools.jsonc agents/my-agent.jsonc`. Every field is commented, with a link to the documentation page that defines it.
-
-## Importing an agent
-
-The playground is the quickest way to shape an agent. This is how it moves into code without being rebuilt by hand:
-
-```sh
-npm run import 8f3c1e2a-...
-```
-
-It writes `agents/<name>.jsonc`, the live agent as a file, headed with the id it came from. It records `AGENT_ID_<NAME>` in `.env`, so `npm run publish` sends a `PUT` to that same agent instead of creating a second one. It drops `id`, `created_at` and `updated_at`, which are not part of a create request. And it refuses to overwrite an existing file unless you pass `AGENT=<other-name>` or `OVERWRITE=1`.
-
-Credentials are the one thing it cannot recover. Tool header values and `llm[].api_key` are write-only on the API, so they come back blank. The import names the ones to restore, and they belong in `.env`, referenced from the file as `${VARS}`:
-
-```
-Header values are write-only and did not come back for: lookup.
-Put them in .env and reference them as ${VARS}.
-```
-
-From there it behaves like any other file in `agents/`: edit it, publish, call.
-
-## Where it answers
-
-| | | |
-| --- | --- | --- |
-| [Browser](deployment/browser/) | `npm start` | Serves a page with a call button and mints session tokens. The API key stays on the server. |
-| [Phone](deployment/telephony/) | `npm run phone` | Configures a Twilio SIP trunk and attaches the agent to your number. |
-
-Twilio passes the call to AssemblyAI over SIP, so nothing in this repo sits in the audio path.
-
-## Hosting the browser app
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AssemblyAI/voice-agent-starter-js)
-
-Render reads [render.yaml](render.yaml) and prompts for exactly one value, `ASSEMBLYAI_API_KEY`, because that is the only variable marked `sync: false`. It sets `PORT` itself. The other two arrive with defaults you can change under Environment on the service:
-
-| Variable | Default | What it does |
-| --- | --- | --- |
-| `ASSEMBLYAI_API_KEY` | prompted | Stays on the server. Never sent to the page. |
-| `AGENT` | `minimal` | Which `agents/<name>.jsonc` the service publishes when it boots. |
-| `AGENT_ID` | empty | Paste an id from your `.env` to serve that exact agent, whichever file it came from. |
-
-Leaving `AGENT_ID` empty is fine. The service publishes `AGENT` on boot, and on later restarts it updates the agent of that name rather than creating another one. Setting it is still better, since the deployment then uses the same agent you tested locally and your phone number answers with.
-
-Anyone with the URL can start sessions billed to that key.
-
-## How it works
-
-```
-  copy an example                     npm run import <id>
-  or write your own                   an agent you already have
-           │                                   │
-           ▼                                   ▼
-agents/exa-search.jsonc     body of POST /v1/agents
-        + .env              the ${VARS} it references
-           │
-           ▼  npm run publish
-      AGENT_ID_EXA_SEARCH
-           ├──  npm start        browser tab
-           └──  npm run phone    phone number
-```
-
-The first publish sends `POST /v1/agents` and stores the returned ID in `.env` under a key of its own, `AGENT_ID_EXA_SEARCH` for that file. Later publishes send `PUT /v1/agents/{id}`, so the browser tab and the phone number both pick up the change on the next call, and publishing a different file leaves this one alone. A bare `AGENT_ID` overrides every per-file key.
-
-Values written as `${VAR}` anywhere in an agent file are substituted at publish time from `.env`, or from `agents/<name>.env` for credentials only one agent uses. Both files are gitignored, so the JSON can be committed.
-
-## Build with AI coding agents
-
-This repo includes [AGENTS.md](AGENTS.md), which Claude Code, Cursor and Copilot read for its conventions. The Voice Agent API changes, so point coding tools at the current documentation rather than letting them work from memory:
-
-> Always fetch https://assemblyai.com/docs/llms.txt before writing AssemblyAI code. The API has changed, do not rely on memorized parameter names.
-
-```sh
-claude mcp add --transport http --scope user assemblyai-docs https://mcp.assemblyai.com/docs
-npx skills add AssemblyAI/assemblyai-skill --global
-```
-
-See [Build with AI tools](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/build-with-ai-tools) and [Coding agent prompts](https://www.assemblyai.com/docs/coding-agent-prompts).
-
-## Voice Agent API
-
-Product: [Voice Agent API](https://www.assemblyai.com/products/voice-agent-api) · [Pricing](https://www.assemblyai.com/pricing) · [Dashboard](https://www.assemblyai.com/dashboard)
-
-Start here: [Documentation](https://www.assemblyai.com/docs/voice-agents/voice-agent-api) · [Create an agent](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/create-agent) · [Manage agents](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/manage-agents) · [Prompting guide](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/prompting-guide) · [Best practices](https://www.assemblyai.com/docs/voice-agents/best-practices)
-
-Configuration: [Voices](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/voices) · [Greeting](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/greeting) · [Turn detection](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/turn-detection-and-interruptions) · [Keyterms](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/transcription-prompt) · [Languages](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/supported-languages) · [Noise suppression](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/noise-suppression) · [Custom LLM](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/connect-your-own-llm)
-
-Tools: [Overview](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/overview) · [HTTP tools](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/http-tools) · [Client-side tools](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools)
-
-Deployment: [Deploy](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/deploy) · [Browser integration](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration) · [Connect to Twilio](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/connect-to-twilio) · [Use your own number](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/twilio-own-number) · [Webhooks](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/webhooks)
-
-Reference: [Session configuration](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration) · [Events](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference) · [Message sequence](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/message-sequence) · [Session history](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-history) · [Troubleshooting](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/troubleshooting)
-
-## Cost
-
-Sessions are billed to the API key that published the agent. Anyone with the deployed URL or the phone number can start a session on that key.
+The original browser starter remains available as `npm run start:starter`. `publish`, `import` and `phone` are separate starter utilities, not game deployment commands. Its original manifest is preserved under [deployment/starter/](deployment/starter/README.md). Historical Goal 005/006 manifests remain references; do not apply them as additional services. npm package publication remains disabled with `private: true`.

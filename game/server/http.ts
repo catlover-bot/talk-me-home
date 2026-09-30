@@ -5,8 +5,10 @@ import { GameError, SessionStore } from './sessions.js'
 import { BrowserAccess } from './browser-access.js'
 import { LiveAdmission } from './admission.js'
 import { serveGame } from './static.js'
+import type { ReleaseIdentity } from './release.js'
 
 interface ServerOptions {
+  releaseIdentity?: ReleaseIdentity
   store?: SessionStore
   apiKey?: string
   fetch?: typeof globalThis.fetch
@@ -95,6 +97,7 @@ export function createGameServer(options: ServerOptions = {}) {
       } else { checkLocalRequest(request, allowedOrigins) }
       if (!apiRequest && options.staticDirectory) return await serveGame(request, response, options.staticDirectory)
       if (request.method === 'GET' && path === '/api/health') return reply(response, 200, { ok: true })
+      if (request.method === 'GET' && path === '/api/version') return reply(response, 200, options.releaseIdentity ? { commit: options.releaseIdentity.commit, version: options.releaseIdentity.version } : { commit: 'unbuilt', version: 'development' })
       if (path === '/api/access' && request.method === 'GET') return reply(response, 200, accessStatus(request))
       if (path === '/api/access' && request.method === 'POST') {
         if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')

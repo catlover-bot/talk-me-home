@@ -71,6 +71,7 @@ test('production serves the game build, safe asset types and health, with separa
     assert.match(asset.headers.get('content-type')!, /javascript/)
     assert.match(asset.headers.get('cache-control')!, /immutable/)
     assert.deepEqual(await (await request(base, '/api/health')).json(), { ok: true })
+    assert.deepEqual(await (await request(base, '/api/version')).json(), { commit: 'unbuilt', version: 'development' })
     for (const path of ['/api', '/api/unknown', '/.env', '/%2eenv', '/game/server/http.ts', '/docs/solution.md', '/.live-test-budget.json', '/assets/missing.js', '/assets/game-AbCd1234.js.map']) {
       const response = await request(base, path)
       assert.equal(response.status, 404, path)
@@ -101,6 +102,17 @@ test('production rejects unconfigured hosts and cross-origin API writes while ti
     assert.equal((await request(base, '/api/sessions', {}, undefined, { 'sec-fetch-site': 'cross-site' })).status, 403)
     assert.equal((await request(base, '/', undefined, undefined, { 'sec-fetch-site': 'cross-site' })).status, 200)
   })
+})
+
+test('public release identity exposes only the build commit and app version', async () => {
+  const identity = { commit: 'a'.repeat(40), version: '0.7.0', internalPath: '/private/build', credential: 'test-only-private-value' }
+  await fixture(async base => {
+    const response = await request(base, '/api/version')
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('cache-control'), 'no-store')
+    assert.deepEqual(await response.json(), { commit: identity.commit, version: identity.version })
+    assert.equal((await request(base, '/api/version', undefined, undefined, { host: 'other.example' })).status, 403)
+  }, { releaseIdentity: identity })
 })
 
 test('all deployed session reads, records, tools, mutations and token requests belong to their browser', async () => {

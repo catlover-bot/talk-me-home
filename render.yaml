@@ -1,21 +1,39 @@
+# Canonical main game deployment. One authorized service and one 1 GB disk only.
+# Goal 007 authorizes base hosting <= USD 8/month; verify actual account/plan before applying.
+# Reuse the intended existing service. Historical manifests must not create duplicates.
+# https://render.com/docs/blueprint-spec
 services:
   - type: web
-    name: voice-agent
+    name: talk-me-home-game
     runtime: node
-    plan: free
-    buildCommand: 'true'
-    startCommand: npm start
+    branch: main
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: 'off'
+    buildCommand: npm ci --include=dev && npm run build:game
+    startCommand: npm run start:game
+    healthCheckPath: /api/health
+    disk:
+      name: talk-me-home-game-admission
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
-      # sync: false is what makes Render prompt for a value during Blueprint
-      # creation. Everything below with a literal value is set for you and can
-      # be changed afterwards under Environment on the service.
-      - key: ASSEMBLYAI_API_KEY
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.20.0
+      - key: GAME_BIND_ADDRESS
+        value: 0.0.0.0
+      - key: GAME_ORIGIN
         sync: false
-      # Which agents/<name>.jsonc the service publishes on boot.
-      - key: AGENT
-        value: minimal
-      # Paste an id from your .env here to serve that exact agent. Left empty,
-      # the service publishes AGENT itself and reuses the agent of the same
-      # name on later restarts.
-      - key: AGENT_ID
-        value: ''
+      - key: GAME_PUBLIC_LIVE_ENABLED
+        value: '0'
+      - key: GAME_DISABLE_LIVE
+        value: '1'
+      - key: GAME_LIVE_CONCURRENT_LIMIT
+        value: '1'
+      - key: GAME_LIVE_ALLOWANCE_FILE
+        value: /var/data/talk-me-home-goal007-release.jsonl
+# Initial Practice publication needs no provider key, access code or allowance.
+# Goal 007 Live requires the authorized hosted allocation and current acceptance gates.
+# Never initialize an allowance in build/start/deploy hooks or reset an existing ledger.

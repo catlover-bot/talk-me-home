@@ -5,6 +5,7 @@ import { createGameServer } from './http.js'
 import { LiveAdmission } from './admission.js'
 import { SessionStore } from './sessions.js'
 import { localToolDiagnosticSink } from './tool-diagnostics.js'
+import { readReleaseIdentity } from './release.js'
 
 // Production reads hosting environment variables only. It never loads the owner's .env.
 export function startProductionServer(store?: SessionStore, qaOptions?: { maxVoiceSessionSeconds: 900; onProviderAccountRefusal?: (reason: 'provider_credit_refused' | 'provider_credential_or_account_refused') => Promise<void>; confirmedClosed: (reservation: Readonly<{ reservedAt: number; leaseUntil: number }>) => boolean }) {
@@ -23,6 +24,7 @@ export function startProductionServer(store?: SessionStore, qaOptions?: { maxVoi
   const admission = process.env.GAME_LIVE_ALLOWANCE_FILE ? new LiveAdmission(process.env.GAME_LIVE_ALLOWANCE_FILE, Number(process.env.GAME_LIVE_CONCURRENT_LIMIT ?? 2), Date.now, qaOptions?.maxVoiceSessionSeconds ?? 600, qaOptions?.confirmedClosed) : undefined
   const server = createGameServer({
     store,
+    releaseIdentity: readReleaseIdentity(resolve('dist/release.json')),
     production: true, staticDirectory: directory, allowedOrigins: [origin], secureCookies: !local,
     publicLiveEnabled: process.env.GAME_PUBLIC_LIVE_ENABLED === '1', demoAccessCode: process.env.GAME_DEMO_ACCESS_CODE,
     admission,
