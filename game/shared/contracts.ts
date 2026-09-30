@@ -1,4 +1,5 @@
 import type { SwitchyardPanelView, SwitchyardApproach, SwitchyardLocalObservation } from './switchyard.js'
+import type { RemixSetup } from './remix.js'
 /** Browser-safe contracts. Local equipment state belongs only on the server. */
 export type SessionStatus = 'active' | 'stopped' | 'ended'
 export type Scenario = 'classic' | 'maintenance'
@@ -127,6 +128,8 @@ export interface LifecycleRequest {
   missionKind?: MissionKind
   /** Omission on Restart starts a core mission; the old modifier never carries over. */
   optionalObjective?: OptionalObjective | null
+  /** Explicit Remix selection; absent means the authored Original on a new round. */
+  remix?: RemixSetup
   chapterEpoch?: number
   reason?: CancelReason
 }

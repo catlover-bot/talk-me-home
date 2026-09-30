@@ -8,6 +8,8 @@ import { LocalEffects } from './effects';
 import { copy } from './strings';
 import { acceptsHumanViewSnapshot } from './view-order';
 import { currentRobotPerception } from './robot-perception';
+import { REMIX_CODE_PATTERN, type RemixAvailability, type RemixSetup } from '../shared/remix';
+import { clearJourneyHistory, readJourneyHistory, saveJourneyHistory, SWITCHYARD_HISTORY_KEY, type JourneyEntry } from './switchyard-history';
 
 export interface Caption extends TranscriptEntry {
   origin: TransportOrigin;
@@ -52,6 +54,13 @@ export function useMission() {
   const [stage, setStage] = useState<'briefing' | 'mission' | 'debrief'>('briefing');
   const [scenario, setScenario] = useState<Scenario>('classic');
   const [missionKind, setMissionKind] = useState<MissionKind>('rescue');
+  const [remixSetup, setRemixSetup] = useState<RemixSetup>();
+  const [intendedApproach, setIntendedApproach] = useState<'lift' | 'bypass'>();
+  const [journeys, setJourneys] = useState(readJourneyHistory);
+  const journeyRounds = useRef(new Map<string, JourneyEntry>());
+  const [dispatchAvailability, setDispatchAvailability] = useState<RemixAvailability | null>(null);
+  const [dispatchLoading, setDispatchLoading] = useState(false);
+  const [dispatchCheck, setDispatchCheck] = useState(0);
   const [optionalObjective, setOptionalObjective] = useState<HumanView['optionalObjective']>();
   const chooseMissionKind = (kind: MissionKind) => { setMissionKind(kind); setOptionalObjective(undefined); };
   const [mode, setMode] = useState<TransportOrigin>('practice');
@@ -343,7 +352,9 @@ export function useMission() {
     const prepareMission = async () => {
       let current = viewRef.current;
       const retained = !!current && !current.completed && current.status !== 'ended' && stage !== 'briefing';
-      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind !== 'training' ? 'classic' : scenario, missionKind, ...(missionKind === 'rescue' && optionalObjective ? { optionalObjective } : {}) }) : await api.createSession(missionKind !== 'training' ? 'classic' : scenario, missionKind, missionKind === 'rescue' ? optionalObjective : undefined);
+      const remix = missionKind === 'switchyard' && remixSetup
+        ? remixSetup.kind === 'new' ? { ...remixSetup, recent: journeys.map(item => item.code) } : remixSetup : undefined;
+      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind !== 'training' ? 'classic' : scenario, missionKind, ...(missionKind === 'rescue' && optionalObjective ? { optionalObjective } : {}), ...(remix ? { remix } : {}) }) : await api.createSession(missionKind !== 'training' ? 'classic' : scenario, missionKind, missionKind === 'rescue' ? optionalObjective : undefined, remix);
       else current = await api.lifecycle(current!, 'resume');
       if (expected !== generation.current) {
         await api.lifecycle(current!, 'stop');
@@ -634,7 +645,7 @@ export function useMission() {
     setBusyNow(true);
     try {
       const current = viewRef.current;
-      if (current) {
+      if (current && !current.switchyardPanel?.dispatch && !(nextKind === 'switchyard' && remixSetup)) {
         const reset = await api.lifecycle(current, 'reset', { scenario: nextKind !== 'training' ? 'classic' : nextScenario, missionKind: nextKind });
         applyView(reset); applyView(await api.lifecycle(reset, 'stop'));
       }
@@ -647,6 +658,14 @@ export function useMission() {
       showError(cause); viewRef.current = null; setView(null); setStage('briefing');
       captionsRef.current = []; setCaptions([]); setRecord(null); setSegment(null); segmentRef.current = null;
     } finally { setBusyNow(false); }
+  };
+
+  const prepareDispatch = async (choice: 'same' | 'other' | 'new') => {
+    const current = viewRef.current; const dispatch = current?.switchyardPanel?.dispatch;
+    if (!dispatch || busyRef.current) return;
+    setRemixSetup(choice === 'new' ? { kind: 'new', assignment: dispatch.assignment, recent: [] } : { kind: 'replay', code: dispatch.code });
+    setIntendedApproach(choice === 'other' ? current.switchyardApproach === 'lift' ? 'bypass' : 'lift' : undefined);
+    await newBriefing('classic', 'switchyard');
   };
 
   const pin = async (messageId: string) => {
@@ -699,6 +718,10 @@ export function useMission() {
     if (next === 'game') return;
     if (next !== 'practice' && providerAccountStopped) { setError('Live remains stopped after an account or credit refusal. Contact the owner; Practice is available.'); return; }
     if (busyRef.current || connectedRef.current || voice.current) return;
+    if (stage === 'briefing' && missionKind === 'switchyard' && remixSetup
+      && (!dispatchAvailability?.available || dispatchLoading || remixSetup.kind === 'replay' && !REMIX_CODE_PATTERN.test(remixSetup.code))) {
+      setError(remixSetup.kind === 'replay' && !REMIX_CODE_PATTERN.test(remixSetup.code) ? 'Enter a complete supported mission code before starting.' : dispatchAvailability?.message ?? 'Wait for dispatch availability before starting. Original is still available.'); return;
+    }
     chooseMode(next);
     if (next === 'practice') start(next);
     else setReadinessMode(next);
@@ -712,6 +735,35 @@ export function useMission() {
   const cancelReadiness = () => setReadinessMode(null);
   const readinessText = () => { chooseMode('live_text'); setReadinessMode('live_text'); };
   const readinessPractice = () => { setReadinessMode(null); requestStart('practice'); };
+  const remixSelected = missionKind === 'switchyard' && !!remixSetup;
+  useEffect(() => {
+    if (!remixSelected || stage !== 'briefing') return;
+    const abort = new AbortController(); setDispatchLoading(true);
+    void api.remixAvailability(abort.signal).then(setDispatchAvailability).catch(cause => {
+      if (!abort.signal.aborted) setDispatchAvailability({ available: false, message: cause instanceof Error ? cause.message : 'Dispatch availability could not be checked. Original remains available.' });
+    }).finally(() => { if (!abort.signal.aborted) setDispatchLoading(false); });
+    return () => abort.abort();
+  }, [remixSelected, stage, dispatchCheck]);
+  useEffect(() => {
+    const synchronize = (event: StorageEvent) => { if (event.key === SWITCHYARD_HISTORY_KEY || event.key === null) setJourneys(readJourneyHistory()); };
+    window.addEventListener('storage', synchronize); return () => window.removeEventListener('storage', synchronize);
+  }, []);
+  useEffect(() => {
+    const dispatch = view?.switchyardPanel?.dispatch; const source = segmentRef.current?.origin;
+    if (!view || !dispatch || !source || source === 'game' || stage === 'briefing') return;
+    const old = journeyRounds.current.get(view.roundId);
+    const now = Date.now();
+    const initial: JourneyEntry = old ?? { id: api.requestId(), code: dispatch.code, recentToken: dispatch.recentToken,
+      startedAt: now, updatedAt: now, outcome: 'started', assignment: dispatch.assignment, provenance: source };
+    const next: JourneyEntry = old && old.provenance !== source && old.provenance !== 'mixed'
+      ? { ...initial, provenance: 'mixed', updatedAt: now } : initial;
+    if (!old) journeyRounds.current.clear();
+    const journey = view.switchyardPanel?.journey;
+    if (view.completed && view.switchyardApproach && journey && next.outcome !== 'home') {
+      const completed: JourneyEntry = { ...next, updatedAt: now, outcome: 'home', approach: view.switchyardApproach, assignmentStatus: journey.status };
+      journeyRounds.current.set(view.roundId, completed); setJourneys(previous => saveJourneyHistory([completed, ...previous]));
+    } else if (!old || next !== old) { journeyRounds.current.set(view.roundId, next); setJourneys(previous => saveJourneyHistory([next, ...previous])); }
+  }, [view, stage]);
   useEffect(() => { effects.current.setAmbienceActive(connected && stage === 'mission'); }, [connected, stage]);
   useEffect(() => {
     document.documentElement.dataset.reducedMotion = String(reducedMotion);
@@ -749,6 +801,11 @@ export function useMission() {
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
     switchyardIntents, chooseSwitchyardIntent, applyRouting, switchyardCurrentVisit,
+    remixSetup, chooseRemix: (value?: RemixSetup) => { setRemixSetup(value); setIntendedApproach(undefined); setError(''); },
+    intendedApproach, prepareDispatch, journeys, clearJourneys: () => { clearJourneyHistory(); setJourneys([]); },
+    remixProvenance: view ? journeyRounds.current.get(view.roundId)?.provenance : undefined,
+    dispatchAvailability, dispatchLoading, refreshDispatch: () => setDispatchCheck(value => value + 1),
+    dispatchStartBlocked: remixSelected && (dispatchLoading || !dispatchAvailability?.available || remixSetup?.kind === 'replay' && !REMIX_CODE_PATTERN.test(remixSetup.code)),
     error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, ambienceVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
     start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume, changeAmbienceVolume,

@@ -7,6 +7,7 @@ import "./chapter-art.css";
 import "./connection-shell.css";
 import "./immersion.css";
 import "./switchyard-polish.css";
+import "./switchyard-remix.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

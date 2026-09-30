@@ -1,0 +1,8 @@
+{
+  "scope": "LOCAL_DETERMINISTIC_PRACTICE",
+  "test": "Remix panel 2 procedure 2 reaches home by lift",
+  "project": "chromium-1280",
+  "statusAtCleanup": "passed",
+  "forbidden": [],
+  "pageErrors": []
+}

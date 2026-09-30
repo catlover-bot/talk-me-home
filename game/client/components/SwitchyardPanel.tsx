@@ -2,7 +2,7 @@ import { SwitchyardGuideCue, useSwitchyardGuide } from './SwitchyardGuide';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   SWITCHYARD_PANEL, previewSwitchyardRouting, switchyardPorts,
-  type SwitchyardDirection, type SwitchyardPanelView, type SwitchyardRotations, type SwitchyardRotation, type SwitchyardTerminal,
+  type SwitchyardDirection, type SwitchyardPanelSpec, type SwitchyardPanelView, type SwitchyardRotations, type SwitchyardRotation, type SwitchyardTerminal,
 } from '../../shared/switchyard';
 import '../switchyard.css';
 
@@ -31,8 +31,8 @@ function appliedChange(before: AppliedSnapshot, after: SwitchyardPanelView): str
   return `${count} ${count === 1 ? 'piece changed' : 'pieces changed'} orientation; terminal power is unchanged.`;
 }
 
-function Conductor({ id, rotation, trace = false }: { id: string; rotation: SwitchyardRotation; trace?: boolean }) {
-  const ports = switchyardPorts(id, rotation);
+function Conductor({ id, rotation, trace = false, specification }: { id: string; rotation: SwitchyardRotation; trace?: boolean; specification: SwitchyardPanelSpec }) {
+  const ports = switchyardPorts(id, rotation, specification);
   return <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
     <rect className="switchyard-piece-face" x="3" y="3" width="94" height="94" rx="10"/>
     <path className="switchyard-conductor-bed" d={ports.map(port => `M50 50L${endpoints[port]}`).join(' ')}/>
@@ -51,6 +51,12 @@ export function SwitchyardPanel({ roundId, ...props }: SwitchyardPanelProps) {
 
 /** Reads public panel geometry and acknowledged routing only; no robot-local state. */
 function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onApply }: Omit<SwitchyardPanelProps, 'roundId'>) {
+  const specification = applied.specification ?? SWITCHYARD_PANEL;
+  const attachment = (pieceId: string, side: SwitchyardDirection) => {
+    const piece = specification.pieces.find(candidate => candidate.id === pieceId)!;
+    return { gridRow: piece.row + 2 + (side === 'north' ? -1 : side === 'south' ? 1 : 0),
+      gridColumn: piece.column + 2 + (side === 'west' ? -1 : side === 'east' ? 1 : 0) };
+  };
   const titleId = useId(); const helpId = useId();
   const guide = useSwitchyardGuide();
   const [draft, setDraft] = useState(() => ({ rotations: clone(applied.appliedRotations), base: clone(applied.appliedRotations),
@@ -85,7 +91,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
     setAcknowledging(null);
   }, [acknowledging, applied.panelRevision, acknowledgedKey]);
 
-  const preview = previewSwitchyardRouting(draft.rotations);
+  const preview = previewSwitchyardRouting(draft.rotations, specification);
   const changed = !equal(draft.rotations, draft.base);
   const stale = draft.revision !== applied.panelRevision;
   const locked = applying || pending;
@@ -137,11 +143,11 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
       <div className="switchyard-draft-board">
         <div className="switchyard-board-label"><strong>Draft layout</strong><span>↻ quarter turns</span></div>
         <div className="switchyard-board" role="group" aria-label="Draft routing pieces" aria-describedby={helpId}>
-          <span className="switchyard-terminal switchyard-terminal-source" data-connected={preview.energizedPieces.includes('p1')} aria-label="Fixed supply, west of P1">IN<span aria-hidden="true">→</span></span>
-          {SWITCHYARD_PANEL.terminals.map(terminal => <span key={terminal.id} className={`switchyard-terminal switchyard-terminal-${terminal.id}`} data-connected={preview.poweredTerminals.includes(terminal.id)}>{terminal.label}</span>)}
-          {SWITCHYARD_PANEL.pieces.map((piece, index) => {
+          <span className="switchyard-terminal switchyard-terminal-source" style={attachment(specification.source.pieceId, specification.source.side)} data-side={specification.source.side} data-connected={preview.energizedPieces.includes(specification.source.pieceId)} aria-label={`Fixed supply, ${specification.source.side} of ${specification.source.pieceId.toUpperCase()}`}>IN<span aria-hidden="true">{{ north: '↓', east: '←', south: '↑', west: '→' }[specification.source.side]}</span></span>
+          {specification.terminals.map(terminal => <span key={terminal.id} style={attachment(terminal.pieceId, terminal.side)} data-side={terminal.side} className={`switchyard-terminal switchyard-terminal-${terminal.id}`} data-connected={preview.poweredTerminals.includes(terminal.id)} aria-label={`${terminal.label}, ${terminal.side} of ${terminal.pieceId.toUpperCase()}`}>{terminal.label}</span>)}
+          {specification.pieces.map((piece, index) => {
             const rotation = draft.rotations[index]!;
-            const ports = switchyardPorts(piece.id, rotation);
+            const ports = switchyardPorts(piece.id, rotation, specification);
             return <button key={piece.id} type="button" className="switchyard-piece" disabled={locked}
               style={{ gridRow: piece.row + 2, gridColumn: piece.column + 2 }}
               data-piece={piece.id} data-rotation={rotation} data-connected={preview.energizedPieces.includes(piece.id)}
@@ -150,7 +156,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
               onClick={() => turn(index)} onKeyDown={event => {
                 if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); turn(index, event.key === 'ArrowLeft' ? -1 : 1); }
               }}>
-              <Conductor id={piece.id} rotation={rotation} trace={preview.energizedPieces.includes(piece.id)}/><span className="switchyard-piece-id">{piece.id.toUpperCase()}</span><span className="switchyard-piece-angle">{rotation * 90}°</span>
+              <Conductor specification={specification} id={piece.id} rotation={rotation} trace={preview.energizedPieces.includes(piece.id)}/><span className="switchyard-piece-id">{piece.id.toUpperCase()}</span><span className="switchyard-piece-angle">{rotation * 90}°</span>
               {turnFeedback?.piece === index && <span key={turnFeedback.sequence} className="switchyard-turn-feedback" aria-hidden="true"/>}
             </button>;
           })}
@@ -160,7 +166,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
       <div className="switchyard-routing-readout">
         <table aria-label="Draft terminal connections and applied terminal power">
           <thead><tr><th scope="col">Terminal</th><th scope="col">Draft</th><th scope="col">Applied</th></tr></thead>
-          <tbody>{SWITCHYARD_PANEL.terminals.map(terminal => <tr key={terminal.id}>
+          <tbody>{specification.terminals.map(terminal => <tr key={terminal.id}>
             <th scope="row"><span className={`switchyard-terminal-mark switchyard-mark-${terminal.id}`} aria-hidden="true"/>{terminal.label}</th>
             <td data-testid={`draft-${terminal.id}`}>{preview.poweredTerminals.includes(terminal.id) ? 'Connected' : 'Isolated'}</td>
             <td data-testid={`applied-${terminal.id}`}><span className="switchyard-applied-lamp" data-powered={applied.poweredTerminals.includes(terminal.id)} aria-hidden="true"/>{applied.poweredTerminals.includes(terminal.id) ? 'Powered' : 'Off'}</td>
@@ -168,7 +174,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
         </table>
         <p className="switchyard-draft-prediction" data-testid="switchyard-draft-prediction">{preview.poweredTerminals.length ? `Draft connects ${terminalNames(preview.poweredTerminals)}.` : 'Draft leaves all outputs isolated.'}</p>
         <div className="switchyard-load" data-valid={preview.valid}><strong>Draft load {preview.load} / {preview.capacity}</strong><span>{preview.valid ? 'Within the two-terminal supply limit.' : `Over capacity: ${terminalNames(preview.poweredTerminals)} use ${preview.load} loads; the supply supports ${preview.capacity}. Disconnect at least one terminal. Applied routing is unchanged.`}</span></div>
-        <div className="switchyard-applied-layout"><strong>Applied rotors <span>#{applied.panelRevision}</span></strong><ol aria-label="Acknowledged piece orientations">{SWITCHYARD_PANEL.pieces.map((piece, index) => <li key={piece.id}><Conductor id={piece.id} rotation={applied.appliedRotations[index]!}/><span>{piece.id.toUpperCase()} <b>{applied.appliedRotations[index]! * 90}°</b></span></li>)}</ol></div>
+        <div className="switchyard-applied-layout"><strong>Applied rotors <span>#{applied.panelRevision}</span></strong><ol aria-label="Acknowledged piece orientations">{specification.pieces.map((piece, index) => <li key={piece.id}><Conductor specification={specification} id={piece.id} rotation={applied.appliedRotations[index]!}/><span>{piece.id.toUpperCase()} <b>{applied.appliedRotations[index]! * 90}°</b></span></li>)}</ol></div>
         <p className="switchyard-readout-boundary">Preview only. Pip checks local machinery and the passage.</p>
       </div>
     </div>

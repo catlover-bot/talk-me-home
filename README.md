@@ -30,7 +30,7 @@ GAME_DISABLE_LIVE=1 npm start
 
 Open `http://127.0.0.1:3001`. `npm start` and `npm run start:game` serve the compiled game and API from one origin. The production server reads its hosting environment only and never loads an owner `.env`. Practice requires no API key.
 
-### The Switchyard (source version 0.9.0)
+### The Switchyard (source version 0.10.0)
 
 Select **The Switchyard -> Practice -> Start Practice** in the local build. Rotate six pieces in a draft, compare the terminal preview with your human-only manual, then Apply the complete layout. Pip reports the fitted equipment and offers labelled local requests. Confirm each exact physical proposal.
 
@@ -39,6 +39,8 @@ Restore a calibrated direct lift with separate test and running supplies, or bra
 The current polish traces draft connections, describes acknowledged terminal changes, keeps sourced plate quotes beside the manual, and retains valid local requests after Apply. An optional private intended-route annotation changes no game state. Each completed approach has its own confirmed departure illustration. See the [polish evidence and limitations](docs/goal-008b-switchyard-polish.md).
 
 This post-submission mission is local/scripted and has no real Voice verification. It is separate from the preserved public 0.7.0 judging build. See [Switchyard implementation and checks](docs/goal-008-switchyard.md) and the [optional first-play sheet](docs/goal-008-playtest.md).
+
+Inside Switchyard, **Original** keeps the authored puzzle. **Remix** offers New dispatch, Replay a code and a UTC Daily dispatch. Its bounded catalog has 48 mechanically distinct equipped profiles across three panel structures, two preparation sequences and two station arrangements. Optional Lift survey and Service restoration assignments can give a reason to investigate the other route before coming home. A small local journey record retains codes and labelled outcomes; each replay still needs an explicit Start. See [Remix controls, validation and limits](docs/goal-010-remix.md). This source update has not been deployed to the public demo.
 
 For development: `npm run dev`. Verification: `npm run typecheck`, `npm test`, and `npm run test:e2e`. Default QA and CI stay offline; synthetic devices are not human microphone or physical speaker evidence.
 

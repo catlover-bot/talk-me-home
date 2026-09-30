@@ -1,0 +1,687 @@
+{
+  "schema": "goal-010-browser-plan-v1",
+  "status": "EXECUTED_PASS",
+  "scope": "Developer-only coverage identities; not imported by the runtime, human projection, companion or ordinary-UI player.",
+  "suite": "tests/e2e/remix.spec.ts",
+  "player": "tests/e2e/remix-player.ts",
+  "routeCasesPerViewport": 12,
+  "additionalEdgeCasesPerViewport": 3,
+  "profileCatalog": "R1",
+  "rows": [
+    {
+      "panel": "branch",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "rescue",
+      "profile": 0,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "lift_survey",
+      "profile": 5,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "service_restoration",
+      "profile": 14,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "branch",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "service_restoration",
+      "profile": 11,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 23,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "lift_survey",
+      "profile": 18,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "service_restoration",
+      "profile": 25,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "mesh",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "rescue",
+      "profile": 28,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "deploy_then_align",
+      "approach": "lift",
+      "layout": "hub",
+      "liftRow": "crescent",
+      "serviceRow": "rivet",
+      "assignment": "service_restoration",
+      "profile": 32,
+      "assignmentExpected": "skipped"
+    },
+    {
+      "panel": "crown",
+      "procedure": "deploy_then_align",
+      "approach": "bypass",
+      "layout": "chain",
+      "liftRow": "crescent",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 37,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "align_then_deploy",
+      "approach": "lift",
+      "layout": "chain",
+      "liftRow": "kite",
+      "serviceRow": "rivet",
+      "assignment": "lift_survey",
+      "profile": 46,
+      "assignmentExpected": "completed"
+    },
+    {
+      "panel": "crown",
+      "procedure": "align_then_deploy",
+      "approach": "bypass",
+      "layout": "hub",
+      "liftRow": "kite",
+      "serviceRow": "slot",
+      "assignment": "rescue",
+      "profile": 43,
+      "assignmentExpected": "completed"
+    }
+  ],
+  "pairs": [
+    {
+      "axes": [
+        "panel",
+        "procedure"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "approach"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "layout"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "liftRow"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "serviceRow"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "panel",
+        "assignment"
+      ],
+      "covered": 9,
+      "required": 9,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "approach"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "layout"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "procedure",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "layout"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "approach",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "liftRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "layout",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "liftRow",
+        "serviceRow"
+      ],
+      "covered": 4,
+      "required": 4,
+      "missing": []
+    },
+    {
+      "axes": [
+        "liftRow",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    },
+    {
+      "axes": [
+        "serviceRow",
+        "assignment"
+      ],
+      "covered": 6,
+      "required": 6,
+      "missing": []
+    }
+  ],
+  "totals": {
+    "coveredPairs": 109,
+    "requiredPairs": 109,
+    "missingPairs": 0
+  },
+  "assignmentNote": "Pair coverage refers to selected assignment. Profile 32 intentionally skips service restoration and must still reach confirmed home with skipped status. All other optional selections assert the appropriate server-confirmed milestone.",
+  "evidenceBoundary": "All twelve planned route cases and three edge cases passed in each of chromium-1280 and chromium-1440 on the clean source recorded below. Actual local browser logs and all thirty persisted guard receipts establish execution; the compact three-trace comparison records observed plan differences. This is local deterministic Practice, not Live or a human playtest.",
+  "initialFocusedRun": "Earlier 12 routes passed before four assignment reassignments; those historical results do not establish this updated assignment matrix.",
+  "planningHistory": [
+    {
+      "status": "PLANNED_NOT_EXECUTED",
+      "source": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+      "path": "artifacts/goal-010/browser-plan.initial.json",
+      "sha256": "dd0a9e2a5a3f48aac13e09ca02e5d49bb1a55d3e3e9080817d203b7a4b9130e5",
+      "note": "Byte-identical initial planning snapshot retained before adding completed clean-run results. Its initialFocusedRun boundary remains historical."
+    }
+  ],
+  "execution": {
+    "source": "ef04b87caa39d965dd7211ad2b0e49aae681017b",
+    "version": "0.10.0",
+    "scope": "LOCAL_DETERMINISTIC_PRACTICE",
+    "cleanAtStart": true,
+    "trackedUnchangedAtEnd": true,
+    "receipt": {
+      "path": "artifacts/goal-010/offline-validation.json",
+      "sha256": "4b05f7192f3b2fb711e79de0abf17a5554b408cfbb739ce73d4bc632b722d59d"
+    },
+    "observedTraceComparison": "artifacts/goal-010/three-ui-traces.json",
+    "originalPrivateReceipt": {
+      "path": ".validation/goal-010/clean-ef04b87caa39/receipt.json",
+      "sha256": "66820eab6635ddb3ead26266b3f8a28df239fb8feb12030f6d42f4c5331db908"
+    },
+    "counts": {
+      "remixPassed": 30,
+      "routePassed": 24,
+      "edgePassed": 6,
+      "projects": [
+        {
+          "project": "chromium-1280",
+          "remixPassed": 15,
+          "routePassed": 12,
+          "edgePassed": 3
+        },
+        {
+          "project": "chromium-1440",
+          "remixPassed": 15,
+          "routePassed": 12,
+          "edgePassed": 3
+        }
+      ],
+      "guardReceipts": 30,
+      "forbiddenAttempts": 0,
+      "pageErrors": 0
+    },
+    "pairCoverage": {
+      "selectedAssignmentPairs": 109,
+      "requiredPairs": 109,
+      "missingPairs": 0,
+      "note": "The same twelve plan rows executed in both viewports. Selected optional assignment is the coverage axis; profile 32 intentionally completed rescue with its service-restoration assignment skipped."
+    },
+    "routeResults": [
+      {
+        "profile": 0,
+        "code": "R1-00-00-0-00000064-93C73A11",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "9945fdbfa16dfa4aa6d292711769c332cd7fbf5ee7d53efe80556c7e3e4f1af7",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "abee7aab2a93ea04260cf350efdd09a46f7182c8351ed5fd4002a1b8b022008c"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-1-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "885c373993337ab648dd17397d3821ae3fdfa56b842b991395c4711875cee995",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-1-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "abee7aab2a93ea04260cf350efdd09a46f7182c8351ed5fd4002a1b8b022008c"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 5,
+        "code": "R1-05-00-1-00000069-6CD8B0AC",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "92ca555e109e948bad99841d797b7c0cd59c405a104a4d857c7cca870d369065",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "9fcf75ad6c605b9bf353a6c5c9ceaf44da7f489998bfa3517c063d1eac3bfb37"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "f125796b15c633a868f6153278809d44a106f2215bbb0cbed34f66c4ecb100b7",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-1-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "9fcf75ad6c605b9bf353a6c5c9ceaf44da7f489998bfa3517c063d1eac3bfb37"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 14,
+        "code": "R1-0E-01-2-00000072-D4340FB1",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-2-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "77148773d8349cf846e00dc897504a30e98a39e157a32eb72b9d01ff483e23c6",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-2-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "679327a2224959ef8ff4c205b8323c41dbedcc832a19639788737ed4e4a9e67c"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-2-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "8dd3cf43fd1718aaea9e49deb1b5dce7b523a8113abb02dea9038eacbd2eed29",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-2-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "679327a2224959ef8ff4c205b8323c41dbedcc832a19639788737ed4e4a9e67c"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 11,
+        "code": "R1-0B-01-2-0000006F-6C7EC69E",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-2-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "ce2dec401658bc9cf8dd1eb43816c806a99f434aec0117a028bd53a612820e69",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-1-procedure-2-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "74c0af5dfabd10f11c3b35c992f6b228e402336b0879632ae5d056d33f40840b"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-2-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "205dd368cb076c5d004e349b3dc908c229638c1bce9a07781760f31219c8a513",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-1-procedure-2-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "74c0af5dfabd10f11c3b35c992f6b228e402336b0879632ae5d056d33f40840b"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 23,
+        "code": "R1-0N-01-0-0000007B-1B896A09",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-1-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "bd83e5b8394c5324d3f870b6ab9c1ca73ba2ae9b4509f67996907ded40fad562",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-1-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "3626f5687e472450c8ff88d0da37f6e3f42a91217776b146d1d5eb518020c06c"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-1-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "b872cbd75ce2ec527f25d93ed910c7f544f3a09c2ff25214328f2a32578ea145",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-1-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "3626f5687e472450c8ff88d0da37f6e3f42a91217776b146d1d5eb518020c06c"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 18,
+        "code": "R1-0I-01-1-00000076-8F049979",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-1-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "f7e4d515ef085e31dde9e526bc1e4af2da8ef5f569f4bfa441d6fdc195e3d143",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-1-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "5c4846200a481a735cb91abef1fb74043b32d0a552061ba9db1f006f2024753e"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-1-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "896e1fedfbabcf4ea3911bae5f3d99cb1d4bef5cb167683511f40f6b1b863050",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-1-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "5c4846200a481a735cb91abef1fb74043b32d0a552061ba9db1f006f2024753e"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 25,
+        "code": "R1-0P-02-2-0000007D-76583B1D",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "021d9f9c9ba8b535af960da758fe1b9973aba628970028f13ce421b8f2b76ef1",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "96435f4f83cc491d5ca3ee05340af94203ef630b85fcd8f4c99c4921f33df357"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "e1e1fcc47b3337119d0fc8b8492be5ec54beb094c45a7715de77411544e39eef",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-2-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "96435f4f83cc491d5ca3ee05340af94203ef630b85fcd8f4c99c4921f33df357"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 28,
+        "code": "R1-0S-02-0-00000080-5A4400AE",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "a8b590577080dc30b0f14d8a6195c9f3457e330431a8998f059dbb0e62d840c7",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-2-procedure-2-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "514c814d8c3ff1732bf111a2f943a496f48692dfbed7944f53f44ae5fd3e0fb3"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-2-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "353109287cddca6d6c6a3bde65ffc2b72c01a3953939970d390221a8067cfb6a",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-2-procedure-2-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "514c814d8c3ff1732bf111a2f943a496f48692dfbed7944f53f44ae5fd3e0fb3"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 32,
+        "code": "R1-0W-02-2-00000084-0B19B2E2",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-1-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "46a868ee30d1d3bcb343a8678498841db19dd4cf306e7fe9dfae441272cde6a0",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-1-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "6f7eeb108f772544ed3148fae8a31a6391e58592b69e729e2c3bc4a73acae5d3"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-1-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "bebca38a37c69738de16acc3c6a19f84459ff6e06ea8ae2500fd5c946bcc10fb",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-1-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "6f7eeb108f772544ed3148fae8a31a6391e58592b69e729e2c3bc4a73acae5d3"
+          }
+        ],
+        "assignmentExpected": "skipped"
+      },
+      {
+        "profile": 37,
+        "code": "R1-11-02-0-00000089-1838A820",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-1-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "90bdbb8d050fa74fd7bf8c0d823d7553ca0c730c40166fdb06d9751211f433a6",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-1-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "9b3a2e7fad8df8e94e75107471a4eee303c98e0cb5286c0991d7b59b96915c51"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-1-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "b813f3dee22cd6b46ffecd19ee11f757f5e6a9cb13134b47f5bd68bdae16d5cd",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-1-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "9b3a2e7fad8df8e94e75107471a4eee303c98e0cb5286c0991d7b59b96915c51"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 46,
+        "code": "R1-1A-03-1-00000092-6CD4398D",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "8a14e85d750c79f8a6bed70cc73687bc01a3aa6ea9c0e99bc86c92016a07b7be",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "111b9aeb83d7bc61ab7ed437e5681f974f60926d1d04ec196d58293af25165fd"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "d9d6a86ef4150b838eec2d2914bacc6102d901b42ae0bacf236b54ea30936f1e",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-2-reaches-home-by-lift-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "111b9aeb83d7bc61ab7ed437e5681f974f60926d1d04ec196d58293af25165fd"
+          }
+        ],
+        "assignmentExpected": "completed"
+      },
+      {
+        "profile": 43,
+        "code": "R1-17-03-0-0000008F-D556D933",
+        "status": "PASS",
+        "projects": [
+          {
+            "project": "chromium-1280",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-bypass-chromium-1280/network-guard-receipt.json",
+            "guardSha256": "8ee4851d57059ae89c0806f69f774d4ccbecc24353624079ab99ce81bd0587f0",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1280/remix-Remix-panel-3-procedure-2-reaches-home-by-bypass-chromium-1280/ordinary-ui-trace.json",
+            "traceSha256": "5f824e4ee087c8adc3fa9df4b7daab4d94f84ed16f6754125fb1c6fda9aff8d4"
+          },
+          {
+            "project": "chromium-1440",
+            "status": "passed",
+            "guardReceipt": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-2-reaches-home-by-bypass-chromium-1440/network-guard-receipt.json",
+            "guardSha256": "ceb5345c4ae0e2dabea6bb6d3d6c298a7b5a9d1dd6011d55e17107cc1ab1fbe4",
+            "tracePath": ".validation/goal-010/clean-ef04b87caa39/browser-results/chromium-1440/remix-Remix-panel-3-procedure-2-reaches-home-by-bypass-chromium-1440/ordinary-ui-trace.json",
+            "traceSha256": "5f824e4ee087c8adc3fa9df4b7daab4d94f84ed16f6754125fb1c6fda9aff8d4"
+          }
+        ],
+        "assignmentExpected": "completed"
+      }
+    ],
+    "privateEvidenceNotice": "Complete original logs and all thirty guards remain in ignored .validation; the offline receipt includes their safe metadata and hashes. Three reviewed traces and their guards are additionally packaged under artifacts/goal-010/contrasting-traces."
+  }
+}
