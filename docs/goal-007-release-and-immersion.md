@@ -18,13 +18,13 @@ Render authentication was not available at initial inspection: no connected Rend
 
 | Axis | Current evidence |
 | --- | --- |
-| Main integration | Baseline e37f8f7 integrated by normal fast-forward; exact main CI passed; intended immersion/admission/harness increments pending |
-| Product | Actual before captures at `artifacts/goal-007/ui/before/`; immersion increment pending |
+| Main integration | Baseline e37f8f7 integrated by normal fast-forward; exact main CI passed; immersion/admission/hosted harness/media merged locally for combined validation |
+| Product | Short radio briefing, first question, conversation phases, compact receipts, local ambience and recorder/direct-return homecomings implemented; actual before/after captures retained |
 | Public HTTPS | Not yet deployed; no URL invented |
 | Current Live | No Goal 007 provider attempt; old Goal 005 success/failure remain historical |
 | Reviewer access | Disabled; new allocation not initialized |
 | Public source | Private; historical account-plan/balance facts require the requested disclosure decision; incremental final audit remains |
-| Submission assets | Goal 006 preserved; current Goal 007 media pending |
+| Submission assets | Six editable slides, native PDF, four inspected current Practice screenshots, cover and validated form copy created; current Voice movie and published links pending |
 | Budget | No new reservation or hosting resource created |
 
 This is an in-progress execution record, not a claim of release completion. Hosted acceptance, actual main CI/deploy identity, curated asset URLs and final accounting will be appended from observed results.
@@ -38,3 +38,13 @@ Ordinary `npm start` now serves the built game, with `start:starter` preserving 
 `scripts/qa-hosted-practice.mjs` retains the same checks for the eventual real HTTPS origin, with an explicit expected commit and fresh browser contexts. Its default invocation performs no network work. The completed run was **local compiled production**, not hosted or Live evidence. Owned browser and server cleanup completed.
 
 Render credentials remain unavailable in the connected tools, standard CLI/configuration, environment and scoped project Render-variable names. The single authentication request remains pending; no service, disk or funded Goal 007 allowance has been created. [Whole-exposure baseline review](goal-007-security-review.md) records the separate historical account-data disclosure decision, which does not prevent private-source app deployment.
+
+## Integrated release increment
+
+The immersion implementation, protected hosted admission, one-attempt hosted QA driver and current submission components are integrated through normal merges, retaining each branch's authorship. [Immersion evidence](goal-007-immersion.md), [admission contract](goal-007-admission.md), [hosted execution procedure](goal-007-hosted-qa.md) and [media component inspection](goal-007-submission-components.md) describe their separate scopes.
+
+The hosted profile keeps 8 QA attempts separate from 8 reviewer attempts and binds the one durable grant to the actual service/origin. Its normal access-code route signs purpose and transport mode; token requests must match that mode before reservation. A browser cannot turn a Voice capability into a Text attempt. The original default remains 600 seconds; only the explicit protected profile uses 900 connected and 970 reserved seconds. Missing/corrupt data fails Live closed and leaves Practice available. These are offline-tested mechanisms, not evidence that a funded grant or public service exists.
+
+The integrated production build and 507 unit tests passed before browser validation. The complete browser run exposed an early provider-refusal/startup error-message race; its failed evidence remains private, and a focused repair is being verified before main advances. No test deadline or acceptance requirement is relaxed. Current real AssemblyAI, human speech, physical playback, natural human completion and enjoyment remain unverified.
+
+The current deck, four 1920x1080 images and form copy explicitly retain pending hosted/Live/source-access status. They do not replace Goal 006's immutable binaries or Goal 005's raw successful/failed recordings. No release upload or final event submission has occurred.

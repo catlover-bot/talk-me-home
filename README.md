@@ -38,11 +38,11 @@ The canonical [render.yaml](render.yaml) selects **main**, one Node instance and
 
 The new release grant has separately capped QA and reviewer purposes. Reviewer access stays disabled until its hosted acceptance pair passes. Historical grants remain exhausted and are never replenished. Provider credentials, access codes, funded ledgers and raw recordings are never public assets.
 
-Current Goal 006 gameplay has offline evidence. The existing media's real Voice success is a historical Goal 005 run with a synthetic microphone; another run on that same build failed in Gallery without an ending ACK. Goal 007's current hosted Voice results will be recorded separately. No human enjoyment or statistical reliability claim is made.
+Current Goal 007 gameplay has offline evidence: a shorter radio briefing, a persistent first-question suggestion, clear conversation phases and confirmation receipts, optional quiet radio ambience, and distinct recorder/direct-return homecomings. The existing media's real Voice success is a historical Goal 005 run with a synthetic microphone; another run on that same build failed in Gallery without an ending ACK. Goal 007's current hosted Voice results will be recorded separately. No human enjoyment or statistical reliability claim is made.
 
 ## Source, media and attribution
 
-[Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
+[Goal 007 editable deck and current screenshots](submission/goal-007/README.md) · [Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
 
 This project extends [AssemblyAI's voice-agent-starter-js](https://github.com/AssemblyAI/voice-agent-starter-js). Original files and notices remain. No license grant for upstream work is invented; review the included provenance before reuse.
 
