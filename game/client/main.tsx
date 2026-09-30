@@ -5,6 +5,7 @@ import "./styles.css";
 import "./release.css";
 import "./chapter-art.css";
 import "./connection-shell.css";
+import "./immersion.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

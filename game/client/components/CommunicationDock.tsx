@@ -22,6 +22,8 @@ export function MessageQuote({ item, onPin, historical = false }: { item: Captio
 export function CommunicationDock({ mission: m }: { mission: Mission }) {
   const [text, setText] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [questionDismissed, setQuestionDismissed] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [captionOverflow, setCaptionOverflow] = useState(false);
   const [historyOverflow, setHistoryOverflow] = useState(false);
   const captionText = useRef<HTMLParagraphElement>(null);
@@ -62,10 +64,22 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         : m.status === 'awaiting_reply' ? 'Check sent · waiting for Pip’s reply' : m.status === 'responding' ? 'Pip is responding'
           : m.microphone ? m.inputState === 'receiving' ? 'Receiving microphone input' : 'Connected · microphone ready' : 'Connected · microphone off';
   const canSend = m.connected && !m.busy && !m.view?.completed;
+  const awaitingDecision = m.view?.proposal?.status === 'awaiting_confirmation';
+  const phase = m.busy ? 'Connecting' : !m.connected ? 'Connection ended' : m.playing ? 'Pip is speaking'
+    : m.toolPending ? 'Checking locally' : awaitingDecision ? 'Your decision'
+      : m.status === 'awaiting_reply' || m.status === 'responding' ? 'Waiting for a reply'
+        : m.inputState === 'receiving' ? 'Listening to you' : 'Your turn';
+  const firstQuestion = m.view?.chapter === 'cargo' && !questionDismissed && !m.captions.some(item => item.role === 'human');
+  const request = async (kind: 'surroundings' | 'repeat_report') => {
+    if (requesting || !canSend) return;
+    setRequesting(true);
+    try { if (await m.quickRequest(kind)) setQuestionDismissed(true); } finally { setRequesting(false); }
+  };
   return <section className="communication-dock" aria-label="Communication with Pip">
     <div className="connection-readout"><span className="mode-badge">{m.connected ? originLabel[origin!] : 'No active call'}</span>
       <span role="status">{connectionText}</span></div>
     {live && (m.connected || m.seconds > 0) && <p className="call-time">{m.seconds}s connected · {m.connectionLimitSeconds / 60}-minute limit · provider usage</p>}
+    <div className="radio-phase" data-testid="radio-phase"><span aria-hidden="true"/><strong>{phase}</strong><small>{awaitingDecision ? 'Only this proposal can be confirmed.' : m.status === 'awaiting_reply' && m.connected ? 'Your notes and Pause remain available.' : 'Listen · compare · choose'}</small></div>
     <div className="caption-panel">
       <div className="caption-speaker"><strong>{m.activeCaption?.role === 'game' ? 'Game event' : m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</strong>
         {m.activeCaption && <span className="source-label">{originLabel[m.activeCaption.origin]}{!m.connected ? ' · Previous call' : ''}{m.activeCaption.inputMethod === 'typed' ? ' · Typed' : m.activeCaption.inputMethod === 'quick_request' ? ' · Selected request' : ''}</span>}</div>
@@ -90,11 +104,14 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       <div ref={historyList} className="history-list" tabIndex={0} aria-label="Conversation history entries. Scroll for earlier reports.">{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical={!m.connected || item.segmentId !== m.segment?.id} />)}</div>
       <p className="history-help">Escape closes history. Your map and call controls remain available.</p>
     </section>}
+    {firstQuestion && <div className="first-question" data-testid="first-question"><div><strong>Try asking: “What can you see?”</strong><button className="text-button" aria-label="Dismiss first question" onClick={() => setQuestionDismissed(true)}>×</button></div><button disabled={!canSend || requesting} onClick={() => { void request('surroundings'); }}>Ask about this room</button><small>Selected text · not microphone speech</small></div>}
     <form className="message-form" onSubmit={send}>
       <label htmlFor="message">Type a message</label>
       <div className="input-row"><input id="message" value={text} maxLength={2000} onChange={event => setText(event.target.value)} disabled={!canSend} placeholder="Talk it through with Pip…" autoComplete="off" />
         <button type="submit" aria-label="Send message" disabled={!canSend || !text.trim()}>Send</button></div>
     </form>
+    <details className="radio-help"><summary>Find our place in the conversation</summary><p>Ask for a fresh local look, or hear the last report again. These buttons send labelled text requests; they do not move Pip.</p><div><button disabled={!canSend || requesting} onClick={() => { void request('surroundings'); }}>Request a fresh look</button><button disabled={!canSend || requesting || !m.captions.some(item => item.role === 'robot')} onClick={() => { void request('repeat_report'); }}>Request the last report</button></div><p>Share one clue from your document. Choose a plan together, then read and confirm one exact action. Not yet leaves it unexecuted.</p></details>
+    {!m.connected && !m.busy && <p className="resume-retention">Your notes and confirmed progress remain while this server session exists. Resume is deliberate; a new Live connection uses another launch. A server restart loses the mission.</p>}
     {m.interrupted && <p className="notice">{live && m.connected ? 'Interrupted. The call is still connected and uses provider time. Pause / End call to disconnect.' : 'Pip is waiting. Completed actions remain completed.'}</p>}
     {m.recapNotice && <p className="recap-notice">{m.recapNotice}</p>}
     <details className="call-settings"><summary>Connection & sound</summary>
@@ -106,7 +123,8 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       </div>
       <div className="sound-controls"><label>Voice volume <input type="range" min="0" max="1" step="0.05" value={m.voiceVolume} onChange={event => m.changeVoiceVolume(Number(event.target.value))} /></label>
         <label>Effects volume <input type="range" min="0" max="1" step="0.05" value={m.effectsVolume} onChange={event => m.changeEffectsVolume(Number(event.target.value))} /></label>
-        <button onClick={() => { m.changeVoiceVolume(0); m.changeEffectsVolume(0); }}>Mute all audio</button></div>
+        <label>Radio ambience <input type="range" min="0" max="1" step="0.05" value={m.ambienceVolume} onChange={event => m.changeAmbienceVolume(Number(event.target.value))} /></label>
+        <button onClick={() => { m.changeVoiceVolume(0); m.changeEffectsVolume(0); m.changeAmbienceVolume(0); }}>Mute all audio</button></div>
       {m.voiceVolume === 0 && <p className="notice">Voice output is muted. Captions remain available. Muting does not end the call.</p>}
       <p className="muted">{m.mode === 'practice' ? 'Practice uses deterministic text matching, with no AI or microphone.' : 'Live Voice and Live Text both use AssemblyAI. No raw microphone audio is recorded by this app.'}</p>
     </details>

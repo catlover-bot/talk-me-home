@@ -10,5 +10,6 @@ export function AboutPanel() {
     <p>Live data is processed by AssemblyAI under the host’s provider configuration. See <a href="https://www.assemblyai.com/legal/privacy-policy" target="_blank" rel="noreferrer">AssemblyAI’s privacy policy</a>.</p>
     <h3>Credits</h3>
     <p>Original UNIT 04 character, station illustrations, documents, and interface artwork were created for Talk Me Home. Voice integration builds on the AssemblyAI Voice Agent starter. React and Vite support the browser application.</p>
+    <p><a href="/third-party-notices.txt" target="_blank" rel="noreferrer">Open-source credits and license notices</a>. Radio ambience and control tones are generated locally for this game.</p>
   </div></details>;
 }

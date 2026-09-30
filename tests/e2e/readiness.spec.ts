@@ -138,3 +138,22 @@ test('Gallery history has readable entries beside the map, current caption, port
   if (test.info().project.name === 'chromium-1280') await page.screenshot({ path: 'test-results/goal-004-history-paused-practice-1280.png', animations: 'disabled' });
 });
 import { confirmProposalForRequest } from '../../scripts/qa-mission-player.mjs';
+
+for (const [maxSessionSeconds, minutes] of [[undefined, 10], [900, 15], [1200, 10]] as const) {
+  test(`preconnection host limit ${maxSessionSeconds ?? 'default'} is disclosed without a token`, async ({ page }) => {
+    const provider = await fakeProvider(page);
+    await page.route('**/api/access', route => route.fulfill({ json: {
+      liveEnabled: true, authorized: true, available: true, message: 'Offline test host.',
+      ...(maxSessionSeconds === undefined ? {} : { maxSessionSeconds }),
+    } }));
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Play with voice', exact: true }).click();
+    await expect(page.getByTestId('readiness-limit')).toContainText(`Up to ${minutes} minutes per Live connection.`);
+    await expect(page.locator('.readiness-cooperation')).toContainText('Spoken “yes” does not press Confirm.');
+    expect(provider.tokenRequests).toBe(0);
+    expect((await provider.audioState()).captures).toBe(0);
+    await page.getByRole('button', { name: 'Choose Practice', exact: true }).click();
+    await expect(page.getByLabel('Type a message')).toBeEnabled();
+    expect(provider.tokenRequests).toBe(0);
+  });
+}

@@ -64,7 +64,7 @@ export function Debrief({
         <p className="debrief-intro">
           {rescue ? 'The station is behind you. Your partner is home.' : 'You brought the documents and remote controls. Pip brought local eyes and hands. This is what you did together.'}
         </p>
-        {rescue && <p className="home-story" data-testid="home-story"><span>Recovery bay · story</span>{view?.recoveredFlightRecorder ? 'And on the shelf: the flight recorder you chose to bring back.' : 'A safe arrival. That was always enough.'}</p>}
+        {rescue && <p className="home-story" data-testid="home-story"><span>Recovery bay · story</span>{view?.recoveredFlightRecorder ? 'And on the shelf: the flight recorder you chose to bring back. Its worn case has a place beside Pip now.' : 'A safe arrival. That was always enough. The shelf can wait for another journey.'}</p>}
         {closingCaption}
         <RecordContainer className={rescue ? 'debrief-record' : undefined}>{rescue && <summary>Remember the journey</summary>}
         <div className="contribution-strip" aria-label="Retained collaboration record counts">

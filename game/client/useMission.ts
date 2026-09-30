@@ -62,6 +62,7 @@ export function useMission() {
   const [hint, setHint] = useState('');
   const [voiceVolume, setVoiceVolume] = useState(1);
   const [effectsVolume, setEffectsVolume] = useState(0);
+  const [ambienceVolume, setAmbienceVolume] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [readinessMode, setReadinessMode] = useState<'live_voice' | 'live_text' | null>(null);
   const effects = useRef(new LocalEffects());
@@ -102,6 +103,7 @@ export function useMission() {
     viewRef.current = next; setView(next);
     if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
       setHint('');
+      effects.current.play('checkpoint');
       setRecapNotice('Checkpoint confirmed. Earlier reports remain in history with their original chapter.');
       practiceMemory.current = { chapter: next.chapter, gates: [], ...(practiceMemory.current.recorder === 'secured' ? { recorder: 'secured' } : {}) };
       void refreshRecord(next).catch(showError);
@@ -258,7 +260,7 @@ export function useMission() {
     if (busyRef.current || connectedRef.current || voice.current) return;
     setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0); setConnectionLimitSeconds(600);
     // Both audio paths begin in this user gesture; no capture happens on page load.
-    if (effectsVolume > 0) void effects.current.unlock();
+    if (effectsVolume > 0 || ambienceVolume > 0) void effects.current.unlock();
     const expected = ++generation.current;
     const source: Segment = { id: api.requestId(), origin: connectionMode };
     segmentRef.current = source; setSegment(source);
@@ -402,7 +404,7 @@ export function useMission() {
   };
 
   const quickRequest = (kind: 'surroundings' | 'repeat_report') => send(kind === 'surroundings'
-    ? 'Please look around and report the current emblem and reachable gates.'
+    ? viewRef.current?.chapter === 'gallery' ? 'Please look around and report the current emblem and reachable gates.' : 'Please look around and report what you can see within reach.'
     : 'Please repeat your last report, noting if it may be out of date.', 'quick_request');
 
   const changePower = async (powerOn: boolean) => {
@@ -553,7 +555,8 @@ export function useMission() {
     segmentRef.current = null; setSegment(null); setStatus('ended');
   };
   const changeVoiceVolume = (value: number) => { setVoiceVolume(value); voice.current?.setVolume(value); };
-  const changeEffectsVolume = (value: number) => { setEffectsVolume(value); effects.current.setVolume(value); if (value > 0) void effects.current.unlock(); else void effects.current.close(); };
+  const changeEffectsVolume = (value: number) => { setEffectsVolume(value); effects.current.setVolume(value); if (value > 0) void effects.current.unlock(); else if (ambienceVolume === 0) void effects.current.close(); };
+  const changeAmbienceVolume = (value: number) => { setAmbienceVolume(value); effects.current.setAmbienceVolume(value); if (value > 0) { effects.current.setAmbienceActive(connectedRef.current && !viewRef.current?.completed); void effects.current.unlock(); } else if (effectsVolume === 0) void effects.current.close(); };
 
   const requestStart = (next: TransportOrigin = mode) => {
     if (next === 'game') return;
@@ -571,6 +574,7 @@ export function useMission() {
   const cancelReadiness = () => setReadinessMode(null);
   const readinessText = () => { chooseMode('live_text'); setReadinessMode('live_text'); };
   const readinessPractice = () => { setReadinessMode(null); requestStart('practice'); };
+  useEffect(() => { effects.current.setAmbienceActive(connected && stage === 'mission'); }, [connected, stage]);
   useEffect(() => {
     document.documentElement.dataset.reducedMotion = String(reducedMotion);
     return () => { delete document.documentElement.dataset.reducedMotion; };
@@ -605,8 +609,8 @@ export function useMission() {
     stage, scenario, setScenario, missionKind, setMissionKind: chooseMissionKind, optionalObjective, setOptionalObjective, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
-    error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, reducedMotion, pipState,
+    error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, ambienceVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
-    start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume,
+    start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume, changeAmbienceVolume,
   };
 }

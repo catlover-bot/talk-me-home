@@ -1,0 +1,110 @@
+/* Goal 007: a paper desk and a working radio, with the next conversation in reach. */
+.release-briefing .title-scene { height: 268px; }
+.release-briefing .title-copy { padding: 26px 30px; }
+.release-briefing .title-copy h1 { font-size: clamp(31px, 3.15vw, 48px); margin: 8px 0 12px; }
+.release-briefing .title-pip .pip-art { height: 175px; }
+.release-briefing .briefing-paper { display: flex; flex-direction: column; }
+.release-briefing .launch-row { order: -1; margin-top: 0; margin-bottom: 18px; padding: 0 0 17px; border-top: 0; border-bottom: 1px solid #b7bda6; }
+.release-briefing .briefing-action { display: flex; gap: 10px; }
+.release-briefing .briefing-action > .primary-button { order: -1; min-width: 155px; }
+.release-briefing .voice-launch { font-size: 13px; }
+.release-briefing .quick-guide { max-width: 480px; }
+.release-briefing .recorder-choice { border-left: 4px solid #95704b; background: linear-gradient(100deg, #eee3cb, #f3eddb); }
+.readiness-cooperation { padding: 12px 15px; border-left: 3px solid #87613c; background: #e5dfca; }
+.mission-jump { display: none; }
+.mission-desk, .companion-console { scroll-margin-top: 60px; }
+.companion-console { background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, #0c1f170d 4px); }
+.companion-console > .pip-portrait { display: flex; align-items: center; gap: 12px; margin: 0; }
+.companion-console > .pip-portrait .pip-art { width: 106px; height: 91px; flex: 0 0 106px; }
+.companion-console > .pip-portrait figcaption { flex: 1; min-width: 0; flex-wrap: wrap; gap: 6px; }
+.companion-console .console-heading { border-bottom: 1px solid #80907555; padding-bottom: 8px; margin-bottom: 3px; }
+.radio-phase { display: flex; gap: 8px; align-items: center; color: #ede2c6; font-size: 12px; margin: 0 0 9px; }
+.radio-phase > span { width: 6px; height: 6px; border: 1px solid #d5bc8b; border-radius: 50%; flex-shrink: 0; }
+.radio-phase small { margin-left: auto; color: #c4cbb6; font-size: 11px; }
+.companion-console .caption-panel { background: #172d23; border-top: 2px solid #849578; }
+.companion-console .caption-text { max-height: 126px; line-height: 1.5; }
+.companion-console:has(.action-proposal) .caption-text { max-height: 102px; }
+.companion-console .completed-receipt { background: #2e4134; border-color: #75846a; color: #ede5cf; }
+.completed-receipt > summary { display: flex; list-style: none; gap: 8px; align-items: baseline; cursor: pointer; }
+.completed-receipt > summary::-webkit-details-marker { display: none; }
+.completed-receipt > summary strong { font-size: 13px; }
+.completed-receipt > summary small { margin-left: auto; white-space: nowrap; font-size: 10px; }
+.completed-receipt > p { color: #d4dac6; }
+.first-question { background: #e9dfc5; color: #304437; border-left: 3px solid #b38a53; padding: 10px 12px; margin: 10px 0; }
+.first-question > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.first-question strong { font-size: 13px; }
+.first-question p { font-size: 12px; line-height: 1.5; margin: 3px 0 8px; }
+.first-question small { display: block; color: #526049; font-size: 10px; margin-top: 5px; }
+.companion-console .first-question .text-button { color: #344635; min-height: 25px; padding: 0 7px; font-size: 20px; }
+.first-question > button { min-height: 34px; font-size: 12px; }
+.radio-help { margin-top: 10px; border-top: 1px solid #76866d; padding-top: 9px; }
+.radio-help > summary { color: #e2d6ba; font-size: 12px; cursor: pointer; }
+.radio-help p, .resume-retention { color: #cbd3bd; font-size: 12px; line-height: 1.6; }
+.radio-help > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.radio-help button { min-height: 36px; font-size: 12px; }
+.recorder-confirmation { color: #4a5640; font-size: 12px; line-height: 1.5; }
+.action-proposal[data-status=awaiting_confirmation] { border-left: 4px solid #ae7543; }
+.proposal-buttons button, .atlas-planning-bar button, .human-controls button { transition: box-shadow 110ms ease, transform 110ms ease, background-color 110ms ease; }
+.proposal-buttons button:active:not(:disabled), .atlas-planning-bar button:active:not(:disabled), .human-controls button:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 3px #263b282e; }
+.archive-document-note { border-left: 4px solid #a8804e; background: #eee6cd; line-height: 1.6; }
+.home-story { border-left: 3px solid #b38a53; background: #ede3c9; }
+@media (max-height: 790px) and (min-width: 1000px) {
+ .release-briefing .title-scene { height: 246px; }
+ .release-briefing .title-copy { padding: 21px 28px; }
+ .release-briefing .title-pip .pip-art { height: 165px; }
+ .companion-console > .pip-portrait .pip-art { width: 88px; height: 68px; flex-basis: 88px; }
+ .companion-console:has(.action-proposal) > .pip-portrait .pip-art { height: 68px; }
+ .companion-console .caption-text { max-height: 96px; }
+ .companion-console:has(.action-proposal) .caption-text { max-height: 80px; }
+ .radio-phase { margin-bottom: 6px; }
+ .first-question { margin: 7px 0; padding-block: 7px; }
+ .first-question > button { min-height: 32px; }
+ .radio-help { margin-top: 7px; padding-top: 7px; }
+}
+@media (max-width: 999px) {
+ .mission-jump { display: flex; position: sticky; z-index: 5; top: 0; gap: 6px; background: #e8e6da; padding: 8px 0; border-bottom: 1px solid #b4bea3; }
+ .mission-jump a { flex: 1; color: #324b39; background: #f5f0df; border: 1px solid #8d9c7d; border-radius: 3px; padding: 11px 8px; text-align: center; text-decoration: none; font-size: 12px; font-weight: 700; }
+ .mission-jump a:first-child { color: #f3ebd4; background: #344b39; }
+ .mission-layout { display: flex; flex-direction: column; }
+ .mission-layout > .companion-console { order: -1; }
+ .companion-console > .pip-portrait .pip-art { height: 80px; }
+ .companion-console > .pip-portrait { max-width: none; }
+ .radio-phase { flex-wrap: wrap; }
+ .radio-phase small { margin-left: 0; }
+ .release-briefing .title-scene { height: 275px; }
+ .release-briefing .launch-row { gap: 12px; flex-wrap: wrap; }
+ .release-briefing .briefing-action { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+ .release-briefing .title-scene { height: 360px; }
+ .release-briefing .title-copy { padding: 20px; }
+ .release-briefing .title-copy h1 { font-size: 32px; }
+ .release-briefing .title-pip { width: 145px; }
+ .release-briefing .title-pip .pip-art { height: 105px; }
+ .release-briefing .title-frequency { max-width: 190px; }
+ .release-briefing .briefing-action > .primary-button { min-width: 0; }
+ .completed-receipt > summary { flex-wrap: wrap; }
+ .completed-receipt > summary small { margin-left: 20px; }
+ .companion-console .caption-text { font-size: 16px; max-height: 144px; }
+}
+@media (prefers-reduced-motion: reduce) { .proposal-buttons button, .atlas-planning-bar button, .human-controls button { transition: none; } }
+.mission-desk { min-width: 0; max-width: 100%; }
+.first-question > button { margin-top: 5px; }
+@media (max-height: 790px) and (min-width: 1000px) {
+ .first-question { display: grid; grid-template-columns: auto 1fr; column-gap: 9px; }
+ .first-question > div { grid-column: 1 / -1; }
+ .first-question small { align-self: center; }
+ .companion-console:has(.first-question) .caption-text { min-height: 0; }
+}
+/* Container width also follows enlarged text/zoom, unlike viewport-only queries. */
+.app-shell { container-type: inline-size; }
+@container (max-width: 999px) {
+ .mission-jump { display: flex; position: sticky; z-index: 5; top: 0; gap: 6px; background: #e8e6da; padding: 8px 0; border-bottom: 1px solid #b4bea3; }
+ .mission-jump a { flex: 1; color: #324b39; background: #f5f0df; border: 1px solid #8d9c7d; border-radius: 3px; padding: 11px 8px; text-align: center; text-decoration: none; font-size: 12px; font-weight: 700; }
+ .mission-jump a:first-child { color: #f3ebd4; background: #344b39; }
+ .mission-layout { display: flex; flex-direction: column; }
+ .mission-layout > .companion-console { order: -1; position: static; }
+ .companion-console > .pip-portrait .pip-art { height: 80px; }
+ .radio-phase { flex-wrap: wrap; }
+ .radio-phase small { margin-left: 0; }
+}

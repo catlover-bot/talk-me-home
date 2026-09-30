@@ -64,11 +64,13 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
     catch (cause) { if (alive.current) setAccessError(cause instanceof Error ? cause.message : 'Access could not be confirmed. Retry or choose Practice.'); }
     finally { if (alive.current) setUnlocking(false); }
   };
+  const connectionLimitSeconds = access && 'maxSessionSeconds' in access && access.maxSessionSeconds === 900 ? 900 : 600;
   const ready = (mode === 'live_text' || microphone === 'ready') && (output || captionsOnly)
     && access?.liveEnabled && access.authorized && access.available;
   return <dialog ref={dialog} className="readiness-dialog" aria-labelledby="readiness-title" onCancel={event => { event.preventDefault(); finish(onCancel); }}>
     <div className="dialog-heading"><div><span className="eyebrow">Before we call Pip</span><h2 id="readiness-title">Check your connection</h2></div><button aria-label="Close connection check" onClick={() => finish(onCancel)}>Close</button></div>
     <p className="readiness-intro">{mode === 'live_voice' ? 'Live Voice sends your microphone and typed messages to AssemblyAI.' : 'Live Text sends typed messages to AssemblyAI and can play Pip’s replies.'} These checks stay in your browser. No provider call has started.</p>
+    <p className="readiness-cooperation"><strong>You hold the documents; Pip sees the station.</strong> Ask a question, compare the report with your plans, then confirm only the proposed action you intend. Looking needs no confirmation. Spoken “yes” does not press Confirm.</p>
     <div className="readiness-steps">
       {mode === 'live_voice' && <section aria-label="Local microphone check">
         <div className="readiness-step-label"><span>01</span><h3>Microphone</h3><strong>{microphone === 'ready' ? 'Input connected' : microphone === 'checking' ? 'Waiting for permission' : 'Not checked'}</strong></div>
@@ -86,7 +88,7 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
     </div>
     {error && <p className="readiness-error" role="alert">{error}</p>}
     <section className="demo-access" aria-label="Demo access">
-      <h3>Live demo access</h3><p role="status">{access?.message ?? (accessError ? 'Live availability could not be checked.' : 'Checking service availability…')}</p>
+      <h3>Live demo access</h3>{access && <p className="readiness-limit" data-testid="readiness-limit"><strong>Up to {connectionLimitSeconds / 60} minutes per Live connection.</strong> Pause ends it; Resume uses a new launch.</p>}<p role="status">{access?.message ?? (accessError ? 'Live availability could not be checked.' : 'Checking service availability…')}</p>
       {access?.liveEnabled && !access.authorized && <form onSubmit={event => { void unlock(event); }}><label htmlFor="demo-code">Demo access code</label><div className="input-row"><input id="demo-code" type="password" value={code} autoComplete="off" maxLength={200} onChange={event => setCode(event.target.value)} /><button disabled={unlocking || !code.trim()}>{unlocking ? 'Checking…' : 'Unlock Live'}</button></div><p>The host supplies this code. It stays out of links and recordings.</p></form>}
       {accessError && <p className="readiness-error" role="alert">{accessError}</p>}
       {(accessError || (access && !access.available)) && <button className="text-button" onClick={refreshAccess}>Check availability again</button>}

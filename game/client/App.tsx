@@ -39,14 +39,14 @@ export default function App() {
           {m.stage === 'debrief' && m.view?.completed ? <>
             <Suspense fallback={<p role="status">Arrival confirmed. Opening the recovery bay…</p>}><Debrief view={m.view} scenario={m.view.scenario} record={m.record} closingCaption={closingCaption} onReplay={() => { void m.newBriefing(m.view!.scenario, m.view!.missionKind); }} onMaintenance={() => { void m.newBriefing('maintenance', 'training'); }} onBriefing={() => { void m.newBriefing(m.scenario); }} busy={m.busy} connectionEnded={!m.connected && !m.busy} practice={m.segment?.origin === 'practice'}/></Suspense>
             <details className="debrief-history"><summary>Conversation & notebook</summary><Notebook record={m.record} onNote={m.note}/>{m.captions.map(item => <MessageQuote key={item.id} item={item} onPin={id => { void m.pin(id); }} historical/>)}</details>
-          </> : <>{m.view && <ChapterHeader view={m.view} presentation={presentation} onPresentation={() => setPresentation(value => !value)}/>}<div className="mission-layout">
-            <div className="mission-desk">
+          </> : <>{m.view && <ChapterHeader view={m.view} presentation={presentation} onPresentation={() => setPresentation(value => !value)}/>}<nav className="mission-jump" aria-label="Mission console navigation"><a href="#radio-console">Radio &amp; action</a><a href="#mission-documents">Documents &amp; controls</a></nav><div className="mission-layout">
+            <div className="mission-desk" id="mission-documents" tabIndex={-1}>
               <MissionDocuments key={m.view?.chapter} scenario={m.view?.scenario ?? m.scenario} chapter={m.view?.chapter} returnDock={m.view?.returnDock} optionalObjective={m.view?.optionalObjective} annotation={m.record?.annotations} record={m.record} onAnnotation={m.annotate} onPin={m.pin} onQuickRequest={m.quickRequest} requestEnabled={m.connected && !m.busy && !m.view?.completed} busy={m.busy}/>
               {m.view && <HumanControls view={m.view} connected={m.connected} busy={m.busy} pending={m.controlPending} changePower={m.changePower} changeRelay={m.changeRelay} dockControl={m.dockControl}/>}
               <details className="desk-extras"><summary>Field notebook <span>Private notes &amp; pinned reports</span></summary><Notebook key={m.view?.roundId} record={m.record} onNote={m.note}/></details>
               <details className="hint-panel"><summary>Need a nudge?</summary><p>Hints are optional. They use this chapter's guide, with no AI calls.</p><div className="hint-actions">{([1, 2, 3] as const).map(level => <button key={level} onClick={() => { void m.askHint(level); }}>Hint {level}</button>)}</div>{m.hint && <div><span className="source-label">Mission guide · {chapterNames[m.view?.chapter ?? 'cargo']} · Private</span><p role="status" className="hint-copy">{m.hint}</p></div>}</details>
             </div>
-            <aside className="companion-console" aria-label="Pip radio console">
+            <aside className="companion-console" id="radio-console" tabIndex={-1} aria-label="Pip radio console">
               <div className="console-heading"><span className="console-kicker">Your partner</span><span className="unit-label">UNIT 04</span></div>
               <PipPortrait state={m.pipState as PipState} compact/>
               <CommunicationDock key={m.view?.roundId} mission={m}/>

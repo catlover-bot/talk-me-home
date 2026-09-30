@@ -17,7 +17,7 @@ test('delayed pending and declined snapshots cannot replace a newer proposal at 
   const propose = () => store.tool(initial.sessionId, { roundId: initial.roundId, chapterEpoch: initial.chapterEpoch,
     actionEpoch: initial.actionEpoch, callId: randomUUID(), name: 'propose_interaction', arguments: { object: 'latch', action: 'latch_open' } });
   const pending = await propose();
-  assert.equal(simulationToolSpeech(pending), 'I propose: Engage the Latch. Please confirm on the console, or choose Not yet.');
+  assert.equal(simulationToolSpeech(pending), 'I propose: Engage the Latch.');
   const declined = await store.decideProposal(initial.sessionId, { roundId: initial.roundId, proposalId: pending.proposal!.id,
     requestId: randomUUID(), decision: 'decline' }, owner);
   const replacement = await propose();

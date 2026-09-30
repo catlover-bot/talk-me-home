@@ -206,7 +206,7 @@ test('Rescue layout and local rendering: 1920, narrow, enlarged, reduced motion,
   await page.getByRole('button', { name: 'Relay Harbor', exact: true }).focus(); await page.keyboard.press('Enter');
   await expect(page.getByTestId('acknowledged-relay')).toHaveText('Harbor');
   const documentBox = await page.locator('.mission-documents').boundingBox(); const consoleBox = await page.locator('.companion-console').boundingBox();
-  expect(consoleBox!.y).toBeGreaterThan(documentBox!.y + documentBox!.height);
+  expect(documentBox!.y).toBeGreaterThan(consoleBox!.y + consoleBox!.height);
   if (info.project.name === 'chromium-1280') await screenshot(page, 'gallery-enlarged', info);
   await page.evaluate(() => { document.documentElement.style.zoom = '1'; });
   await page.getByRole('button', { name: 'Presentation layout', exact: true }).click();
