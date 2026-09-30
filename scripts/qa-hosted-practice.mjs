@@ -1,6 +1,6 @@
 // Public-origin checks use only normal Practice UI and never mint a provider token.
 import { chromium, expect, request } from '@playwright/test';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import assert from 'node:assert/strict';
@@ -13,7 +13,7 @@ else {
   const local = url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname);
   assert(url.protocol === 'https:' || local && flags['allow-loopback'], 'HTTPS required outside explicit loopback verification.');
   assert(/^[a-f0-9]{40}$/.test(flags['expected-commit'] ?? ''), 'Pin the expected source commit.');
-  const output = resolve(flags.output ?? `.validation/goal-007/practice-${Date.now()}`); mkdirSync(output, { recursive: true });
+  const output = resolve(flags.output ?? `.validation/goal-007/practice-${Date.now()}`); assert(!existsSync(output), 'Preserve previous evidence: choose a new output directory.'); mkdirSync(output, { recursive: true, mode: 0o700 });
   const receipt = { schemaVersion: 1, startedAt: new Date().toISOString(), origin: url.origin, scope: local ? 'LOCAL_COMPILED_PRODUCTION' : 'HOSTED_HTTPS_PRODUCTION', mode: 'Practice / deterministic simulation', checks: [], rescues: [], forbiddenRequests: 0, errors: [], status: 'RUNNING' };
   const browser = await chromium.launch({ headless: true, chromiumSandbox: true, ...(process.env.GAME_QA_BROWSER_CHANNEL ? { channel: process.env.GAME_QA_BROWSER_CHANNEL } : {}) });
   const api = await request.newContext({ baseURL: url.origin, timeout: 10000 });
@@ -39,7 +39,11 @@ else {
     const assets = await landing.page.locator('script[src],link[rel="stylesheet"]').evaluateAll(nodes => nodes.map(n => n.getAttribute('src') ?? n.getAttribute('href')));
     assert(assets.length >= 2);
     for (const asset of assets) { assert(asset.startsWith('/assets/')); const response = await api.get(asset); assert.equal(response.status(), 200); assert.match(response.headers()['cache-control'], /immutable/); assert.match(response.headers()['content-type'], asset.endsWith('.css') ? /text\/css/ : /javascript/); }
-    receipt.assets = assets; receipt.checks.push('SPA reload and hashed asset MIME/cache'); await landing.context.close();
+    receipt.assets = assets; receipt.checks.push('SPA reload and hashed asset MIME/cache');
+    for (const [width, height] of [[1280, 720], [1440, 900]]) {
+      await landing.page.setViewportSize({ width, height }); await landing.page.screenshot({ path: resolve(output, 'entrance-' + width + '.png'), animations: 'disabled' });
+    }
+    await landing.context.close();
     for (const objective of ['collected', 'selected-skipped']) {
       const { page, context } = await fresh();
       const run = { objective, chapters: ['Cargo Bay'], confirmations: 0, declined: 0, reports: [], screenshots: [] }; receipt.rescues.push(run);
@@ -59,7 +63,8 @@ else {
       try {
         await page.goto(url.origin); await page.getByRole('checkbox', { name: 'Bring back the flight recorder', exact: true }).check();
         const created = page.waitForResponse(r => new URL(r.url()).pathname === '/api/sessions' && r.request().method() === 'POST');
-        await page.getByRole('button', { name: 'Start Practice', exact: true }).click(); const initial = await (await created).json();
+        const started = performance.now(); await page.getByRole('button', { name: 'Start Practice', exact: true }).click(); const initial = await (await created).json();
+        await expect(page.getByTestId('first-question')).toBeVisible(); run.firstQuestionVisibleAfterStartMs = Math.round(performance.now() - started);
         // A separate cookie-free context is not the owner. Never retain a returned token body.
         const denied = await api.post(`/api/sessions/${encodeURIComponent(initial.sessionId)}/voice-token`, { headers: { origin: url.origin }, data: { roundId: initial.roundId } });
         assert.equal(denied.status(), 404, 'Nonowners receive no session-existence disclosure.'); run.nonownerTokenStatus = denied.status();

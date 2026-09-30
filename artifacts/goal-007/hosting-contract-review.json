@@ -1,0 +1,33 @@
+{
+    "schemaVersion":  1,
+    "checkedAtUtc":  "2026-09-30T01:16:38Z",
+    "status":  "OFFICIAL_CONTRACT_RECHECK_ONLY",
+    "selectedPlanId":  "0.5c-512mb",
+    "legacyPlanId":  "starter",
+    "cpu":  0.5,
+    "ramMb":  512,
+    "instanceCount":  1,
+    "diskGb":  1,
+    "computeUsdPerMonth":  7,
+    "diskUsdPerGbMonth":  0.25,
+    "baseUsdPerMonth":  7.25,
+    "ownerBaseCeilingUsdPerMonth":  8,
+    "recurringUntilCanceled":  true,
+    "taxesAndUsageOverageSeparate":  true,
+    "apiAccountPlanVerification":  "Pending authenticated Render access; no resource created",
+    "serviceIdentitySource":  "Render automatically provides RENDER_SERVICE_ID and RENDER_GIT_COMMIT",
+    "httpHealthHost":  "Provider onrender.com host when no custom domain is configured",
+    "buildStorage":  "Persistent disk is runtime only",
+    "pipelineControl":  "Workspace pipeline spend limit exists; inspect existing use and scope before changing a shared workspace control",
+    "sources":  [
+                    "https://render.com/pricing",
+                    "https://render.com/docs/compute-plans",
+                    "https://render.com/docs/environment-variables",
+                    "https://render.com/docs/health-checks",
+                    "https://render.com/docs/disks",
+                    "https://render.com/docs/build-pipeline"
+                ],
+    "actualServiceId":  null,
+    "actualGameUrl":  null,
+    "actualHostingSpend":  0
+}

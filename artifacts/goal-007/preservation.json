@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-09-30T01:16:19.795746+00:00",
+  "status": "PASS",
+  "historicalBaselineSha256": "189351cb52bb860f6883487fb304a31b9c64cc000b9c42afda051e9828ee57fd",
+  "historicalFilesChecked": 496,
+  "historicalBytesChecked": 1211861676,
+  "historicalMismatches": [],
+  "goal006Media": [
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Submission.mp4",
+      "matches": true,
+      "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd"
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Pitch.pptx",
+      "matches": true,
+      "sha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a"
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Pitch.pdf",
+      "matches": true,
+      "sha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f"
+    },
+    {
+      "path": "submission/goal-006/Talk_Me_Home_Submission_Package.zip",
+      "matches": true,
+      "sha256": "faf2705d8c6c763636c094657b4bb987fb51bb3e897cbbfe68d2cac83fb7f9ff"
+    },
+    {
+      "path": "submission/goal-006/cover-1920x1080.png",
+      "matches": true,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "path": "submission/goal-006/submission-form.md",
+      "matches": true,
+      "sha256": "8afe75e2ee1a98c036b8958126934555764c29bf352664abc5b5e143c4bf3f35"
+    },
+    {
+      "path": "submission/goal-006/video-subtitles.srt",
+      "matches": true,
+      "sha256": "1b365c0740a8d85801a3700e6f722c7580387ecfa8fa5b9829e1d29468783d0a"
+    },
+    {
+      "path": "submission/goal-006/README.md",
+      "matches": true,
+      "sha256": "4ebe80c60ccc50c528a75b7e7bc9c5b5e566fde4a6ff1c51469b99f8247aa2bf"
+    },
+    {
+      "path": "submission/goal-006/submission-checklist.md",
+      "matches": true,
+      "sha256": "aafaa59f7f7f7cf9dfd5323f8dcbbd7d73a1e8fecdf9c95674bcc22a73b19e70"
+    },
+    {
+      "path": "submission/goal-006/media-manifest.json",
+      "matches": true,
+      "sha256": "92786d778d9f405bf9d9d2b1baef46992651555ef18630305573571fd77ad27e"
+    },
+    {
+      "path": "submission/goal-006/edit-plan.json",
+      "matches": true,
+      "sha256": "feb6892d2dd69aaa4689e55c319b387e994dddc55994957d51b01ff766b60593"
+    },
+    {
+      "path": "submission/goal-006/screenshots/practice-dock.png",
+      "matches": true,
+      "sha256": "75b4763a9e843fe1a470dc4a9d70a00bee88c13be03cea9ef4ac5349847948b3"
+    },
+    {
+      "path": "submission/goal-006/screenshots/practice-gallery.png",
+      "matches": true,
+      "sha256": "31fb7979ed114ce6dd64139767a338201634c84f263599874ae361b4f4806301"
+    },
+    {
+      "path": "submission/goal-006/screenshots/practice-cargo.png",
+      "matches": true,
+      "sha256": "eb536703654e28469a18d35b7be7a1a21109950fbf0ce831fc015977c5abaca3"
+    },
+    {
+      "path": "submission/goal-006/screenshots/practice-home.png",
+      "matches": true,
+      "sha256": "7f8d7c627610d7566085cafdf969185c814d65da0e851e19dfc43b22e12d829a"
+    },
+    {
+      "path": "submission/goal-006/screenshots/mode-build-manifest.json",
+      "matches": true,
+      "sha256": "a4900bd998909cec7cd29b61339d23b63345d3e721a025d5d5b5c12acc5481fb"
+    },
+    {
+      "path": "submission/goal-006/practice-source.json",
+      "matches": true,
+      "sha256": "8c8810715c1177f8e07afbce18907293e4eabf16ee015e41adc5dbe577e2325c"
+    },
+    {
+      "path": "submission/goal-006/baseline-track-a-receipt.json",
+      "matches": true,
+      "sha256": "3ee9bec4eb8af17b6e8130888b268027fdde17f10133d483a9df4a6f95d462ce"
+    }
+  ],
+  "preservedWorktrees": {
+    "original": {
+      "commit": "ec9766dae2ff1eafb0d6559d637a1517a878e08a",
+      "status": ""
+    },
+    "goal006": {
+      "commit": "5982fb69711f765aaeff33959773b022fce50c27",
+      "status": ""
+    }
+  },
+  "scope": "Rehashed every anchored historical evidence path at original location, including exhausted ledgers and raw recordings; verified Goal006 package members and MP4/PPTX/PDF/ZIP. Credentials excluded; no original file was modified."
+}
