@@ -11,6 +11,7 @@ function fakeAudioGlobals() {
   const contexts: Context[] = [];
   const worklets: Worklet[] = [];
   let oscillatorCount = 0;
+  const activeOscillators = new Set<object>();
   class Context {
     state = 'running';
     currentTime = 0;
@@ -23,7 +24,7 @@ function fakeAudioGlobals() {
     createGain() { return { gain: { value: 1, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
     createOscillator() {
       oscillatorCount++;
-      return { type: 'sine', frequency: { value: 0 }, onended: null as (() => void) | null, connect() {}, disconnect() {}, start() {}, stop() { this.onended?.(); } };
+      return { type: 'sine', frequency: { value: 0 }, onended: null as (() => void) | null, connect() {}, disconnect() {}, start() { activeOscillators.add(this); }, stop() { activeOscillators.delete(this); this.onended?.(); } };
     }
   }
   class Worklet {
@@ -37,7 +38,7 @@ function fakeAudioGlobals() {
   Object.defineProperty(globalThis, 'AudioContext', { configurable: true, value: Context });
   Object.defineProperty(globalThis, 'AudioWorkletNode', { configurable: true, value: Worklet });
   return {
-    contexts, worklets, get oscillatorCount() { return oscillatorCount; },
+    contexts, worklets, activeOscillators, get oscillatorCount() { return oscillatorCount; },
     restore() { names.forEach((name, index) => { const value = previous[index]; if (value) Object.defineProperty(globalThis, name, value); else Reflect.deleteProperty(globalThis, name); }); },
   };
 }
@@ -152,5 +153,38 @@ test('local effects: no automatic initialization, no competing speech, mute, and
     effects.play('connect');
     assert.equal(fakes.contexts.length, 1);
     assert.equal(fakes.oscillatorCount, 4);
+  } finally { await effects.close(); fakes.restore(); }
+});
+
+
+test('local radio ambience: opt-in gesture, independent mute, voice suppression and no orphaned sources', async () => {
+  const fakes = fakeAudioGlobals();
+  const effects = new LocalEffects();
+  try {
+    effects.setAmbienceActive(true);
+    effects.setAmbienceVolume(0.4);
+    assert.equal(fakes.contexts.length, 0, 'Configuration cannot unlock audio.');
+    await effects.unlock();
+    assert.equal(fakes.activeOscillators.size, 2);
+    effects.setVolume(0);
+    assert.equal(fakes.activeOscillators.size, 2, 'Muting controls does not mute independent ambience.');
+    effects.setVoiceActive(true);
+    assert.equal(fakes.activeOscillators.size, 0, 'Microphone or actual playback suppresses the bed.');
+    effects.setAmbienceVolume(0.8);
+    assert.equal(fakes.activeOscillators.size, 0, 'Volume changes cannot bypass speech suppression.');
+    effects.setVoiceActive(false);
+    assert.equal(fakes.activeOscillators.size, 2);
+    effects.setAmbienceVolume(0);
+    assert.equal(fakes.activeOscillators.size, 0);
+    effects.setAmbienceVolume(0.3);
+    assert.equal(fakes.activeOscillators.size, 2);
+    effects.setAmbienceActive(false);
+    assert.equal(fakes.activeOscillators.size, 0, 'Pause and completion release ambience sources.');
+    effects.setAmbienceActive(true);
+    await effects.close();
+    assert.equal(fakes.activeOscillators.size, 0);
+    assert.equal(fakes.contexts[0]?.state, 'closed');
+    effects.setVoiceActive(false);
+    assert.equal(fakes.activeOscillators.size, 0, 'A late playback callback cannot restart closed sound.');
   } finally { await effects.close(); fakes.restore(); }
 });

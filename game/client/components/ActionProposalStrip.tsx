@@ -28,11 +28,13 @@ export function ActionProposalStrip({ proposal, confirming, failed, enabled, onD
     invalidated: 'Cancelled — ask Pip for a new proposal',
     failed: failed ? 'Outcome unconfirmed — ask Pip to check this proposal’s status' : 'Not executed — the game server refused this action',
   }[status];
+  if (status === 'committed') return <details className="action-proposal completed-receipt" data-testid="action-proposal" data-proposal-id={proposal.id} data-status={status} aria-label="Pip's completed action"><summary><span aria-hidden="true">✓</span><strong data-testid="proposal-label">{proposal.label}</strong><small>Confirmed · details</small></summary><p role="status">{copy}</p><p>This is a past action. It does not approve a next step.</p></details>;
   return <section className="action-proposal" data-testid="action-proposal" data-proposal-id={proposal.id}
     data-status={status} aria-label="Pip's proposed action">
     <span className="proposal-kicker">Pip’s proposed action</span>
     <strong data-testid="proposal-label">{proposal.label}</strong>
     <p role="status">{copy}</p>
+    {status === 'awaiting_confirmation' && proposal.label === 'Secure the flight recorder' && <p className="recorder-confirmation">Carry Pip’s flight notes home, or choose Not yet and continue the rescue.</p>}
     {status === 'awaiting_confirmation' && <div className="proposal-buttons">
       <button className="primary-button" disabled={!enabled} onClick={() => onDecision('confirm')}>Confirm this action</button>
       <button className="secondary-button" disabled={!enabled} onClick={() => onDecision('decline')}>Not yet</button>

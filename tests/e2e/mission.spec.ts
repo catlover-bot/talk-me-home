@@ -45,7 +45,7 @@ test('briefing is English, keyboard accessible, and hides local discoveries', as
   await guideToggle.focus();
   await page.keyboard.press('Enter');
   await expect(guide).toHaveAttribute('open', '');
-  await expect(page.locator('.briefing-premise')).toContainText('You have the map. Pip has eyes and hands.');
+  await expect(page.locator('.briefing-premise')).toContainText('You have the plans. Pip has eyes and hands.');
   await expect(page.locator('.title-frequency')).toContainText('what can you see?');
   await expect(guide).toContainText('You have the plans and remote switches. Pip sees and handles nearby equipment.');
   for (const fact of ['Ask, then decide', 'Confirm one action', 'Pause when needed']) {
@@ -223,7 +223,7 @@ test('390px reflow, reduced motion, long captions, and 200 percent zoom retain c
   await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
   const documents = await page.locator('.mission-documents').boundingBox();
   const consoleBox = await page.locator('.companion-console').boundingBox();
-  expect(consoleBox!.y).toBeGreaterThan(documents!.y + documents!.height);
+  expect(documents!.y).toBeGreaterThan(consoleBox!.y + consoleBox!.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.getByLabel('Type a message').focus();
   await expect(page.getByLabel('Type a message')).toBeFocused();

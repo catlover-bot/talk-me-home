@@ -78,7 +78,7 @@ test('Gallery map and recovery controls reflow with readable source history and 
   await expect(page.getByTestId('acknowledged-relay')).toHaveText('Harbor');
   const atlas = await page.locator('.mission-documents').boundingBox();
   const consolePanel = await page.locator('.companion-console').boundingBox();
-  expect(consolePanel!.y).toBeGreaterThan(atlas!.y + atlas!.height);
+  expect(atlas!.y).toBeGreaterThan(consolePanel!.y + consolePanel!.height);
   await page.getByRole('button', { name: 'Check surroundings', exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: `test-results/goal-005-gallery-zoom-${test.info().project.name}.png`, animations: 'disabled' });
   await page.evaluate(() => { document.documentElement.style.zoom = '1'; });

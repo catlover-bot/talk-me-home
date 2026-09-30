@@ -1,3 +1,4 @@
+import { mkdirSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import type { ToolResponse } from '../../game/shared/contracts';
 import { test, expect } from './rescue-fixture';
@@ -60,7 +61,7 @@ async function finish(page: Page) {
 
 for (const configuration of ['a','b'] as const) test.describe(`recorder layout ${configuration}`, () => {
   test.use({ galleryConfiguration: configuration });
-  test('an optional observed pickup survives decline, exact confirmation and route recovery, then resets off', async ({ page, rescueServer }) => {
+  test('an optional observed pickup survives decline, exact confirmation and route recovery, then resets off', async ({ page, rescueServer }, info) => {
     await start(page); await say(page, 'Go through the southeast gate');
     await say(page, 'Inspect the flight recorder');
     await expect(page.getByTestId('caption')).toContainText('Pip / flight notes');
@@ -89,12 +90,14 @@ for (const configuration of ['a','b'] as const) test.describe(`recorder layout $
     expect(rescueServer.commits.length).toBe(committedBeforeQuestion);
     await finish(page);
     await expect(page.locator('.homecoming-recorder')).toHaveCount(1);
+    await expect(page.getByRole('img', { name: 'Recovery bay shelf with flight recorder', exact: true })).toBeVisible();
+    if (process.env.GAME_QA_CAPTURE_IMMERSION === '1') { mkdirSync('artifacts/goal-007/ui/after', { recursive: true }); await page.screenshot({ path: `artifacts/goal-007/ui/after/home-recorder-${configuration}-${info.project.name}.png`, animations: 'disabled' }); }
     await expect(page.getByTestId('home-story')).toContainText('flight recorder you chose');
     await page.getByRole('button', { name: 'Start another rescue', exact: true }).click();
     await expect(page.getByRole('checkbox', { name: 'Bring back the flight recorder', exact: true })).not.toBeChecked();
     await expect(page.getByRole('button', { name: 'Start Practice', exact: true })).toBeVisible();
   });
-  test('selected objective may be left behind and home remains a full success', async ({ page }) => {
+  test('selected objective may be left behind and home remains a full success', async ({ page }, info) => {
     await start(page);
     // A player may choose the upper route from the atlas; follow the communicated passage report.
     await relay(page, 'Harbor'); await say(page, 'Go through the northeast gate');
@@ -109,5 +112,7 @@ for (const configuration of ['a','b'] as const) test.describe(`recorder layout $
     await expect(page.locator('.homecoming-recorder')).toHaveCount(0);
     await expect(page.getByTestId('home-story')).toContainText('A safe arrival. That was always enough.');
     await expect(page.getByTestId('home-story')).not.toContainText('failed');
+    await expect(page.getByRole('img', { name: 'Empty recovery bay shelf; Pip is safely home', exact: true })).toBeVisible();
+    if (process.env.GAME_QA_CAPTURE_IMMERSION === '1') { mkdirSync('artifacts/goal-007/ui/after', { recursive: true }); await page.screenshot({ path: `artifacts/goal-007/ui/after/home-direct-${configuration}-${info.project.name}.png`, animations: 'disabled' }); }
   });
 });

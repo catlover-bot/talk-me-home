@@ -69,6 +69,7 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
   return <dialog ref={dialog} className="readiness-dialog" aria-labelledby="readiness-title" onCancel={event => { event.preventDefault(); finish(onCancel); }}>
     <div className="dialog-heading"><div><span className="eyebrow">Before we call Pip</span><h2 id="readiness-title">Check your connection</h2></div><button aria-label="Close connection check" onClick={() => finish(onCancel)}>Close</button></div>
     <p className="readiness-intro">{mode === 'live_voice' ? 'Live Voice sends your microphone and typed messages to AssemblyAI.' : 'Live Text sends typed messages to AssemblyAI and can play Pip’s replies.'} These checks stay in your browser. No provider call has started.</p>
+    <p className="readiness-cooperation"><strong>You hold the documents; Pip sees the station.</strong> Ask a question, compare the report with your plans, then confirm only the proposed action you intend. Looking needs no confirmation. Spoken “yes” does not press Confirm.</p>
     <div className="readiness-steps">
       {mode === 'live_voice' && <section aria-label="Local microphone check">
         <div className="readiness-step-label"><span>01</span><h3>Microphone</h3><strong>{microphone === 'ready' ? 'Input connected' : microphone === 'checking' ? 'Waiting for permission' : 'Not checked'}</strong></div>

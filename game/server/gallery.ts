@@ -78,7 +78,7 @@ export function applyGalleryTool(state: GameState, name: string, args: unknown, 
     if (!exactObject(args, name === 'inspect_object' ? ['object'] : ['object', 'action']) || name === 'interact_object' && (!('action' in args) || args.action !== 'pick_up')) return inspectionReject('invalid_arguments', 'Inspect this observed object or propose its one local pickup action.')
     const failure = recorderScopeFailure(state, inspectionScope)
     if (failure) return failure
-    if (name === 'inspect_object') return { ok: true, message: 'The flight recorder is a palm-sized case, worn smooth at the edges. Its label reads: "Pip / flight notes." It is loose in the archive cradle. The local interaction is pick_up on flight_recorder; a pickup needs Mission Control\'s exact confirmation. Bringing it home is optional.' }
+    if (name === 'inspect_object') return { ok: true, message: 'The flight recorder is a palm-sized case, worn smooth at the edges, with a faded hand-drawn star beside its handle. Its label reads: "Pip / flight notes." It is loose in the archive cradle; its recordings have not been played. The local interaction is pick_up on flight_recorder; a pickup needs Mission Control\'s exact confirmation. Bringing it home is optional.' }
     state.flightRecorder.secured = true
     state.revision += 1
     return { ok: true, message: 'You secured the flight recorder in your carrying pouch. The cradle is empty. The rescue route and equipment are unchanged.' }

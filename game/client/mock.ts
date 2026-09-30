@@ -33,7 +33,7 @@ export interface MockReply {
 /** Practice authors its own dialogue; real provider transcripts are never rewritten. */
 export function simulationToolSpeech(result: ToolResult): string {
   if (result.code === 'awaiting_confirmation' && result.proposal?.status === 'awaiting_confirmation') {
-    return `I propose: ${result.proposal.label}. Please confirm on the console, or choose Not yet.`;
+    return `I propose: ${result.proposal.label}.`;
   }
   return simulationSpeech(result.message);
 }
