@@ -73,6 +73,42 @@ test('demo code is exchanged outside the URL before an explicit Live connection'
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
 });
 
+for (const selected of ['Voice', 'Text'] as const) {
+  test(`a protected code for the other transport cannot connect Live ${selected}`, async ({ page }) => {
+    const provider = await fakeProvider(page);
+    const requestedMode = selected === 'Voice' ? 'voice' : 'text';
+    const otherMode = selected === 'Voice' ? 'text' : 'voice';
+    let corrected = false;
+    await page.route('**/api/access', async route => {
+      if (route.request().method() === 'POST') {
+        expect(route.request().postDataJSON()).toEqual({ code: 'offline-matching-code' });
+        corrected = true;
+      }
+      await route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, maxSessionSeconds: 900,
+        allowedMode: corrected ? requestedMode : otherMode, message: 'Access granted.' } });
+    });
+    let issuedMode: unknown;
+    page.on('request', request => { if (request.url().endsWith('/voice-token')) issuedMode = request.postDataJSON().mode; });
+    await page.goto('/');
+    await page.getByRole('radio', { name: new RegExp(`Live ${selected}`) }).check();
+    await page.getByRole('button', { name: `Start with ${selected}`, exact: true }).click();
+    if (selected === 'Voice') await page.getByRole('button', { name: 'Enable microphone check', exact: true }).click();
+    await page.getByLabel('I will follow captions if sound is unavailable').check();
+    await expect(page.getByRole('alert')).toContainText(`This access code allows Live ${selected === 'Voice' ? 'Text' : 'Voice'}`);
+    await expect(page.getByRole('button', { name: `Connect Live ${selected}`, exact: true })).toBeDisabled();
+    expect(provider.tokenRequests).toBe(0);
+    expect(provider.connections).toBe(0);
+    await page.getByLabel('Demo access code').fill('offline-matching-code');
+    await page.getByRole('button', { name: 'Unlock Live', exact: true }).click();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    await page.getByRole('button', { name: `Connect Live ${selected}`, exact: true }).click();
+    await expect(page.getByLabel('Type a message')).toBeEnabled();
+    expect(provider.tokenRequests).toBe(1);
+    expect(issuedMode).toBe(requestedMode);
+    await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
+  });
+}
+
 test('settings, privacy, and nonmodal history keep the call intentional and mission controls reachable', async ({ page }) => {
   const provider = await fakeProvider(page);
   await page.goto('/');

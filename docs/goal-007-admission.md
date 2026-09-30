@@ -27,6 +27,8 @@ Do not set `GAME_LIVE_ALLOWANCE_FILE` alongside the protected profile. The profi
 
 All purposes use the ordinary `/api/access` code UI. The submitted secret code determines purpose and diagnostic mode; extra request fields cannot choose another pool. Signed, owner-bound cookies cannot be transplanted or edited. Reviewer capacity also requires an acceptance record for the actual runtime. Re-exchanging a code does not reset the durable limit of two reviewer launches for that browser owner. A new cookie can start another visit but cannot evade the global eight reviewer attempts. Access exchange is rate-limited before issuance.
 
+Protected `/voice-token` requests must include the requested transport `mode: "voice"` or `mode: "text"` alongside `roundId`. The server requires it to match the signed capability before changing session token throttling, reserving any attempt, or contacting the provider. It cannot select or upgrade the capability. The safe authenticated `/api/access` field `allowedMode` lets readiness disable a mismatched Connect button and offer a matching code. Legacy requests may still omit mode and retain their existing 600-second profile.
+
 ## Operator commands
 
 Use the authenticated shell of the one intended hosted service, after inspecting its disk and any existing grant. These commands expose no administrative HTTP route. They are never build, startup, or pre-deploy hooks. Existing payment/provider approval is not inferred from a file or environment flag.

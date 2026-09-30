@@ -1,0 +1,22 @@
+{
+  "sourceBase": "ed2a4107350d26e36659147cca51e76db67c6132",
+  "scope": "Offline protected transport-mode capability enforcement",
+  "providerRequests": 0,
+  "realFundedGrantCreated": false,
+  "historicalLedgerMutations": 0,
+  "validation": {
+    "typecheck": "PASS",
+    "focusedUnitTests": 39,
+    "focusedBrowserTests": 16,
+    "viewports": ["1280x720", "1440x900"],
+    "productionBuild": "PASS",
+    "diffCheck": "PASS",
+    "checks": [
+      "Missing, invalid, extra-purpose, and mismatched protected transport requests leave ledger bytes unchanged and make no provider request",
+      "QA Voice and Text capabilities reject the other mode before session token throttling and reservation",
+      "Both readiness modes keep Connect disabled for a mismatched code and send the actual mode after a matching code exchange",
+      "Legacy round-only token requests and explicit-mode 600-second requests remain compatible"
+    ],
+    "cleanup": "Owned offline browser and production test server closed"
+  }
+}

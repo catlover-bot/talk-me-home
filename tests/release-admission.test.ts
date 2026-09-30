@@ -227,8 +227,9 @@ test('public access cannot mint, choose QA purpose, transplant cookies, or unloc
     const first = await mission(base), other = await mission(base)
     const anonymous = await (await request(base, '/api/access')).json()
     assert.equal(anonymous.authorized, false); assert.equal('allocation' in anonymous, false)
+    assert.equal('allowedMode' in anonymous, false)
     assert.equal(anonymous.maxSessionSeconds, 900)
-    const path = `/api/sessions/${first.view.sessionId}/voice-token`, body = { roundId: first.view.roundId }
+    const path = `/api/sessions/${first.view.sessionId}/voice-token`, body = { roundId: first.view.roundId, mode: 'voice' }
     assert.equal((await request(base, path, body, first.cookie)).status, 403)
     assert.equal((await request(base, '/api/access', { code: qaCode, purpose: 'reviewer' }, first.cookie)).status, 400)
     assert.equal((await request(base, '/api/access', { code: reviewerCode }, first.cookie)).status, 503)
@@ -236,6 +237,7 @@ test('public access cannot mint, choose QA purpose, transplant cookies, or unloc
     assert.equal(access.status, 200)
     const status = await access.json()
     assert.equal(status.allocation.purpose, 'qa'); assert.equal(status.allocation.remaining, 8)
+    assert.equal(status.allowedMode, 'voice')
     assert.equal(status.allocation.runtimeSha256, binding.runtimeSha256)
     const authorized = cookies(access, first.cookie)
     const transplanted = `${other.cookie}; ${authorized.split('; ').find(value => value.startsWith('tmh_live='))}`
@@ -258,7 +260,7 @@ test('parallel hosted token requests reserve exactly one slot before contacting 
     const access = await request(base, '/api/access', { code: qaCode }, first.cookie)
     const authorized = cookies(access, first.cookie)
     const second = await mission(base, authorized)
-    const responses = await Promise.all([first, second].map(({ view }) => request(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId }, authorized)))
+    const responses = await Promise.all([first, second].map(({ view }) => request(base, `/api/sessions/${view.sessionId}/voice-token`, { roundId: view.roundId, mode: 'voice' }, authorized)))
     assert.deepEqual(responses.map(value => value.status).sort(), [200, 429])
     assert.equal(calls(), 1); assert.equal(f.admission.inspect().reservations.length, 1)
   })
@@ -268,11 +270,38 @@ test('normal code exchange classifies a Text diagnostic without a client-selecte
   await hosted(async (base, f) => {
     const first = await mission(base)
     const access = await request(base, '/api/access', { code: textCode }, first.cookie)
-    assert.equal((await access.json()).allocation.mode, 'text')
-    assert.equal((await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId }, cookies(access, first.cookie))).status, 200)
+    const status = await access.json()
+    assert.equal(status.allocation.mode, 'text'); assert.equal(status.allowedMode, 'text')
+    assert.equal((await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId, mode: 'text' }, cookies(access, first.cookie))).status, 200)
     assert.equal(f.admission.inspect().reservations[0]?.mode, 'text')
   })
 })
+
+for (const capability of [{ code: qaCode, mode: 'voice', wrongMode: 'text' }, { code: textCode, mode: 'text', wrongMode: 'voice' }]) {
+  test(`a signed QA ${capability.mode} capability rejects omitted, forged, and mismatched transport modes before reservation`, async () => {
+    await hosted(async (base, f, calls) => {
+      const first = await mission(base)
+      const access = await request(base, '/api/access', { code: capability.code }, first.cookie)
+      const authorized = cookies(access, first.cookie)
+      const path = `/api/sessions/${first.view.sessionId}/voice-token`
+      const originalLedger = readFileSync(f.path)
+      for (const [input, status] of [
+        [{ roundId: first.view.roundId }, 400],
+        [{ roundId: first.view.roundId, mode: 'invalid' }, 400],
+        [{ roundId: first.view.roundId, mode: capability.wrongMode }, 403],
+        [{ roundId: first.view.roundId, mode: capability.mode, purpose: 'reviewer' }, 400],
+      ] as const) {
+        const response = await request(base, path, input, authorized)
+        assert.equal(response.status, status)
+        assert.equal(response.headers.has('x-tmh-allocation-attempt'), false)
+      }
+      assert.equal(calls(), 0); assert.deepEqual(readFileSync(f.path), originalLedger)
+      assert.equal((await request(base, path, { roundId: first.view.roundId, mode: capability.mode }, authorized)).status, 200)
+      assert.equal(calls(), 1); assert.equal(f.admission.inspect().reservations[0]?.mode, capability.mode)
+      assert.equal(f.admission.inspect().reservations[0]?.purpose, 'qa')
+    })
+  })
+}
 
 test('missing hosted accounting leaves Practice and health available without minting or initialization', async () => {
   await hosted(async (base, f, calls) => {
@@ -292,7 +321,7 @@ test('accepted reviewer access consumes its own pool and a code refresh cannot r
     let authorized = cookies(access, first.cookie)
     for (let index = 0; index < 2; index++) {
       const current = await mission(base, authorized)
-      const response = await request(base, `/api/sessions/${current.view.sessionId}/voice-token`, { roundId: current.view.roundId }, authorized)
+      const response = await request(base, `/api/sessions/${current.view.sessionId}/voice-token`, { roundId: current.view.roundId, mode: 'voice' }, authorized)
       assert.equal(response.status, 200); assert.equal((await response.json()).allocation.purpose, 'reviewer')
       f.advance()
       if (index === 0) { access = await request(base, '/api/access', { code: reviewerCode }, authorized); authorized = cookies(access, authorized) }
@@ -311,7 +340,7 @@ for (const failure of [{ status: 402, body: { error: 'insufficient_credit' }, re
     await hosted(async (base, f) => {
       const first = await mission(base)
       const access = await request(base, '/api/access', { code: qaCode }, first.cookie)
-      const response = await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId }, cookies(access, first.cookie))
+      const response = await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId, mode: 'voice' }, cookies(access, first.cookie))
       assert.equal(response.status, 502); assert.equal(response.headers.get('x-tmh-allocation-attempt'), '1')
       assert.doesNotMatch(await response.text(), /offline-test-provider-credential|workspace mismatch|insufficient_credit/)
       assert.equal(new ReleaseAdmission(f.path, binding, f.now).inspect().halt?.reason, failure.reason)
@@ -324,7 +353,7 @@ test('a non-account provider failure consumes the attempt without silently refun
   await hosted(async (base, f) => {
     const first = await mission(base)
     const access = await request(base, '/api/access', { code: qaCode }, first.cookie)
-    const response = await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId }, cookies(access, first.cookie))
+    const response = await request(base, `/api/sessions/${first.view.sessionId}/voice-token`, { roundId: first.view.roundId, mode: 'voice' }, cookies(access, first.cookie))
     assert.equal(response.status, 502); assert.equal(f.admission.inspect().reservations.length, 1)
     assert.equal(f.admission.inspect().halt, undefined)
     assert.equal(f.admission.status(qa).available, false)
@@ -340,7 +369,7 @@ test('client refusal requires an issued owned connection, is idempotent, and nev
     const access = await request(base, '/api/access', { code: qaCode }, first.cookie)
     const authorized = cookies(access, first.cookie)
     assert.equal((await request(base, `${path}/live-refusal`, body, authorized)).status, 403)
-    assert.equal((await request(base, `${path}/voice-token`, { roundId: first.view.roundId }, authorized)).status, 200)
+    assert.equal((await request(base, `${path}/voice-token`, { roundId: first.view.roundId, mode: 'voice' }, authorized)).status, 200)
     assert.equal((await request(base, `${path}/live-refusal`, body, other.cookie)).status, 404)
     assert.equal((await request(base, `${path}/live-refusal`, { ...body, reason: 'refund' }, authorized)).status, 400)
     assert.equal((await request(base, `${path}/live-refusal`, { ...body, purpose: 'reviewer' }, authorized)).status, 400)
@@ -366,7 +395,7 @@ test('a protected reviewer can conservatively report a socket refusal without a 
     const access = await request(base, '/api/access', { code: reviewerCode }, first.cookie)
     const authorized = cookies(access, first.cookie)
     const path = `/api/sessions/${first.view.sessionId}`
-    assert.equal((await request(base, `${path}/voice-token`, { roundId: first.view.roundId }, authorized)).status, 200)
+    assert.equal((await request(base, `${path}/voice-token`, { roundId: first.view.roundId, mode: 'voice' }, authorized)).status, 200)
     assert.equal((await request(base, `${path}/live-refusal`, { roundId: first.view.roundId, reason: 'provider_credential_or_account_refused' }, authorized)).status, 200)
     assert.equal(f.admission.inspect().halt?.source, 'client_report')
     assert.equal(f.admission.inspect().reservations.filter(row => row.purpose === 'reviewer').length, 1)

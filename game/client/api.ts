@@ -46,7 +46,7 @@ async function request<T>(
 }
 
 export const requestId = () => crypto.randomUUID();
-export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string; maxSessionSeconds?: number }
+export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string; maxSessionSeconds?: number; allowedMode?: 'voice' | 'text' }
 export const demoAccess = (signal?: AbortSignal) => request<DemoAccess>('/access', undefined, signal);
 export const unlockDemo = (code: string) => request<DemoAccess>('/access', { code });
 export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training', optionalObjective?: HumanView['optionalObjective']) => request<HumanView>("/sessions", { scenario, missionKind, ...(optionalObjective ? { optionalObjective } : {}) });
@@ -115,7 +115,7 @@ export function executeTool(
   );
 }
 
-export async function voiceToken(view: HumanView) {
+export async function voiceToken(view: HumanView, mode: 'voice' | 'text') {
   const data = await request<{
     token: string;
     sessionConfig: Record<string, unknown>;
@@ -123,6 +123,7 @@ export async function voiceToken(view: HumanView) {
     allocation?: { grantId: string };
   }>(`/sessions/${encodeURIComponent(view.sessionId)}/voice-token`, {
     roundId: view.roundId,
+    mode,
   });
   return { token: data.token, config: data.sessionConfig, maxSessionSeconds: data.maxSessionSeconds, protectedRelease: data.allocation?.grantId === 'goal-007-release-2026-09-30' };
 }

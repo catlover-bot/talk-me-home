@@ -101,6 +101,7 @@ export function createGameServer(options: ServerOptions = {}) {
     return {
       liveEnabled: enabled,
       maxSessionSeconds: maxVoiceSessionSeconds,
+      ...(capability && options.releaseAdmission ? { allowedMode: capability.mode } : {}),
       authorized: !production || justAuthorized || browserAccess.authorized(request),
       available: enabled && (status?.available ?? true),
       message: !enabled ? 'Live is unavailable for this demo. Practice is available without a connection.' : status?.message ?? 'Live is available. Connect only when you are ready.',
@@ -178,7 +179,14 @@ export function createGameServer(options: ServerOptions = {}) {
           if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
           if (!browserAccess.authorized(request)) throw new GameError(403, 'Enter the demo access code before connecting Live, or choose Practice.')
         }
-        const view = store.reserveToken(id, body)
+        // The code determines the capability; the requested transport can only match it.
+        // Legacy callers may omit mode, while protected releases require it explicitly.
+        const explicitMode = exactObject(body, ['roundId', 'mode']) && (body.mode === 'voice' || body.mode === 'text')
+        if (options.releaseAdmission) {
+          if (!explicitMode) throw new GameError(400, 'Choose Live Voice or Live Text before connecting.')
+          if (body.mode !== browserAccess.capability(request)?.mode) throw new GameError(403, 'This access code does not allow the selected Live mode. Choose the matching mode or enter a matching code.')
+        } else if (!exactObject(body, ['roundId']) && !explicitMode) throw new GameError(400, 'Send only the current round and an optional Live mode.')
+        const view = store.reserveToken(id, { roundId: body.roundId })
         if (process.env.GAME_DISABLE_LIVE === '1' && !options.allowTestProvider) throw new GameError(503, 'Live AssemblyAI is disabled for this server. Mock / Simulation remains available.')
         if (!apiKey) throw new GameError(503, 'Live AssemblyAI is unavailable: set ASSEMBLYAI_API_KEY in the root .env file, then restart the game server. Mock / Simulation remains available.')
         if (production) {

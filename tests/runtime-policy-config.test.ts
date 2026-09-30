@@ -94,7 +94,7 @@ for (const [missionKind, scenario] of [['rescue', 'classic'], ['training', 'main
     })
     try {
       const view = await createSession(scenario, missionKind)
-      await live.start({ token: () => voiceToken(view), microphone: false,
+      await live.start({ token: () => voiceToken(view, 'text'), microphone: false,
         executeTool: async () => { assert.fail('Configuration verification must not execute robot tools.') },
         cancelPending: async () => {},
       })
