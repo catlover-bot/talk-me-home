@@ -55,7 +55,12 @@ export function simulationToolSpeech(result: ToolResult, memory?: PracticeMemory
   const message = simulationSpeech(result.message);
   if (memory?.chapter !== 'switchyard') return message;
   const reaction = switchyardReaction(memory.switchyard, result);
-  const spoken = message.replace(/ \((?:switchyard\.[a-z_]+|align_turntable|set_index_one|set_index_two|test_lift|seat_brace|deploy_bridge|depart)\)/g, '')
+  const declinedPrefix = result.code === 'not_executed' && result.proposal?.status === 'declined'
+    ? `Proposal ${result.proposal.id} declined by Mission Control; ` : '';
+  // Paraphrase only this exact Practice receipt; historical prefixes and server data stay intact.
+  const authored = declinedPrefix && message.startsWith(declinedPrefix)
+    ? `You chose Not yet; ${message.slice(declinedPrefix.length)}` : message;
+  const spoken = authored.replace(/ \((?:switchyard\.[a-z_]+|align_turntable|set_index_one|set_index_two|test_lift|seat_brace|deploy_bridge|depart)\)/g, '')
     .replace(/\bYou (departed|seated|deployed|aligned|completed)\b/g, 'I $1');
   return reaction ? `${spoken} ${reaction}` : spoken;
 }

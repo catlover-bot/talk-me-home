@@ -1,3 +1,4 @@
+import { SwitchyardGuideCue, useSwitchyardGuide } from './SwitchyardGuide';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   SWITCHYARD_PANEL, previewSwitchyardRouting, switchyardPorts,
@@ -51,6 +52,7 @@ export function SwitchyardPanel({ roundId, ...props }: SwitchyardPanelProps) {
 /** Reads public panel geometry and acknowledged routing only; no robot-local state. */
 function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onApply }: Omit<SwitchyardPanelProps, 'roundId'>) {
   const titleId = useId(); const helpId = useId();
+  const guide = useSwitchyardGuide();
   const [draft, setDraft] = useState(() => ({ rotations: clone(applied.appliedRotations), base: clone(applied.appliedRotations),
     revision: applied.panelRevision, undo: [] as SwitchyardRotations[] }));
   const [applying, setApplying] = useState(false);
@@ -78,6 +80,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
     // A fulfilled callback alone is not the receipt: match the actual acknowledged layout.
     if (equal(acknowledging.rotations, applied.appliedRotations)) {
       setReceipt({ revision: applied.panelRevision, message: appliedChange(acknowledging.before, applied) });
+      guide?.markApplied();
     }
     setAcknowledging(null);
   }, [acknowledging, applied.panelRevision, acknowledgedKey]);
@@ -89,7 +92,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
   const canApply = enabled && !locked && changed && !stale && preview.valid;
   const turn = (index: number, direction = 1) => {
     if (locked || busy.current) return;
-    setLocalError('');
+    setLocalError(''); guide?.markTurn();
     setTurnFeedback(previous => ({ piece: index, sequence: (previous?.sequence ?? 0) + 1 }));
     setDraft(previous => {
       const next = clone(previous.rotations);
@@ -129,6 +132,7 @@ function SwitchyardPanelDraft({ applied, enabled, pending = false, error, onAppl
   return <section className="switchyard-panel" aria-labelledby={titleId} aria-busy={locked} data-testid="switchyard-panel">
     <header className="switchyard-panel-heading"><div><p className="section-kicker">Mission Control · routing cabinet</p><h2 id={titleId}>Make a circuit.</h2></div><span className="switchyard-panel-stamp">SY / 02 × 03</span></header>
     <p className="switchyard-panel-intro" id={helpId}>Click or Enter turns clockwise; Left / Right turns either way. The dashed trace follows the supply through your draft. Apply sends the whole layout.</p>
+    <SwitchyardGuideCue where="panel"/>
     <div className="switchyard-panel-workbench">
       <div className="switchyard-draft-board">
         <div className="switchyard-board-label"><strong>Draft layout</strong><span>↻ quarter turns</span></div>

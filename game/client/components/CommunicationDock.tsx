@@ -1,3 +1,4 @@
+import { SwitchyardGuideCue } from './SwitchyardGuide';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { originLabel, type Caption, type useMission } from '../useMission';
 import type { TransportOrigin } from '../../shared/contracts';
@@ -93,6 +94,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         <button ref={historyTrigger} className="text-button" onClick={() => setHistoryOpen(!historyOpen)} aria-expanded={historyOpen} aria-controls="conversation-history" aria-label="Open transcript history">History ({m.captions.length})</button>
       </div>
     </div>
+    {awaitingDecision && <SwitchyardGuideCue where="proposal"/>}
     <ActionProposalStrip proposal={m.view?.proposal} confirming={m.proposalConfirming === m.view?.proposal?.id}
       failed={m.proposalFailure === m.view?.proposal?.id}
       enabled={m.connected && !m.busy && !m.toolPending && !m.playing && m.status !== 'responding'}
@@ -103,7 +105,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         : <button className="primary-button" onClick={m.start} disabled={m.busy || m.view?.completed}>Resume {originLabel[m.mode]}</button>}
     </div>
     {m.view?.missionKind === 'switchyard' && m.segment?.origin === 'practice' && <section className="switchyard-intents" aria-label="Local companion requests">
-                <h2>Ask Pip</h2><p className="source-label">Local/scripted companion / Choices from communicated reports</p>
+                <h2>Ask Pip</h2><SwitchyardGuideCue where="radio"/><p className="source-label">Local/scripted companion / Choices from communicated reports</p>
                 <div>{m.switchyardIntents.map(intent => <button key={intent.id} disabled={!m.connected || m.busy || m.view?.status !== 'active'} onClick={() => { void m.chooseSwitchyardIntent(intent.request); }}>{intent.label}</button>)}</div>
               </section>}
     {historyOpen && <section id="conversation-history" className="history-panel" aria-labelledby="history-title">

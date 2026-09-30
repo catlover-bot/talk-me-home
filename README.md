@@ -30,7 +30,7 @@ GAME_DISABLE_LIVE=1 npm start
 
 Open `http://127.0.0.1:3001`. `npm start` and `npm run start:game` serve the compiled game and API from one origin. The production server reads its hosting environment only and never loads an owner `.env`. Practice requires no API key.
 
-### The Switchyard (source version 0.8.1)
+### The Switchyard (source version 0.9.0)
 
 Select **The Switchyard -> Practice -> Start Practice** in the local build. Rotate six pieces in a draft, compare the terminal preview with your human-only manual, then Apply the complete layout. Pip reports the fitted equipment and offers labelled local requests. Confirm each exact physical proposal.
 
@@ -61,3 +61,5 @@ The [current local Free Practice media edition](submission/goal-007/free-publica
 This project extends [AssemblyAI's voice-agent-starter-js](https://github.com/AssemblyAI/voice-agent-starter-js). Original files and notices remain. No license grant for upstream work is invented; review the included provenance before reuse.
 
 The original browser starter remains available as `npm run start:starter`. `publish`, `import` and `phone` are separate starter utilities, not game deployment commands. Its original manifest is preserved under [deployment/starter/](deployment/starter/README.md). Historical Goal 005/006 manifests remain references; do not apply them as additional services. npm package publication remains disabled with `private: true`.
+
+The Switchyard first-play opening is optional and replayable. Its cues follow actual reports, draft turns and acknowledged routing; the existing private hint panel explains public rules without selecting a solution. [Goal 009 implementation and evidence](docs/goal-009-first-play.md).

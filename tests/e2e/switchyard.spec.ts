@@ -20,11 +20,12 @@ test.beforeEach(async ({ page }) => {
         stamp.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:2147483647;padding:5px 10px;background:#172a20;color:#fff2d3;font:11px/1.3 monospace;text-align:center;pointer-events:none';
         document.body.append(stamp);
       });
-    }, `0.8.1 / LOCAL SCRIPTED PRACTICE / ${source ? `source ${source}` : 'Goal008B working candidate based on 3772bcb (uncommitted changes)'}`);
+    }, `0.9.0 / LOCAL SCRIPTED PRACTICE / ${source ? `source ${source}` : 'Goal009 working candidate based on 4f1b8af (uncommitted changes)'}`);
   }
 });
 
-async function start(page: Page) {
+type Opening = 'guided' | 'skipped' | 'replayed' | 'help-free';
+async function start(page: Page, opening: Opening = 'guided') {
   await page.goto('/');
   await expect(page.getByRole('radio', { name: /^Rescue Mission/ })).toBeChecked();
   await page.getByRole('radio', { name: /^The Switchyard/ }).check();
@@ -32,6 +33,9 @@ async function start(page: Page) {
   await page.getByRole('button', { name: 'Start Practice', exact: true }).click();
   await expect(page.getByTestId('switchyard-panel')).toBeVisible();
   await expect(page.locator('.switchyard-intents')).toContainText('Local/scripted');
+  await expect(page.getByTestId('switchyard-guidance')).toHaveAttribute('data-stage', 'observe');
+  if (opening !== 'guided') await page.getByRole('button', { name: 'Skip guidance', exact: true }).click();
+  if (opening === 'replayed') await page.getByRole('button', { name: 'Replay guidance', exact: true }).click();
   await ask(page, 'Look around');
 }
 
@@ -91,7 +95,7 @@ async function readManual(page: Page, tab: 'Lift plates' | 'Service modules', pl
 }
 async function shot(page: Page, info: TestInfo, name: string) {
   if (!capture) return;
-  const directory = 'artifacts/goal-008b/ui/after'; mkdirSync(directory, { recursive: true });
+  const directory = 'artifacts/goal-009/ui/after'; mkdirSync(directory, { recursive: true });
   await page.screenshot({ path: `${directory}/${name}-${info.project.name}.png`, fullPage: true, animations: 'disabled' });
 }
 async function discuss(page: Page, approach: 'direct lift' | 'maintenance bypass') {
@@ -103,7 +107,16 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
   test.use({ switchyardConfiguration: configuration });
   for (const approach of ['lift', 'bypass'] as const) test(`ordinary UI brings Pip home by ${approach}`, async ({ page, switchyardServer }, info) => {
     test.setTimeout(60_000);
-    await start(page);
+    const opening: Opening = configuration === 'a' ? approach === 'lift' ? 'guided' : 'skipped' : approach === 'lift' ? 'replayed' : 'help-free';
+    const starts: string[] = []; const hints: string[] = [];
+    page.on('request', request => { if (request.method() === 'POST' && request.url().endsWith('/api/sessions')) starts.push(request.url()); if (request.url().endsWith('/hint')) hints.push(request.url()); });
+    await start(page, opening);
+    if (opening === 'guided' || opening === 'skipped') {
+      await page.locator('.switchyard-help > summary').click();
+      await page.getByRole('button', { name: opening === 'guided' ? 'Nudge' : 'Explain the rule', exact: true }).click();
+      await expect(page.locator('.switchyard-help .hint-copy')).not.toBeEmpty();
+      await page.locator('.switchyard-help > summary').click();
+    }
     await ask(page, 'Inspect Route directory');
     await page.getByRole('group', { name: 'My intended approach' }).getByRole('radio', { name: 'Direct lift', exact: true }).check();
     await discuss(page, 'direct lift');
@@ -113,6 +126,8 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     expect(switchyardServer.commits.length).toBe(before);
     await page.getByRole('button', { name: 'Not yet', exact: true }).click();
     await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'declined');
+    await expect(page.getByTestId('caption')).toContainText('You chose Not yet; Go to Transfer Table was not executed.');
+    await expect(page.getByTestId('caption')).not.toContainText(/Proposal [a-f0-9-]{36}/);
     expect(switchyardServer.commits.length).toBe(before);
     await ask(page, 'Go to Transfer Table', true);
     if (approach === 'lift') {
@@ -169,6 +184,8 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     await expect(page.getByTestId('caption')).toContainText('departure is still a separate confirmed decision');
     await expect(page.getByRole('heading', { name: 'Pip is home.', exact: true })).toHaveCount(0);
     await expect(page.getByTestId('switchyard-departure')).toHaveCount(0);
+    // The ending must follow the completed route even if the private intention disagrees.
+    await page.getByRole('group', { name: 'My intended approach' }).getByRole('radio', { name: approach === 'lift' ? 'Maintenance bypass' : 'Direct lift', exact: true }).check();
     await ask(page, 'Inspect Departure console');
     await ask(page, 'Depart for home', true, false);
     await shot(page, info, `departure-${configuration}-${approach}`);
@@ -181,10 +198,17 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     await expect(page.locator('.switchyard-reflection')).toContainText('Mission reflection / authored');
     expect(switchyardServer.commits.length).toBe(count + 1);
     expect(new Set(switchyardServer.commits.map(event => event.proposalId)).size).toBe(switchyardServer.commits.length);
+    await expect(page.getByTestId('switchyard-replay-invitation')).toContainText(approach === 'lift' ? 'Try preparing the maintenance bypass next.' : 'Try identifying and calibrating the direct lift next.');
+    if (opening === 'help-free' || opening === 'replayed') expect(hints).toHaveLength(0);
     await shot(page, info, `home-${configuration}-${approach}`);
-    await page.getByRole('button', { name: 'Try the other approach', exact: true }).click();
+    const replay = page.getByRole('button', { name: 'Try the other approach', exact: true });
+    if (configuration === 'b' && approach === 'lift') { await replay.focus(); await page.keyboard.press('Enter'); }
+    else await replay.click();
     await expect(page.getByRole('radio', { name: /^The Switchyard/ })).toBeChecked();
-    await page.getByRole('button', { name: 'Start Practice', exact: true }).click();
+    expect(starts).toHaveLength(1);
+    expect(switchyardServer.commits.length).toBe(count + 1);
+    await page.getByRole('button', { name: 'Start Practice', exact: true }).focus();
+    await page.keyboard.press('Enter');
     await expect(page.getByTestId('switchyard-panel-status')).toContainText('revision 0');
     for (const terminal of ['amber', 'blue', 'white']) await expect(page.getByTestId(`applied-${terminal}`)).toHaveText('Off');
   });

@@ -82,7 +82,11 @@ export class RoundRecords {
 
   hint(level: HintLevel, chapter: Chapter = 'cargo', chapterEpoch = 0): HintResult {
     const chapterHints: Record<Exclude<Chapter, 'cargo'>, string[]> = {
-      switchyard: ['Ask Pip to inspect the directory and compare the two approaches.', 'Match the locally reported equipment plate to your circuit manual; edit a draft before applying it.', 'Isolation, a single test supply, and a paired running supply are different layouts. Backtracking and power experiments preserve mechanical progress.'],
+      switchyard: [
+        "Separate what you know from what you are testing: Pip's local report identifies equipment; your draft predicts a circuit; Applied shows the routing the station has accepted.",
+        'Only facing contacts conduct, and the supply supports at most two terminal loads. Draft edits do not change power. Apply changes routing; each physical proposal still needs its own exact confirmation.',
+        'For a missing local fact, use the existing Look around request, then choose an inspection Pip actually offers. Compare the reported words with both manual rows. Turn a piece and inspect its draft prediction before deciding whether to Apply.',
+      ],
       gallery: [
         'Ask Pip for the current room emblem and reachable gate labels. Find that emblem on your map.',
         'Compare the gate directions with your map circuits. Only the selected Relay circuit opens its gates; all rooms remain safe when you change it.',
