@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "status": "WORKING_LOCAL_COMPONENTS_PENDING_RELEASE_EVIDENCE",
+  "generatedAtUtc": "2026-09-30T01:21:20.699345+00:00",
+  "sourceCommit": "d9ee08bb13df9b45ea8bb15c51c0f7d2975af07d",
+  "uiSourceCommit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+  "providerTokenRequests": 0,
+  "formChecks": {
+    "title": {
+      "characters": 12,
+      "words": 3
+    },
+    "summary": {
+      "characters": 165,
+      "words": 31
+    },
+    "description": {
+      "characters": 1536,
+      "words": 240
+    },
+    "additionalInformation": {
+      "characters": 1090,
+      "words": 161
+    }
+  },
+  "pptxSlides": [
+    {
+      "page": 1,
+      "editableTextShapes": 5,
+      "totalShapes": 6,
+      "speakerNotesPresent": true
+    },
+    {
+      "page": 2,
+      "editableTextShapes": 11,
+      "totalShapes": 14,
+      "speakerNotesPresent": true
+    },
+    {
+      "page": 3,
+      "editableTextShapes": 8,
+      "totalShapes": 12,
+      "speakerNotesPresent": true
+    },
+    {
+      "page": 4,
+      "editableTextShapes": 11,
+      "totalShapes": 14,
+      "speakerNotesPresent": true
+    },
+    {
+      "page": 5,
+      "editableTextShapes": 16,
+      "totalShapes": 22,
+      "speakerNotesPresent": true
+    },
+    {
+      "page": 6,
+      "editableTextShapes": 10,
+      "totalShapes": 14,
+      "speakerNotesPresent": true
+    }
+  ],
+  "pdf": {
+    "pages": 6,
+    "renderer": "Native LibreOffice Impress PDF export",
+    "visualReview": "Each of six rendered pages inspected; corrected architecture text overflow, availability spacing and Cargo crop"
+  },
+  "screenshots": {
+    "count": 4,
+    "mode": "Practice - deterministic simulation",
+    "dimensions": "1920x1080",
+    "chapters": [
+      "Cargo Bay",
+      "Relay Gallery",
+      "Return Dock",
+      "Confirmed home with recorder"
+    ],
+    "inspection": "All four originals visually inspected"
+  },
+  "cover": {
+    "unchangedFrom": "Goal006/cover-1920x1080.png",
+    "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+  },
+  "practiceRecording": {
+    "sourceId": "goal-007-practice-insert-01",
+    "sha256": "07aa6ace3996b8860b66c036fcd33332ec3eaadc910d89033fc091bfaca92106",
+    "privateOriginalRetained": true,
+    "mode": "Practice - deterministic simulation",
+    "uiSourceCommit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+    "durationSeconds": 18.84,
+    "audioStreams": 0,
+    "moments": [
+      {
+        "name": "optional-recorder-selected",
+        "elapsedMs": 170
+      },
+      {
+        "name": "cargo",
+        "elapsedMs": 2306
+      },
+      {
+        "name": "gallery",
+        "elapsedMs": 4933
+      },
+      {
+        "name": "recorder-observed",
+        "elapsedMs": 6918
+      },
+      {
+        "name": "recorder-proposed",
+        "elapsedMs": 8179
+      },
+      {
+        "name": "recorder-confirmed",
+        "elapsedMs": 9717
+      },
+      {
+        "name": "dock",
+        "elapsedMs": 12665
+      },
+      {
+        "name": "home",
+        "elapsedMs": 15715
+      }
+    ],
+    "allowedUse": "Separately labelled current Practice inserts; silent source, never provider speech"
+  },
+  "historicalPreservation": [
+    {
+      "sourceId": "Goal006/cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "sourceId": "Goal006/Talk_Me_Home_Submission.mp4",
+      "bytes": 10363105,
+      "sha256": "daa57ee6d785ca985a428028db461462df0d50bd1d753fd024fb2600d3f949dd"
+    },
+    {
+      "sourceId": "Goal006/Talk_Me_Home_Pitch.pptx",
+      "bytes": 1566200,
+      "sha256": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a"
+    },
+    {
+      "sourceId": "Goal006/Talk_Me_Home_Pitch.pdf",
+      "bytes": 615023,
+      "sha256": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f"
+    },
+    {
+      "sourceId": "Goal006/Talk_Me_Home_Submission_Package.zip",
+      "bytes": 13312397,
+      "sha256": "faf2705d8c6c763636c094657b4bb987fb51bb3e897cbbfe68d2cac83fb7f9ff"
+    },
+    {
+      "sourceId": "Goal006/make_media.py",
+      "bytes": 23951,
+      "sha256": "ea34c856deed3dbc05a75785bee1b12b947566bad8dd209141b8b6a0fb340292",
+      "comparedToUnmodifiedTrackedCopy": true
+    },
+    {
+      "sourceId": "Goal006/inspect_and_package.py",
+      "bytes": 17058,
+      "sha256": "614f89813ef68fa12b2cb0ca7002bb92d73f2e4225d0374dd26862e4e1b8e90f",
+      "comparedToUnmodifiedTrackedCopy": true
+    },
+    {
+      "sourceId": "Goal006/edit-plan.json",
+      "bytes": 16626,
+      "sha256": "feb6892d2dd69aaa4689e55c319b387e994dddc55994957d51b01ff766b60593",
+      "comparedToUnmodifiedTrackedCopy": true
+    },
+    {
+      "sourceId": "Goal006/media-manifest.json",
+      "bytes": 12079,
+      "sha256": "92786d778d9f405bf9d9d2b1baef46992651555ef18630305573571fd77ad27e",
+      "comparedToUnmodifiedTrackedCopy": true
+    },
+    {
+      "sourceId": "Goal005/Attempt12/SuccessUncut",
+      "bytes": 27913490,
+      "sha256": "d69a0b9a1e793294399e8731cffb7a4c8765772e685510598ff8b7d04e8d4812"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4807,
+      "sha256": "6735a55aa9b5fa2bb23045628be0deb8e318d4fd4f9893e90b72739360844430"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Deck.pdf",
+      "bytes": 1041186,
+      "sha256": "a9fd05e062e64e013df625bdea842d1cea234f471a84f0678297238d1e5ee640"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Deck.pptx",
+      "bytes": 1430116,
+      "sha256": "79cb38a67dd0e3417f76893f8b5fe745c308fc419e0a63ba0a11dde90b7592f9"
+    },
+    {
+      "path": "capture-practice.mjs",
+      "bytes": 8036,
+      "sha256": "061067beca47e95823b04a2cb71ae4cc922d0c1e5287a46b3e1c563965150104"
+    },
+    {
+      "path": "cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "make_deck.py",
+      "bytes": 11519,
+      "sha256": "1ac699b1fd036a7967b76622d965a5da413f2eab7c9c79595d432c7e3130eb2e"
+    },
+    {
+      "path": "screenshots/capture-provenance.json",
+      "bytes": 2003,
+      "sha256": "f4b37b5170e6e27d4c3559b3044b209c423f61b53dd25c7b627f6c76d47a143a"
+    },
+    {
+      "path": "screenshots/practice-cargo.png",
+      "bytes": 240559,
+      "sha256": "a02d0ab7c62acc1aa9477610373d132439be327f210d61600a8d56ff10e283ba",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "screenshots/practice-dock.png",
+      "bytes": 228693,
+      "sha256": "40c01b281fa3a781b503aeaa9b594eae84dc5dba096e8dc13b89c19e9edf047f",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "screenshots/practice-gallery.png",
+      "bytes": 260271,
+      "sha256": "9a8ce2809d0b79090f9669e06c8026fbc98e7d0e9ee236bba46c2d993ddc39f9",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "screenshots/practice-home.png",
+      "bytes": 202079,
+      "sha256": "a8663a3542849c6e8eddbf73e4c7e52229eda93052261285b96b6a16201a1e83",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "submission-form.json",
+      "bytes": 3527,
+      "sha256": "b9082040ae81cc2ce92d694166102e4d734e45ab53a0be0fa17cd6c6232aae36"
+    },
+    {
+      "path": "submission-form.md",
+      "bytes": 3666,
+      "sha256": "26365cad74e2684a31543fe9dfc8f973eb8437a25f2e0be077a197c970b94e6e"
+    },
+    {
+      "path": "validate_components.py",
+      "bytes": 12991,
+      "sha256": "48dfaa461d1a2baa902409245a270cade8e049da60ac9fc85e2120e4ecc89bf5"
+    },
+    {
+      "path": "video-edit-recipe.json",
+      "bytes": 3493,
+      "sha256": "63583ebf420d6593743c4d292ed45d9fb48b607d69ade19518e8806d11e59b9f"
+    }
+  ],
+  "notCompleted": [
+    "Final current Voice video",
+    "Hosted HTTPS acceptance",
+    "Current-candidate Live acceptance",
+    "Historical source disclosure and public visibility verification",
+    "Uploaded media",
+    "Event submission"
+  ],
+  "limits": [
+    "Practice capture is silent and is not real Voice evidence",
+    "This snapshot predates final hosted integration; screenshots must be compared with the final integrated UI before release",
+    "No current human playtest or measured enjoyment claim"
+  ]
+}

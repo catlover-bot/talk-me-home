@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "status": "REUSABLE_EDIT_RECIPE_NOT_A_FINAL_VIDEO",
+  "target": {
+    "durationSecondsRange": [
+      180,
+      240
+    ],
+    "width": 1920,
+    "height": 1080,
+    "codec": "H.264",
+    "audio": "AAC",
+    "frameRate": 30
+  },
+  "currentVoiceSource": null,
+  "voiceSourceRequirements": [
+    "One preserved original current-candidate synthetic-microphone Voice run",
+    "Same connection across Cargo, Gallery, Dock and confirmed home",
+    "Exact UI confirmations visible",
+    "Actual provider ending ACK retained",
+    "Raw input, provider output, video and faithful transcript retained"
+  ],
+  "practiceSource": {
+    "sourceId": "goal-007-practice-insert-01",
+    "sha256": "07aa6ace3996b8860b66c036fcd33332ec3eaadc910d89033fc091bfaca92106",
+    "privateOriginalRetained": true,
+    "mode": "Practice - deterministic simulation",
+    "uiSourceCommit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+    "durationSeconds": 18.84,
+    "audioStreams": 0,
+    "moments": [
+      {
+        "name": "optional-recorder-selected",
+        "elapsedMs": 170
+      },
+      {
+        "name": "cargo",
+        "elapsedMs": 2306
+      },
+      {
+        "name": "gallery",
+        "elapsedMs": 4933
+      },
+      {
+        "name": "recorder-observed",
+        "elapsedMs": 6918
+      },
+      {
+        "name": "recorder-proposed",
+        "elapsedMs": 8179
+      },
+      {
+        "name": "recorder-confirmed",
+        "elapsedMs": 9717
+      },
+      {
+        "name": "dock",
+        "elapsedMs": 12665
+      },
+      {
+        "name": "home",
+        "elapsedMs": 15715
+      }
+    ],
+    "allowedUse": "Separately labelled current Practice inserts; silent source, never provider speech"
+  },
+  "timelineOutline": [
+    {
+      "section": "Premise",
+      "plannedSeconds": 10,
+      "content": "Native title card and an actual current-source greeting when available"
+    },
+    {
+      "section": "Cargo cooperation",
+      "plannedSeconds": 40,
+      "content": "Clue, short conversation, exact Latch confirmation, shared Power decision"
+    },
+    {
+      "section": "Gallery revision",
+      "plannedSeconds": 60,
+      "content": "Actual report, uncertainty, changed plan and exact confirmation"
+    },
+    {
+      "section": "Dock return",
+      "plannedSeconds": 45,
+      "content": "Contact held, charge stored, release/board, return grant and confirmed home"
+    },
+    {
+      "section": "Optional recorder",
+      "plannedSeconds": 15,
+      "content": "Only actual current Voice or separately labelled Practice material"
+    },
+    {
+      "section": "Technology and availability",
+      "plannedSeconds": 20,
+      "content": "Implemented architecture, verified actual access and evidence limits"
+    }
+  ],
+  "editingRules": [
+    "Keep every quote verbatim and aligned to its own audio",
+    "Do not place old provider speech under current Practice screenshots",
+    "Label shortened waits and non-contiguous cuts",
+    "Preserve an intelligible cooperation exchange rather than a montage of confirmations",
+    "Use separately identified Practice inserts only when needed",
+    "Do not invent a successful end or ending ACK",
+    "Review final MP4 by listening and watching, then probe dimensions/codecs/duration",
+    "Update deck, form and availability from actual hosted outcomes before final packaging"
+  ],
+  "historicalPolicy": "Goal005 originals and Goal006 recipe/binaries remain read-only; no historical clip is relabelled as current Live."
+}

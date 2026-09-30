@@ -1,0 +1,13 @@
+# Goal 007 submission components - local snapshot
+
+The bounded media task produced six editable PPTX slides and a native LibreOffice PDF, four actual 1920x1080 Practice screenshots, the unchanged accurate Goal 006 cover and English form copy. See `submission/goal-007/README.md` and `media-components-manifest.json` for exact source identities, per-file hashes, sizes and reproduction steps.
+
+The capture uses UI source `66f1bd206057720275fc9d56a6c9fbe72e409bcd` from documentation head `d9ee08bb13df9b45ea8bb15c51c0f7d2975af07d`. It passed Cargo, Gallery, Dock and confirmed home with the optional recorder, using normal Practice text requests, player document controls and deliberate exact UI confirmations. No hidden-state navigation or provider tool execution was substituted. Live was disabled; provider/token requests were zero. The silent original browser recording is 18.84 seconds, retained privately and identified by hash. Two prior offline helper captures hit a debrief/proposal-strip assertion after home; their originals remain preserved. No provider attempt or accounting change occurred.
+
+All four screenshots and all six PDF pages were inspected. Architecture text overflow and final-page spacing were corrected, and the Cargo crop was tightened. The PPTX contains native editable text on every slide, with native architecture shapes and crop controls; the PDF has six pages and a LibreOffice producer. Speaker notes retain provenance. No final MP4 or release ZIP is claimed by this intermediate task.
+
+Form lengths: title 12 characters; summary 165; description 1,536 characters and 240 words; additional information 1,090 characters. Demo Application Platform is Other, described as a browser-based web game. Public URLs remain null, with plain-language pending status.
+
+Availability is deliberately pending: public HTTPS access and current-candidate Live acceptance have not been supplied to this media task; source remains Private pending historical disclosure. Final hosted outcomes, actual URLs, visibility evidence and current Voice media must update this snapshot before release. The capture source predates final hosted admission integration, so compare its presentation with the final integrated build.
+
+Original Goal 006 MP4/PPTX/PDF/ZIP/cover and its generation/edit recipes remain unchanged. The preserved Goal 005 successful uncut recording also matches its original hash. No historical Voice success is relabelled as current, and no human speech, physical speaker, human playtest or enjoyment result is claimed. No upload, Live call, push or event submission was performed by this media task.
