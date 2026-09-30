@@ -1,0 +1,54 @@
+# Talk Me Home - Goal 007 working form copy
+
+Status: **local components; release evidence pending**. This is not a submitted form.
+
+## Title
+
+Talk Me Home
+
+## Summary
+
+You hold the plans. Pip has eyes and hands. Share clues, revise a route and confirm each action to bring your AI partner home, with an optional memory to carry back.
+
+## Description
+
+Talk Me Home is a cooperative puzzle game about two incomplete views of one station. At Mission Control, you hold private documents and remote equipment controls. Pip, your AI partner, can observe the space nearby, inspect objects and propose physical actions. Conversation turns separate clues into a shared plan.
+
+The rescue crosses Cargo Bay, Relay Gallery and Return Dock. A shared power supply demands coordination. A gate on the map may open onto blocked cargo, so Pip's report can change your route. At the Dock, one partner holds a contact while the other stores energy. Every physical proposal requires an exact human console confirmation before the server validates and commits it.
+
+An optional flight recorder gives the journey a personal choice. Read the archive clue, ask Pip about the worn case and decide whether to make the detour. A confirmed pickup and return place the recorder beside Pip at home. A direct rescue is complete too.
+
+Voice mode connects browser audio to the AssemblyAI Voice Agent API. The browser presents raw captions and local playback; the server owns mission state and action validation. Private map marks stay with the human. Practice provides a deterministic local introduction.
+
+This package shows the current interface in Practice. Public HTTPS access, current-build Live acceptance and final Voice media remain pending. The repository remains Private pending historical disclosure. An earlier build completed one real Voice rescue and failed another run; that history is preserved separately.
+
+## Additional information
+
+Local components include six editable slides, their native LibreOffice-rendered PDF, four current 1920x1080 Practice screenshots and the unchanged original cover. No Practice frame is presented as a new real Voice pass.
+
+The optional recorder is selected before starting; its pickup uses the same exact confirmation boundary as every other physical action. Recovery requests ask for bounded observations and retain raw transcripts. Ambient radio sound is opt-in and gives way to actual microphone input or local reply playback.
+
+Historical real-provider evidence used synthetic microphone input and digital playback, not a human speech or physical speaker test. One earlier rescue reached home with an ending ACK; a second run on the same old candidate stalled without an ACK. Those originals, failures and accounting remain preserved.
+
+Public HTTPS, protected Live acceptance, source disclosure and the final current Voice video are still pending. There is no uploaded media or event-submission result in this local snapshot. URLs will be filled only after actual availability is verified.
+
+## Technologies
+
+AssemblyAI Voice Agent API; TypeScript; Node.js 24; React; Vite; Web Audio; authoritative in-memory server; Playwright.
+
+## Application and links
+
+- Demo Application Platform: Other (browser-based web game).
+- Public HTTPS demo: pending; no invented URL.
+- Public repository: Private pending historical disclosure.
+- Video URL: pending current Voice evidence and media preparation.
+- Pitch deck URL: not uploaded; local editable PPTX and native PDF included.
+
+## Length checks
+
+| Field | Characters | Words |
+| --- | ---: | ---: |
+| title | 12 | 3 |
+| summary | 165 | 31 |
+| description | 1536 | 240 |
+| additionalInformation | 1090 | 161 |

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_COMPONENTS_PASS_FINAL_RELEASE_PENDING",
+  "componentManifestSha256": "1d54500a3d8806f932c22b1e9ce1c83300a652e2383a31e1331ae03d7decc071",
+  "sourceCommit": "d9ee08bb13df9b45ea8bb15c51c0f7d2975af07d",
+  "uiSourceCommit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+  "providerTokenRequests": 0,
+  "formChecks": {
+    "title": {
+      "characters": 12,
+      "words": 3
+    },
+    "summary": {
+      "characters": 165,
+      "words": 31
+    },
+    "description": {
+      "characters": 1536,
+      "words": 240
+    },
+    "additionalInformation": {
+      "characters": 1090,
+      "words": 161
+    }
+  },
+  "slideCount": 6,
+  "nativePdfPages": 6,
+  "editableTextShapesPerSlide": [
+    5,
+    11,
+    8,
+    11,
+    16,
+    10
+  ],
+  "nativeRenderer": "LibreOffice 24.2.7.2 420(Build:2)",
+  "pages": [
+    {
+      "page": 1,
+      "renderSha256": "7a42e04e28efafb701fa5d5445a6af2921ed443eb609b2602e5e7621e579e206",
+      "visuallyInspected": true,
+      "note": "Editable title and original illustration crop are clear."
+    },
+    {
+      "page": 2,
+      "renderSha256": "7b75b8fa191f174d99a27ce936dbd0ada3b060bbbd49ce031def680cb183e345",
+      "visuallyInspected": true,
+      "note": "Gallery map, route marks and three native cooperation points fit."
+    },
+    {
+      "page": 3,
+      "renderSha256": "8b2d4acbfc7bf5845de277f2bbd21ff84f3378396424d783c3a8c4a03cf39129",
+      "visuallyInspected": true,
+      "note": "Exact pending confirmation and acknowledged Dock instruments are readable."
+    },
+    {
+      "page": 4,
+      "renderSha256": "e97461eb921bfdb134f2d6e3fefaa754583c50466d6401e76e282d54c80a9a0f",
+      "visuallyInspected": true,
+      "note": "Confirmed recorder home and optional detour explanation are clear."
+    },
+    {
+      "page": 5,
+      "renderSha256": "1a1648eefacb62c0807368a3ac0858dae8dd0fa9287f66e36a29d24acc0c70cd",
+      "visuallyInspected": true,
+      "note": "Editable architecture has no text overflow; browser routing is stated."
+    },
+    {
+      "page": 6,
+      "renderSha256": "0f247a09a863390fa9317f2b1c2b8dca2d9b42573a7a3e327ea10642ed8b3516",
+      "visuallyInspected": true,
+      "note": "Public/Live/source/media pending status is explicit and fits."
+    }
+  ],
+  "screenshots": {
+    "count": 4,
+    "mode": "Practice - deterministic simulation",
+    "dimensions": "1920x1080",
+    "chapters": [
+      "Cargo Bay",
+      "Relay Gallery",
+      "Return Dock",
+      "Confirmed home with recorder"
+    ],
+    "inspection": "All four originals visually inspected"
+  },
+  "originalCoverHashMatches": true,
+  "historicalFilesHashMatches": 10,
+  "privatePracticeRecordingsPreserved": 3,
+  "gameSourceChangesForMediaTask": false,
+  "port5489ClosedAfterCapture": true,
+  "noFinalVideoClaim": true,
+  "externalActionsPerformed": [],
+  "remaining": [
+    "Compare screenshots with final integrated UI",
+    "Supply actual hosted URL and source disclosure outcome",
+    "Supply current-candidate Live outcome and ending evidence",
+    "Edit and inspect final current Voice video",
+    "Update deck/form availability from actual outcomes"
+  ]
+}

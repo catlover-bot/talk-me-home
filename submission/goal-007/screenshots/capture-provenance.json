@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "status": "CURRENT_PRACTICE_MEDIA_ONLY",
+  "sourceCommit": "d9ee08bb13df9b45ea8bb15c51c0f7d2975af07d",
+  "compiledIdentity": {
+    "commit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+    "version": "0.7.0"
+  },
+  "uiSourceCommit": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+  "mode": "Practice — deterministic simulation, not real Voice",
+  "syntheticMicrophone": false,
+  "providerTokenRequests": 0,
+  "audio": "Silent native browser recording; no provider speech or narration",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/practice-cargo.png",
+      "sha256": "a02d0ab7c62acc1aa9477610373d132439be327f210d61600a8d56ff10e283ba"
+    },
+    {
+      "path": "screenshots/practice-gallery.png",
+      "sha256": "9a8ce2809d0b79090f9669e06c8026fbc98e7d0e9ee236bba46c2d993ddc39f9"
+    },
+    {
+      "path": "screenshots/practice-dock.png",
+      "sha256": "40c01b281fa3a781b503aeaa9b594eae84dc5dba096e8dc13b89c19e9edf047f"
+    },
+    {
+      "path": "screenshots/practice-home.png",
+      "sha256": "a8663a3542849c6e8eddbf73e4c7e52229eda93052261285b96b6a16201a1e83"
+    }
+  ],
+  "moments": [
+    {
+      "name": "optional-recorder-selected",
+      "elapsedMs": 170
+    },
+    {
+      "name": "cargo",
+      "elapsedMs": 2306
+    },
+    {
+      "name": "gallery",
+      "elapsedMs": 4933
+    },
+    {
+      "name": "recorder-observed",
+      "elapsedMs": 6918
+    },
+    {
+      "name": "recorder-proposed",
+      "elapsedMs": 8179
+    },
+    {
+      "name": "recorder-confirmed",
+      "elapsedMs": 9717
+    },
+    {
+      "name": "dock",
+      "elapsedMs": 12665
+    },
+    {
+      "name": "home",
+      "elapsedMs": 15715
+    }
+  ],
+  "runtimeChangesAfterBuild": "",
+  "confirmedHome": true,
+  "recorderSecuredAtHome": true,
+  "video": {
+    "sourceId": "goal-007-practice-insert-01",
+    "sha256": "07aa6ace3996b8860b66c036fcd33332ec3eaadc910d89033fc091bfaca92106",
+    "privateOriginalRetained": true
+  }
+}
