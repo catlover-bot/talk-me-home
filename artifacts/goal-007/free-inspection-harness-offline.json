@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "scope": "OFFLINE_INSPECTION_HARNESS_VALIDATION_NOT_HOSTED",
+  "validatedAt": "2026-09-30T08:22:06.822Z",
+  "applicationCommit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+  "scriptSha256": "32bb84f5842d43a636f655b09fae8e35b3eeab645065a443e96f05792bfe299d",
+  "status": "PASS",
+  "checks": [
+    "health",
+    "exact safe build identity",
+    "private paths rejected",
+    "unknown API remains JSON",
+    "license notices",
+    "fresh visitor unauthorized",
+    "SPA reload and hashed asset MIME/cache",
+    "Live unavailable through read-only access status and normal UI; no Connect or token probe",
+    "injected denied microphone keeps explicit Practice alternative"
+  ],
+  "rescues": [
+    {
+      "objective": "collected",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 12,
+      "declined": 1,
+      "routeControls": {
+        "annotation": true,
+        "undo": true,
+        "erase": true,
+        "undoErase": true
+      },
+      "pauseResume": {
+        "retainedGallery": true,
+        "retainedPrivateRouteMark": true
+      },
+      "completed": true,
+      "replayNewRound": true
+    },
+    {
+      "objective": "selected-skipped",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 9,
+      "declined": 0,
+      "routeControls": {
+        "annotation": true,
+        "undo": true,
+        "erase": true,
+        "undoErase": true
+      },
+      "pauseResume": {
+        "retainedGallery": true,
+        "retainedPrivateRouteMark": true
+      },
+      "completed": true,
+      "replayNewRound": true
+    }
+  ],
+  "network": {
+    "providerHttpRequests": 0,
+    "browserTokenRequests": 0,
+    "websocketAttempts": 0,
+    "negativeTokenProbes": 0,
+    "blocked": []
+  },
+  "browserClosed": true,
+  "ownedServerExitCode": 0,
+  "ownedPortClosed": true,
+  "unchangedComponentFiles": 15,
+  "privateReceipt": ".validation/goal-007/disabled-live-practice-smoke/1790756515285539344/smoke-receipt.json",
+  "hostedStatus": "NOT_RUN_ACTUAL_URL_MISSING"
+}

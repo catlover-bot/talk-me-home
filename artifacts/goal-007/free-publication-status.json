@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T08:22:37.525644+00:00",
+  "scope": "EXISTING_FREE_DISABLED_LIVE_DEPLOYMENT_INSPECTION",
+  "ownerReportedDeployment": {
+    "serviceId": "srv-dauc8fek1f9s73b93pc0",
+    "plan": "Free",
+    "persistentDisk": false,
+    "shortCommit": "caa896d",
+    "dashboardStatus": "successful",
+    "independentlyVerified": false
+  },
+  "expectedApplicationCommit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+  "applicationUrl": null,
+  "applicationUrlStatus": "OWNER_MESSAGE_CONTAINS_PLACEHOLDER_REQUESTED_ONCE",
+  "hostedHttpStatus": "NOT_RUN_MISSING_URL",
+  "hostedPracticeStatus": "NOT_RUN_MISSING_URL",
+  "realVoiceStatus": "NOT_RUN_DISABLED_BY_CURRENT_SCOPE",
+  "sourceAccess": {
+    "url": "https://github.com/catlover-bot/talk-me-home",
+    "apiVisibility": "public",
+    "unauthenticatedHttpStatus": 200,
+    "repositoryTitleObserved": true,
+    "visibilityChangedByThisContinuation": false
+  },
+  "newProviderRequests": 0,
+  "newTokenIssuance": 0,
+  "fundingInitializedByThisContinuation": false,
+  "serviceCreatedByThisContinuation": false,
+  "hostingOrCredentialMutationByThisContinuation": false,
+  "eventSubmitted": false
+}

@@ -1,6 +1,12 @@
 # Goal 007: release and immersion
 
-## Execution agreement
+## Current owner-directed Free deployment verification
+
+The September 30 continuation changes the current hosting decision to the owner's existing **Free service without a persistent disk**. The owner reports a successful dashboard deployment from `caa896d` on `srv-dauc8fek1f9s73b93pc0`. This is owner-provided deployment evidence; independent HTTP identity and hosted Practice verification remain pending. The supplied URL field is a placeholder, and the actual public HTTPS origin has been requested once. No public URL is guessed from the service ID.
+
+Do not apply the older paid-service proposal or create a service, upgrade, attach a paid disk, enable Live, initialize funding, change credentials, or redeploy merely for inspection. Direct public checks require the actual URL, not Render CLI authentication. Use one bounded cold-start wait and no keep-alive traffic. Current instructions and separate evidence axes are in [the publication handoff](goal-007-publication-handoff.md). Historical implementation, pricing proposals, failed runs and immutable media below remain history.
+
+## Earlier execution agreement
 
 The owner's September 30, 2026 approval authorizes actual main integration and publication. The source specification is retained privately from attachment `e4eb5b66-d582-494e-b861-276f931feb7b`; it supersedes old task-specific merge/deploy prohibitions. It authorizes one Render service and one 1 GB disk with a combined base rate <= USD 8/month recurring until canceled, existing payment method only, taxes and usage overage separate. No workspace upgrade, autoscaling, extra service/domain, new payment method or new legal consent is authorized.
 
@@ -20,12 +26,12 @@ Render authentication was not available at initial inspection: no connected Rend
 | --- | --- |
 | Main integration | Intended product, admission, hosted harness, media and CI repair integrated through normal merges; actual main runs are inspected separately from local validation |
 | Product | Short radio briefing, first question, conversation phases, compact receipts, local ambience and recorder/direct-return homecomings implemented; actual before/after captures retained |
-| Public HTTPS | Not yet deployed; no URL invented |
-| Current Live | No Goal 007 provider attempt; old Goal 005 success/failure remain historical |
+| Public HTTPS | Owner reports successful Free/no-disk dashboard deployment from `caa896d`; actual URL and direct verification pending |
+| Current Live | Disabled under the latest owner instruction; no Goal 007 provider attempt; old Goal 005 results remain historical |
 | Reviewer access | Disabled; new allocation not initialized |
-| Public source | Private; historical account-plan/balance facts require the requested disclosure decision; incremental final audit remains |
+| Public source | Now Public according to current GitHub API and unauthenticated HTTP 200; visibility changed outside this continuation; earlier disclosure audit remains history |
 | Submission assets | Six editable slides, native PDF, four screenshots, cover, form copy, 209.733-second labelled Practice preview/SRT and verified local preview ZIP created; final current Voice movie and published links pending |
-| Budget | No new reservation or hosting resource created |
+| Budget | No Goal 007 reservation; owner-created Free service reported; no paid resource creation/upgrade authorized by this continuation |
 
 This is an in-progress execution record, not a claim of release completion. Hosted acceptance, actual main CI/deploy identity, curated asset URLs and final accounting will be appended from observed results.
 
