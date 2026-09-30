@@ -59,7 +59,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
   const origin = m.segment?.origin;
   const live = origin && origin !== 'practice';
   const connectionText = m.busy ? 'Connecting…' : !m.connected ? 'Disconnected · microphone off'
-    : origin === 'practice' ? 'Practice simulation · text only'
+    : origin === 'practice' ? m.view?.missionKind === 'switchyard' ? 'Local/scripted companion' : 'Practice simulation · text only'
       : m.playing ? 'Playing Pip’s reply' : m.toolPending ? 'Pip is checking equipment'
         : m.status === 'awaiting_reply' ? 'Check sent · waiting for Pip’s reply' : m.status === 'responding' ? 'Pip is responding'
           : m.microphone ? m.inputState === 'receiving' ? 'Receiving microphone input' : 'Connected · microphone ready' : 'Connected · microphone off';
@@ -98,6 +98,10 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         <button className="secondary-button" onClick={() => { void m.stop(); }}>{live ? 'Pause / End call' : 'Pause mission'}</button></>
         : <button className="primary-button" onClick={m.start} disabled={m.busy || m.view?.completed}>Resume {originLabel[m.mode]}</button>}
     </div>
+    {m.view?.missionKind === 'switchyard' && m.segment?.origin === 'practice' && <section className="switchyard-intents" aria-label="Local companion requests">
+                <h2>Ask Pip</h2><p className="source-label">Local/scripted companion / Choices from communicated reports</p>
+                <div>{m.switchyardIntents.map(intent => <button key={intent.id} disabled={!m.connected || m.busy || m.view?.status !== 'active'} onClick={() => { void m.chooseSwitchyardIntent(intent.request); }}>{intent.label}</button>)}</div>
+              </section>}
     {historyOpen && <section id="conversation-history" className="history-panel" aria-labelledby="history-title">
       <div className="dialog-heading"><div className="history-partner"><div><h2 id="history-title">Conversation history</h2><span>{historyOverflow ? 'Scroll entries for earlier reports' : 'Original conversation record'}</span></div></div><button onClick={closeHistory}>Close history</button></div>
       <p>A report is a claim, not a current reading. The latest 200 caption entries are shown.</p>
@@ -126,7 +130,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
         <label>Radio ambience <input type="range" min="0" max="1" step="0.05" value={m.ambienceVolume} onChange={event => m.changeAmbienceVolume(Number(event.target.value))} /></label>
         <button onClick={() => { m.changeVoiceVolume(0); m.changeEffectsVolume(0); m.changeAmbienceVolume(0); }}>Mute all audio</button></div>
       {m.voiceVolume === 0 && <p className="notice">Voice output is muted. Captions remain available. Muting does not end the call.</p>}
-      <p className="muted">{m.mode === 'practice' ? 'Practice uses deterministic text matching, with no AI or microphone.' : 'Live Voice and Live Text both use AssemblyAI. No raw microphone audio is recorded by this app.'}</p>
+      <p className="muted">{m.mode === 'practice' ? m.view?.missionKind === 'switchyard' ? 'Local/scripted companion. Choose an intent from a communicated report, or type a supported request. No AI or microphone.' : 'Practice uses deterministic text matching, with no AI or microphone.' : 'Live Voice and Live Text both use AssemblyAI. No raw microphone audio is recorded by this app.'}</p>
     </details>
   </section>;
 }

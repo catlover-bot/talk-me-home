@@ -7,7 +7,7 @@ type LocalEvent = {
   roundId: string
   timestamp: number
   audience: 'robot' | 'human' | 'public'
-  kind: 'observation' | 'action' | 'power' | 'relay' | 'dock' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
+  kind: 'observation' | 'action' | 'power' | 'relay' | 'dock' | 'panel' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
   text: string
   order: number
   chapter: Chapter
@@ -82,6 +82,7 @@ export class RoundRecords {
 
   hint(level: HintLevel, chapter: Chapter = 'cargo', chapterEpoch = 0): HintResult {
     const chapterHints: Record<Exclude<Chapter, 'cargo'>, string[]> = {
+      switchyard: ['Ask Pip to inspect the directory and compare the two approaches.', 'Match the locally reported equipment plate to your circuit manual; edit a draft before applying it.', 'Isolation, a single test supply, and a paired running supply are different layouts. Backtracking and power experiments preserve mechanical progress.'],
       gallery: [
         'Ask Pip for the current room emblem and reachable gate labels. Find that emblem on your map.',
         'Compare the gate directions with your map circuits. Only the selected Relay circuit opens its gates; all rooms remain safe when you change it.',
@@ -144,7 +145,7 @@ export class RoundRecords {
   }
 
   publicRecord(completed: boolean): MissionRecord {
-    const timeline: TimelineEntry[] = this.events.filter((event) => ['power', 'relay', 'dock', 'action', 'confirmation', 'hint', 'checkpoint', 'completion'].includes(event.kind)).map((event) => ({
+    const timeline: TimelineEntry[] = this.events.filter((event) => ['power', 'relay', 'dock', 'panel', 'action', 'confirmation', 'hint', 'checkpoint', 'completion'].includes(event.kind)).map((event) => ({
       id: event.id, roundId: event.roundId, timestamp: event.timestamp,
       actor: event.kind === 'action' ? 'robot' : ['completion', 'checkpoint'].includes(event.kind) ? 'mission' : 'human',
       kind: event.kind as TimelineEntry['kind'], text: event.text,

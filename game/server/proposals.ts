@@ -1,14 +1,22 @@
+import { describeSwitchyardProposal } from './switchyard.js'
 import type { ProposedAction } from '../shared/contracts.js'
 import { localGateDirection, recorderIsObservedLocally } from './gallery.js'
 import { exactObject, type GameState } from './state.js'
 
 export function proposalLocation(state: GameState): string {
-  return state.chapter === 'cargo' ? state.robotLocation : state.chapter === 'gallery' ? state.gallery.room : state.dock.location
+  return state.chapter === 'switchyard' ? state.switchyard.location : state.chapter === 'cargo' ? state.robotLocation : state.chapter === 'gallery' ? state.gallery.room : state.dock.location
 }
 
 /** Validate only the proposed local operation. Physical conditions are checked at confirmation. */
 export function describeProposal(state: GameState, name: string, args: Record<string, unknown>): { action: ProposedAction; label: string } | null {
   if (state.status !== 'active') return null
+  if (state.chapter === 'switchyard') {
+    let action: ProposedAction | undefined
+    if (['propose_move', 'move_to'].includes(name) && exactObject(args, ['target']) && typeof args.target === 'string') action = { kind: 'move', target: args.target }
+    if (['propose_interaction', 'interact_object'].includes(name) && exactObject(args, ['object', 'action']) && typeof args.object === 'string' && typeof args.action === 'string') action = { kind: 'interaction', object: args.object, action: args.action }
+    const label = action && describeSwitchyardProposal(state.switchyard, action)
+    return action && label ? { action, label } : null
+  }
   if (name === 'propose_move' || name === 'move_to') {
     if (!exactObject(args, ['target']) || typeof args.target !== 'string') return null
     let label: string | undefined

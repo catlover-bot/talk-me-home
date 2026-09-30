@@ -1,9 +1,10 @@
+import type { SwitchyardPanelView, SwitchyardApproach, SwitchyardLocalObservation } from './switchyard.js'
 /** Browser-safe contracts. Local equipment state belongs only on the server. */
 export type SessionStatus = 'active' | 'stopped' | 'ended'
 export type Scenario = 'classic' | 'maintenance'
-export type MissionKind = 'training' | 'rescue'
+export type MissionKind = 'training' | 'rescue' | 'switchyard'
 export type OptionalObjective = 'flight_recorder'
-export type Chapter = 'cargo' | 'gallery' | 'return_dock'
+export type Chapter = 'cargo' | 'gallery' | 'return_dock' | 'switchyard'
 export type Relay = 'off' | 'beacon' | 'harbor'
 export type DockControl = 'charge' | 'store' | 'authorize_return' | 'revoke_return'
 export type CancelReason = 'interrupt' | 'supersede' | 'stop'
@@ -26,6 +27,9 @@ export interface HumanView {
   optionalObjective?: OptionalObjective
   /** Published only after server-confirmed home, and only if actually secured. */
   recoveredFlightRecorder?: true
+  switchyardPanel?: SwitchyardPanelView
+  /** Actual approach, published only after confirmed home. */
+  switchyardApproach?: SwitchyardApproach
   relay?: Relay
   /** Working Return Dock instruments, not a local room camera. */
   returnDock?: { energy: 'empty' | 'primed' | 'stored'; readyForReturn: boolean; returnAuthorized: boolean }
@@ -99,7 +103,8 @@ export interface RobotLocalPerception {
     passage: 'clear' | 'blocked' | 'unchecked'
   }[]
 }
-export interface ToolResult extends ActionOutcome { proposal?: ActionProposal; perception?: RobotLocalPerception; recovery?: typeof toolRecoverySteps[number] }
+export interface ToolResult extends ActionOutcome {
+  switchyardObservation?: SwitchyardLocalObservation; proposal?: ActionProposal; perception?: RobotLocalPerception; recovery?: typeof toolRecoverySteps[number] }
 
 /** Forward only ok/message and a recognized outcome code; view stays human-only. */
 export interface ToolResponse extends ToolResult {
@@ -176,7 +181,7 @@ export interface TimelineEntry {
   roundId: string
   timestamp: number
   actor: 'human' | 'robot' | 'mission'
-  kind: 'power' | 'relay' | 'dock' | 'action' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
+  kind: 'power' | 'relay' | 'dock' | 'panel' | 'action' | 'confirmation' | 'hint' | 'checkpoint' | 'completion'
   text: string
   chapter?: Chapter
   chapterEpoch?: number

@@ -1,10 +1,15 @@
 import type { RobotCall } from "./api";
 import { requestId } from "./api";
 import type { Chapter, RobotLocalPerception, ToolResult } from '../shared/contracts';
+import { forgetSwitchyardVisit, localSwitchyardIntentChoices, rememberSwitchyardReport, switchyardReaction, switchyardReply,
+  type SwitchyardCompanionMemory } from './switchyard-companion';
+export { forgetSwitchyardVisit, switchyardReaction } from './switchyard-companion';
 
 /** Practice retains only labels in validated local reports, never the human route map. */
-export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string; visitId?: string; recorder?: 'observed' | 'secured' }
+export interface PracticeMemory { chapter: Chapter; gates: { id: string; label: string }[]; proposalId?: string; visitId?: string; recorder?: 'observed' | 'secured'; switchyard?: SwitchyardCompanionMemory }
 export function rememberLocalResult(memory: PracticeMemory, message: string, chapter: Chapter, perception?: RobotLocalPerception | null): PracticeMemory {
+  // Historical prose cannot restore current Switchyard target handles after a pause.
+  if (chapter === 'switchyard') return { ...memory, chapter, gates: [], switchyard: forgetSwitchyardVisit(memory.switchyard) };
   if (chapter === 'gallery' && message.startsWith('You secured the flight recorder in your carrying pouch.')) return { ...memory, recorder: 'secured' };
   // Null means a current result did not carry an eligible local observation.
   // Omission retains the legacy text path used for explicitly historical recap.
@@ -24,22 +29,44 @@ export function rememberLocalResult(memory: PracticeMemory, message: string, cha
     ...(memory.chapter === chapter && memory.proposalId ? { proposalId: memory.proposalId } : {}) };
 }
 
+/** Switchyard memory is admitted only after the eligible local report is displayed. */
+export function rememberPracticeReport(memory: PracticeMemory, result: ToolResult, chapter: Chapter, communicatedMessage = result.message): PracticeMemory {
+  if (chapter !== 'switchyard') return rememberLocalResult(memory, result.message, chapter, result.perception ?? null);
+  return { chapter, gates: [], ...(result.proposal ? { proposalId: result.proposal.id } : memory.proposalId ? { proposalId: memory.proposalId } : {}),
+    switchyard: rememberSwitchyardReport(memory.switchyard, { ...result, message: communicatedMessage }) };
+}
+
+export function switchyardIntentChoices(memory: PracticeMemory) {
+  return memory.chapter === 'switchyard' ? localSwitchyardIntentChoices(memory.switchyard) : [];
+}
+
 export interface MockReply {
   message: string;
   call?: RobotCall;
   cancel?: boolean;
+  nextMemory?: PracticeMemory;
 }
 
 /** Practice authors its own dialogue; real provider transcripts are never rewritten. */
-export function simulationToolSpeech(result: ToolResult): string {
+export function simulationToolSpeech(result: ToolResult, memory?: PracticeMemory): string {
   if (result.code === 'awaiting_confirmation' && result.proposal?.status === 'awaiting_confirmation') {
     return `I propose: ${result.proposal.label}.`;
   }
-  return simulationSpeech(result.message);
+  const message = simulationSpeech(result.message);
+  if (memory?.chapter !== 'switchyard') return message;
+  const reaction = switchyardReaction(memory.switchyard, result);
+  const spoken = message.replace(/ \((?:switchyard\.[a-z_]+|align_turntable|set_index_one|set_index_two|test_lift|seat_brace|deploy_bridge|depart)\)/g, '')
+    .replace(/\bYou (departed|seated|deployed|aligned|completed)\b/g, 'I $1');
+  return reaction ? `${spoken} ${reaction}` : spoken;
 }
 
 /** An explicit API-free test driver. It never decides whether a game action succeeds. */
 export function simulationReply(raw: string, memory?: PracticeMemory): MockReply {
+  if (memory?.chapter === 'switchyard') {
+    const reply = switchyardReply(raw, memory.switchyard, memory.proposalId);
+    return { message: reply.message, ...(reply.call ? { call: reply.call } : {}), ...(reply.cancel ? { cancel: true } : {}),
+      ...(reply.memory ? { nextMemory: { ...memory, switchyard: reply.memory } } : {}) };
+  }
   const text = raw.toLowerCase().trim();
   const call = (
     name: string,

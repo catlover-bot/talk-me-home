@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { protectedLiveStopped, rememberProtectedLiveStop } from './release-stop';
-import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason, RecordedMessage } from '../shared/contracts';
+import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason, RecordedMessage, ToolResult } from '../shared/contracts';
 import * as api from './api';
 import { LiveVoice, type TranscriptEntry, type VoiceInputState, type VoiceStatus } from './voice';
-import { simulationReply, simulationToolSpeech, rememberLocalResult, type PracticeMemory } from './mock';
+import { simulationReply, simulationToolSpeech, rememberLocalResult, rememberPracticeReport, forgetSwitchyardVisit, switchyardIntentChoices, type PracticeMemory } from './mock';
 import { LocalEffects } from './effects';
 import { copy } from './strings';
 import { acceptsHumanViewSnapshot } from './view-order';
@@ -91,8 +91,29 @@ export function useMission() {
     const current = viewRef.current;
     if (!current) return;
     const known = inspectionVisit.current;
-    return { ...current, ...(current.status === 'active' && current.chapter === 'gallery' && known?.roundId === current.roundId
+    return { ...current, ...(current.status === 'active' && (current.chapter === 'gallery' || current.chapter === 'switchyard') && known?.roundId === current.roundId
       && known.chapterEpoch === current.chapterEpoch ? { inspectionScope: { visitId: known.visitId } } : {}) };
+  };
+
+  const clearSwitchyardObservation = () => {
+    if (practiceMemory.current.chapter === 'switchyard') practiceMemory.current = { ...practiceMemory.current, switchyard: forgetSwitchyardVisit(practiceMemory.current.switchyard) };
+    if (viewRef.current?.chapter === 'switchyard') inspectionVisit.current = null;
+  };
+  // The server validates the visit; transport revision guards keep a delayed report
+  // from seeding current choices after a different response has advanced the view.
+  const currentSwitchyardResult = (result: ToolResult, responseView?: HumanView): ToolResult => {
+    const observation = result.switchyardObservation;
+    if (!observation) return result;
+    const current = viewRef.current;
+    if (current?.chapter === 'switchyard' && observation.stateRevision === current.revision && current.status === 'active'
+      && (!responseView || responseView.roundId === current.roundId && responseView.chapterEpoch === current.chapterEpoch
+        && responseView.revision === observation.stateRevision)) return result;
+    const { switchyardObservation: _historical, ...rest } = result;
+    return { ...rest, message: `Historical local report, not a current reading. ${rest.message}` };
+  };
+  const captureSwitchyardVisit = (result: ToolResult) => {
+    const observation = result.switchyardObservation; const current = viewRef.current;
+    if (observation && current?.chapter === 'switchyard') inspectionVisit.current = { roundId: current.roundId, chapterEpoch: current.chapterEpoch, visitId: observation.visitId };
   };
 
   const setBusyNow = (value: boolean) => { busyRef.current = value; setBusy(value); };
@@ -103,6 +124,8 @@ export function useMission() {
     const previous = viewRef.current;
     if (!acceptsHumanViewSnapshot(previous, next)) return;
     viewRef.current = next; setView(next);
+    if (next.chapter === 'switchyard' && (previous?.roundId !== next.roundId || next.status !== 'active'
+      || previous?.status !== 'active' || previous.switchyardPanel?.panelRevision !== next.switchyardPanel?.panelRevision)) clearSwitchyardObservation();
     if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
       setHint('');
       effects.current.play('checkpoint');
@@ -202,6 +225,7 @@ export function useMission() {
     const lastSpoken = captionsRef.current.filter(item => item.role === 'robot' && item.segmentId === segmentRef.current?.id).at(-1);
     if (playingRef.current && lastSpoken) addCaption({ ...lastSpoken, id: lastSpoken.id.slice(lastSpoken.segmentId.length + 1), final: true, interrupted: true }, segmentRef.current!, lastSpoken.roundId);
     ++generation.current; ++mockTurn.current;
+    clearSwitchyardObservation();
     setBusyNow(true); setConnectedNow(false); setToolPending(false); setPowerPending(null); setControlPending(null); controlBusy.current = false;
     setProposalConfirming(null); setProposalFailure(null);
     mockAbort.current?.abort(); mockAbort.current = null;
@@ -251,10 +275,12 @@ export function useMission() {
     if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
     const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
     if (perception) inspectionVisit.current = { roundId: perception.roundId, chapterEpoch: perception.chapterEpoch, visitId: perception.visitId };
-    if (result.ok) practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter, perception ?? null);
+    if (result.ok && result.view.chapter !== 'switchyard') practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter, perception ?? null);
     if (result.proposal) practiceMemory.current = { ...practiceMemory.current, proposalId: result.proposal.id };
-    return { ok: result.ok, message: result.message, code: result.code, recovery: result.recovery, proposal: result.proposal,
-      ...(perception ? { perception } : {}) };
+    const eligible = currentSwitchyardResult({ ok: result.ok, message: result.message, code: result.code, recovery: result.recovery, proposal: result.proposal,
+      ...(perception ? { perception } : {}), ...(result.switchyardObservation ? { switchyardObservation: result.switchyardObservation } : {}) }, result.view);
+    captureSwitchyardVisit(eligible);
+    return eligible;
   };
 
   const start = (connectionMode: TransportOrigin = mode) => {
@@ -270,7 +296,7 @@ export function useMission() {
     const prepareMission = async () => {
       let current = viewRef.current;
       const retained = !!current && !current.completed && current.status !== 'ended' && stage !== 'briefing';
-      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind === 'rescue' ? 'classic' : scenario, missionKind, ...(missionKind === 'rescue' && optionalObjective ? { optionalObjective } : {}) }) : await api.createSession(missionKind === 'rescue' ? 'classic' : scenario, missionKind, missionKind === 'rescue' ? optionalObjective : undefined);
+      if (!retained) current = current ? await api.lifecycle(current, 'reset', { scenario: missionKind !== 'training' ? 'classic' : scenario, missionKind, ...(missionKind === 'rescue' && optionalObjective ? { optionalObjective } : {}) }) : await api.createSession(missionKind !== 'training' ? 'classic' : scenario, missionKind, missionKind === 'rescue' ? optionalObjective : undefined);
       else current = await api.lifecycle(current!, 'resume');
       if (expected !== generation.current) {
         await api.lifecycle(current!, 'stop');
@@ -278,6 +304,7 @@ export function useMission() {
       }
       applyView(current!); setStage('mission');
       if (!retained) { captionsRef.current = []; setCaptions([]); setRecord(emptyRecord(current!.roundId)); practiceMemory.current = { chapter: current!.chapter, gates: [] }; }
+      if (current!.chapter === 'switchyard') clearSwitchyardObservation();
       await Promise.allSettled([...writes.current]);
       const recap = await api.robotRecap(current!);
       if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
@@ -291,7 +318,8 @@ export function useMission() {
       void prepareMission().then(({ retained }) => {
         if (expected !== generation.current) return;
         setConnectedNow(true); setStatus('listening'); effects.current.play('connect');
-        robotSays(retained ? "I'm back, Mission Control. My earlier reports may be out of date. What should we check?" : copy.greeting, source);
+        robotSays(retained ? "I'm back, Mission Control. My earlier reports may be out of date. What should we check?"
+          : viewRef.current?.chapter === 'switchyard' ? "I'm ready, Mission Control. Ask me to look around while you study the routing panel." : copy.greeting, source);
       }).catch(cause => { if (expected === generation.current) { showError(cause); setStatus('error'); } })
         .finally(() => { if (expected === generation.current) setBusyNow(false); });
       return;
@@ -412,8 +440,13 @@ export function useMission() {
       if (hadPending || reply.cancel) await cancelPending(expected, reply.cancel ? 'interrupt' : 'supersede');
       if (expected !== generation.current || turn !== mockTurn.current || abort.signal.aborted) return true;
       if (reply.cancel) setInterrupted(true);
-      const message = reply.call ? simulationToolSpeech(await runTool(reply.call, abort.signal, expected)) : reply.message;
-      if (expected === generation.current && turn === mockTurn.current) robotSays(message, source);
+      const result = reply.call ? currentSwitchyardResult(await runTool(reply.call, abort.signal, expected)) : undefined;
+      const message = result ? simulationToolSpeech(result, practiceMemory.current) : reply.message;
+      if (expected === generation.current && turn === mockTurn.current) {
+        robotSays(message, source);
+        if (result && viewRef.current?.chapter === 'switchyard') practiceMemory.current = rememberPracticeReport(practiceMemory.current, result, 'switchyard', message);
+        else if (reply.nextMemory) practiceMemory.current = reply.nextMemory;
+      }
     } catch (cause) {
       if (expected === generation.current && turn === mockTurn.current && !(cause instanceof DOMException && cause.name === 'AbortError')) showError(cause);
     } finally {
@@ -423,8 +456,9 @@ export function useMission() {
   };
 
   const quickRequest = (kind: 'surroundings' | 'repeat_report') => send(kind === 'surroundings'
-    ? viewRef.current?.chapter === 'gallery' ? 'Please look around and report the current emblem and reachable gates.' : 'Please look around and report what you can see within reach.'
+    ? viewRef.current?.chapter === 'switchyard' ? 'Please look around.' : viewRef.current?.chapter === 'gallery' ? 'Please look around and report the current emblem and reachable gates.' : 'Please look around and report what you can see within reach.'
     : 'Please repeat your last report, noting if it may be out of date.', 'quick_request');
+  const chooseSwitchyardIntent = (request: string) => send(request, 'quick_request');
 
   const changePower = async (powerOn: boolean) => {
     const current = viewRef.current;
@@ -461,6 +495,26 @@ export function useMission() {
   const changeRelay = (relay: Relay) => changeControl(relay, current => api.setRelay(current, relay));
   const dockControl = (action: DockControl) => changeControl(action, current => api.dockControl(current, action));
 
+  const applyRouting = async (rotations: number[]): Promise<boolean> => {
+    const current = viewRef.current;
+    if (!current || current.chapter !== 'switchyard' || current.status !== 'active' || !current.switchyardPanel
+      || controlBusy.current || busyRef.current || !connectedRef.current) return false;
+    const expected = generation.current; controlBusy.current = true; setControlPending('routing_panel'); setError('');
+    try {
+      const next = await api.applyRouting(current, rotations);
+      if (expected !== generation.current || !currentRound(next.roundId)) return false;
+      applyView(next); effects.current.play('acknowledge');
+      // The authoritative apply is complete. History cannot undo that success.
+      void refreshRecord(next).catch(cause => { if (expected === generation.current && currentRound(next.roundId)) showError(cause); });
+      return true;
+    } catch (cause) {
+      if (expected !== generation.current) return false;
+      showError(cause);
+      try { const latest = await api.getSession(current.sessionId); if (expected === generation.current && currentRound(latest.roundId)) applyView(latest); } catch { /* Preserve the original routing error and the editable draft. */ }
+      return false;
+    } finally { if (expected === generation.current) { controlBusy.current = false; setControlPending(null); } }
+  };
+
   const decideProposal = async (decision: 'confirm' | 'decline') => {
     const current = viewRef.current; const proposal = current?.proposal;
     if (!current || !proposal || proposal.status !== 'awaiting_confirmation' || proposalDecisionBusy.current
@@ -477,6 +531,8 @@ export function useMission() {
       applyView(result.view);
       const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
       if (perception) inspectionVisit.current = { roundId: perception.roundId, chapterEpoch: perception.chapterEpoch, visitId: perception.visitId };
+      const localResult = currentSwitchyardResult(result, result.view);
+      captureSwitchyardVisit(localResult);
       if (result.decisionEvent) {
         addGameEvent(result.decisionEvent);
         if (connection && voice.current === connection && connectedRef.current) {
@@ -492,9 +548,14 @@ export function useMission() {
         }
       }
       if (result.ok && result.proposal?.status === 'committed') {
-        practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter,
+        if (result.view.chapter !== 'switchyard') practiceMemory.current = rememberLocalResult(practiceMemory.current, result.message, result.view.chapter,
           currentRobotPerception(result.perception, viewRef.current ?? undefined) ?? null);
         effects.current.play('acknowledge');
+      }
+      if (result.view.chapter === 'switchyard' && segmentRef.current?.origin === 'practice') {
+        const message = simulationToolSpeech(localResult, practiceMemory.current);
+        robotSays(message);
+        practiceMemory.current = rememberPracticeReport(practiceMemory.current, localResult, 'switchyard', message);
       }
       recordView = result.view;
     } catch (cause) {
@@ -527,7 +588,7 @@ export function useMission() {
     try {
       const current = viewRef.current;
       if (current) {
-        const reset = await api.lifecycle(current, 'reset', { scenario: nextKind === 'rescue' ? 'classic' : nextScenario, missionKind: nextKind });
+        const reset = await api.lifecycle(current, 'reset', { scenario: nextKind !== 'training' ? 'classic' : nextScenario, missionKind: nextKind });
         applyView(reset); applyView(await api.lifecycle(reset, 'stop'));
       }
       captionsRef.current = []; setCaptions([]); setRecord(null); setSegment(null); segmentRef.current = null;
@@ -627,6 +688,7 @@ export function useMission() {
   }, []);
 
   const activeCaption = segment ? captions.filter(item => item.segmentId === segment.id).at(-1) : undefined;
+  const switchyardIntents = segment?.origin === 'practice' && view?.chapter === 'switchyard' ? switchyardIntentChoices(practiceMemory.current) : [];
   const pipState = view?.completed ? 'success' : error ? 'error' : interrupted ? 'interrupted'
     : !connected ? busy ? 'considering' : view ? 'paused' : 'offline'
       : toolPending ? 'checking' : playing ? 'speaking' : status === 'responding' || status === 'awaiting_reply' ? 'considering'
@@ -635,6 +697,7 @@ export function useMission() {
     stage, scenario, setScenario, missionKind, setMissionKind: chooseMissionKind, optionalObjective, setOptionalObjective, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
+    switchyardIntents, chooseSwitchyardIntent, applyRouting,
     error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, ambienceVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
     start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume, changeAmbienceVolume,

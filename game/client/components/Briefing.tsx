@@ -35,9 +35,13 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
               <input type="radio" name="mission-kind" checked={missionKind === 'training'} onChange={() => onMissionKind('training')} disabled={busy}/>
               <span><strong>Training</strong><small>One room. A shorter first step.</small></span>
             </label>
+            <label className="scenario-choice" data-selected={missionKind === 'switchyard'}>
+              <input type="radio" name="mission-kind" checked={missionKind === 'switchyard'} onChange={() => onMissionKind('switchyard')} disabled={busy}/>
+              <span><strong>The Switchyard</strong><small>One panel. Two ways home.</small></span>
+            </label>
           </div>
           {missionKind === 'training' ? <div className="training-choice"><label htmlFor="training-scenario">Training exercise</label><select id="training-scenario" value={scenario} onChange={event => onScenario(event.target.value as Scenario)} disabled={busy}><option value="classic">Classic — the first Door</option><option value="maintenance">Maintenance — a module clue</option></select></div>
-            : <><ol className="briefing-journey" aria-label="Rescue Mission chapters"><li><span>01</span>Cargo Bay</li><li><span>02</span>Relay Gallery</li><li><span>03</span>Return Dock</li></ol>
+            : missionKind === 'switchyard' ? <p className="switchyard-premise">You rewire six routing pieces. Pip investigates the fitted equipment. Restore a calibrated direct lift, or prepare the maintenance bridge and backtrack to align its turntable. Read local reports alongside your manual; you may change plans before departure.</p> : <><ol className="briefing-journey" aria-label="Rescue Mission chapters"><li><span>01</span>Cargo Bay</li><li><span>02</span>Relay Gallery</li><li><span>03</span>Return Dock</li></ol>
               <label className="recorder-choice"><input type="checkbox" aria-label="Bring back the flight recorder" checked={optionalObjective === 'flight_recorder'} onChange={event => onOptionalObjective(event.target.checked ? 'flight_recorder' : undefined)} disabled={busy} aria-describedby="recorder-choice-detail"/><span><strong>Bring back the flight recorder</strong><small id="recorder-choice-detail">Optional · a case of Pip’s old flight notes, filed at Leaf. You can also head straight home.</small></span></label></>}
         </fieldset>
         <fieldset className="setup-fieldset">
@@ -46,7 +50,7 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
             {([['practice', 'Practice', 'Simulation · type to play'], ['live_voice', 'Live Voice', 'Speak with AssemblyAI'], ['live_text', 'Live Text', 'Type with AssemblyAI']] as const).map(([value, name, copy]) =>
               <label key={value} className="mode-choice" data-selected={mode === value}><input type="radio" name="connection-mode" checked={mode === value} onChange={() => onMode(value)} disabled={busy}/><span><strong>{name}</strong><small>{copy}</small></span></label>)}
           </div>
-          <p className="connection-explanation" id="connection-explanation">{mode === 'practice' ? <><strong>Practice is free of API calls.</strong> Deterministic, offline conversation. No microphone.</> : <><strong>{mode === 'live_voice' ? 'Microphone and text go to AssemblyAI.' : 'Text goes to AssemblyAI. No microphone.'}</strong> Live uses provider time. The host’s call limit is shown in the connection check; Pause ends the call.</>}</p>
+          <p className="connection-explanation" id="connection-explanation">{mode === 'practice' ? <><strong>Practice is free of API calls.</strong> {missionKind === 'switchyard' ? 'Local/scripted companion with labelled intent choices. No microphone; real Voice is unverified for this mission.' : 'Deterministic, offline conversation. No microphone.'}</> : <><strong>{mode === 'live_voice' ? 'Microphone and text go to AssemblyAI.' : 'Text goes to AssemblyAI. No microphone.'}</strong> Live uses provider time. The host’s call limit is shown in the connection check; Pause ends the call.</>}</p>
         </fieldset>
       </div>
       {error && <p className="briefing-error" role="alert">{error}</p>}

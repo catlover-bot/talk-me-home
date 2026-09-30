@@ -99,7 +99,8 @@ export function executeTool(
   const localObject = call.arguments && typeof call.arguments === 'object' && !Array.isArray(call.arguments)
     ? (call.arguments as Record<string, unknown>).object : undefined;
   const needsVisit = call.name === 'inspect_gate' || (localObject === 'flight_recorder'
-    && ['inspect_object', 'propose_interaction', 'interact_object'].includes(call.name));
+    && ['inspect_object', 'propose_interaction', 'interact_object'].includes(call.name))
+    || (view.chapter === 'switchyard' && ['inspect_object', 'propose_interaction', 'interact_object', 'propose_move', 'move_to'].includes(call.name));
   return request<ToolResponse>(
     `/sessions/${encodeURIComponent(view.sessionId)}/tools`,
     {
@@ -144,6 +145,9 @@ export const requestHint = (view: HumanView, level: HintLevel) => request<HintRe
 const controlEnvelope = (view: HumanView) => ({ roundId: view.roundId, chapterEpoch: view.chapterEpoch, revision: view.revision, requestId: requestId() });
 export const setRelay = (view: HumanView, relay: Relay) => request<HumanView>(path(view, 'relay'), { ...controlEnvelope(view), relay });
 export const dockControl = (view: HumanView, action: DockControl) => request<HumanView>(path(view, 'dock-control'), { ...controlEnvelope(view), action });
+export const applyRouting = (view: HumanView, rotations: number[]) => request<HumanView>(path(view, 'routing-panel'), {
+  ...controlEnvelope(view), panelRevision: view.switchyardPanel?.panelRevision, rotations,
+});
 type AnnotationPayload<T> = T extends unknown ? Omit<T, 'roundId' | 'chapterEpoch' | 'requestId'> : never;
 export type AnnotationChange = AnnotationPayload<AnnotationRequest>;
 export const annotate = (view: HumanView, change: AnnotationChange) => request<MissionRecord>(path(view, 'annotations'), { roundId: view.roundId, chapterEpoch: view.chapterEpoch, requestId: requestId(), ...change });

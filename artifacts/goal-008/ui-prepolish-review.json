@@ -1,0 +1,247 @@
+{
+    "schemaVersion":  1,
+    "classification":  "Offline working-candidate review, not final acceptance",
+    "version":  "0.8.0",
+    "sourceBaseline":  "06dd6b7ec97ddb4157c581f2ad82089df20159a1",
+    "sourceStatus":  "Uncommitted shared working tree; captured assets index-CTeygoXh.js and index-DabpPupx.css",
+    "browserResult":  {
+                          "tests":  16,
+                          "passed":  16,
+                          "failed":  0,
+                          "durationSeconds":  42.4,
+                          "projects":  [
+                                           "chromium-1280",
+                                           "chromium-1440"
+                                       ],
+                          "execution":  "Compiled production HTTP/static/browser code, configuration chosen only in private SessionStore constructor",
+                          "realProviderRequests":  0,
+                          "routeCoverage":  "Two authored configurations times two approaches, each at both viewports",
+                          "faultInjection":  "Changed-acknowledgement test uses a synthetic HumanView only to verify dirty-draft presentation; actual server authority tested separately"
+                      },
+    "visuallyInspected":  [
+                              "panel-a-lift-chromium-1280.png",
+                              "home-a-bypass-chromium-1280.png",
+                              "narrow-panel-chromium-1280.png",
+                              "panel-a-lift-chromium-1440.png",
+                              "plan-change-b-chromium-1440.png",
+                              "home-b-lift-chromium-1440.png",
+                              "departure-b-bypass-chromium-1440.png",
+                              "zoom-panel-chromium-1440.png"
+                          ],
+    "findings":  [
+                     "Draft and applied readings, rotors, manual tabs and exact pending departure are readable.",
+                     "Narrow390px and CSS200percent zoom tests retain controls without document horizontal overflow.",
+                     "Home portrait secondary text was too pale; a scoped CSS contrast correction was made after this capture and is not represented in these preserved PNGs.",
+                     "The fixed evidence stamp appears at the viewport edge within full-page captures; these are review captures, not final presentation compositions."
+                 ],
+    "exclusions":  [
+                       "No real Voice test",
+                       "No human speech or microphone test",
+                       "No audible playback/listening test",
+                       "No human enjoyment claim",
+                       "No complete source commit identity for this working candidate"
+                   ],
+    "privateRawPath":  ".validation/goal-008/ui-prepolish",
+    "images":  [
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/bypass-ready-a-chromium-1280.png",
+                       "bytes":  353952,
+                       "sha256":  "860245dc734002542157239941fe001bb0889d9148ca38cdeeb0a6fd09bace52"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/bypass-ready-a-chromium-1440.png",
+                       "bytes":  380584,
+                       "sha256":  "9c11fad8fc0cc115b9b27fd9af36102c8174784f813a08925041e5390ad003eb"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/bypass-ready-b-chromium-1280.png",
+                       "bytes":  349351,
+                       "sha256":  "bf2e8b9cd86625460a6b2693977208d6ddea7f1d614f5c4bf14583a486e38cff"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/bypass-ready-b-chromium-1440.png",
+                       "bytes":  381063,
+                       "sha256":  "83356d7b35cf9bcc7fd18ee17d2a2d693d42ccd75746393d894bd6b3fc00f828"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-a-bypass-chromium-1280.png",
+                       "bytes":  348351,
+                       "sha256":  "7dab16f92466b49b2e83b5f02d83eb33b399c0c60077a5d05d2fca0c17991ebc"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-a-bypass-chromium-1440.png",
+                       "bytes":  365335,
+                       "sha256":  "d1e4740770164ef14d9854625a9478a27b600edf7a7a1fc958c719e29f8da944"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-a-lift-chromium-1280.png",
+                       "bytes":  337232,
+                       "sha256":  "66e8258bcc0e3509b07e82d410063d22dae660a962c5755555326ea888015ccc"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-a-lift-chromium-1440.png",
+                       "bytes":  352973,
+                       "sha256":  "7ccff2be8dc5ebd79bf030c9433e026b60bbf265a699bca2ff639c4ce73523a9"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-b-bypass-chromium-1280.png",
+                       "bytes":  342251,
+                       "sha256":  "58c7bcd93689bee9b58ff5e3d5fff29ce113217189be5361655c72b2c834c804"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-b-bypass-chromium-1440.png",
+                       "bytes":  365844,
+                       "sha256":  "784284190905f887adaeb8a7b25b8cf717db448f195a037c251fcbe3442be536"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-b-lift-chromium-1280.png",
+                       "bytes":  337483,
+                       "sha256":  "ca701116d47d3a9900dc2626cf75294760ff18471acadb4e360d577c1d0c6895"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/departure-b-lift-chromium-1440.png",
+                       "bytes":  353146,
+                       "sha256":  "877e1f1448870c00b4395236a20f06625d7ba80d24780e2279b5a624872f3fa3"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-a-bypass-chromium-1280.png",
+                       "bytes":  114762,
+                       "sha256":  "2b2afd8eef2a9b7a15f8a067dac2d247058485486007e48874514f94ad29603b"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-a-bypass-chromium-1440.png",
+                       "bytes":  134625,
+                       "sha256":  "fc1889c7c26ea6f930cd8f4f3bb27f5be843708c5cfa40497309e3bada569b82"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-a-lift-chromium-1280.png",
+                       "bytes":  116697,
+                       "sha256":  "b87f17fffca9dc97fee3ceed1b74d2856595cbce148dabf8b20b964d62a471e6"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-a-lift-chromium-1440.png",
+                       "bytes":  129374,
+                       "sha256":  "d71055e9e16e80a28b90183cf8c5b0c2c60085729fbca07fcbd209d982db5837"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-b-bypass-chromium-1280.png",
+                       "bytes":  120333,
+                       "sha256":  "205b03bf7d8f48eaf55c221a2b107104604c035f31961fb9ed51c5e9207f3fa2"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-b-bypass-chromium-1440.png",
+                       "bytes":  134625,
+                       "sha256":  "fc1889c7c26ea6f930cd8f4f3bb27f5be843708c5cfa40497309e3bada569b82"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-b-lift-chromium-1280.png",
+                       "bytes":  116697,
+                       "sha256":  "b87f17fffca9dc97fee3ceed1b74d2856595cbce148dabf8b20b964d62a471e6"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/home-b-lift-chromium-1440.png",
+                       "bytes":  129374,
+                       "sha256":  "d71055e9e16e80a28b90183cf8c5b0c2c60085729fbca07fcbd209d982db5837"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/lift-test-a-chromium-1280.png",
+                       "bytes":  339502,
+                       "sha256":  "43248b8ee0c6cbeb61808266c0afa96b2a45464a92d4d41ca397b06786fd9e50"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/lift-test-a-chromium-1440.png",
+                       "bytes":  367397,
+                       "sha256":  "d7e210125debf8bc2c86480578295fb353dddb6ba5eef244efc8e5af65e3e61e"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/lift-test-b-chromium-1280.png",
+                       "bytes":  339887,
+                       "sha256":  "ab21bb7d0f62d09d310218c27677b5dc28a1854bd37d90c5a49372556f8c58ab"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/lift-test-b-chromium-1440.png",
+                       "bytes":  367748,
+                       "sha256":  "fa02fcaa6a470cf036559d6729786f186bc3e6081ff7dcb628f83bcc9e2d0f46"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/narrow-panel-chromium-1280.png",
+                       "bytes":  305736,
+                       "sha256":  "26adc171f1f260936e5fe2546248c962f9e80c078273e0142edaef1c6fb69f57"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/narrow-panel-chromium-1440.png",
+                       "bytes":  305736,
+                       "sha256":  "26adc171f1f260936e5fe2546248c962f9e80c078273e0142edaef1c6fb69f57"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-a-bypass-chromium-1280.png",
+                       "bytes":  371254,
+                       "sha256":  "02545b07c865200cce4bd852b24a95ab781a31da3f1a03f6d110bdb5067af688"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-a-bypass-chromium-1440.png",
+                       "bytes":  399897,
+                       "sha256":  "efcfb6ee40c68032e66fcc71f9c3375046de63d649ae692c9fd2c1f7cb8812d4"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-a-lift-chromium-1280.png",
+                       "bytes":  371254,
+                       "sha256":  "02545b07c865200cce4bd852b24a95ab781a31da3f1a03f6d110bdb5067af688"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-a-lift-chromium-1440.png",
+                       "bytes":  399897,
+                       "sha256":  "efcfb6ee40c68032e66fcc71f9c3375046de63d649ae692c9fd2c1f7cb8812d4"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-b-bypass-chromium-1280.png",
+                       "bytes":  371254,
+                       "sha256":  "02545b07c865200cce4bd852b24a95ab781a31da3f1a03f6d110bdb5067af688"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-b-bypass-chromium-1440.png",
+                       "bytes":  399897,
+                       "sha256":  "efcfb6ee40c68032e66fcc71f9c3375046de63d649ae692c9fd2c1f7cb8812d4"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-b-lift-chromium-1280.png",
+                       "bytes":  371254,
+                       "sha256":  "02545b07c865200cce4bd852b24a95ab781a31da3f1a03f6d110bdb5067af688"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/panel-b-lift-chromium-1440.png",
+                       "bytes":  399897,
+                       "sha256":  "efcfb6ee40c68032e66fcc71f9c3375046de63d649ae692c9fd2c1f7cb8812d4"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/plan-change-a-chromium-1280.png",
+                       "bytes":  369814,
+                       "sha256":  "16fb6254dd4f388d0f7b65fd44ef2e84a5d246eff7bd77d399782bf18db24602"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/plan-change-a-chromium-1440.png",
+                       "bytes":  406480,
+                       "sha256":  "ff6609e94bd59d99231e3684d52952580efeb4a5cfc558684c6311b09b84a700"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/plan-change-b-chromium-1280.png",
+                       "bytes":  369814,
+                       "sha256":  "16fb6254dd4f388d0f7b65fd44ef2e84a5d246eff7bd77d399782bf18db24602"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/plan-change-b-chromium-1440.png",
+                       "bytes":  406480,
+                       "sha256":  "ff6609e94bd59d99231e3684d52952580efeb4a5cfc558684c6311b09b84a700"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/zoom-panel-chromium-1280.png",
+                       "bytes":  898571,
+                       "sha256":  "dae38c2e98aa67236646bae979c44174eceee7002a77d9dbf879cce2dc475fc4"
+                   },
+                   {
+                       "path":  ".validation/goal-008/ui-prepolish/screenshots/zoom-panel-chromium-1440.png",
+                       "bytes":  898571,
+                       "sha256":  "dae38c2e98aa67236646bae979c44174eceee7002a77d9dbf879cce2dc475fc4"
+                   }
+               ]
+}
