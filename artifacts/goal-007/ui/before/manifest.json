@@ -1,0 +1,104 @@
+{
+  "sourceCommit": "5982fb69711f765aaeff33959773b022fce50c27",
+  "compiledGameSource": "2a08aefe835a45ca815c281753784b3f8b4e6487",
+  "mode": "Practice",
+  "providerCalls": 0,
+  "screens": [
+    "entrance-1280x720.png",
+    "cargo-first-1280x720.png",
+    "cargo-proposal-1280x720.png",
+    "gallery-1280x720.png",
+    "gallery-narrow-1280x720.png",
+    "gallery-zoom200-1280x720.png",
+    "entrance-1440x900.png",
+    "cargo-first-1440x900.png",
+    "cargo-proposal-1440x900.png",
+    "gallery-1440x900.png"
+  ],
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "entrancePrimaryButton": [
+        "Play with voice ↗"
+      ],
+      "startPracticeBox": {
+        "x": 243.546875,
+        "y": 580.125,
+        "width": 126.28125,
+        "height": 44
+      }
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "proposalBox": {
+        "x": 796.90625,
+        "y": 485.828125,
+        "width": 442.09375,
+        "height": 125.046875
+      },
+      "confirmBox": {
+        "x": 807.90625,
+        "y": 557.875,
+        "width": 131.34375,
+        "height": 44
+      },
+      "controlsBox": {
+        "x": 24,
+        "y": 146.234375,
+        "width": 737.90625,
+        "height": 112
+      }
+    },
+    {
+      "narrowOverflow": false
+    },
+    {
+      "zoomOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "entrancePrimaryButton": [
+        "Play with voice ↗"
+      ],
+      "startPracticeBox": {
+        "x": 251.546875,
+        "y": 665.125,
+        "width": 126.28125,
+        "height": 44
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "proposalBox": {
+        "x": 897.875,
+        "y": 570.890625,
+        "width": 494.125,
+        "height": 131.046875
+      },
+      "confirmBox": {
+        "x": 910.875,
+        "y": 646.9375,
+        "width": 131.34375,
+        "height": 44
+      },
+      "controlsBox": {
+        "x": 28,
+        "y": 172.296875,
+        "width": 827.875,
+        "height": 122.5
+      }
+    }
+  ]
+}

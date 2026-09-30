@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-09-30T00:56:15Z",
+  "status": "PRIVATE_ACCOUNT_DISCLOSURE_DECISION_REQUIRED",
+  "repository": "catlover-bot/talk-me-home",
+  "selectedBase": "5982fb69711f765aaeff33959773b022fce50c27",
+  "expandedGitScanThrough": "c69101909e25e57be880a722bd0952d83a01b7c4",
+  "coverage": {
+    "initialRemoteBranches": 12,
+    "initialLocalOriginRefs": 25,
+    "initialTags": 0,
+    "trackedBlobs": 1346,
+    "historicalPngsVisuallyReviewed": 169,
+    "pdfVersions": 4,
+    "pdfPagesVisuallyReviewed": 24,
+    "pptxVersionsXmlReviewed": 4,
+    "actionRunLogArchivesDownloadedAndScanned": 29,
+    "unavailableActionLogArchives": 0,
+    "actionArtifacts": 0,
+    "issues": 0,
+    "issueComments": 0,
+    "commitComments": 0,
+    "pullRequests": 0,
+    "releases": 0,
+    "wikiEnabled": false,
+    "discussionsEnabled": false
+  },
+  "confirmedPrivateDataPaths": [
+    "AGENTS.md",
+    "docs/goal-004e-confirmed-actions.md",
+    "docs/goal-005-gallery-live-completion.md",
+    "artifacts/goal-004e/recheck-live/authorization.json",
+    "artifacts/goal-005/activation-review.json"
+  ],
+  "otherFindingsDisposition": "Credential candidates manually reviewed as fixtures, placeholders, commit/cache hashes; authorship and synthetic game dialogue retained as project history. No real credential, signed download URL, personal/raw recording or committed private ledger identified in reviewed scope.",
+  "upstreamLicense": "No LICENSE found; no new upstream license grant asserted.",
+  "privateEvidenceDirectory": ".validation/goal-007/security/",
+  "privateEvidenceFiles": [
+    {
+      "name": "branches.json",
+      "bytes": 3516,
+      "sha256": "f9a7826983faff12bd2f86d9d8fe81389e4687ebcd167306da480821e1da5790"
+    },
+    {
+      "name": "tags.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "issues.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "commit-comments.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "pulls.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "releases.json",
+      "bytes": 9,
+      "sha256": "93a632246f28a39eedc6577fda8be826f662ca408592e96b1b2b26b4256eea3d"
+    },
+    {
+      "name": "runs.json",
+      "bytes": 453903,
+      "sha256": "e384553e7dd320124fe249b4f19ac5fcd4b14a617f70e1fbb730d87a9496dc99"
+    },
+    {
+      "name": "artifacts.json",
+      "bytes": 54,
+      "sha256": "e37ba7ec8d5c087245f4b4c44bb380cfdec5a188e050a8c9d6ce003450b5443e"
+    },
+    {
+      "name": "workflows.json",
+      "bytes": 663,
+      "sha256": "3a6116fe25815f758a6ca9ac207fbb29f2d55da8d034007998b630bebfc463bd"
+    },
+    {
+      "name": "metadata-summary.json",
+      "bytes": 318,
+      "sha256": "c14b6caf31cbbb1ac72aba8d57ab409475e987051d0f8fdd3e7a3824470e8771"
+    },
+    {
+      "name": "branch-inventory.json",
+      "bytes": 5144,
+      "sha256": "1ce78039f2ecb23c5fc32ab4ba5617d8bd1986b3e807f08e5141fece5c226dc5"
+    },
+    {
+      "name": "git-objects.json",
+      "bytes": 285213,
+      "sha256": "77d9695b2ec4230c23b03b9df7f0540b31f059b5d0c568a8d2523bd0df97779c"
+    },
+    {
+      "name": "git-findings-private.json",
+      "bytes": 124720,
+      "sha256": "44be5d1023214ac6b421e995380f4f3b22b8847ed2866319842941ad59071152"
+    },
+    {
+      "name": "git-binary-inventory.json",
+      "bytes": 27205,
+      "sha256": "27bc3041a7986760139b189a73de9b56c31d254df5fd2a37e86b7dbd002b92fc"
+    },
+    {
+      "name": "action-log-receipts.json",
+      "bytes": 6736,
+      "sha256": "edee0677c336cdddcb7c03b8f897162b1eb0a0473e6dd959293224f9b97f3d29"
+    },
+    {
+      "name": "action-log-findings-private.json",
+      "bytes": 39094,
+      "sha256": "5a4b0a45227ae8a27d17465b5f28944f3f70fa267a66caf656f478a5d964ebc7"
+    },
+    {
+      "name": "visual-review-inventory.json",
+      "bytes": 1073,
+      "sha256": "3289aa087fea96772f7c7f5e90c46287542f7455b0fb6e685cae3022bb166a1d"
+    },
+    {
+      "name": "binary-text-findings-private.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "private-account-data-findings.json",
+      "bytes": 24907,
+      "sha256": "21e08a90c00bdb74847cc169cbb9bec9b14e5989fbb424fd6f1c101eeb19d372"
+    },
+    {
+      "name": "third-party-notices-verification.json",
+      "bytes": 636,
+      "sha256": "2361e376658760523a5d3ba1640019fa343ae9096e20a8785b47424f0ef09141"
+    }
+  ],
+  "followup": "Owner disclosure decision pending. Rescan new Goal007 refs/history/logs/assets before Public; verify exact final remote main and logged-out access separately."
+}

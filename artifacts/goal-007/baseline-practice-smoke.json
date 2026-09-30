@@ -1,0 +1,59 @@
+{
+    "schemaVersion":  1,
+    "status":  "PASS",
+    "scope":  "LOCAL_COMPILED_PRODUCTION",
+    "builtIdentity":  {
+                          "commit":  "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+                          "version":  "0.7.0"
+                      },
+    "checks":  [
+                   "health",
+                   "exact safe build identity",
+                   "private paths rejected",
+                   "unknown API remains JSON",
+                   "license notices",
+                   "fresh visitor unauthorized",
+                   "SPA reload and hashed asset MIME/cache",
+                   "injected denied microphone keeps explicit Practice alternative"
+               ],
+    "providerRequestsObserved":  0,
+    "browserTokenRequestsObserved":  0,
+    "explicitUnauthenticatedTokenRouteProbes":  4,
+    "rescues":  [
+                    {
+                        "objective":  "collected",
+                        "chapters":  [
+                                         "Cargo Bay",
+                                         "Relay Gallery",
+                                         "Return Dock",
+                                         "Confirmed home"
+                                     ],
+                        "confirmations":  12,
+                        "declined":  1,
+                        "nonownerTokenStatus":  404,
+                        "noCodeTokenStatus":  503,
+                        "backtracked":  true,
+                        "completed":  true
+                    },
+                    {
+                        "objective":  "selected-skipped",
+                        "chapters":  [
+                                         "Cargo Bay",
+                                         "Relay Gallery",
+                                         "Return Dock",
+                                         "Confirmed home"
+                                     ],
+                        "confirmations":  9,
+                        "declined":  0,
+                        "nonownerTokenStatus":  404,
+                        "noCodeTokenStatus":  503,
+                        "backtracked":  false,
+                        "completed":  true
+                    }
+                ],
+    "browserClosed":  true,
+    "serverExitCode":  0,
+    "privateReceipt":  ".validation/goal-007/local-practice-1790730510419956920/receipt.json",
+    "privateReceiptSha256":  "aaeb9a374c47f5e03454ee43869ae7001db5a50c6440df1b4dbd536ce239f219",
+    "limitation":  "Loopback compiled production, deterministic Practice. Hosted HTTPS remains unverified. No provider token was issued; four negative endpoint probes received 404/503 before admission."
+}

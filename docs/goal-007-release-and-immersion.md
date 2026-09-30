@@ -18,13 +18,23 @@ Render authentication was not available at initial inspection: no connected Rend
 
 | Axis | Current evidence |
 | --- | --- |
-| Main integration | In progress; baseline product entry and version endpoint prepared |
+| Main integration | Baseline e37f8f7 integrated by normal fast-forward; exact main CI passed; intended immersion/admission/harness increments pending |
 | Product | Actual before captures at `artifacts/goal-007/ui/before/`; immersion increment pending |
 | Public HTTPS | Not yet deployed; no URL invented |
 | Current Live | No Goal 007 provider attempt; old Goal 005 success/failure remain historical |
 | Reviewer access | Disabled; new allocation not initialized |
-| Public source | Private until whole-exposure review passes |
+| Public source | Private; historical account-plan/balance facts require the requested disclosure decision; incremental final audit remains |
 | Submission assets | Goal 006 preserved; current Goal 007 media pending |
 | Budget | No new reservation or hosting resource created |
 
 This is an in-progress execution record, not a claim of release completion. Hosted acceptance, actual main CI/deploy identity, curated asset URLs and final accounting will be appended from observed results.
+
+## Baseline main milestone
+
+Remote main advanced normally from `11b4c9508bef682785e8bdf23d5170b30aafb7a6` to `e37f8f7fcb30ce6624c001698e8dac753810ad21` after a fresh fetch, ancestry check, observed unprotected main and successful feature checks. The immutable backup tag `archive/pre-goal-007-main-20260930` retains the original main commit. No branch, history or worktree was removed. [The actual main run passed all four jobs](https://github.com/catlover-bot/talk-me-home/actions/runs/36653332284). [Integration receipt](../artifacts/goal-007/main-baseline-integration.json).
+
+Ordinary `npm start` now serves the built game, with `start:starter` preserving the upstream command. The compiled service was started with a clean environment and Live disabled; health, SPA deep link, static notices and safe `/api/version` matched the source. A separate browser smoke completed recorder-collected and selected-but-skipped Practice rescues, using exact UI confirmations, a declined pickup followed by a fresh request, normal Pause/resume and actual spoken obstruction reports. Nonowner requests returned the intentional 404; an owning browser without access returned 503 while Live was disabled. No browser token/provider request occurred. Injected microphone denial kept an explicit Practice route. [Practice receipt](../artifacts/goal-007/baseline-practice-smoke.json).
+
+`scripts/qa-hosted-practice.mjs` retains the same checks for the eventual real HTTPS origin, with an explicit expected commit and fresh browser contexts. Its default invocation performs no network work. The completed run was **local compiled production**, not hosted or Live evidence. Owned browser and server cleanup completed.
+
+Render credentials remain unavailable in the connected tools, standard CLI/configuration, environment and scoped project Render-variable names. The single authentication request remains pending; no service, disk or funded Goal 007 allowance has been created. [Whole-exposure baseline review](goal-007-security-review.md) records the separate historical account-data disclosure decision, which does not prevent private-source app deployment.

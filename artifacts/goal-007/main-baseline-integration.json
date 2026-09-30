@@ -1,0 +1,21 @@
+{
+    "schemaVersion":  1,
+    "verifiedAtUtc":  "2026-09-30T01:08:00Z",
+    "status":  "BASELINE_MAIN_INTEGRATED",
+    "previousMain":  "11b4c9508bef682785e8bdf23d5170b30aafb7a6",
+    "backupTag":  "archive/pre-goal-007-main-20260930",
+    "mainCommit":  "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+    "method":  "Normal fast-forward push after fresh origin/main ancestry and branch-protection inspection",
+    "protectionObserved":  false,
+    "forced":  false,
+    "featureCi":  {
+                      "runId":  36652689293,
+                      "conclusion":  "success"
+                  },
+    "mainCi":  {
+                   "runId":  36653332284,
+                   "conclusion":  "success",
+                   "url":  "https://github.com/catlover-bot/talk-me-home/actions/runs/36653332284"
+               },
+    "limitation":  "Baseline milestone only. Immersion/admission/hosted-QA branches remain intended increments; no Render deployment or public-source access is implied."
+}

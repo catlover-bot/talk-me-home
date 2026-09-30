@@ -1,0 +1,25 @@
+{
+  "commit": "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+  "mode": "Live-disabled local production",
+  "providerRequests": 0,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/mission/control",
+      "status": 200
+    },
+    {
+      "path": "/third-party-notices.txt",
+      "status": 200
+    }
+  ],
+  "version": {
+    "commit": "e37f8f7fcb30ce6624c001698e8dac753810ad21",
+    "version": "0.7.0"
+  },
+  "status": "PASS",
+  "ownedPortClosed": true
+}
