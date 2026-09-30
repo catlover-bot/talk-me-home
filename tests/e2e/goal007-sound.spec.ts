@@ -31,6 +31,7 @@ test('opt-in radio sound follows actual playback and microphone signals and clos
   await page.getByLabel('Next connection').selectOption('live_text');
   await page.getByRole('button', { name: 'Resume Live Text', exact: true }).click();
   await confirmLocalReadiness(page);
+  await expect(page.getByLabel('Type a message')).toBeEnabled();
   await expect.poll(active).toBe(2);
   provider.emit({ type: 'reply.started', reply_id: 'sound-check' });
   provider.emit({ type: 'reply.audio', data: 'AEAAQA==' });
@@ -43,16 +44,20 @@ test('opt-in radio sound follows actual playback and microphone signals and clos
   provider.emit({ type: 'reply.done', reply_id: 'sound-check', status: 'completed' });
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
   await expect.poll(active).toBe(0);
+  await expect.poll(() => provider.ended).toBe(1);
   await page.getByLabel('Next connection').selectOption('live_voice');
   await page.getByRole('button', { name: 'Resume Live Voice', exact: true }).click();
   await confirmLocalReadiness(page, 'Voice');
+  // Readiness already owns a microphone; wait for the actual call before ending it.
+  await expect(page.getByLabel('Type a message')).toBeEnabled();
+  expect(provider.connections).toBe(2);
   expect((await provider.audioState()).activeTracks).toBe(1);
   expect(await active()).toBe(0); // An active microphone suppresses the radio bed.
   await page.getByRole('button', { name: 'Pause / End call', exact: true }).click();
   await expect.poll(active).toBe(0);
   expect((await provider.audioState()).activeTracks).toBe(0);
+  await expect.poll(() => provider.ended).toBe(2);
   expect(provider.activeSockets).toBe(0);
-  expect(provider.ended).toBe(2);
   await expect.poll(async () => { const audio = await provider.audioState(); return audio.contexts - audio.closedContexts; }).toBe(0);
 });
 test('shipped procedural radio bed produces nonzero local PCM and independent mute silences it', async ({ page }) => {
