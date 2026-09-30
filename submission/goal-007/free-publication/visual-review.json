@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "checkedAtUtc": "2026-09-30T08:54:42.026503+00:00",
+  "outputSha256": "7e54fed4bce794b5f2652725d6a9d3f53339dc06b621a40d9554d463b986feae",
+  "subtitleSha256": "6b43a803480e7133bad4b9340b9fd8f7bcea83356a5b1638945231d642b43dae",
+  "rootFrames": [
+    "00-briefing.png",
+    "09-home.png",
+    "10-architecture.png",
+    "11-availability.png"
+  ],
+  "independentFrames": [
+    "01-roles.png",
+    "02-latch.png",
+    "03-crossing.png",
+    "04-gallery.png",
+    "05-recorder.png",
+    "06-route.png",
+    "07-dock.png",
+    "08-return.png",
+    "evidence-obstruction-report.png",
+    "evidence-stored-energy.png",
+    "evidence-confirmed-return.png",
+    "transition-gallery-before.png",
+    "transition-gallery-after.png",
+    "transition-dock-before.png",
+    "transition-dock-after.png",
+    "transition-home-before.png",
+    "transition-home-after.png"
+  ],
+  "observations": [
+    "Actual encoded frames inspected; source d22d39a and simulation labels remain distinct from hosted caa status cards.",
+    "Exact Latch/crossing/recorder confirmations, Dock instruments and confirmed-home result remain visible.",
+    "Availability card contains actual public and repository URLs; Free/disabled-Live limits are readable.",
+    "All ten gameplay durations and source intervals exactly match the preserved normal-speed preview.",
+    "Segment headings name presentation topics and can span a native chapter transition; native UI chapter labels remain intact."
+  ],
+  "limitations": [
+    "Frame sampling plus full decode/stream/timeline checks; no claim of physical speaker listening or human playtest."
+  ],
+  "providerRequests": 0,
+  "newPublicApplicationRequests": 0
+}

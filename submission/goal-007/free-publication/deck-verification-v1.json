@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "status": "FREE_PRACTICE_PUBLICATION_DECK_V1",
+  "createdAt": "2026-09-30T08:51:24.217750+00:00",
+  "scope": "New local versioned six-slide deck/PDF only; no app, provider, upload or deployment request",
+  "hostedBuild": {
+    "commit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+    "version": "0.7.0"
+  },
+  "hostedReceipt": "artifacts/goal-007/free-hosted-verification.json",
+  "earlierLocalGameplaySource": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+  "hostedStillsSource": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+  "realVoiceClaim": false,
+  "providerRequests": 0,
+  "publicAppRequests": 0,
+  "coverSha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91",
+  "editableSlides": 6,
+  "pdfRenderer": "Native LibreOffice",
+  "renderSize": [
+    1920,
+    1080
+  ],
+  "nativeTextShapes": [
+    5,
+    13,
+    10,
+    13,
+    21,
+    16
+  ],
+  "nativePictureShapes": [
+    1,
+    1,
+    2,
+    1,
+    0,
+    1
+  ],
+  "checks": [
+    "6 PDF pages",
+    "original capture hashes",
+    "required source and limitation labels",
+    "actual URLs",
+    "all shapes inside canvas",
+    "1920x1080 renders",
+    "historical deliverable hashes unchanged"
+  ],
+  "visualInspection": {
+    "status": "PASS",
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "method": "Each native LibreOffice PDF page rendered at 1920x1080 and visually inspected",
+    "findings": "No clipped text or missing images. Corrected the page 6 verification-list/Platform overlap before final render. Earlier local capture source 66f1bd and current hosted source caa896d are visibly distinct. Public URLs and unavailable Live are clear."
+  },
+  "outputs": [
+    {
+      "path": "submission/goal-007/free-publication/Talk_Me_Home_Goal007_Free_Practice_v1.pptx",
+      "bytes": 1605323,
+      "sha256": "618c3343f291285d564176c0a69b774b8b1dc86e521cdef625f15efff25f9083"
+    },
+    {
+      "path": "submission/goal-007/free-publication/Talk_Me_Home_Goal007_Free_Practice_v1.pdf",
+      "bytes": 1134561,
+      "sha256": "0ddbef6599658a8f171829a740d7184b319ee7f67e99414017aa8a8656f462b6"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-01.png",
+      "bytes": 408782,
+      "sha256": "050899485a9aca49434ee780cf1640ee3bfc9ca9f064c19bfc0473b350176779"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-02.png",
+      "bytes": 482620,
+      "sha256": "99a9cdfe9d87c1c6393e4e56056a8052a55d49ccfae3df5974e672c38b36d984"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-03.png",
+      "bytes": 361509,
+      "sha256": "802246bfd9dded3d653f20d78bec845c7194f523a4e689b052e7438cc05106ae"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-04.png",
+      "bytes": 422171,
+      "sha256": "c0eab9e4e4c09179f390c0d1878bc07879a59ab5811062a94abeb70f564f2a0c"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-05.png",
+      "bytes": 187425,
+      "sha256": "57f35f5efb3d9b16b1076e07f9d1cd5b4f3572f2e827fcc35c2d6bf8b098c224"
+    },
+    {
+      "path": "submission/goal-007/free-publication/renders/slide-06.png",
+      "bytes": 359127,
+      "sha256": "be698d43e00a4a946951aba46a64f9538006c2d31e16531b563487710b848a4f"
+    }
+  ],
+  "preservedHistoricalDeliverables": {
+    "submission/Talk_Me_Home_Goal005_Pitch.pptx": "adea18b75ef494a375f90e3e9edc9b4df466bd97c5ff2dec25706c325f453adb",
+    "submission/Talk_Me_Home_Pitch.pdf": "56b5ddb9de6282308d490a93d6c1c654eb8a495842be156410922e71e5c741ea",
+    "submission/Talk_Me_Home_Goal005_Pitch.pdf": "2546dac4dafc8031c300dfde5080422970a1c99c3ad56dc2b77fb9bff699a7d5",
+    "submission/Talk_Me_Home_Pitch.pptx": "61ea5f11d7e49e104d122686eec4cd5b8d2ae8ee35347e51222ec15c4196ae08",
+    "submission/goal-006/Talk_Me_Home_Pitch.pdf": "ecb30f0cb53da8f8dfab1d3e0a54021b1a4e1f5991b6e47d8721aada2c90db5f",
+    "submission/goal-006/media-manifest.json": "92786d778d9f405bf9d9d2b1baef46992651555ef18630305573571fd77ad27e",
+    "submission/goal-006/Talk_Me_Home_Pitch.pptx": "2cd226b28d01fd6ae12eac0e5b877ec67d82d10bdfec6825ebd0d0d985417f1a",
+    "submission/goal-007/Talk_Me_Home_Goal007_Deck.pdf": "a9fd05e062e64e013df625bdea842d1cea234f471a84f0678297238d1e5ee640",
+    "submission/goal-007/preview-package-manifest.json": "b41591a2110758ff09db721f8654a98c3a7718b06e82e67bb89b06c5bbf0ec76",
+    "submission/goal-007/media-components-manifest.json": "1d54500a3d8806f932c22b1e9ce1c83300a652e2383a31e1331ae03d7decc071",
+    "submission/goal-007/Talk_Me_Home_Goal007_Preview_Package_v1.zip": "947e58dce2eb504a430161ad91fcbcbb4d9f92b7c74a66923e073f286b1317ad",
+    "submission/goal-007/Talk_Me_Home_Goal007_Preview.mp4": "984c1cf0a238ad174e8d2aed889cf9371a3e23db9f0f66ac4cf0e1f81c7cb689",
+    "submission/goal-007/Talk_Me_Home_Goal007_Deck.pptx": "79cb38a67dd0e3417f76893f8b5fe745c308fc419e0a63ba0a11dde90b7592f9",
+    "submission/goal-006/screenshots/mode-build-manifest.json": "a4900bd998909cec7cd29b61339d23b63345d3e721a025d5d5b5c12acc5481fb",
+    "submission/goal-007/preview/preview-manifest.json": "ec78070cfea1a4e20ed6de0d6250d2701bb944a6fb96b897bd5bb539a7db7f85"
+  },
+  "inputScreenshots": [
+    {
+      "path": "submission/goal-007/screenshots/practice-gallery.png",
+      "sha256": "9a8ce2809d0b79090f9669e06c8026fbc98e7d0e9ee236bba46c2d993ddc39f9"
+    },
+    {
+      "path": "submission/goal-007/screenshots/practice-cargo.png",
+      "sha256": "a02d0ab7c62acc1aa9477610373d132439be327f210d61600a8d56ff10e283ba"
+    },
+    {
+      "path": "submission/goal-007/screenshots/practice-dock.png",
+      "sha256": "40c01b281fa3a781b503aeaa9b594eae84dc5dba096e8dc13b89c19e9edf047f"
+    },
+    {
+      "path": "artifacts/goal-007/hosted-free/collected-home.png",
+      "sha256": "5b4beb3302df4ef97460fc792ac281d8ba7297fa1ee19daf52a685fadb008648"
+    },
+    {
+      "path": "artifacts/goal-007/hosted-free/entrance-1280.png",
+      "sha256": "1e447633b1615316fe75b695d73ef45884e9419e18546d7f4b718d3c12f675b6"
+    }
+  ],
+  "generatorSha256": "4c636b1c7da313eae23e75ae567cebf50b6e8f1db9e1375e6ae9c50f47e8737b",
+  "originalComponentManifestSha256": "1d54500a3d8806f932c22b1e9ce1c83300a652e2383a31e1331ae03d7decc071",
+  "deliveredGeneratorSha256": "fb26cddff39d97734e4da14cc3da5d413247eb6276fc9fd4fc475af0a7e6035f",
+  "generatorDeliveryNote": "Refuse-overwrite guards added after rendering; visual/PPTX/PDF output hashes remain unchanged."
+}

@@ -54,3 +54,9 @@ node scripts/qa-hosted-practice.mjs --run --disabled-live-only \
 ```
 
 Do not run the historical paid harness or the default token-denial probes for this inspection. The script and documentation are local inspection changes; application/runtime source is unchanged. Do not push these changes in a way that triggers an unneeded Render deployment while the service's automatic-deploy setting is unknown.
+
+## Current local publication media
+
+The [Free Practice media edition](../submission/goal-007/free-publication/README.md) updates the previously pending-publication narration and slides using the saved hosted receipt. It includes a 209.733-second 1920x1080 MP4, 50-cue SRT, six editable slides, native PDF and an explicit allowlist ZIP. The movie preserves 170.9 seconds of normal-speed local Practice from `d22d39a`; the hosted `caa896d` evidence is separate and labelled. Local presentation narration is never represented as Pip/provider audio. Deck screenshots retain their individual `66f1bd2` or `caa896d` origins.
+
+Full video decode, stream/duration checks, exact subtitle text/hash checks, sampled audio checks and actual representative/transition-frame inspection passed. Deck pages were rendered and visually inspected. All 15 original component-manifest entries and the prior preview MP4/SRT/ZIP retain their hashes. New MP4/ZIP remain local; no media upload, final submission, extra public-app request or provider call was made for this update. Feature-branch documentation/media commits do not change the deployed `caa896d` application.

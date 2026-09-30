@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_FREE_PRACTICE_PACKAGE_VERIFIED",
+  "createdAt": "2026-09-30T08:56:21.559230+00:00",
+  "zip": {
+    "path": "Talk_Me_Home_Free_Practice_Package_v2.zip",
+    "bytes": 13615271,
+    "sha256": "efe50436246739265d7a08bf12b5b1e076153535821b9b3afa0df0da58d383b0"
+  },
+  "entries": 21,
+  "members": [
+    {
+      "path": "Talk_Me_Home_Free_Practice_v1.mp4",
+      "bytes": 10309350,
+      "sha256": "7e54fed4bce794b5f2652725d6a9d3f53339dc06b621a40d9554d463b986feae"
+    },
+    {
+      "path": "Talk_Me_Home_Free_Practice_v1.srt",
+      "bytes": 6213,
+      "sha256": "6b43a803480e7133bad4b9340b9fd8f7bcea83356a5b1638945231d642b43dae"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Free_Practice_v1.pptx",
+      "bytes": 1605323,
+      "sha256": "618c3343f291285d564176c0a69b774b8b1dc86e521cdef625f15efff25f9083"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Free_Practice_v1.pdf",
+      "bytes": 1134561,
+      "sha256": "0ddbef6599658a8f171829a740d7184b319ee7f67e99414017aa8a8656f462b6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4340,
+      "sha256": "97cf13c9f6798e25e6cf317a473757b3366bb0de2400f0c53543ee4d33aab681"
+    },
+    {
+      "path": "video-manifest.json",
+      "bytes": 12843,
+      "sha256": "76816158a19a825482248f6db1f8c5b2e96cfc833a0e51b314be78ce3e2d2bf0"
+    },
+    {
+      "path": "video-verification.json",
+      "bytes": 10735,
+      "sha256": "8a2a1c4c13b608036b45b4ea161fac64f2f44a49e08713905fed7727bdb2b9ba"
+    },
+    {
+      "path": "visual-review.json",
+      "bytes": 1692,
+      "sha256": "3a2230e38512e1e85de684c34fea81c90a7c063aec64ca4ce3d9a910b4d146a5"
+    },
+    {
+      "path": "deck-verification-v1.json",
+      "bytes": 6443,
+      "sha256": "c2b091eccef03bdb6a890b3bf2d26b8a1ec5f82d1284667c191a0d71003e78a0"
+    },
+    {
+      "path": "cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "path": "current-publication-fields.md",
+      "bytes": 3948,
+      "sha256": "340ffd6f0e964ed5b9350532146fbd72ffc37f2ca7e899e3e3bc70bdb579003a"
+    },
+    {
+      "path": "current-publication-fields.json",
+      "bytes": 4332,
+      "sha256": "d048824948cf4bf4ff211a5c053b84b56456d9b3780ce2004ee92aa37963c7ce"
+    },
+    {
+      "path": "CREDITS.md",
+      "bytes": 1497,
+      "sha256": "1ec7be7fa428464cb2c932b4d92f64d10a47d20ba96a906b273e87129e82cebc"
+    },
+    {
+      "path": "third-party-notices.txt",
+      "bytes": 4520,
+      "sha256": "4c2bdd7fec3773be8403658e55ff296d2b2db97ff4ee7117ba42696f2d87b403"
+    },
+    {
+      "path": "evidence/free-hosted-verification.json",
+      "bytes": 7269,
+      "sha256": "ea9adc0770bf5ec5d8a18e1def253fda372f7d0206ebd7965b2b46f9c653af1a"
+    },
+    {
+      "path": "evidence/hosted-free/entrance-1280.png",
+      "bytes": 198478,
+      "sha256": "1e447633b1615316fe75b695d73ef45884e9419e18546d7f4b718d3c12f675b6"
+    },
+    {
+      "path": "evidence/hosted-free/collected-home.png",
+      "bytes": 180262,
+      "sha256": "5b4beb3302df4ef97460fc792ac281d8ba7297fa1ee19daf52a685fadb008648"
+    },
+    {
+      "path": "evidence/hosted-free/selected-skipped-home.png",
+      "bytes": 178908,
+      "sha256": "8f6a9a4b8f5112d2d4dd664eac17ff42058003607b27f879a5728a9a932da601"
+    },
+    {
+      "path": "evidence/hosted-free/voice-unavailable.png",
+      "bytes": 245998,
+      "sha256": "5b27c90d7a1bc31e105513f72ffc119018708b3e1fda8f3bb01bc8669250b885"
+    }
+  ],
+  "providerCalls": 0,
+  "newPublicApplicationRequests": 0,
+  "uploaded": false,
+  "eventSubmitted": false
+}

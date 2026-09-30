@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_FREE_PRACTICE_MEDIA_CHECKS_PASS",
+  "checkedAtUtc": "2026-09-30T08:54:50.596166+00:00",
+  "sourceCommit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+  "output": {
+    "path": "Talk_Me_Home_Free_Practice_v1.mp4",
+    "bytes": 10309350,
+    "sha256": "7e54fed4bce794b5f2652725d6a9d3f53339dc06b621a40d9554d463b986feae"
+  },
+  "durationSeconds": 209.733333,
+  "video": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "30/1",
+    "duration": "209.733333"
+  },
+  "audio": {
+    "codec_name": "aac",
+    "sample_rate": "48000",
+    "channels": 2,
+    "duration": "209.733333"
+  },
+  "fullDecode": "PASS",
+  "avDurationDifferenceSeconds": 0.0,
+  "audioPeakDbfs": -5.500010719328391,
+  "audioRmsDbfs": -23.727602252933995,
+  "clippedDecodedSamples": 0,
+  "subtitleCues": 50,
+  "subtitleWordsMatchNarrationExactly": true,
+  "shortestCueSeconds": 1.4650000000000034,
+  "representativeFrames": [
+    {
+      "section": "briefing",
+      "atSeconds": 8.833333333333334,
+      "sha256": "480497478f75dfe86f939c672ea5017d3e48f998b04773bfda017c048805fde6",
+      "file": "00-briefing.png"
+    },
+    {
+      "section": "roles",
+      "atSeconds": 25.0,
+      "sha256": "f35c2869352028fc96fdc73ce7534d21ea3f5e3203b44976f8d1ba2c0cae3de4",
+      "file": "01-roles.png"
+    },
+    {
+      "section": "latch",
+      "atSeconds": 43.89333333333334,
+      "sha256": "6f8674a9ff3944be34e967333e93094ddaa8ea75f6fbf09b7a6fb98d7bf10d40",
+      "file": "02-latch.png"
+    },
+    {
+      "section": "crossing",
+      "atSeconds": 58.36666666666667,
+      "sha256": "b054b697c1c00e25b3d698619abf706aabfe50d284cf405d410d92c82d1ca51e",
+      "file": "03-crossing.png"
+    },
+    {
+      "section": "gallery",
+      "atSeconds": 79.572,
+      "sha256": "d0a0e988fd93f2cddf70844bc179e5d656526bafbd0ea97db7635bb6f43b0721",
+      "file": "04-gallery.png"
+    },
+    {
+      "section": "recorder",
+      "atSeconds": 97.44933333333334,
+      "sha256": "fe195ce2758dabb1ae6453c076432c3bbea8cddb1a635b583b394c90462ec860",
+      "file": "05-recorder.png"
+    },
+    {
+      "section": "route",
+      "atSeconds": 111.66666666666669,
+      "sha256": "4416be27fea658c4232bdc393e6517f82d99957ce12a4c903fee97d32edf9328",
+      "file": "06-route.png"
+    },
+    {
+      "section": "dock",
+      "atSeconds": 132.70133333333337,
+      "sha256": "b902970615f6815f6a6f6ae8a4b17e6cdc6b0b330dfebb611fa86e2a79ba87da",
+      "file": "07-dock.png"
+    },
+    {
+      "section": "return",
+      "atSeconds": 146.60000000000002,
+      "sha256": "34e6f157a7723ee996d182027e0297118b647cf692d15dfc431b0ab7e769ae17",
+      "file": "08-return.png"
+    },
+    {
+      "section": "home",
+      "atSeconds": 162.75000000000003,
+      "sha256": "f61656bf2ccca4f37fea213228eaa2baa79c1aa37d0667ffd2a3d45d0169b71a",
+      "file": "09-home.png"
+    },
+    {
+      "section": "architecture",
+      "atSeconds": 180.1166666666667,
+      "sha256": "16d3c3f9bf05d74087ddddc98eac538a2019445b6c15ec16c78f9e1f8afaf41e",
+      "file": "10-architecture.png"
+    },
+    {
+      "section": "availability",
+      "atSeconds": 199.53333333333336,
+      "sha256": "1100f39c6ac73b6dadbaa921d7b36ec8723c0ba09db4ed2fe84bb185263a8284",
+      "file": "11-availability.png"
+    },
+    {
+      "section": "obstruction-report",
+      "atSeconds": 105.71666666666668,
+      "sha256": "c8e9c2c87d896f821b2a8bd81d1e7d7783e259091d0f09808f17b4545a736e32",
+      "file": "evidence-obstruction-report.png"
+    },
+    {
+      "section": "stored-energy",
+      "atSeconds": 136.94100000000003,
+      "sha256": "e527d5c142f1e29c4bce0b22452a1882bf612975060f14e3380a234cbaa9be39",
+      "file": "evidence-stored-energy.png"
+    },
+    {
+      "section": "confirmed-return",
+      "atSeconds": 153.8,
+      "sha256": "6c189304aaa140649a2336d36112a701371046dc59ea286bcd57038b94e53374",
+      "file": "evidence-confirmed-return.png"
+    }
+  ],
+  "transitionFrames": [
+    {
+      "section": "gallery",
+      "side": "before",
+      "atSeconds": 67.30000000000001,
+      "sha256": "906eb7aa881056719c0fcf31bd88e5a8c3c67d82695299e43a31829e7c28b961",
+      "file": "transition-gallery-before.png"
+    },
+    {
+      "section": "gallery",
+      "side": "after",
+      "atSeconds": 67.5,
+      "sha256": "f8ada03f7eb72bef014321dd55016c4cb1691b1009b4183b9fcb712e727561c1",
+      "file": "transition-gallery-after.png"
+    },
+    {
+      "section": "recorder",
+      "side": "before",
+      "atSeconds": 85.20000000000002,
+      "sha256": "fc8921219617cb055ef9c034055205445bc892c777e5e78353d37cf4348624de",
+      "file": "transition-recorder-before.png"
+    },
+    {
+      "section": "recorder",
+      "side": "after",
+      "atSeconds": 85.4,
+      "sha256": "1383a96840719fff4ee43ca5d0877a11a6a377d5922af3dcf19afb8cd436e343",
+      "file": "transition-recorder-after.png"
+    },
+    {
+      "section": "dock",
+      "side": "before",
+      "atSeconds": 120.06666666666669,
+      "sha256": "6ff63d115a4a944fbf981a5184467887c916a2b990bbac4f58a5dc0e004271ee",
+      "file": "transition-dock-before.png"
+    },
+    {
+      "section": "dock",
+      "side": "after",
+      "atSeconds": 120.26666666666668,
+      "sha256": "3bbd7bc5f6bca08885e90c1f9c7441ca48e909debbf12ef4e0e75a42ab90f8d0",
+      "file": "transition-dock-after.png"
+    },
+    {
+      "section": "return",
+      "side": "before",
+      "atSeconds": 138.50000000000003,
+      "sha256": "24c2c45c0b7fe8a14d9e826a1d5d88517a8d787928fb156fc03fd4033d7b2d3c",
+      "file": "transition-return-before.png"
+    },
+    {
+      "section": "return",
+      "side": "after",
+      "atSeconds": 138.70000000000002,
+      "sha256": "4cb9beac6d897f70bfa82e26ca1e92dd7f867b5beda66c7805e87984e03da68e",
+      "file": "transition-return-after.png"
+    },
+    {
+      "section": "home",
+      "side": "before",
+      "atSeconds": 154.50000000000003,
+      "sha256": "3a8054a526c442b94ba385d923e5707a799eec5dda515f624d04757f92cc5a51",
+      "file": "transition-home-before.png"
+    },
+    {
+      "section": "home",
+      "side": "after",
+      "atSeconds": 154.70000000000002,
+      "sha256": "051204c08da4e7ced3e148f7d6852d59b438fa00a7bbd13214c1256609c561f4",
+      "file": "transition-home-after.png"
+    },
+    {
+      "section": "architecture",
+      "side": "before",
+      "atSeconds": 170.80000000000004,
+      "sha256": "452399121d6e2a7b761a80ee72722f48acfe7d983337f94a8865d972170573e1",
+      "file": "transition-architecture-before.png"
+    },
+    {
+      "section": "architecture",
+      "side": "after",
+      "atSeconds": 171.00000000000003,
+      "sha256": "1287f4f61614ec56213d04de1c38838d0505e43a1f024574ca510c7574b2e6b6",
+      "file": "transition-architecture-after.png"
+    },
+    {
+      "section": "availability",
+      "side": "before",
+      "atSeconds": 189.23333333333338,
+      "sha256": "5a8d25efd33375d12e7ccbb68dddc59dee0155cd107f1254f146f830210ecfe5",
+      "file": "transition-availability-before.png"
+    },
+    {
+      "section": "availability",
+      "side": "after",
+      "atSeconds": 189.43333333333337,
+      "sha256": "f1517cb3dde9bd0d9c04649d58aba8aa9d2ad86c953b4710debb48eb6584e085",
+      "file": "transition-availability-after.png"
+    }
+  ],
+  "historicalProviderAudioUsed": false,
+  "providerTokenRequests": 0,
+  "endingAck": "Not applicable to offline Practice",
+  "previewOnly": true,
+  "mode": "Preserved local deterministic Practice d22d39a, typed requests and exact UI confirmations; updated hosted-status presentation cards",
+  "narration": {
+    "kind": "Local presentation narration",
+    "engine": "Windows System.Speech",
+    "voice": "Microsoft Zira Desktop",
+    "rate": 1,
+    "pcmSampleRate": 16000,
+    "pcmBits": 16,
+    "pcmChannels": 1,
+    "notPip": true,
+    "assembledPcmSha256": "47cbaa4d74851202e9ed32b80dd434fe817cca4a0093fad4fb1475c89015069f",
+    "audioSource": "Local Windows synthesis only; no historical or provider audio"
+  },
+  "subtitles": {
+    "path": "Talk_Me_Home_Free_Practice_v1.srt",
+    "sha256": "6b43a803480e7133bad4b9340b9fd8f7bcea83356a5b1638945231d642b43dae",
+    "cues": 50,
+    "timing": "Actual local synthesis word events",
+    "speaker": "Presentation narration; never Pip or provider speech",
+    "bytes": 6213
+  },
+  "practice": {
+    "rawSourceSha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+    "rawOriginalRetainedPrivately": true,
+    "confirmedHome": true,
+    "recorderSecuredAtHome": true,
+    "observedBlockedPassage": true,
+    "physicalConfirmations": 12
+  },
+  "gameplayDurationSeconds": 170.9,
+  "gameplayLoops": false,
+  "speedChanges": false,
+  "providerEstimatedUsageUsd": 0,
+  "publicHttps": "https://talk-me-home.onrender.com",
+  "currentLiveAcceptance": "Not performed; public Voice disabled",
+  "sourceAvailability": "Public GitHub repository observed",
+  "newPublicApplicationRequests": 0,
+  "uploadPerformed": false,
+  "eventSubmissionPerformed": false,
+  "visualReview": {
+    "status": "PASS",
+    "checkedAtUtc": "2026-09-30T08:54:42.026503+00:00",
+    "outputSha256": "7e54fed4bce794b5f2652725d6a9d3f53339dc06b621a40d9554d463b986feae",
+    "subtitleSha256": "6b43a803480e7133bad4b9340b9fd8f7bcea83356a5b1638945231d642b43dae",
+    "rootFrames": [
+      "00-briefing.png",
+      "09-home.png",
+      "10-architecture.png",
+      "11-availability.png"
+    ],
+    "independentFrames": [
+      "01-roles.png",
+      "02-latch.png",
+      "03-crossing.png",
+      "04-gallery.png",
+      "05-recorder.png",
+      "06-route.png",
+      "07-dock.png",
+      "08-return.png",
+      "evidence-obstruction-report.png",
+      "evidence-stored-energy.png",
+      "evidence-confirmed-return.png",
+      "transition-gallery-before.png",
+      "transition-gallery-after.png",
+      "transition-dock-before.png",
+      "transition-dock-after.png",
+      "transition-home-before.png",
+      "transition-home-after.png"
+    ],
+    "observations": [
+      "Actual encoded frames inspected; source d22d39a and simulation labels remain distinct from hosted caa status cards.",
+      "Exact Latch/crossing/recorder confirmations, Dock instruments and confirmed-home result remain visible.",
+      "Availability card contains actual public and repository URLs; Free/disabled-Live limits are readable.",
+      "All ten gameplay durations and source intervals exactly match the preserved normal-speed preview.",
+      "Segment headings name presentation topics and can span a native chapter transition; native UI chapter labels remain intact."
+    ],
+    "limitations": [
+      "Frame sampling plus full decode/stream/timeline checks; no claim of physical speaker listening or human playtest."
+    ],
+    "providerRequests": 0,
+    "newPublicApplicationRequests": 0
+  }
+}

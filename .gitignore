@@ -15,3 +15,9 @@ playwright-report/
 /submission/goal-007/*.mp4
 /submission/goal-007/*.zip
 /submission/goal-007/narration.wav
+
+/submission/goal-007/free-publication/*.mp4
+/submission/goal-007/free-publication/*.zip
+/submission/goal-007/free-publication/*.pptx
+/submission/goal-007/free-publication/*.pdf
+/submission/goal-007/free-publication/renders/

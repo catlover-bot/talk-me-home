@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_FREE_PRACTICE_MEDIA_COMPLETE",
+  "publicUrl": "https://talk-me-home.onrender.com",
+  "observedHostedVersion": {
+    "commit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+    "version": "0.7.0"
+  },
+  "hostedPractice": "PASS; existing saved receipt",
+  "liveVoice": "Disabled; not tested",
+  "newProviderRequests": 0,
+  "newPublicApplicationRequests": 0,
+  "endingAck": "Not applicable to Practice",
+  "localPackage": {
+    "path": "Talk_Me_Home_Free_Practice_Package_v2.zip",
+    "bytes": 13615271,
+    "sha256": "efe50436246739265d7a08bf12b5b1e076153535821b9b3afa0df0da58d383b0"
+  },
+  "localVideo": {
+    "path": "Talk_Me_Home_Free_Practice_v1.mp4",
+    "bytes": 10309350,
+    "sha256": "7e54fed4bce794b5f2652725d6a9d3f53339dc06b621a40d9554d463b986feae"
+  },
+  "deckReceipt": "../../submission/goal-007/free-publication/deck-verification-v1.json",
+  "videoReceipt": "../../submission/goal-007/free-publication/video-verification.json",
+  "packageReceipt": "../../submission/goal-007/free-publication/package-manifest-v2.json",
+  "originalComponentFilesPreserved": 15,
+  "historicalPreviewAndLiveMedia": "Unchanged",
+  "binaryMediaUploaded": false,
+  "submitted": false,
+  "appOrDeploymentChanged": false,
+  "scope": "Local media plus feature-branch documentation, recipes and safe receipts only; media binaries stay local.",
+  "earlierLocalPackage": "v1 preserved; v2 normalizes receipt line endings and records delivered script hash without changing media"
+}

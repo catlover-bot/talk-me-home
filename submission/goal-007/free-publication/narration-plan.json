@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_PRACTICE_FILM_WITH_HOSTED_PUBLICATION_UPDATE",
+  "sourceCommit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+  "title": "Talk Me Home - Free Practice Publication",
+  "narration": {
+    "kind": "Local presentation narration",
+    "engine": "Windows System.Speech",
+    "voice": "Microsoft Zira Desktop",
+    "rate": 1,
+    "pcmSampleRate": 16000,
+    "pcmBits": 16,
+    "pcmChannels": 1,
+    "notPip": true
+  },
+  "segments": [
+    {
+      "id": "briefing",
+      "kind": "practice",
+      "chapter": "A partner needs your help",
+      "narration": "Talk Me Home is a cooperative puzzle about two incomplete views of one station. This recorded Practice rescue uses typed requests and exact console confirmations. The voice you hear is separate presentation narration. The public demo now offers Practice; Live Voice remains unavailable.",
+      "narrationSeconds": 17.015,
+      "durationSeconds": 17.665
+    },
+    {
+      "id": "roles",
+      "kind": "practice",
+      "chapter": "Two views, one shared plan",
+      "narration": "You sit at Mission Control with the plans and remote switches. Pip can observe the space nearby and report what it finds. The paper diagram is a reference. It does not reveal a live position or silently send your private notes to your partner.",
+      "narrationSeconds": 14.005,
+      "durationSeconds": 14.655000000000001
+    },
+    {
+      "id": "latch",
+      "kind": "practice",
+      "chapter": "Cargo / agree on a physical action",
+      "narration": "In Cargo Bay, the Door and Conveyor share one supply. A useful conversation turns that clue into a plan. Pip proposes engaging the Latch. Read the exact action on the console. Your confirmation gives the server permission to validate and perform that specific action.",
+      "narrationSeconds": 16.32,
+      "durationSeconds": 16.97
+    },
+    {
+      "id": "crossing",
+      "kind": "practice",
+      "chapter": "Cargo / cooperate across the power supply",
+      "narration": "With the Latch secured, Mission Control can turn Power off. The Conveyor stops, and the planned crossing becomes possible. Pip proposes the crossing; you confirm it. The chapter changes only after the server commits the result. A spoken agreement alone does not move the robot.",
+      "narrationSeconds": 17.41,
+      "durationSeconds": 18.06
+    },
+    {
+      "id": "gallery",
+      "kind": "practice",
+      "chapter": "Gallery / mark a route, then ask",
+      "narration": "The Relay Gallery makes the information gap visible. Your atlas names the landmarks and circuits. Pencil marks are your own plan, not automatic robot tracking. Match the map with Pip's local report. Choose a circuit, ask about a passage, and agree on the next move.",
+      "narrationSeconds": 17.22,
+      "durationSeconds": 17.869999999999997
+    },
+    {
+      "id": "recorder",
+      "kind": "practice",
+      "chapter": "Gallery / a reason to take the detour",
+      "narration": "Choose the optional flight recorder objective before starting. The archive clue points toward Leaf. Here, Pip inspects a worn case with a faded star and a label. Bringing it back still requires the exact Secure the flight recorder confirmation. A direct rescue remains a complete ending too.",
+      "narrationSeconds": 17.19,
+      "durationSeconds": 17.84
+    },
+    {
+      "id": "route",
+      "kind": "practice",
+      "chapter": "Gallery / observations test the plan",
+      "narration": "A powered gate is not a promise of a clear passage. Pip checks the way ahead. If a report contradicts your route, stop and revise the plan together. The console also offers a short observation request when you lose your place, while earlier reports keep their original chapter.",
+      "narrationSeconds": 16.315,
+      "durationSeconds": 16.965
+    },
+    {
+      "id": "dock",
+      "kind": "practice",
+      "chapter": "Dock / one partner holds, one partner stores",
+      "narration": "At Return Dock, the roles meet again. Pip holds the contact after your exact confirmation. Mission Control charges the supply and moves that energy into storage. Storage retains energy for the return. The procedure still needs a safe release, boarding and a separate return authorization.",
+      "narrationSeconds": 17.725,
+      "durationSeconds": 18.375
+    },
+    {
+      "id": "return",
+      "kind": "practice",
+      "chapter": "Dock / authorize the way home",
+      "narration": "Pip releases the contact and boards the capsule, one confirmed action at a time. Only then can Mission Control grant the return. The final proposal is checked against the current state. Confirmed home is a game result, rather than a promise made in conversation.",
+      "narrationSeconds": 15.33,
+      "durationSeconds": 15.98
+    },
+    {
+      "id": "home",
+      "kind": "practice",
+      "chapter": "Home / a choice leaves a trace",
+      "narration": "The station is behind you. Pip is home, and the case you chose to recover has a place on the shelf. The arrival artwork celebrates a verified ending. This recorded Practice completion used no provider connection and makes no claim of a human playtest.",
+      "narrationSeconds": 15.65,
+      "durationSeconds": 16.3
+    },
+    {
+      "id": "architecture",
+      "kind": "card",
+      "chapter": "How the conversation connects the partners",
+      "narration": "The implemented Voice integration connects browser audio with the AssemblyAI Voice Agent API, but Voice is disabled in this public demo. Practice uses deterministic responses. Private map marks stay with the human. Physical actions require exact confirmation and a current state check by the game server.",
+      "narrationSeconds": 17.78,
+      "durationSeconds": 18.43
+    },
+    {
+      "id": "availability",
+      "kind": "card",
+      "chapter": "Public Practice verified / Voice unavailable",
+      "narration": "The public demo is available at the address shown here. Fresh browser Practice checks completed Cargo, Gallery, Dock and home, including route controls, pause, resume and replay. The source is public. Free hosting may need a cold start; restarts lose mission progress. Live Voice remains unavailable.",
+      "narrationSeconds": 19.735,
+      "durationSeconds": 20.384999999999998
+    }
+  ],
+  "hostedCommit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+  "publicUrl": "https://talk-me-home.onrender.com"
+}

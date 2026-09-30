@@ -32,7 +32,7 @@ The observed public application is version 0.7.0 at caa896d3a90dd4e8cb26499dba58
 
 Fresh-browser Hosted Practice checks completed Cargo Bay, Relay Gallery, Return Dock and confirmed home in recorder-collected and selected-skipped rescues. Exact confirmations, a declined action followed by a fresh proposal, route marks/Undo/erase, Pause/resume and new-round replay passed. Live Voice and Live Text are unavailable; the checks made no provider or token requests.
 
-Practice footage and current hosted checks are not real Voice evidence. Historical Live recordings and their limitations remain unchanged. Free hosting can require a cold start, and server restart loses mission progress. The local preview MP4 and slides retain their labelled capture identities; this handoff does not claim a new Voice video or a completed LABLAB submission.
+Practice footage and current hosted checks are not real Voice evidence. Historical Live recordings and their limitations remain unchanged. Free hosting can require a cold start, and server restart loses mission progress. The new local Free Practice MP4 and slides retain labelled capture identities and add verified hosted availability. Original media remain unchanged. No new Voice video, media upload or completed LABLAB submission is claimed.
 
 ## Current links and evidence
 
@@ -51,4 +51,4 @@ Practice footage and current hosted checks are not real Voice evidence. Historic
 | title | 12 | 3 |
 | summary | 165 | 31 |
 | description | 1587 | 252 |
-| additionalInformation | 1198 | 156 |
+| additionalInformation | 1268 | 164 |
