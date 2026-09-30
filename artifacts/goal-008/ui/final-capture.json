@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "source": "f01a2f4653da1ac1c2ec099385c28729b7688149",
+  "version": "0.8.0",
+  "mode": "Local/scripted Practice, production UI, constructor-only authored test configurations",
+  "results": {
+    "1280": 8,
+    "1440": 8
+  },
+  "providerRequests": 0,
+  "tokenIssuance": 0,
+  "allScreens": [
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/bypass-ready-a-chromium-1280.png",
+      "sha256": "c3ea32fe86b4f888f4b5cf91d7ae35289b3c3e18850b0ce2cf5e58d40b2199eb"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/bypass-ready-a-chromium-1440.png",
+      "sha256": "95fc38bcf0f0bc7f9f22f1c79fc0195c1d8982caa4a139255aa3a6d94fcf58a2"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/bypass-ready-b-chromium-1280.png",
+      "sha256": "5a573d4cd470a90c24e0e4531c8b319920ab63a0cf125f64fd4350c1a47f950f"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/bypass-ready-b-chromium-1440.png",
+      "sha256": "ec2d7012cece730b5037bd825942810ad33f177eef33482ddd1c5809213842a0"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-a-bypass-chromium-1280.png",
+      "sha256": "7a925ee9c34b960552039e5cbdc67749f60e75e2fa35affc1d0aa4d15660024f"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-a-bypass-chromium-1440.png",
+      "sha256": "924bf9fde78eb90a1369bba21a860b5817fdcc86947b48f844fabd50b3ae9b9e"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-a-lift-chromium-1280.png",
+      "sha256": "d4321b56c3735d042d9447beb1ab6d96d47b1fa509542be4d34099304481eec0"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-a-lift-chromium-1440.png",
+      "sha256": "10eb4d2f7829e3d4fc7d08334ae30d3cf940afc9ccd1295d556515babba3f769"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-b-bypass-chromium-1280.png",
+      "sha256": "5ffb363362b0d507a74302bf002a693807cc15a278909dc814bfdd95c3e99d9c"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-b-bypass-chromium-1440.png",
+      "sha256": "a7238ed44bce29b19667aef75f73c17b0d0ac32730c4cdf7425833d014bacbe6"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-b-lift-chromium-1280.png",
+      "sha256": "8920462dbd60140e807f98e82fd8d8f47dda85b84e891d2da749a227016ab090"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/departure-b-lift-chromium-1440.png",
+      "sha256": "681f6f61816ad348e53ab77107785cb702dbcd257a576aacf39d846759805f69"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-a-bypass-chromium-1280.png",
+      "sha256": "8592a077610e3dec534c0507c83b72628f7f28b612307f76d11cda7835045b19"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-a-bypass-chromium-1440.png",
+      "sha256": "4386c2a758f15fc33fcae283090a885666cab56fb2537787b59d6d82886bf550"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-a-lift-chromium-1280.png",
+      "sha256": "c1dfb72eee3cdf8c3ed29c52658e1c1033013c7a5e25faeee5af407ea594ac58"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-a-lift-chromium-1440.png",
+      "sha256": "ba7345ed74e16f052ce6a71b4b799400b2a69e476f088bdee38bfeaf2bbc3b45"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-b-bypass-chromium-1280.png",
+      "sha256": "5cfef07ee124a93455126256629431e01c38fc533765a9ff3fe04546cf7461ed"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-b-bypass-chromium-1440.png",
+      "sha256": "4386c2a758f15fc33fcae283090a885666cab56fb2537787b59d6d82886bf550"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-b-lift-chromium-1280.png",
+      "sha256": "c1dfb72eee3cdf8c3ed29c52658e1c1033013c7a5e25faeee5af407ea594ac58"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/home-b-lift-chromium-1440.png",
+      "sha256": "ba7345ed74e16f052ce6a71b4b799400b2a69e476f088bdee38bfeaf2bbc3b45"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/lift-test-a-chromium-1280.png",
+      "sha256": "5c0dbacfe2e4b4d292f091cfc3044bf0bd51ed3d084194b5363e9e60c5eda9f7"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/lift-test-a-chromium-1440.png",
+      "sha256": "a1059108466558c1b4050282ae594948450c85d70691d71aafad2f97a6b1860c"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/lift-test-b-chromium-1280.png",
+      "sha256": "ba2aae4070f1260f3355a507daacd6a42ea1fb25cddc7c05c6d74ca224ca0c2c"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/lift-test-b-chromium-1440.png",
+      "sha256": "78e374e8e93fd965311ac6aebbf5bf6721d70fc52f5974b381ec343aa5fedc64"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/narrow-panel-chromium-1280.png",
+      "sha256": "cb3af5d0f63408a735ac5459c2cc3a0fd639e840960be3a71242753319cb3ebd"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/narrow-panel-chromium-1440.png",
+      "sha256": "cb3af5d0f63408a735ac5459c2cc3a0fd639e840960be3a71242753319cb3ebd"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-a-bypass-chromium-1280.png",
+      "sha256": "53b157db48d9faf2ca1567b1a95590eb46767dcbf7c6943b014d3be66ffb5429"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-a-bypass-chromium-1440.png",
+      "sha256": "02df1e52b85bc95f633674fe0dd7ac467926fb9ce21684e6d18d77119cc43858"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-a-lift-chromium-1280.png",
+      "sha256": "53b157db48d9faf2ca1567b1a95590eb46767dcbf7c6943b014d3be66ffb5429"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-a-lift-chromium-1440.png",
+      "sha256": "02df1e52b85bc95f633674fe0dd7ac467926fb9ce21684e6d18d77119cc43858"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-b-bypass-chromium-1280.png",
+      "sha256": "53b157db48d9faf2ca1567b1a95590eb46767dcbf7c6943b014d3be66ffb5429"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-b-bypass-chromium-1440.png",
+      "sha256": "02df1e52b85bc95f633674fe0dd7ac467926fb9ce21684e6d18d77119cc43858"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-b-lift-chromium-1280.png",
+      "sha256": "53b157db48d9faf2ca1567b1a95590eb46767dcbf7c6943b014d3be66ffb5429"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/panel-b-lift-chromium-1440.png",
+      "sha256": "02df1e52b85bc95f633674fe0dd7ac467926fb9ce21684e6d18d77119cc43858"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/plan-change-a-chromium-1280.png",
+      "sha256": "4752057c4f2a4b927c6fe745ea900305373efeece039e1f5ea14a9603b9751ff"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/plan-change-a-chromium-1440.png",
+      "sha256": "25b871bd32ad3dd6ec17c850211504af59410db2b50848ea8137b136120eb402"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/plan-change-b-chromium-1280.png",
+      "sha256": "4752057c4f2a4b927c6fe745ea900305373efeece039e1f5ea14a9603b9751ff"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/plan-change-b-chromium-1440.png",
+      "sha256": "25b871bd32ad3dd6ec17c850211504af59410db2b50848ea8137b136120eb402"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/zoom-panel-chromium-1280.png",
+      "sha256": "2ae7fdbad47d4c997bcaf511092b9e82a1bd9241a31dbf30cfac90ec7089b134"
+    },
+    {
+      "path": ".validation/goal-008/ui-final-f01/screenshots/zoom-panel-chromium-1440.png",
+      "sha256": "2ae7fdbad47d4c997bcaf511092b9e82a1bd9241a31dbf30cfac90ec7089b134"
+    }
+  ],
+  "curatedScreens": [
+    "artifacts/goal-008/ui/after/panel-a-lift-chromium-1280.png",
+    "artifacts/goal-008/ui/after/panel-a-lift-chromium-1440.png",
+    "artifacts/goal-008/ui/after/plan-change-b-chromium-1440.png",
+    "artifacts/goal-008/ui/after/departure-b-bypass-chromium-1440.png",
+    "artifacts/goal-008/ui/after/home-a-lift-chromium-1440.png",
+    "artifacts/goal-008/ui/after/home-b-bypass-chromium-1440.png",
+    "artifacts/goal-008/ui/after/zoom-panel-chromium-1440.png"
+  ],
+  "rawTracesAndVideo": ".validation/goal-008/ui-final-f01/",
+  "syntheticAck": "The changed acknowledgement case is deliberately injected; it is not a naturally occurring server event."
+}

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "386b6a1e5eac9940566c68711ba87348fc08d776",
+  "status": "CAPTURE_INITIALIZATION_FAILED",
+  "observedAt": "2026-09-30T11:19:46Z",
+  "exitCode": 1,
+  "error": "Capture main ran before its helper constants were initialized.",
+  "browserStarted": false,
+  "localVersionRequests": 0,
+  "providerRequests": 0,
+  "videoCreated": false,
+  "privateReceipt": ".validation/goal-008/preview-386b6a1e5eac-2026-09-30T11-19-46-356Z/capture-initialization-failure.json",
+  "repair": "Capture-script invocation ordering only; no application/runtime change."
+}

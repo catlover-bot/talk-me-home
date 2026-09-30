@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "PREPARED_CAPTURE_PLAN_NOT_RENDERED",
+  "script": "scripts/capture-switchyard-preview.mjs",
+  "targetSeconds": 82,
+  "format": { "width": 1920, "height": 1080, "framesPerSecond": 30, "audio": "silent" },
+  "sourceRequirement": "Fresh offline capture of the final clean Goal 008 feature commit. Match checkout HEAD and the supplied loopback /api/version source. Record raw and derived source hashes; retain every attempt.",
+  "persistentLabel": "LOCAL / SCRIPTED PRACTICE · 0.8.0 · source <short commit> · selected text + manual confirmation",
+  "story": "One coherent mission: investigate the direct lift, change the plan to the maintenance bypass, retain preparation through pause/resume, and explicitly confirm the final home departure.",
+  "footagePolicy": [
+    "Only ordinary visible UI requests, communicated local reports and the human manual guide the sequence. Finite circuit search uses public six-piece geometry and terminal names read from that manual; no private configuration or robot-state oracle is used.",
+    "Keep each physical operation behind its exact manual UI confirmation. Show one pending proposal and deliberate Not yet decline in their actual order.",
+    "Capture full-HD with deliberate reading pauses. Keep original raw videos, operation journals, screenshots and failure receipts intact under ignored validation storage; publish only a sanitized manifest unless separately instructed.",
+    "The default preview is continuous paced capture encoded to MP4, with a persistent evidence label and presentation captions. If a later edit becomes necessary, label it as an edited excerpt and never fabricate operation order or results.",
+    "Do not reuse historical Voice footage/audio, capture microphone input or contact a provider. This silent local/scripted demonstration does not measure human solve time, enjoyment or actual model behavior.",
+    "Do not claim this candidate is deployed. No upload, deployment or visibility change is part of capture."
+  ],
+  "prepolishAssessment": {
+    "receipt": "artifacts/goal-008/prepolish-trace-counts.json",
+    "rawRouteVideoSeconds": [5.08, 10.16],
+    "rawDimensions": [[800, 450], [800, 500]],
+    "audio": "No audio stream",
+    "use": "Private review and planning only. These clips are too fast and too small for the final readable preview and will not be stretched or relabelled."
+  },
+  "pacedScenes": [
+    { "throughSecond": 4, "scene": "Select The Switchyard and show its local/scripted classification." },
+    { "throughSecond": 10, "scene": "Look around, inspect the route directory, and discuss the direct lift." },
+    { "throughSecond": 17, "scene": "Read the pending Transfer Table proposal, then deliberately decline it." },
+    { "throughSecond": 23, "scene": "Make a new exact move request, confirm it, and investigate the lift plate." },
+    { "throughSecond": 28, "scene": "Read the lift plate's row in the human manual." },
+    { "throughSecond": 33, "scene": "Choose the maintenance bypass and retain the actual plan-revision reaction." },
+    { "throughSecond": 39, "scene": "Inspect the bridge winch and compare its fitted module with the service manual." },
+    { "throughSecond": 48, "scene": "Secure the brace, draft/apply the supply and confirm bridge deployment." },
+    { "throughSecond": 55, "scene": "Pause and resume, then use a fresh local report to verify retained preparation." },
+    { "throughSecond": 63, "scene": "Apply the alignment supply and confirm the separate turntable operation." },
+    { "throughSecond": 72, "scene": "Restore the crossing and show that departure remains a separate pending decision." },
+    { "throughSecond": 82, "scene": "Confirm departure and hold on the actual maintenance-bypass home ending." }
+  ],
+  "reviewBeforeDelivery": [
+    "Decode the complete MP4 and inspect representative scenes and all major UI transitions.",
+    "Check persistent source/evidence labels and presentation captions do not hide the actual panel, report, proposal or ending.",
+    "Verify 60–90 second duration, 1920×1080 video, silent audio classification and source hashes.",
+    "Cross-check the final journal's requests, exact confirmations, deliberate decline, routing acknowledgements and completed bypass ending.",
+    "Keep the friendly local filename Talk-Me-Home-Goal-008-Switchyard-Local-Preview.mp4 separate from raw browser media."
+  ]
+}

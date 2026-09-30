@@ -1,3 +1,4 @@
+import { initialSwitchyardState, switchyardHumanView, switchyardObservation, applySwitchyardTool, type SwitchyardState, type SwitchyardConfiguration } from './switchyard.js'
 import { randomInt, randomUUID } from 'node:crypto'
 import type { Chapter, HumanView, MissionKind, OptionalObjective, Scenario, SessionStatus, ToolRequest, ToolResult } from '../shared/contracts.js'
 import { applyGalleryTool, galleryView, type GalleryConfiguration, type GalleryState } from './gallery.js'
@@ -23,19 +24,21 @@ export interface GameState {
   missionKind: MissionKind
   chapter: Chapter
   chapterEpoch: number
+  switchyard: SwitchyardState
   gallery: GalleryState
   dock: DockState
   flightRecorder: { selected: boolean; secured: boolean; observedVisitId?: string }
 }
 
 /** Tests may supply a profile here; the ordinary browser API never accepts one. */
-export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration, optionalObjective?: OptionalObjective | null): GameState {
+export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration, optionalObjective?: OptionalObjective | null, switchyardConfiguration?: SwitchyardConfiguration): GameState {
   return {
     sessionId, roundId: randomUUID(), revision: 0, actionEpoch: 0,
     powerOn: true, doorLatched: false, robotLocation: 'near_side', status: 'active',
     scenario, maintenanceProfile: scenario === 'maintenance' ? profile ?? (randomInt(2) === 0 ? 'crescent' : 'kite') : null,
     selector: 'neutral',
-    missionKind, chapter: 'cargo', chapterEpoch: 0,
+    missionKind, chapter: missionKind === 'switchyard' ? 'switchyard' : 'cargo', chapterEpoch: 0,
+    switchyard: initialSwitchyardState(switchyardConfiguration),
     gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b'), visitId: randomUUID(), observationRevision: 0 },
     dock: { location: 'platform', contactHeld: false, energy: 'empty', readinessVersion: 0, grant: null },
     flightRecorder: { selected: missionKind === 'rescue' && optionalObjective === 'flight_recorder', secured: false },
@@ -44,8 +47,8 @@ export function initialState(sessionId: string = randomUUID(), scenario: Scenari
 
 export const doorOpen = (state: GameState) => state.powerOn || state.doorLatched
 export const conveyorRunning = (state: GameState) => state.powerOn
-export const missionCompleted = (state: GameState) => state.missionKind === 'training' ? state.robotLocation === 'far_side' : state.dock.location === 'home'
-export const clearedChapters = (state: GameState): Chapter[] => state.missionKind === 'training'
+export const missionCompleted = (state: GameState) => state.missionKind === 'switchyard' ? state.switchyard.completed : state.missionKind === 'training' ? state.robotLocation === 'far_side' : state.dock.location === 'home'
+export const clearedChapters = (state: GameState): Chapter[] => state.missionKind === 'switchyard' ? state.switchyard.completed ? ['switchyard'] : [] : state.missionKind === 'training'
   ? missionCompleted(state) ? ['cargo'] : []
   : state.chapter === 'cargo' ? [] : state.chapter === 'gallery' ? ['cargo'] : missionCompleted(state) ? ['cargo', 'gallery', 'return_dock'] : ['cargo', 'gallery']
 
@@ -65,6 +68,7 @@ export function humanView(state: GameState): HumanView {
     missionKind: state.missionKind, chapter: state.chapter, chapterEpoch: state.chapterEpoch, chaptersCleared: clearedChapters(state),
     ...(state.flightRecorder.selected ? { optionalObjective: 'flight_recorder' as const } : {}),
     ...(missionCompleted(state) && state.flightRecorder.secured ? { recoveredFlightRecorder: true as const } : {}),
+    ...(state.chapter === 'switchyard' ? { switchyardPanel: switchyardHumanView(state.switchyard), ...(state.switchyard.completed && state.switchyard.approach ? { switchyardApproach: state.switchyard.approach } : {}) } : {}),
     ...(state.chapter === 'gallery' ? { relay: state.gallery.relay } : {}),
     ...(state.chapter === 'return_dock' ? { returnDock: { energy: state.dock.energy, readyForReturn: dockReady(state), returnAuthorized: state.dock.grant !== null } } : {}),
   }
@@ -72,6 +76,11 @@ export function humanView(state: GameState): HumanView {
 
 /** A fresh local observation, obtained through observe_room, never pushed to the human. */
 export function robotView(state: GameState, observedAt = Date.now()): ToolResult {
+  if (state.chapter === 'switchyard') {
+    const result = switchyardObservation(state.switchyard)
+    if (result.switchyardObservation) result.switchyardObservation.stateRevision = state.revision
+    return result
+  }
   if (state.chapter === 'gallery') return galleryView(state, 'local_survey', observedAt)
   if (state.chapter === 'return_dock') return dockView(state)
   if (state.robotLocation === 'far_side') {
@@ -94,6 +103,13 @@ const reject = (message: string): ToolResult => ({ ok: false, message })
 /** Atomic validation and commit. Callers bind actor identity outside model arguments. */
 export function applyRobotTool(state: GameState, name: string, args: unknown, observedAt = Date.now(), inspectionScope?: ToolRequest['inspectionScope']): ToolResult {
   if (state.status !== 'active') return { ok: false, code: 'mission_stopped', recovery: 'resume_mission', message: 'The mission is stopped. Wait for Mission Control to resume.' }
+  if (state.chapter === 'switchyard') {
+    const before = state.switchyard.revision
+    const result = applySwitchyardTool(state.switchyard, name, args, inspectionScope)
+    state.revision += state.switchyard.revision - before
+    if (result.switchyardObservation) result.switchyardObservation.stateRevision = state.revision
+    return result
+  }
   if (state.chapter === 'gallery') {
     const result = applyGalleryTool(state, name, args, observedAt, inspectionScope)
     if (result.ok && state.gallery.room === 'dock') advanceChapter(state, 'return_dock')

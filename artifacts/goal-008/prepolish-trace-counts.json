@@ -1,0 +1,549 @@
+{
+  "schema": 1,
+  "evidenceLabel": "Local/scripted Practice; automated UI trace counts, not human playtesting or Voice evidence",
+  "sourceIdentity": {
+    "baseCommit": "06dd6b7ec97ddb4157c581f2ad82089df20159a1",
+    "version": "0.8.0",
+    "workingTree": "uncommitted prepolish candidate",
+    "javascriptAsset": "index-CTeygoXh.js",
+    "stylesheetAsset": "index-DabpPupx.css"
+  },
+  "countBoundary": "Browser trace network only (fixture proxy request context excluded), first created round through its first confirmed home departure; subsequent replay/reset smoke excluded.",
+  "classification": {
+    "deliberateEveryRoute": [
+      "One declined initial Transfer Table move, then one new exact proposal and confirmation."
+    ],
+    "deliberateBypass": [
+      "Investigate lift then discuss maintenance bypass.",
+      "Pause/resume after bridge deployment, reobserve/reinspect retained physical work."
+    ],
+    "expectedRepeatedRequests": [
+      "Look around after each applied panel change and after resume.",
+      "New move proposal after deliberate decline.",
+      "Bridge winch inspections after revisiting or resume."
+    ],
+    "limit": "These deterministic scripted routes do not measure human completion time, enjoyment or spontaneous language robustness."
+  },
+  "routes": [
+    {
+      "configuration": "b",
+      "approach": "bypass",
+      "viewport": "1280",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-07bf1-I-brings-Pip-home-by-bypass-chromium-1280/trace.zip",
+      "sourceTraceSha256": "05a53b41fab19fbe10788e0834bafa07494e27efc87ff6b9d56aaa1e1c5ba9a8",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-07bf1-I-brings-Pip-home-by-bypass-chromium-1280/video.webm",
+          "sha256": "8d1a4ef0bf9cad719be8efbf7511cd34b352ea1e0d705b1b3c12e2a0739ffb53",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 450
+              }
+            ],
+            "format": {
+              "duration": "9.640000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 26,
+        "typedRequests": 0,
+        "observations": 5,
+        "inspections": 7,
+        "physicalProposals": 12,
+        "confirmations": 11,
+        "declines": 1,
+        "committedDecisions": 11,
+        "panelApplyRequests": 3,
+        "panelApplyAcknowledgements": 3,
+        "stopsBeforeHome": 1,
+        "resumesBeforeHome": 1,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 5
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Return to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Go to Service Gallery.",
+          "count": 2
+        },
+        {
+          "request": "Please inspect Bridge winch.",
+          "count": 3
+        }
+      ],
+      "completed": true,
+      "endingApproach": "bypass",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 5.731
+    },
+    {
+      "configuration": "b",
+      "approach": "bypass",
+      "viewport": "1440",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-07bf1-I-brings-Pip-home-by-bypass-chromium-1440/trace.zip",
+      "sourceTraceSha256": "92a2b20f92029284de15904084118545ffc03df94bbdd0fa73dbb77644b0cfe4",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-07bf1-I-brings-Pip-home-by-bypass-chromium-1440/video.webm",
+          "sha256": "dda850cc01121a0349be386602428318f84d544141055c02c1cd33b407edc079",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 500
+              }
+            ],
+            "format": {
+              "duration": "7.680000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 26,
+        "typedRequests": 0,
+        "observations": 5,
+        "inspections": 7,
+        "physicalProposals": 12,
+        "confirmations": 11,
+        "declines": 1,
+        "committedDecisions": 11,
+        "panelApplyRequests": 3,
+        "panelApplyAcknowledgements": 3,
+        "stopsBeforeHome": 1,
+        "resumesBeforeHome": 1,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 5
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Return to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Go to Service Gallery.",
+          "count": 2
+        },
+        {
+          "request": "Please inspect Bridge winch.",
+          "count": 3
+        }
+      ],
+      "completed": true,
+      "endingApproach": "bypass",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 5.753
+    },
+    {
+      "configuration": "a",
+      "approach": "lift",
+      "viewport": "1280",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-3a69f--UI-brings-Pip-home-by-lift-chromium-1280/trace.zip",
+      "sourceTraceSha256": "ae8bf54e80efdf72efc94b9e714241cd2a0720bb9b2b57bbd684c6953e00c6ed",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-3a69f--UI-brings-Pip-home-by-lift-chromium-1280/video.webm",
+          "sha256": "ad37ad814b8d2e1c079f7da3bd385526c90e44aae79eea09449d33a8a693c1e6",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 450
+              }
+            ],
+            "format": {
+              "duration": "7.200000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 14,
+        "typedRequests": 0,
+        "observations": 3,
+        "inspections": 3,
+        "physicalProposals": 7,
+        "confirmations": 6,
+        "declines": 1,
+        "committedDecisions": 6,
+        "panelApplyRequests": 2,
+        "panelApplyAcknowledgements": 2,
+        "stopsBeforeHome": 0,
+        "resumesBeforeHome": 0,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 3
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        }
+      ],
+      "completed": true,
+      "endingApproach": "lift",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 4.918
+    },
+    {
+      "configuration": "a",
+      "approach": "lift",
+      "viewport": "1440",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-3a69f--UI-brings-Pip-home-by-lift-chromium-1440/trace.zip",
+      "sourceTraceSha256": "09f2185ecf48972ff28e4aca894090d1ab664754e046d8358c9ef1140b13af84",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-3a69f--UI-brings-Pip-home-by-lift-chromium-1440/video.webm",
+          "sha256": "99f1ba12d988375f8494ac693076449bf54f7bc775b0ac344fb83ead9ba4ab35",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 500
+              }
+            ],
+            "format": {
+              "duration": "5.600000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 14,
+        "typedRequests": 0,
+        "observations": 3,
+        "inspections": 3,
+        "physicalProposals": 7,
+        "confirmations": 6,
+        "declines": 1,
+        "committedDecisions": 6,
+        "panelApplyRequests": 2,
+        "panelApplyAcknowledgements": 2,
+        "stopsBeforeHome": 0,
+        "resumesBeforeHome": 0,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 3
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        }
+      ],
+      "completed": true,
+      "endingApproach": "lift",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 3.382
+    },
+    {
+      "configuration": "a",
+      "approach": "bypass",
+      "viewport": "1280",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-cc797-I-brings-Pip-home-by-bypass-chromium-1280/trace.zip",
+      "sourceTraceSha256": "ab4e79b14c046d418f50a1fbde7d121fb2917fb7ceae7a16f36f5bf81e17bdf7",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-cc797-I-brings-Pip-home-by-bypass-chromium-1280/video.webm",
+          "sha256": "866361832af598fabc38472c14f9795f060981ae10b7541a875e139b108c10d0",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 450
+              }
+            ],
+            "format": {
+              "duration": "10.160000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 26,
+        "typedRequests": 0,
+        "observations": 5,
+        "inspections": 7,
+        "physicalProposals": 12,
+        "confirmations": 11,
+        "declines": 1,
+        "committedDecisions": 11,
+        "panelApplyRequests": 3,
+        "panelApplyAcknowledgements": 3,
+        "stopsBeforeHome": 1,
+        "resumesBeforeHome": 1,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 5
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Return to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Go to Service Gallery.",
+          "count": 2
+        },
+        {
+          "request": "Please inspect Bridge winch.",
+          "count": 3
+        }
+      ],
+      "completed": true,
+      "endingApproach": "bypass",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 7.595
+    },
+    {
+      "configuration": "a",
+      "approach": "bypass",
+      "viewport": "1440",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-cc797-I-brings-Pip-home-by-bypass-chromium-1440/trace.zip",
+      "sourceTraceSha256": "451990fe112c776ca93718684379afab0608c9cb4512bf1b3a38ca3cedce051c",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-cc797-I-brings-Pip-home-by-bypass-chromium-1440/video.webm",
+          "sha256": "869c61cb109798b2810ea995e5edda99c3c48f1031d00162964ad1f41b0ea5a4",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 500
+              }
+            ],
+            "format": {
+              "duration": "9.720000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 26,
+        "typedRequests": 0,
+        "observations": 5,
+        "inspections": 7,
+        "physicalProposals": 12,
+        "confirmations": 11,
+        "declines": 1,
+        "committedDecisions": 11,
+        "panelApplyRequests": 3,
+        "panelApplyAcknowledgements": 3,
+        "stopsBeforeHome": 1,
+        "resumesBeforeHome": 1,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 5
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Return to Transfer Table.",
+          "count": 2
+        },
+        {
+          "request": "Please Go to Service Gallery.",
+          "count": 2
+        },
+        {
+          "request": "Please inspect Bridge winch.",
+          "count": 3
+        }
+      ],
+      "completed": true,
+      "endingApproach": "bypass",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 5.948
+    },
+    {
+      "configuration": "b",
+      "approach": "lift",
+      "viewport": "1280",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-dc3d1--UI-brings-Pip-home-by-lift-chromium-1280/trace.zip",
+      "sourceTraceSha256": "a0ce966ea88c501b150bf5f4b0bdd840b044d54b350d328873f8ec2123f73951",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-dc3d1--UI-brings-Pip-home-by-lift-chromium-1280/video.webm",
+          "sha256": "b8bf17422fda2e325886934694010be77bc80d23ed0e0031ce3166d708ed5ad2",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 450
+              }
+            ],
+            "format": {
+              "duration": "5.080000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 14,
+        "typedRequests": 0,
+        "observations": 3,
+        "inspections": 3,
+        "physicalProposals": 7,
+        "confirmations": 6,
+        "declines": 1,
+        "committedDecisions": 6,
+        "panelApplyRequests": 2,
+        "panelApplyAcknowledgements": 2,
+        "stopsBeforeHome": 0,
+        "resumesBeforeHome": 0,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 3
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        }
+      ],
+      "completed": true,
+      "endingApproach": "lift",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 3.198
+    },
+    {
+      "configuration": "b",
+      "approach": "lift",
+      "viewport": "1440",
+      "sourceTrace": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-dc3d1--UI-brings-Pip-home-by-lift-chromium-1440/trace.zip",
+      "sourceTraceSha256": "0a1da2ca24bb4250a7b9823bf9637e75aa31450e5b168f02a524d2fbca7cce6e",
+      "videos": [
+        {
+          "path": ".validation/goal-008/ui-prepolish/switchyard-Switchyard-inst-dc3d1--UI-brings-Pip-home-by-lift-chromium-1440/video.webm",
+          "sha256": "90146cd013775390d665200f1dbfae4af9dedce7f684d212ad7032469fb5be79",
+          "probe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_type": "video",
+                "width": 800,
+                "height": 500
+              }
+            ],
+            "format": {
+              "duration": "5.240000"
+            }
+          }
+        }
+      ],
+      "counts": {
+        "selectedRequests": 14,
+        "typedRequests": 0,
+        "observations": 3,
+        "inspections": 3,
+        "physicalProposals": 7,
+        "confirmations": 6,
+        "declines": 1,
+        "committedDecisions": 6,
+        "panelApplyRequests": 2,
+        "panelApplyAcknowledgements": 2,
+        "stopsBeforeHome": 0,
+        "resumesBeforeHome": 0,
+        "duplicateToolCallIds": 0,
+        "duplicateDecisionProposalIds": 0,
+        "httpErrors": 0,
+        "failedToolResponses": 0,
+        "nonDeclinedFailedDecisionResponses": 0
+      },
+      "repeatedSelectedRequests": [
+        {
+          "request": "Please look around.",
+          "count": 3
+        },
+        {
+          "request": "Please Go to Transfer Table.",
+          "count": 2
+        }
+      ],
+      "completed": true,
+      "endingApproach": "lift",
+      "automatedSecondsFromFirstCreateToDepartureRequest": 3.396
+    }
+  ]
+}

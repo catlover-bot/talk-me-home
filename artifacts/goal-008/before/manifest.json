@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "06dd6b7ec97ddb4157c581f2ad82089df20159a1",
+  "mode": "local deterministic Practice",
+  "compiledProduction": true,
+  "providerRequests": 0,
+  "screenshots": [
+    {
+      "path": "artifacts/goal-008/before/entrance-1280.png",
+      "width": 1280,
+      "height": 720,
+      "sha256": "8c40a4817ab877e21a4d3831f3f153ca54d8244e558144673ea836a61011f081"
+    },
+    {
+      "path": "artifacts/goal-008/before/cargo-1280.png",
+      "width": 1280,
+      "height": 720,
+      "sha256": "6c4f7ff8b482aee0f0b63909421d0d51caf73b0bfe828a3b5655597797888295"
+    },
+    {
+      "path": "artifacts/goal-008/before/entrance-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "d9b764184669c654f74624d816c1c59b7f920c1a7276d434f9d6c5b50aace7dc"
+    },
+    {
+      "path": "artifacts/goal-008/before/cargo-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "a0cf78353846d2b82b5f11213bd6a7c3d808c83c8e75d43b708dde49819385c8"
+    }
+  ]
+}

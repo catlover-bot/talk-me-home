@@ -1,3 +1,5 @@
+import { applySwitchyardPanel, type SwitchyardConfiguration } from './switchyard.js'
+import { isSwitchyardLayout, type SwitchyardRotations } from '../shared/switchyard.js'
 import { createHash, randomUUID } from 'node:crypto'
 import type { ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, OptionalObjective, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
 import { applyHumanPower, applyRobotTool, exactObject, humanView, initialState, missionCompleted, type GameState } from './state.js'
@@ -31,7 +33,9 @@ interface StoredProposal {
   value: ActionProposal
   owner?: string
   location: string
-  /** Only the optional pickup needs this private observed-visit binding. */
+  /** Physical Switchyard proposals bind the locally observed visit and acknowledged panel. */
+  switchyardScope?: { visitId: string; panelRevision: number; actionEpoch: number }
+  /** The optional pickup also needs its private observed-visit binding. */
   recorderScope?: { visitId: string; actionEpoch: number }
   /** Detailed robot-local outcome never enters the human proposal or Game caption. */
   outcome?: ToolResult
@@ -48,6 +52,7 @@ interface StoreOptions {
   /** Server-owned evaluator seam; never exposed to model tools or browser routes. */
   onRobotCommit?: (event: { sessionId: string; roundId: string; chapter: Chapter; chapterEpoch: number; proposalId: string; revisionBefore: number; revisionAfter: number }) => void
   /** Server-side deterministic test seam; no HTTP field selects this hidden configuration. */
+  switchyardConfiguration?: SwitchyardConfiguration
   galleryConfiguration?: GalleryConfiguration
   /** Private local diagnostics, explicitly enabled by the loopback server entry point. */
   onToolDiagnostic?: (event: ToolDiagnostic) => void
@@ -62,7 +67,7 @@ function integer(value: unknown): value is number {
 }
 
 function scenario(value: unknown): value is Scenario { return value === 'classic' || value === 'maintenance' }
-function missionKind(value: unknown): value is MissionKind { return value === 'training' || value === 'rescue' }
+function missionKind(value: unknown): value is MissionKind { return value === 'training' || value === 'rescue' || value === 'switchyard' }
 function optionalObjective(value: unknown): value is OptionalObjective | null | undefined { return value === undefined || value === null || value === 'flight_recorder' }
 function fields(value: unknown, required: string[], optional: string[] = []): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value)
@@ -96,13 +101,13 @@ export class SessionStore {
   enableLocalToolDiagnostics(sink: (event: ToolDiagnostic) => void): void { this.toolDiagnosticSink = sink }
 
   create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string, objective?: OptionalObjective | null): HumanView {
-    if (!scenario(selectedScenario) || !missionKind(kind) || (kind === 'rescue' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission or Classic/Maintenance Training.')
+    if (!scenario(selectedScenario) || !missionKind(kind) || (kind !== 'training' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission, The Switchyard, or Classic/Maintenance Training.')
     if (!optionalObjective(objective) || objective && kind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
     for (const [id, session] of this.sessions) {
       if (this.now() - session.touchedAt > (this.options.idleMilliseconds ?? 7_200_000)) this.sessions.delete(id)
     }
     if (this.sessions.size >= (this.options.maxSessions ?? 100)) throw new GameError(429, 'The local server has reached its session limit. Try again later or restart it.')
-    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration, objective)
+    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration, objective, this.options.switchyardConfiguration)
     this.sessions.set(state.sessionId, { owner, state, touchedAt: this.now(), requests: new Map(), safetyRequests: new Map(), lastTokenAt: -Infinity, records: new RoundRecords(state.roundId, selectedScenario, this.now), proposals: new Map(), latestProposal: null, proposalRevision: 0 })
     return this.get(state.sessionId)
   }
@@ -126,6 +131,12 @@ export class SessionStore {
     return createHash('sha256').update(JSON.stringify({ powerOn: state.powerOn, doorLatched: state.doorLatched, robotLocation: state.robotLocation,
       selector: state.selector, chapter: state.chapter, gallery: { room: state.gallery.room, relay: state.gallery.relay },
       dock: { location: state.dock.location, contactHeld: state.dock.contactHeld, energy: state.dock.energy },
+      ...(state.missionKind === 'switchyard' ? { switchyard: {
+        location: state.switchyard.location, appliedRotations: state.switchyard.appliedRotations,
+        liftIndex: state.switchyard.liftIndex, liftTested: state.switchyard.liftTested,
+        braceSeated: state.switchyard.braceSeated, bridgeDeployed: state.switchyard.bridgeDeployed,
+        turntableAligned: state.switchyard.turntableAligned, approach: state.switchyard.approach, completed: state.switchyard.completed,
+      } } : {}),
       ...(state.flightRecorder.selected ? { flightRecorderSecured: state.flightRecorder.secured } : {}) })).digest('hex')
   }
 
@@ -135,6 +146,7 @@ export class SessionStore {
       const state = session.state
       if (proposal.value.expiresAt <= this.now()) this.invalidateProposal(session, proposal, 'expired', 'This proposal expired without execution. Ask Pip for a new proposal.')
       else if (state.status !== 'active' || proposal.value.roundId !== state.roundId || proposal.value.chapterEpoch !== state.chapterEpoch || proposal.location !== proposalLocation(state)
+        || proposal.switchyardScope && (proposal.switchyardScope.visitId !== state.switchyard.visitId || proposal.switchyardScope.panelRevision !== state.switchyard.panelRevision || proposal.switchyardScope.actionEpoch !== state.actionEpoch)
         || proposal.recorderScope && (proposal.recorderScope.visitId !== state.gallery.visitId || proposal.recorderScope.actionEpoch !== state.actionEpoch)) {
         this.invalidateProposal(session, proposal, 'invalidated', 'This proposal belongs to an earlier mission context and was not executed.')
       }
@@ -160,6 +172,10 @@ export class SessionStore {
     if (outcome.perception && !perceptionIsCurrent(state, outcome.perception)) {
       delete outcome.perception
       outcome.message = `Historical action receipt. Any room or gate description below was observed then and is not a current reading; observe your current surroundings if needed. ${outcome.message}`
+    }
+    if (outcome.switchyardObservation && (outcome.switchyardObservation.visitId !== state.switchyard.visitId || outcome.switchyardObservation.stateRevision !== state.revision)) {
+      delete outcome.switchyardObservation
+      outcome.message = `Historical action receipt. Observe your current surroundings before relying on local readings. ${outcome.message}`
     }
     return { ...outcome, proposal: value }
   }
@@ -206,6 +222,29 @@ export class SessionStore {
     })
   }
 
+  panel(id: string, input: unknown): Promise<HumanView> {
+    if (!fields(input, ['roundId', 'requestId', 'revision', 'chapterEpoch', 'panelRevision', 'rotations']) || !identifier(input.roundId) || !identifier(input.requestId) || !integer(input.revision) || !integer(input.panelRevision) || !isSwitchyardLayout(input.rotations)) throw new GameError(400, 'Apply all six fixed routing pieces using the current round and acknowledged panel revision.')
+    const request = input as unknown as { roundId: string; requestId: string; revision: number; chapterEpoch: number; panelRevision: number; rotations: SwitchyardRotations }
+    const session = this.session(id, request.roundId)
+    return this.once(session, `panel:${request.requestId}`, request, () => {
+      const current = this.session(id, request.roundId).state
+      currentChapter(current, request.chapterEpoch)
+      if (current.chapter !== 'switchyard' || current.status !== 'active' || missionCompleted(current)) throw new GameError(409, 'Routing can be applied only during an active Switchyard mission.')
+      if (current.revision !== request.revision || current.switchyard.panelRevision !== request.panelRevision) throw new GameError(409, 'The mission or applied routing changed. Review the acknowledged panel before applying your draft.')
+      const before = current.switchyard.revision
+      const result = applySwitchyardPanel(current.switchyard, request.rotations)
+      if (!result.ok) throw new GameError(400, result.message)
+      if (current.switchyard.revision !== before) {
+        current.revision += current.switchyard.revision - before
+        current.actionEpoch += 1
+        session.records.markHistorical()
+        this.refreshProposal(session)
+      }
+      session.records.event('panel', 'human', result.message, current.chapter, current.chapterEpoch)
+      return this.view(session)
+    })
+  }
+
   tool(id: string, input: unknown): Promise<ToolResponse> {
     const startedAtMs = performance.now()
     let stage: ToolDiagnostic['stage'] = 'request_schema'
@@ -228,7 +267,7 @@ export class SessionStore {
     scope.round = admitted.roundId === request.roundId
     const session = this.session(id, request.roundId)
     // Captured before any queued work. A missing envelope cannot silently acquire a later visit.
-    const admittedVisit = admitted.gallery.visitId
+    const admittedVisit = admitted.chapter === 'switchyard' ? admitted.switchyard.visitId : admitted.gallery.visitId
     return this.once(session, `tool:${request.callId}`, request, async () => {
       try {
       await this.options.beforeToolCommit?.()
@@ -236,7 +275,8 @@ export class SessionStore {
       scope.round = current.roundId === request.roundId
       scope.chapter = request.chapterEpoch === current.chapterEpoch || request.chapterEpoch === undefined && current.missionKind === 'training'
       scope.action = request.actionEpoch === current.actionEpoch
-      scope.visit = request.inspectionScope ? request.inspectionScope.visitId === current.gallery.visitId && admittedVisit === current.gallery.visitId : null
+      const currentVisit = current.chapter === 'switchyard' ? current.switchyard.visitId : current.gallery.visitId
+      scope.visit = request.inspectionScope ? request.inspectionScope.visitId === currentVisit && admittedVisit === currentVisit : null
       this.session(id, request.roundId)
       const finish = (result: ToolResult, resultStage: ToolDiagnostic['stage'] = 'tool_validation'): ToolResponse => {
         diagnostic(result.code ?? (result.ok ? 'ok' : 'precondition_failed'), result.ok ? 'complete' : resultStage)
@@ -247,6 +287,7 @@ export class SessionStore {
         if (scope.chapter && scope.action && current.chapter !== 'gallery') return finish({ ok: false, code: 'tool_unavailable', recovery: 'observe_room', message: 'Direction-based gate inspection is available only in the Relay Gallery. Observe the current local equipment.' })
         if (!scope.chapter || !scope.action || scope.visit !== true) return finish({ ok: false, code: 'stale_scope', recovery: 'observe_room', message: 'This inspection belongs to an earlier or unobserved visit or action generation. Observe the current room, then inspect the requested direction again.' }, 'scope')
       }
+      if (current.chapter === 'switchyard' && ['inspect_object', 'propose_interaction', 'interact_object', 'propose_move', 'move_to'].includes(request.name) && scope.visit !== true) return finish({ ok: false, code: 'stale_scope', recovery: 'observe_room', message: 'Observe the current Switchyard location before requesting a local target.' }, 'scope')
       const recorderRequest = ['inspect_object', 'propose_interaction', 'interact_object'].includes(request.name) && request.arguments.object === 'flight_recorder'
       if (recorderRequest) {
         if (current.status !== 'active') return finish({ ok: false, code: 'mission_stopped', recovery: 'resume_mission', message: 'The mission is stopped. Wait for Mission Control to resume before checking or proposing a pickup.' }, 'scope')
@@ -270,6 +311,7 @@ export class SessionStore {
           return finish({ ok: false, code: 'not_executed', message: 'A different proposal is still awaiting a decision. It was not replaced. Mission Control must decline or cancel it before a different action is proposed.', proposal: structuredClone(pending.value) })
         }
         const proposal: StoredProposal = { owner: session.owner, location: proposalLocation(current),
+          ...(current.chapter === 'switchyard' ? { switchyardScope: { visitId: current.switchyard.visitId, panelRevision: current.switchyard.panelRevision, actionEpoch: current.actionEpoch } } : {}),
           ...(recorderRequest ? { recorderScope: { visitId: current.gallery.visitId, actionEpoch: current.actionEpoch } } : {}), value: {
           id: randomUUID(), roundId: current.roundId, chapter: current.chapter, chapterEpoch: current.chapterEpoch,
           ...descriptor, status: 'awaiting_confirmation', expiresAt: this.now() + 90_000,
@@ -318,8 +360,8 @@ export class SessionStore {
           const before = current.revision
           const action = proposal.value.action
           result = action.kind === 'interaction'
-            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action }, this.now(), proposal.recorderScope)
-            : applyRobotTool(current, 'move_to', { target: action.target }, this.now())
+            ? applyRobotTool(current, 'interact_object', { object: action.object, action: action.action }, this.now(), proposal.switchyardScope ?? proposal.recorderScope)
+            : applyRobotTool(current, 'move_to', { target: action.target }, this.now(), proposal.switchyardScope)
           if (!result.ok) result = { ...result, code: 'precondition_failed' }
           proposal.outcome = { ...result }
           proposal.value = { ...proposal.value, status: result.ok ? 'committed' : 'failed', result: result.ok
@@ -334,7 +376,7 @@ export class SessionStore {
             }
             if (action.kind === 'move') session.records.markHistorical()
             if (result.perception) session.records.event('observation', 'robot', result.message, current.chapter, current.chapterEpoch, result.perception.origin)
-            if (missionCompleted(current)) session.records.event('completion', 'public', current.missionKind === 'rescue' ? 'Pip returned home. The server confirmed rescue completion.' : 'Pip arrived on the far-side safe platform. The server confirmed completion.', chapter, chapterEpoch)
+            if (missionCompleted(current)) session.records.event('completion', 'public', current.missionKind !== 'training' ? 'Pip returned home. The server confirmed rescue completion.' : 'Pip arrived on the far-side safe platform. The server confirmed completion.', chapter, chapterEpoch)
           }
         }
         const eventText = `${proposal.value.label}: ${proposal.value.status === 'committed' ? 'completed after your confirmation.'
@@ -364,17 +406,21 @@ export class SessionStore {
       if (action === 'reset') {
         const nextKind = request.missionKind ?? current.missionKind
         const nextScenario = request.scenario ?? current.scenario
-        if (nextKind === 'rescue' && nextScenario !== 'classic') throw new GameError(400, 'Rescue Mission starts with Classic Cargo Bay rules.')
+        if (nextKind !== 'training' && nextScenario !== 'classic') throw new GameError(400, 'Rescue Mission starts with Classic Cargo Bay rules.')
         if (request.optionalObjective && nextKind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
-        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration, request.optionalObjective)
+        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration, request.optionalObjective, this.options.switchyardConfiguration)
         session.records = new RoundRecords(session.state.roundId, session.state.scenario, this.now)
         session.requests.clear()
         session.safetyRequests.clear()
         session.proposals.clear(); session.latestProposal = null; session.proposalRevision = 0
       } else {
         if (current.status === 'ended' && action !== 'end') throw new GameError(409, 'The mission has ended. Restart to begin a new round.')
+        // Superseding speech cancels queued tool work, while the owner's exact pending decision remains valid.
+        // Refresh before advancing so an expired or previously invalidated proposal is never revived.
+        const preserved = action === 'cancel' && request.reason === 'supersede' ? this.refreshProposal(session) : undefined
         current.actionEpoch += 1
         current.revision += 1
+        if (preserved?.value.status === 'awaiting_confirmation' && preserved.switchyardScope) preserved.switchyardScope.actionEpoch = current.actionEpoch
         if (action !== 'cancel') current.status = action === 'resume' ? 'active' : action === 'end' ? 'ended' : 'stopped'
         if (action !== 'cancel' || request.reason !== 'supersede') current.dock.grant = null
         if (action !== 'cancel' || request.reason !== 'supersede') {
@@ -418,7 +464,7 @@ export class SessionStore {
       const state = session.state
       const epoch = request.chapterEpoch ?? (state.missionKind === 'training' ? 0 : undefined)
       const chapter = request.chapter ?? (state.missionKind === 'training' ? 'cargo' : undefined)
-      if (!integer(epoch) || epoch > state.chapterEpoch || ['cargo', 'gallery', 'return_dock'][epoch] !== chapter) throw new GameError(400, 'A finalized message must name a chapter already reached in this mission round.')
+      if (!integer(epoch) || epoch > state.chapterEpoch || (state.missionKind === 'switchyard' ? ['switchyard'] : ['cargo', 'gallery', 'return_dock'])[epoch] !== chapter) throw new GameError(400, 'A finalized message must name a chapter already reached in this mission round.')
       return session.records.message({ ...request, chapter, chapterEpoch: epoch }, state.chapter === 'gallery' && chapter === 'gallery' ? state.gallery.relay : undefined)
     })
   }
