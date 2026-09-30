@@ -115,6 +115,7 @@ export function CommunicationDock({ mission: m }: { mission: Mission }) {
       <p className="history-help">Escape closes history. Your map and call controls remain available.</p>
     </section>}
     {firstQuestion && <div className="first-question" data-testid="first-question"><div><strong>Try asking: “What can you see?”</strong><button className="text-button" aria-label="Dismiss first question" onClick={() => setQuestionDismissed(true)}>×</button></div><button disabled={!canSend || requesting} onClick={() => { void request('surroundings'); }}>Ask about this room</button><small>Selected text · not microphone speech</small></div>}
+    {m.view?.missionKind === 'switchyard' && m.segment?.origin !== 'practice' && <SwitchyardGuideCue where="radio"/>}
     <form className="message-form" onSubmit={send}>
       <label htmlFor="message">Type a message</label>
       <div className="input-row"><input id="message" value={text} maxLength={2000} onChange={event => setText(event.target.value)} disabled={!canSend} placeholder="Talk it through with Pip…" autoComplete="off" />
