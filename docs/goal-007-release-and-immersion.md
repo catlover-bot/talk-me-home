@@ -18,13 +18,13 @@ Render authentication was not available at initial inspection: no connected Rend
 
 | Axis | Current evidence |
 | --- | --- |
-| Main integration | Baseline e37f8f7 integrated by normal fast-forward; exact main CI passed; immersion/admission/hosted harness/media merged locally for combined validation |
+| Main integration | Intended product, admission, hosted harness, media and CI repair integrated through normal merges; actual main runs are inspected separately from local validation |
 | Product | Short radio briefing, first question, conversation phases, compact receipts, local ambience and recorder/direct-return homecomings implemented; actual before/after captures retained |
 | Public HTTPS | Not yet deployed; no URL invented |
 | Current Live | No Goal 007 provider attempt; old Goal 005 success/failure remain historical |
 | Reviewer access | Disabled; new allocation not initialized |
 | Public source | Private; historical account-plan/balance facts require the requested disclosure decision; incremental final audit remains |
-| Submission assets | Six editable slides, native PDF, four inspected current Practice screenshots, cover and validated form copy created; current Voice movie and published links pending |
+| Submission assets | Six editable slides, native PDF, four screenshots, cover, form copy, 209.733-second labelled Practice preview/SRT and verified local preview ZIP created; final current Voice movie and published links pending |
 | Budget | No new reservation or hosting resource created |
 
 This is an in-progress execution record, not a claim of release completion. Hosted acceptance, actual main CI/deploy identity, curated asset URLs and final accounting will be appended from observed results.
@@ -60,3 +60,11 @@ The current deck, four 1920x1080 images and form copy explicitly retain pending 
 Both remote main and the release feature branch advanced normally to `076079742ff4728dbbf3d78fe1847a4a3259e024` after a fresh ancestry/protection check. The unused local main reference was also fast-forwarded without force; the original main backup remains intact. [Main inventory](goal-007-integration-inventory.md) records the exact normal merge relationships and preserved historical refs.
 
 The [main CI run](https://github.com/catlover-bot/talk-me-home/actions/runs/36655568130) and [feature CI run](https://github.com/catlover-bot/talk-me-home/actions/runs/36655568115) at that commit **failed**, despite the complete local pass. Long Voice-path cases were concentrated in the first shard, which reached the unchanged 210-second global/teardown limit. The feature run also exposed an asynchronous fake-provider ending-count assertion in the sound test. All three other jobs in each run passed. The full logs and [safe delta receipt](../artifacts/goal-007/security-delta-0760797.json) remain preserved. These failures are not reported as passing release CI; scheduling/notification repairs and their subsequent actual-head CI are separate evidence.
+
+Repair `58dc851` preserves the two ordinary shards per viewport and gives the two long hosted-Voice fixtures a separate two-worker lane per viewport. Fresh listings prove disjoint coverage of all 192 tests: 47 + 47 + 2 at each size. The sound regression now waits for each actual ready connection before Pause and requires both observed fake-peer endings; an active readiness microphone alone was an insufficient precondition. All assertions, individual/global deadlines and zero retries remain. Four focused sound checks passed. No runtime or paid harness bytes changed, and the compiled fingerprint still matches the integrated application. [CI repair receipt](../artifacts/goal-007/ci-scheduling-repair.json). Subsequent main/feature CI must be read at its actual published head; the preserved failed runs are not rerun or relabelled.
+
+## Local preview package
+
+Media commit `2685ab2` adds a separately labelled **209.733-second 1920x1080 H.264/AAC Practice preview**, faithful SRT, current capture provenance and reusable editing scripts. The actual source is `d22d39a`; later changes affect refusal handling and verification, not the displayed happy-path layout. The recording includes a reported blocked Gallery route, revised route, 12 exact confirmations, recorder pickup and confirmed home. Local presentation narration is visibly separate from Practice dialogue. No historical provider speech is overlaid on current screens. Full decode, matching stream durations, 50 word-timed subtitle cues and representative/transition inspection passed; continuous human listening was not claimed. [Preview report](goal-007-practice-preview.md).
+
+The release worktree contains `submission/goal-007/Talk_Me_Home_Goal007_Preview.mp4` (10,301,285 bytes, SHA256 `984c1cf0a238ad174e8d2aed889cf9371a3e23db9f0f66ac4cf0e1f81c7cb689`) and the versioned `Talk_Me_Home_Goal007_Preview_Package_v1.zip` (13,459,363 bytes, SHA256 `947e58dce2eb504a430161ad91fcbcbb4d9f92b7c74a66923e073f286b1317ad`). The ZIP was inspected for its exact 18 entries and every member's hash. It contains deliverables, safe provenance, credits and explicit pending-release labels, with no credentials, ledgers, raw failures or access instructions. [Package manifest](../submission/goal-007/preview-package-manifest.json). Binaries stay local and ignored; no upload occurred. Existing Goal 005/006 media and earlier Goal 007 components remain unchanged.

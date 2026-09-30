@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_PREVIEW_PACKAGE_VERIFIED_PENDING_RELEASE",
+  "createdAt": "2026-09-30T01:44:10.064685+00:00",
+  "zip": {
+    "path": "Talk_Me_Home_Goal007_Preview_Package_v1.zip",
+    "bytes": 13459363,
+    "sha256": "947e58dce2eb504a430161ad91fcbcbb4d9f92b7c74a66923e073f286b1317ad"
+  },
+  "entries": 18,
+  "members": [
+    {
+      "path": "Talk_Me_Home_Goal007_Preview.mp4",
+      "bytes": 10301285,
+      "sha256": "984c1cf0a238ad174e8d2aed889cf9371a3e23db9f0f66ac4cf0e1f81c7cb689"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Preview.srt",
+      "bytes": 6261,
+      "sha256": "2b09baedf2558a80201a5cde8406b22483b00f35874e9b0abe22cdc30dee8152"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Deck.pptx",
+      "bytes": 1430116,
+      "sha256": "79cb38a67dd0e3417f76893f8b5fe745c308fc419e0a63ba0a11dde90b7592f9"
+    },
+    {
+      "path": "Talk_Me_Home_Goal007_Deck.pdf",
+      "bytes": 1041186,
+      "sha256": "a9fd05e062e64e013df625bdea842d1cea234f471a84f0678297238d1e5ee640"
+    },
+    {
+      "path": "cover-1920x1080.png",
+      "bytes": 485383,
+      "sha256": "38aa0826a78448c03c99bf717d44817b5aa57b3133071ff05ff6bf0df740ec91"
+    },
+    {
+      "path": "screenshots/practice-cargo.png",
+      "bytes": 240559,
+      "sha256": "a02d0ab7c62acc1aa9477610373d132439be327f210d61600a8d56ff10e283ba"
+    },
+    {
+      "path": "screenshots/practice-gallery.png",
+      "bytes": 260271,
+      "sha256": "9a8ce2809d0b79090f9669e06c8026fbc98e7d0e9ee236bba46c2d993ddc39f9"
+    },
+    {
+      "path": "screenshots/practice-dock.png",
+      "bytes": 228693,
+      "sha256": "40c01b281fa3a781b503aeaa9b594eae84dc5dba096e8dc13b89c19e9edf047f"
+    },
+    {
+      "path": "screenshots/practice-home.png",
+      "bytes": 202079,
+      "sha256": "a8663a3542849c6e8eddbf73e4c7e52229eda93052261285b96b6a16201a1e83"
+    },
+    {
+      "path": "submission-form.md",
+      "bytes": 3666,
+      "sha256": "26365cad74e2684a31543fe9dfc8f973eb8437a25f2e0be077a197c970b94e6e"
+    },
+    {
+      "path": "submission-form.json",
+      "bytes": 3527,
+      "sha256": "b9082040ae81cc2ce92d694166102e4d734e45ab53a0be0fa17cd6c6232aae36"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4807,
+      "sha256": "6735a55aa9b5fa2bb23045628be0deb8e318d4fd4f9893e90b72739360844430"
+    },
+    {
+      "path": "media-components-manifest.json",
+      "bytes": 8210,
+      "sha256": "1d54500a3d8806f932c22b1e9ce1c83300a652e2383a31e1331ae03d7decc071"
+    },
+    {
+      "path": "preview/preview-verification.json",
+      "bytes": 15054,
+      "sha256": "cc0808c62d54304ce491ef4a1de696d10c5c8a40cbcdfd5a094065fb83575c86"
+    },
+    {
+      "path": "CREDITS.md",
+      "bytes": 1497,
+      "sha256": "1ec7be7fa428464cb2c932b4d92f64d10a47d20ba96a906b273e87129e82cebc"
+    },
+    {
+      "path": "third-party-notices.txt",
+      "bytes": 4520,
+      "sha256": "4c2bdd7fec3773be8403658e55ff296d2b2db97ff4ee7117ba42696f2d87b403"
+    }
+  ],
+  "providerCalls": 0,
+  "uploaded": false,
+  "eventSubmitted": false,
+  "boundary": "TALK ME HOME - LOCAL GOAL 007 PREVIEW\n\nThis package contains current deterministic Practice gameplay and separately labelled local presentation narration. It is not current real AssemblyAI acceptance, human speech, physical playback or enjoyment evidence.\n\nPublic HTTPS, the current hosted Voice acceptance pair, protected reviewer enablement, public source access and final release media remain pending. No URL, upload or event submission is asserted.\n\nThe versioned preview ZIP and historical Goal 005/006 media are preserved; a later final release must use a different output name.\n"
+}

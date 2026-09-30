@@ -44,6 +44,8 @@ Current Goal 007 gameplay has offline evidence: a shorter radio briefing, a pers
 
 [Goal 007 editable deck and current screenshots](submission/goal-007/README.md) · [Goal 006 preserved local package](submission/goal-006/README.md) · [Goal 007 release record](docs/goal-007-release-and-immersion.md) · [Historical README](README_GOAL006_HISTORY.md)
 
+A separately labelled [209.7-second current Practice preview](submission/goal-007/preview/README.md), its subtitles and a local deliverables-only ZIP are available. The preview uses local presentation narration; it is not current real Voice acceptance or a published release.
+
 This project extends [AssemblyAI's voice-agent-starter-js](https://github.com/AssemblyAI/voice-agent-starter-js). Original files and notices remain. No license grant for upstream work is invented; review the included provenance before reuse.
 
 The original browser starter remains available as `npm run start:starter`. `publish`, `import` and `phone` are separate starter utilities, not game deployment commands. Its original manifest is preserved under [deployment/starter/](deployment/starter/README.md). Historical Goal 005/006 manifests remain references; do not apply them as additional services. npm package publication remains disabled with `private: true`.

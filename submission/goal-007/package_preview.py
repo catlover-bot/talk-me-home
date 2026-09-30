@@ -46,6 +46,12 @@ for name in members:
         raise SystemExit(f'Missing regular deliverable: {name}')
     content = source.read_bytes()
     files.append({'path': name, 'bytes': len(content), 'sha256': sha256(content).hexdigest()})
+verified_preview = json.loads((root / 'preview/preview-verification.json').read_text(encoding='utf-8'))
+movie = next(item for item in files if item['path'].endswith('.mp4'))
+assert verified_preview['status'] == 'LOCAL_PREVIEW_MEDIA_CHECKS_PASS_LIVE_PENDING'
+assert movie['sha256'] == verified_preview['output']['sha256']
+assert movie['bytes'] == verified_preview['output']['bytes']
+assert verified_preview['fullDecode'] == 'PASS'
 with output.open('xb') as stream:
     with ZipFile(stream, 'w', compression=ZIP_DEFLATED) as archive:
         archive.writestr('PREVIEW_STATUS.txt', status)
