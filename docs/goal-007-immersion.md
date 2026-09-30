@@ -1,0 +1,35 @@
+# Goal 007 immersion increment
+
+Status: `OFFLINE_IMMERSION_PASS`. This increment is not current real-provider acceptance; `RELEASE_NOT_LIVE_VERIFIED` remains appropriate until the separate hosted release gates pass.
+
+The increment starts from baseline integration source `c69101909e25e57be880a722bd0952d83a01b7c4`. Its gameplay/presentation implementation is `608a3b6c717c5929353927ccea6af3b54049e09f`; its final preconnection duration disclosure is `66f1bd206057720275fc9d56a6c9fbe72e409bcd`. Work was isolated from the preserved Goal 006 worktree. No actual provider token, funded allowance, deployment, visibility change or media upload was performed by this increment.
+
+## Observed changes
+
+The [before audit](../artifacts/goal-007/ui/before/audit.md) records the real Goal 006 interface. These are improvements to its existing systems:
+
+- The radio-rescue premise now leads directly to the selected mode's primary play action. Default Practice no longer visually points to a paid Voice launch. Voice remains a deliberate secondary choice followed by local readiness and explicit Connect. The role/confirmation explanation is repeated concisely before a paid connection.
+- Cargo offers one dismissible question beside the actual input. Selecting it records a labelled text request and performs only a local observation. It disappears after the first communicated input; a communication-help disclosure remains available throughout the mission.
+- The compact radio portrait leaves more room for the current report. A phase line distinguishes local checking, waiting for a reply, listening, a human decision, playback and an ended connection. An exact pending action remains prominent; a completed action becomes a compact expandable historical receipt. No raw provider caption is rewritten.
+- Radio recovery requests are available in every chapter. The surroundings request uses the current public chapter to ask about nearby equipment or Gallery emblems; it does not read hidden state or the human atlas. The disclosure explains selected text provenance and leaves Pause/End accessible. Resuming a Live connection remains explicit and billable; the UI describes the existing memory-only session boundary.
+- Narrow and enlarged layouts put the radio first and provide persistent Radio/Documents links. The atlas retains its intended horizontal drawing viewport, private marks, quote associations and Undo. Desktop documents, acknowledged controls, report and exact confirmation remain adjacent.
+- The existing recorder thread now has a more specific authored archive clue and a locally inspected worn case with a faded star. The inspection explicitly says its recordings have not been played. A recorder proposal explains the choice without inventing an outcome. The home shelf exists in both legitimate endings; only the verified recovered-recorder result places the case on it. Story copy is visibly separate from conversation.
+- The paper, charcoal radio and original art remain coherent. Controls have restrained tactile transitions and reduced-motion support. Original procedural radio ambience has its own volume, starts muted, unlocks only on a gesture, stays silent during an active microphone or actual Pip playback, and releases resources on Pause/End. A short chapter cue follows only a confirmed checkpoint. No sound service or new asset dependency was added.
+- Preconnection readiness renders 15 minutes only for the explicit safe host value `maxSessionSeconds: 900`; absent or unsupported values retain the 10-minute default. The active call still follows its actual token cap. The server's `/api/access` field is supplied by the separate admission integration. About links the separately supplied `/third-party-notices.txt`.
+
+## Offline verification
+
+- Typecheck and production build passed on the final source.
+- All 472 unit tests passed after the immersion implementation, including unchanged authority, privacy, bounded recovery and recorder invariants. The added audio test covers independent mute, no page-load unlock, microphone/playback suppression and finite cleanup.
+- All 170 compiled-production browser tests passed on implementation source `608a3b6`. This includes Rescue in both authored obstruction layouts, Training, recorder off/selected-skipped/collected, deliberate decline and fresh request, backtracking, annotations/Undo, delayed and empty replies, delivery races, exact proposal matching, restart and End. Existing small-screen expectations were updated to require the intentional radio-before-documents composition.
+- On final source `66f1bd2`, all 28 targeted readiness/connection-limit/immersion/sound browser checks and all eight recorder browser checks passed. These include default, protected 900-second and unsupported host-cap cases without requesting a token. Timeouts and retries were not increased.
+- A real browser AudioContext rendered nonzero local procedural PCM; independent mute silenced it. An injected provider check separately proved that received audio bytes alone do not suppress ambience, rendered playback does, and an active microphone suppresses it throughout the Voice connection. End released sources, contexts and capture tracks. This is digital and synthetic-device evidence, not human listening or physical-speaker validation.
+- Actual before/after screenshots were inspected at 1280x720 and 1440x900, plus 390x844 and 200% zoom. Final narrow/zoom captures have no page-level horizontal overflow. The first-question control and selected primary launch are visible at the standard sizes. No automated result is presented as a human comprehension or enjoyment score.
+
+The final [capture manifest](../artifacts/goal-007/ui/after/manifest.json) records exact source, individual game-file and built-client hashes, zero provider requests for capture, viewport measurements and image names. Home images use both obstacle layouts and both outcomes on the same final build. The [verification receipt](../artifacts/goal-007/immersion-verification.json) records test counts and file hashes.
+
+## Evidence limits and preservation
+
+The before images are real Goal 006 Practice; the after images are real Goal 007 Practice. Offline provider fixtures are explicitly injected. No screenshot or test in this increment establishes current AssemblyAI completion, human microphone quality, physical playback or enjoyment. Historical successful and failed real conversations, ledgers and Goal 006 deliverables remain untouched in their existing locations.
+
+The current AssemblyAI documentation index and browser integration page were fetched successfully through direct HTTPS before prompt edits after the web tool could not fetch them. The prompt change only reduces repeated console instructions and constrains personal reactions to observed details; inline transport, tools, authority and confirmation semantics remain unchanged.

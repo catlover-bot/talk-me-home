@@ -1,0 +1,41 @@
+{
+  "status": "OFFLINE_IMMERSION_PASS",
+  "releaseLiveStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "implementationSource": "608a3b6c717c5929353927ccea6af3b54049e09f",
+  "finalSource": "66f1bd206057720275fc9d56a6c9fbe72e409bcd",
+  "date": "2026-09-30",
+  "realProviderTokenRequests": 0,
+  "fundedAllowanceMutations": 0,
+  "validation": {
+    "typecheck": "pass",
+    "productionBuild": "pass",
+    "unitTests": {
+      "passed": 472,
+      "failed": 0
+    },
+    "compiledBrowserSuite": {
+      "passed": 170,
+      "failed": 0,
+      "source": "608a3b6c717c5929353927ccea6af3b54049e09f"
+    },
+    "finalTargetedBrowserChecks": {
+      "passed": 28,
+      "failed": 0
+    },
+    "finalRecorderBrowserChecks": {
+      "passed": 8,
+      "failed": 0
+    },
+    "diffCheck": "pass"
+  },
+  "gameFingerprint": "1e424a415b94e0a595c10a959f80482650de079b2bc9fb257260c35faa7cf90a",
+  "builtClientFingerprint": "815486ed71a68c3475885cfe429dedc51b74a034fd6e393c8441f34cb5dd2d5d",
+  "afterScreenshotCount": 18,
+  "capturesProviderDisabled": true,
+  "nativeLocalPcm": "Nonzero procedural PCM measured; independent mute and close checked",
+  "syntheticPlaybackAndMicrophone": "Injected provider exercise of real lifecycle callbacks; no actual provider connection",
+  "humanEnjoyment": "Not measured",
+  "physicalAudio": "Not tested",
+  "ownedLocalProcesses": "Capture browser and server closed; Playwright runners ended normally",
+  "sourcesPreserved": "Original and Goal006 worktrees, ledgers, raw recordings and media not modified by this increment"
+}
