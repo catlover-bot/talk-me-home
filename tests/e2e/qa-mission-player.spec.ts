@@ -25,7 +25,7 @@ async function waitForPeerDecision(page: Page, provider: Provider) {
   const settled = settledDecisions.get(page) ?? new Set<string>(); settledDecisions.set(page, settled);
   if (!id || settled.has(id)) return;
   const label = await page.getByTestId('proposal-label').innerText();
-  await expect.poll(() => provider.sent.some(event => event.type === 'reply.create' && String(event.instructions).includes(id!))).toBe(true);
+  await provider.waitForSent(event => event.type === 'reply.create' && String(event.instructions).includes(id!));
   await expect(page.getByTestId('caption')).toHaveText(`The game confirmed: ${label}.`);
   await expect(page.locator('.pip-portrait')).not.toHaveAttribute('data-state', 'speaking');
   settled.add(id);
@@ -365,7 +365,7 @@ for (const profile of ['a', 'b'] as const) {
         const sentBefore = provider.sent.length;
         await page.getByLabel('Type a message', { exact: true }).fill(text);
         await page.getByRole('button', { name: 'Send message', exact: true }).click();
-        await expect.poll(() => provider.sent.slice(sentBefore).some(event => event.type === 'conversation.message' && event.content === text)).toBe(true);
+        await provider.waitForSent(event => event.type === 'conversation.message' && event.content === text, sentBefore);
         const response = await peer(text);
         if (text === 'My diagram says the Door and Conveyor share one Power supply.') {
           expect(rescueServer.commits, 'Evaluator-only oracle: the first three conversational inputs commit no robot action.').toHaveLength(0);
@@ -600,7 +600,7 @@ for (const interruption of ['Stop', 'Restart', 'reconnect'] as const) {
       const sentBefore = provider.sent.length;
       await page.getByLabel('Type a message', { exact: true }).fill(text);
       await page.getByRole('button', { name: 'Send message', exact: true }).click();
-      await expect.poll(() => provider.sent.slice(sentBefore).some(event => event.type === 'conversation.message' && event.content === text)).toBe(true);
+      await provider.waitForSent(event => event.type === 'conversation.message' && event.content === text, sentBefore);
       const response = await peer(text);
       const id = `synthetic-scope-${turns}`;
       provider.emit({ type: 'reply.started', reply_id: id });

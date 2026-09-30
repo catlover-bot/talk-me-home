@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "kind": "goal-007-offline-fixture-notification-repair",
+  "date": "2026-09-30",
+  "baseCommit": "fb2fda4d2e48eab35878c65df3d71a1446921a56",
+  "historicalCi": {
+    "main": {
+      "run": "36656650807",
+      "browserPassed": 192,
+      "browserFailed": 0
+    },
+    "feature": {
+      "run": "36656651243",
+      "browserPassed": 190,
+      "browserFailed": 2
+    },
+    "gallery1440ReportedSeconds": {
+      "mainA": 32.8,
+      "mainB": 28.2,
+      "featureATimeout": 45,
+      "featureB": 42
+    },
+    "browserArtifactsUploaded": false,
+    "exactHistoricalCause": "not established by logs"
+  },
+  "unchangedLimits": {
+    "fakePeerWaitMs": 5000,
+    "galleryTestMs": 45000,
+    "suiteMs": 210000,
+    "retries": 0
+  },
+  "baseline": [
+    {
+      "project": "chromium-1440",
+      "file": "qa-mission-player.spec.ts",
+      "title": [
+        "Shared QA player / synthetic Gallery A",
+        "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+      ],
+      "status": "passed",
+      "durationMs": 23639,
+      "privateReceiptSha256": "aec47f57c364cf08788129f8a26b760d57fd0948cfa89f07ab5e65563b34d144",
+      "screenshots": 6,
+      "screenshotTotalMs": 604
+    },
+    {
+      "project": "chromium-1440",
+      "file": "qa-mission-player.spec.ts",
+      "title": [
+        "Shared QA player / synthetic Gallery B",
+        "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+      ],
+      "status": "passed",
+      "durationMs": 19310,
+      "privateReceiptSha256": "ee7346e5769b9dd83b4c33679f3604b00a3ee8eed7682656ad5057b3f2cbaff1",
+      "screenshots": 6,
+      "screenshotTotalMs": 585
+    }
+  ],
+  "baselineGalleryAPollTotalsMs": {
+    "44SubmittedMessages": 4462,
+    "42ToolResults": 4252,
+    "10DecisionRequests": 1013
+  },
+  "validation": {
+    "unitPassed": 3,
+    "browserPassed": 36,
+    "browserFailed": 0,
+    "workers": 2,
+    "liveDisabled": true,
+    "typecheck": "pass",
+    "diffCheck": "pass",
+    "cases": [
+      {
+        "project": "chromium-1280",
+        "file": "goal007-sound.spec.ts",
+        "title": [
+          "opt-in radio sound follows actual playback and microphone signals and closes on End"
+        ],
+        "status": "passed",
+        "durationMs": 1508,
+        "privateReceiptSha256": "6cc29e8e9de3e8c10ec4d90846bd16e750f04b21678de2ae3666e2da95d4c5d7"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "goal007-sound.spec.ts",
+        "title": [
+          "shipped procedural radio bed produces nonzero local PCM and independent mute silences it"
+        ],
+        "status": "passed",
+        "durationMs": 691,
+        "privateReceiptSha256": "b02e2808ec4ac4407792f1682437f84439c4cee2acadcd6b6d4a5934ac1e549b"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "Shared QA player / synthetic Gallery A",
+          "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+        ],
+        "status": "passed",
+        "durationMs": 15504,
+        "privateReceiptSha256": "536310734b3e55976b24013232ace24aceeae9c426645971210e2112cfba8290",
+        "screenshots": 6,
+        "screenshotTotalMs": 572
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "Shared QA player / synthetic Gallery B",
+          "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+        ],
+        "status": "passed",
+        "durationMs": 12171,
+        "privateReceiptSha256": "e8f7aa9281be8e31eb69e2fce21268962dd67eaa6ec31e74385cccd378b67a6f",
+        "screenshots": 6,
+        "screenshotTotalMs": 553
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player recovers after an empty completed Gallery reply without borrowing an old caption"
+        ],
+        "status": "passed",
+        "durationMs": 25213,
+        "privateReceiptSha256": "98ea17a4f26957c3db6aa317d3a7f71a2db39f9a516106b7e062a450389c4238"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops an uninformative Gallery acquisition after four purposeful requests without guessing a route"
+        ],
+        "status": "passed",
+        "durationMs": 2977,
+        "privateReceiptSha256": "641323397994eccdf40e47acbc3051bee46afef967eecf50371f412491b4d372"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded exhausted without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2287,
+        "privateReceiptSha256": "5ae098bf29e4e9b5f1ce92340e72afc34c16c6fc0f9e8f399875681361576545"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded expired without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2294,
+        "privateReceiptSha256": "ab02b66cf50d6a646aabdd5bf060df0b1f8a4c39935c38daf0d443061f246dcb"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded false_completion without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1894,
+        "privateReceiptSha256": "6f323684fc44b182efc25468f5694510805eb06fc6978c0779550e3fc08f2153"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded rejected without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2595,
+        "privateReceiptSha256": "05ed643f0d2d6813bee8e4bb7c2c6da04645bd05ec9bfbd2cf1d97350643f61f"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded stale_pending without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1881,
+        "privateReceiptSha256": "fa83895173543a208253177b55f45de69deaa000094ff2ad86cf23867241e9e3"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded unexpected_checkpoint without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1907,
+        "privateReceiptSha256": "3424fc0df6b7184655825c4e0d6ca4b414d144d95324931f719e9e8a089356bd"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded wrong_pending without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1339,
+        "privateReceiptSha256": "e03b9dfdd5cd844174af775230be596f461ecde208d9f5709f4e304c94a4c793"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded wrong_reply_chapter without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1974,
+        "privateReceiptSha256": "56e32e2cf41b490c8cc68b7ed8c8994ac8be393cdda004161a08537eb89b865c"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects Restart scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 989,
+        "privateReceiptSha256": "6027e049d7d98482f90132aa79889c09d5d92ebc752e9d96b3d8b1f12d97e696"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects Stop scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 989,
+        "privateReceiptSha256": "867f35f6a22817b7240e28322788b871ae570edb4cdc05879e2cac2484cc1398"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects reconnect scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 1177,
+        "privateReceiptSha256": "f5cae7debb01961cb12fb9f41f7e46eb35dc8575222eb4798ffb225e02d83b9f"
+      },
+      {
+        "project": "chromium-1280",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "visible confirmation remains deliberate, exact and keyboard accessible while conversation continues"
+        ],
+        "status": "passed",
+        "durationMs": 1477,
+        "privateReceiptSha256": "22d28ddd3da23c0321afc8006e028a1d0430021164cf34122641475fff5d57ac"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "goal007-sound.spec.ts",
+        "title": [
+          "opt-in radio sound follows actual playback and microphone signals and closes on End"
+        ],
+        "status": "passed",
+        "durationMs": 1438,
+        "privateReceiptSha256": "7ac51eddcf5a1c35da946da81a2b574b2b5b8beaecb82cd0bca9912cd6f49340"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "goal007-sound.spec.ts",
+        "title": [
+          "shipped procedural radio bed produces nonzero local PCM and independent mute silences it"
+        ],
+        "status": "passed",
+        "durationMs": 665,
+        "privateReceiptSha256": "91b764e4fc884fe7b53d804fe2b30ca92852140251f0fe8b02c734397d08e44a"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "Shared QA player / synthetic Gallery A",
+          "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+        ],
+        "status": "passed",
+        "durationMs": 15829,
+        "privateReceiptSha256": "f86eeea1911a53c49533ffcae09e47844a25c18e59b0ce023608b4c98b6e871d",
+        "screenshots": 6,
+        "screenshotTotalMs": 622
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "Shared QA player / synthetic Gallery B",
+          "executes the actual revised player through normal UI to confirmed home with an unfunded fake peer"
+        ],
+        "status": "passed",
+        "durationMs": 12907,
+        "privateReceiptSha256": "12fe96a982a8b1481de71f4fc2c4e4c96b8edf4da6be888541ae5ec89637cdfb",
+        "screenshots": 6,
+        "screenshotTotalMs": 643
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player recovers after an empty completed Gallery reply without borrowing an old caption"
+        ],
+        "status": "passed",
+        "durationMs": 25210,
+        "privateReceiptSha256": "1276f93880b9401d6ee87b004c6426ba93bd57db70b0175aeed3f7dd0ab93c92"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops an uninformative Gallery acquisition after four purposeful requests without guessing a route"
+        ],
+        "status": "passed",
+        "durationMs": 2975,
+        "privateReceiptSha256": "8c0a16c5ed58792167ce56d289476dc66368fec25144ec612620349c7ea6b5ef"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded exhausted without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2380,
+        "privateReceiptSha256": "070b42c1a765fa2baa1a585fa0aab7fc04fa643e72732b534130395612628d68"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded expired without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2353,
+        "privateReceiptSha256": "2ed2634fce8a7b448219bde5cd06c27ba981c14708578faa2cc85962dc2d5fe1"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded false_completion without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1996,
+        "privateReceiptSha256": "a434ab7618c6273e6fffdac21e4f365fccf2961da6f3d3ecf7f6f01c6b25e730"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded rejected without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 2908,
+        "privateReceiptSha256": "32413677ca583822d447ea1618052ae12179eed38ea01cfae0d5a8bb2b4927be"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded stale_pending without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1900,
+        "privateReceiptSha256": "fdb6c30ac2f39807d30d11a608861c118ab403d567c05ea16c0dad6e13e4e188"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded unexpected_checkpoint without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1962,
+        "privateReceiptSha256": "e0de89045c11515b67457cb1e79cd92dda40cd8547b801a7e78ac113f297697e"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded wrong_pending without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1391,
+        "privateReceiptSha256": "d4beecbe0779533193b166384357ce61d89d7fad479761dddcae8998de7a79d1"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "actual shared player stops bounded wrong_reply_chapter without crossing or another connection"
+        ],
+        "status": "passed",
+        "durationMs": 1927,
+        "privateReceiptSha256": "3b4f6546164d6308f434d99f6b74c3bf326b84d64f30d55fcf0c81b6e6b27e3a"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects Restart scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 1053,
+        "privateReceiptSha256": "27c5b2f153b379ac92c24b1b07ba8f047dc4331be25844b67278338b1df85d53"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects Stop scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 953,
+        "privateReceiptSha256": "597ee53e5bde76c08c8c75ebfd8c87b2170f6e961bc4de1f2174fee131b9a233"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "shared QA player rejects reconnect scope changes before another action"
+        ],
+        "status": "passed",
+        "durationMs": 1176,
+        "privateReceiptSha256": "dc03590d83d702451ecfd2555567c2a48f30fa7cd36e466243ca007e3976deb7"
+      },
+      {
+        "project": "chromium-1440",
+        "file": "qa-mission-player.spec.ts",
+        "title": [
+          "visible confirmation remains deliberate, exact and keyboard accessible while conversation continues"
+        ],
+        "status": "passed",
+        "durationMs": 1489,
+        "privateReceiptSha256": "3f8b0776e1233a277f38b9b56b85a48ffbec7a821eabc905512caafba687bc11"
+      }
+    ]
+  },
+  "preserved": [
+    "all screenshots",
+    "exact message predicates and history boundary",
+    "all browser acceptance conditions",
+    "runtime/player/paid harness bytes",
+    "failed CI records"
+  ],
+  "realProviderCalls": 0,
+  "newReservations": 0,
+  "limitations": [
+    "Local timings do not prove historical CI machine-load causality.",
+    "Confirmation/history-loading runtime repair and its regressions are separate work.",
+    "Final combined partition and pushed-head CI remain pending."
+  ]
+}
