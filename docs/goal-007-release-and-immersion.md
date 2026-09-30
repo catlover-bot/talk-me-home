@@ -2,9 +2,17 @@
 
 ## Current owner-directed Free deployment verification
 
-The September 30 continuation changes the current hosting decision to the owner's existing **Free service without a persistent disk**. The owner reports a successful dashboard deployment from `caa896d` on `srv-dauc8fek1f9s73b93pc0`. This is owner-provided deployment evidence; independent HTTP identity and hosted Practice verification remain pending. The supplied URL field is a placeholder, and the actual public HTTPS origin has been requested once. No public URL is guessed from the service ID.
+The September 30 continuation changes the current hosting decision to the owner's existing **Free service without a persistent disk**. The owner reports a successful dashboard deployment from `caa896d` on `srv-dauc8fek1f9s73b93pc0`. The owner supplied the actual public origin, `https://talk-me-home.onrender.com`. Direct public HTTP now confirms the page, health endpoint and version `0.7.0` at full commit `caa896d3a90dd4e8cb26499dba586b646bb7030a`, matching the dashboard report. Hosted Practice results are recorded separately in the current handoff.
 
 Do not apply the older paid-service proposal or create a service, upgrade, attach a paid disk, enable Live, initialize funding, change credentials, or redeploy merely for inspection. Direct public checks require the actual URL, not Render CLI authentication. Use one bounded cold-start wait and no keep-alive traffic. Current instructions and separate evidence axes are in [the publication handoff](goal-007-publication-handoff.md). Historical implementation, pricing proposals, failed runs and immutable media below remain history.
+
+## Observed hosted Practice result
+
+[The public game](https://talk-me-home.onrender.com) passed direct HTTP and fresh-browser Practice verification on September 30, 2026. `/api/health` returned 200 after 22.261 seconds on the first request, within the single 120-second cold-start window; no additional cold-start retry, keep-alive job or redeploy occurred. The homepage and required JS/CSS loaded, SPA reload worked, and `/api/version` reported `0.7.0` / `caa896d3a90dd4e8cb26499dba586b646bb7030a`, matching the owner-reported dashboard revision.
+
+Two hosted Rescue runs completed Cargo, Gallery, Dock and confirmed home: recorder-collected (12 exact confirmations, one declined pickup before a fresh proposal) and selected-skipped (11 confirmations). Both exercised reported-obstruction backtracking, route marks/Undo/erase/undo-erase, retained marks across Pause/resume, and a distinct replay round starting in Cargo. A separate fresh-context Voice readiness inspection visibly reported Live unavailable, disabled Connect, and successfully returned to Practice. Read-only access also reported `liveEnabled: false` and `available: false`.
+
+Provider HTTP, token endpoint, WebSocket and negative-token-probe counts were all zero. Browser errors were absent and owned browser/process cleanup completed. Current playable verification is **Hosted Practice Rescue**, not real Voice. Live Voice/Text remain unavailable. Training is visible but was not separately exercised in this hosted run. No application fix was necessary for these checks. [Safe hosted receipt and screenshots](../artifacts/goal-007/free-hosted-verification.json); [current submission fields](../submission/goal-007/current-publication-fields.md).
 
 ## Earlier execution agreement
 
@@ -25,8 +33,8 @@ Render authentication was not available at initial inspection: no connected Rend
 | Axis | Current evidence |
 | --- | --- |
 | Main integration | Intended product, admission, hosted harness, media and CI repair integrated through normal merges; actual main runs are inspected separately from local validation |
-| Product | Short radio briefing, first question, conversation phases, compact receipts, local ambience and recorder/direct-return homecomings implemented; actual before/after captures retained |
-| Public HTTPS | Owner reports successful Free/no-disk dashboard deployment from `caa896d`; actual URL and direct verification pending |
+| Product | Implemented immersion and exact-confirmation improvements; hosted recorder-collected/skipped Rescue, route controls, Pause/resume and replay now pass |
+| Public HTTPS | https://talk-me-home.onrender.com responds; public health/version confirm `0.7.0` / `caa896d`, matching the owner-reported deployment |
 | Current Live | Disabled under the latest owner instruction; no Goal 007 provider attempt; old Goal 005 results remain historical |
 | Reviewer access | Disabled; new allocation not initialized |
 | Public source | Now Public according to current GitHub API and unauthenticated HTTP 200; visibility changed outside this continuation; earlier disclosure audit remains history |

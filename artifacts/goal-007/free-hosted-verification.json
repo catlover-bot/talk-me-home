@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "status": "HOSTED_PRACTICE_PASS",
+  "origin": "https://talk-me-home.onrender.com",
+  "repositoryUrl": "https://github.com/catlover-bot/talk-me-home",
+  "demoApplicationPlatform": "Other",
+  "ownerReportedHosting": {
+    "serviceName": "talk-me-home",
+    "serviceId": "srv-dauc8fek1f9s73b93pc0",
+    "plan": "Free",
+    "persistentDisk": false,
+    "branch": "main",
+    "dashboardCommit": "caa896d",
+    "status": "Live / Deployed"
+  },
+  "observedIdentity": {
+    "commit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+    "version": "0.7.0"
+  },
+  "dashboardCommitMatchesPublicIdentity": true,
+  "coldStart": {
+    "startedAt": "2026-09-30T08:34:05.589Z",
+    "origin": "https://talk-me-home.onrender.com",
+    "endpoint": "https://talk-me-home.onrender.com/api/health",
+    "maxColdStartMs": 120000,
+    "probes": [
+      {
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "elapsedMs": 22261,
+        "healthOk": true,
+        "loadingPage": false,
+        "bodyPreview": {
+          "ok": true
+        }
+      }
+    ],
+    "singleWaitApplied": false,
+    "healthOk": true,
+    "elapsedMs": 22273,
+    "finishedAt": "2026-09-30T08:34:27.862Z"
+  },
+  "http": {
+    "checkedAt": "2026-09-30T08:35:10.494Z",
+    "origin": "https://talk-me-home.onrender.com",
+    "expectedCommit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+    "results": [
+      {
+        "path": "/",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "elapsedMs": 556,
+        "title": "Talk Me Home \u2014 Mission Control",
+        "declaredAssets": [
+          "/assets/index-ANeUkSmb.js",
+          "/assets/index-C5uSAqXv.css"
+        ]
+      },
+      {
+        "path": "/api/version",
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "elapsedMs": 522,
+        "body": {
+          "commit": "caa896d3a90dd4e8cb26499dba586b646bb7030a",
+          "version": "0.7.0"
+        }
+      },
+      {
+        "path": "/api/access",
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "elapsedMs": 530,
+        "body": {
+          "liveEnabled": false,
+          "maxSessionSeconds": 600,
+          "authorized": false,
+          "available": false,
+          "message": "Live is unavailable for this demo. Practice is available without a connection."
+        }
+      }
+    ]
+  },
+  "practice": {
+    "scope": "HOSTED_HTTPS_PRODUCTION",
+    "startedAt": "2026-09-30T08:35:23.884Z",
+    "finishedAt": "2026-09-30T08:36:22.851Z",
+    "status": "PASS",
+    "checks": [
+      "health",
+      "exact safe build identity",
+      "private paths rejected",
+      "unknown API remains JSON",
+      "license notices",
+      "fresh visitor unauthorized",
+      "SPA reload and hashed asset MIME/cache",
+      "Live unavailable through read-only access status and normal UI; no Connect or token probe",
+      "injected denied microphone keeps explicit Practice alternative"
+    ],
+    "liveAccess": {
+      "liveEnabled": false,
+      "available": false,
+      "authorized": false
+    },
+    "network": {
+      "providerHttpRequests": 0,
+      "browserTokenRequests": 0,
+      "websocketAttempts": 0,
+      "negativeTokenProbes": 0,
+      "blocked": []
+    },
+    "errors": [],
+    "browserClosed": true,
+    "assets": [
+      "/assets/index-ANeUkSmb.js",
+      "/assets/index-C5uSAqXv.css"
+    ]
+  },
+  "rescues": [
+    {
+      "objective": "collected",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 12,
+      "declined": 1,
+      "routeControls": {
+        "annotation": true,
+        "undo": true,
+        "erase": true,
+        "undoErase": true
+      },
+      "pauseResume": {
+        "retainedGallery": true,
+        "retainedPrivateRouteMark": true
+      },
+      "backtracked": true,
+      "completed": true,
+      "replayNewRound": true
+    },
+    {
+      "objective": "selected-skipped",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 11,
+      "declined": 0,
+      "routeControls": {
+        "annotation": true,
+        "undo": true,
+        "erase": true,
+        "undoErase": true
+      },
+      "pauseResume": {
+        "retainedGallery": true,
+        "retainedPrivateRouteMark": true
+      },
+      "backtracked": true,
+      "completed": true,
+      "replayNewRound": true
+    }
+  ],
+  "voiceUnavailable": {
+    "startedAt": "2026-09-30T08:37:44.876Z",
+    "scope": "HOSTED_VOICE_UNAVAILABLE_UI_NO_CONNECTION",
+    "forbiddenRequests": 0,
+    "websocketAttempts": 0,
+    "failedRequests": [],
+    "httpErrors": [],
+    "loadedAssets": [
+      {
+        "path": "/assets/index-C5uSAqXv.css",
+        "status": 200,
+        "contentType": "text/css; charset=utf-8"
+      },
+      {
+        "path": "/assets/index-ANeUkSmb.js",
+        "status": 200,
+        "contentType": "text/javascript; charset=utf-8"
+      }
+    ],
+    "status": "PASS",
+    "voiceUnavailableText": "Live is unavailable for this demo. Practice is available without a connection.",
+    "connectDisabled": true,
+    "explicitPracticeAlternativeWorks": true,
+    "browserClosed": true,
+    "finishedAt": "2026-09-30T08:37:47.793Z"
+  },
+  "realVoiceVerification": "NOT_RUN_LIVE_DISABLED_BY_CURRENT_SCOPE",
+  "providerTokenIssuanceDuringChecks": 0,
+  "hostingOrCredentialChanges": false,
+  "fundedAllowanceInitialized": false,
+  "redeploymentTriggered": false,
+  "recurringKeepAliveCreated": false,
+  "ownedTestProcessesRemaining": 0,
+  "eventSubmitted": false,
+  "screenshots": [
+    {
+      "path": "artifacts/goal-007/hosted-free/entrance-1280.png",
+      "sha256": "1e447633b1615316fe75b695d73ef45884e9419e18546d7f4b718d3c12f675b6",
+      "bytes": 198478,
+      "mode": "Hosted Practice / disabled Live UI; no real provider connection"
+    },
+    {
+      "path": "artifacts/goal-007/hosted-free/collected-home.png",
+      "sha256": "5b4beb3302df4ef97460fc792ac281d8ba7297fa1ee19daf52a685fadb008648",
+      "bytes": 180262,
+      "mode": "Hosted Practice / disabled Live UI; no real provider connection"
+    },
+    {
+      "path": "artifacts/goal-007/hosted-free/selected-skipped-home.png",
+      "sha256": "8f6a9a4b8f5112d2d4dd664eac17ff42058003607b27f879a5728a9a932da601",
+      "bytes": 178908,
+      "mode": "Hosted Practice / disabled Live UI; no real provider connection"
+    },
+    {
+      "path": "artifacts/goal-007/hosted-free/voice-unavailable.png",
+      "sha256": "5b27c90d7a1bc31e105513f72ffc119018708b3e1fda8f3bb01bc8669250b885",
+      "bytes": 245998,
+      "mode": "Hosted Practice / disabled Live UI; no real provider connection"
+    }
+  ],
+  "privateEvidenceDirectory": ".validation/goal-007/hosted-free-20260930T083358Z",
+  "limitations": [
+    "Free/no persistent disk is owner-reported hosting configuration, not an authenticated dashboard audit.",
+    "Practice is deterministic; this pass does not establish real Voice, human speech, physical speakers, or enjoyment.",
+    "Free hosting may cold-start or restart; application mission state is in memory.",
+    "Training was visible but not included in this hosted Rescue smoke."
+  ]
+}
