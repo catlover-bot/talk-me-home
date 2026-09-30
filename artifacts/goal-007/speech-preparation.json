@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "OFFLINE_SPEECH_VALIDATED",
+  "completedAt": "2026-09-30T01:24:22.801Z",
+  "providerCalls": 0,
+  "reservations": 0,
+  "source": "Offline Windows System.Speech installed generic English voice",
+  "voice": "Microsoft Zira Desktop",
+  "utterances": 352,
+  "hashedFixtureFiles": 704,
+  "reusedPairs": 313,
+  "locallySynthesizedPairs": 39,
+  "recorderRelatedUtterances": 35,
+  "explicitRecorderDiscoveryAndActionRequests": 6,
+  "allFinitePlayerRecoveryPhrasesValidated": true,
+  "allFrozenFixtureHashesAndMetadataValidated": true,
+  "originalCacheVerifiedUnchanged": true,
+  "audio": {
+    "sampleRate": 24000,
+    "channels": 1,
+    "bits": 16,
+    "durationSeconds": {
+      "minimum": 2.0745,
+      "maximum": 11.7245,
+      "completeCatalogSum": 3250.629
+    },
+    "nonzeroSamplesAndCleanEdgesValidated": true
+  },
+  "fixtureCatalogSha256": "8423f81b7f4d6b96a5ffdc200ad91599705f26e40bd7b6c74e2fc913a7b8fbc6",
+  "manifestSha256": "d3759a33fd4ac48158a09d58b528c4ab379fb18d7d39462cf5fd00c6032ef040",
+  "privateValidationReceiptSha256": "f2f5e7c4114b93168f1d612918498e5e1718dc7a2c25bb920e4e912c435cca31",
+  "boundary": "Offline fixture preparation only. No real recognition, provider dialogue, human speech, physical microphone, speaker playback, grant initialization or Live acceptance is established. The duration sum describes all alternative catalog phrases, not one planned call. Raw fixtures, original recordings, paths and private validation records remain outside tracked evidence."
+}
