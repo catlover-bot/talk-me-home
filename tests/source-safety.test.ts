@@ -19,9 +19,16 @@ test('application-authored code, UI, comments, and documentation use English', (
 });
 
 test('client source does not access server credentials or persist provider tokens', () => {
-  const source = files('game/client').map(path => readFileSync(path, 'utf8')).join('\n');
-  assert.doesNotMatch(source, /VITE_.*(?:KEY|TOKEN)|process\.env|localStorage|sessionStorage/);
-  assert.doesNotMatch(source, /from\s+['"][^'"]*server\//);
+  for (const path of files('game/client')) {
+    const source = readFileSync(path, 'utf8');
+    // Only this exact constant stop bit is permitted. Dynamic values, keys and
+    // every other storage use still fail, including any token persistence.
+    const checked = path === join('game/client', 'release-stop.ts') ? source
+      .replace("sessionStorage.getItem('tmh-goal-007-provider-stopped')", '')
+      .replace("sessionStorage.setItem('tmh-goal-007-provider-stopped', '1')", '') : source;
+    assert.equal(/VITE_.*(?:KEY|TOKEN)|process\.env|localStorage|sessionStorage/.test(checked), false, `Forbidden client credential or storage access in ${path}`);
+    assert.equal(/from\s+['"][^'"]*server\//.test(source), false, `Server import in ${path}`);
+  }
 });
 
 test('ignored local credential values are absent from game source and any built bundle', () => {

@@ -502,6 +502,35 @@ test('live adapter fake: configuration rejection is sanitized and connection tim
   assert.equal(timeout.socket.readyState, 3);
 });
 
+test('live adapter fake: explicit account refusals report only a safe reason and promptly stop the call', async () => {
+  for (const event of [{ type: 'session.error', code: 'insufficient_credit', message: 'private-test-fixture' },
+    { type: 'session.error', code: 'bad_account', message: 'workspace mismatch private-test-fixture' },
+    { type: 'session.error', code: 'session_forbidden', message: 'private-test-fixture' }]) {
+    const reports: string[] = [];
+    const h = liveHarness({ onProviderAccountRefusal: reason => { reports.push(reason); } });
+    const starting = h.live.start(h.options);
+    const failed = assert.rejects(starting);
+    await tick(); h.socket.open(); h.socket.emit(event);
+    await failed; await h.live.stop();
+    assert.deepEqual(reports, [event.code === 'insufficient_credit' ? 'provider_credit_refused' : 'provider_credential_or_account_refused']);
+    assert.equal(h.socket.readyState, 3); assert.equal(h.audio.closed, 1);
+    assert.doesNotMatch(h.errors.join(' '), /private-test-fixture/);
+    assert.match(h.errors.join(' '), /Contact the owner/);
+  }
+});
+
+test('live adapter fake: an expired temporary token or ordinary configuration error is not an account mismatch', async () => {
+  for (const code of ['UNAUTHORIZED', 'session_expired', 'invalid_config']) {
+    const reports: string[] = [];
+    const h = liveHarness({ onProviderAccountRefusal: reason => { reports.push(reason); } });
+    const starting = h.live.start(h.options);
+    const failed = assert.rejects(starting);
+    await tick(); h.socket.open(); h.socket.emit({ type: 'session.error', code, message: 'private-test-fixture' });
+    await failed; await h.live.stop();
+    assert.deepEqual(reports, []); assert.equal(h.socket.readyState, 3);
+  }
+});
+
 test('audio helpers: English permission/device errors and PCM base64 preserve bytes', () => {
   assert.match(microphoneError({ name: 'NotFoundError' }), /No microphone/);
   assert.match(microphoneError({ name: 'NotReadableError' }), /unavailable/);
