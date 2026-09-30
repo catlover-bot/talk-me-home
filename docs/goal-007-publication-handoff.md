@@ -34,7 +34,7 @@ After the real URL arrives, replace pending rows only with observed results and 
 
 ## Inspection harness readiness (local only)
 
-The `--disabled-live-only` inspection mode passed one local compiled-production smoke against the unchanged `caa896d` application. It completed recorder-collected and selected-skipped rescues, exact confirmations, route marks/Undo/erase/undo-erase, retained route marks across Pause/resume, and two actual new replay rounds. Read-only access status and visible UI confirmed Live unavailable. Provider HTTP, browser token endpoints, negative token probes and WebSocket counts were all zero; owned browser/server cleanup completed. This verifies the inspection procedure, not the public service. [Safe local receipt](../artifacts/goal-007/free-inspection-harness-offline.json). All 16 existing component-manifest files remain unchanged.
+The `--disabled-live-only` inspection mode passed one local compiled-production smoke against the unchanged `caa896d` application. It completed recorder-collected and selected-skipped rescues, exact confirmations, route marks/Undo/erase/undo-erase, retained route marks across Pause/resume, and two actual new replay rounds. Read-only access status and visible UI confirmed Live unavailable. Provider HTTP, browser token endpoints, negative token probes and WebSocket counts were all zero; owned browser/server cleanup completed. This verifies the inspection procedure, not the public service. [Safe local receipt](../artifacts/goal-007/free-inspection-harness-offline.json). All 15 existing component-manifest files remain unchanged.
 
 After the actual origin is supplied and the single bounded cold-start check succeeds:
 
