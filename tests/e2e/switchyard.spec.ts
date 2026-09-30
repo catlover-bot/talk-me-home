@@ -117,6 +117,7 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     if (approach === 'lift') {
       await ask(page, 'Go to Lift Station', true);
       await ask(page, 'Inspect Lift console');
+      await expect(page.getByTestId('caption')).toContainText(/plate reads (Crescent|Kite)/);
       const report = await page.getByTestId('caption').innerText();
       const plate = report.match(/plate reads (Crescent|Kite)/)?.[1]; expect(plate).toBeTruthy();
       const [index, testSupply, runningSupply] = await readManual(page, 'Lift plates', plate!);
@@ -136,6 +137,7 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
       await ask(page, 'Return to Transfer Table', true);
       await ask(page, 'Go to Service Gallery', true);
       await ask(page, 'Inspect Bridge winch');
+      await expect(page.getByTestId('caption')).toContainText(/plate reads (Rivet|Slot)/);
       const report = await page.getByTestId('caption').innerText();
       const plate = report.match(/plate reads (Rivet|Slot)/)?.[1]; expect(plate).toBeTruthy();
       const [winchSupply, alignmentSupply, crossingSupply] = await readManual(page, 'Service modules', plate!);

@@ -130,6 +130,13 @@ async function main() {
       await choices().getByRole('button', { name: label, exact: true }).click();
       const result = await (await response).json();
       if (!result.ok) throw new Error('An ordinary local request failed during capture.');
+      if (!physical) {
+        // An HTTP receipt can precede React's displayed report and newly admitted
+        // choices. Wait for its actual leading sentence, not a fixed delay.
+        const lead = result.message.split(/(?<=[.!?])\s/)[0].replace(/^You are\b/, 'I am');
+        const escaped = lead.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        await expect(page.getByTestId('caption')).toHaveText(new RegExp('^' + escaped));
+      }
       if (physical) {
         await expect(page.getByTestId('proposal-label')).toHaveText(label);
         await expect(page.getByTestId('action-proposal')).toHaveAttribute('data-status', 'awaiting_confirmation');
@@ -183,6 +190,7 @@ async function main() {
     await decide('decline');
     await beat('deliberate-decline', 17, 'Not yet leaves the movement unexecuted.', page.getByTestId('action-proposal'));
     await ask('Go to Transfer Table', true); await ask('Go to Lift Station', true); await ask('Inspect Lift console');
+    await expect(page.getByTestId('caption')).toContainText(/plate reads (Crescent|Kite)/);
     const liftReport = await page.getByTestId('caption').innerText();
     const liftPlate = liftReport.match(/plate reads (Crescent|Kite)/)?.[1];
     if (!liftPlate) throw new Error('The local lift report did not communicate its plate.');
@@ -193,6 +201,7 @@ async function main() {
     await expect(page.getByTestId('caption')).toContainText('Completed work stays completed');
     await beat('change-plan', 33, 'Change the plan after investigation. Completed work stays completed.', page.getByTestId('caption'));
     await ask('Return to Transfer Table', true); await ask('Go to Service Gallery', true); await ask('Inspect Bridge winch');
+    await expect(page.getByTestId('caption')).toContainText(/plate reads (Rivet|Slot)/);
     const bridgeReport = await page.getByTestId('caption').innerText();
     const bridgePlate = bridgeReport.match(/plate reads (Rivet|Slot)/)?.[1];
     if (!bridgePlate) throw new Error('The bridge report did not communicate its fitted module.');
