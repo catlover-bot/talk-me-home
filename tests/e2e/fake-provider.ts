@@ -73,6 +73,24 @@ export async function fakeProvider(page: Page, { permissionDenied = false, ackno
   let ended = 0;
   const sockets: WebSocketRoute[] = [];
   const sent: FixtureEvent[] = [];
+  const sentObservers = new Set<(event: FixtureEvent, index: number) => void>();
+  const waitForSent = (matches: (event: FixtureEvent) => boolean, firstSent = 0): Promise<FixtureEvent> => {
+    const previous = sent.slice(firstSent).find(matches);
+    if (previous) return Promise.resolve(previous);
+    return new Promise((resolve, reject) => {
+      const cleanup = () => { clearTimeout(timer); sentObservers.delete(receive); page.off('close', closed); };
+      const closed = () => { cleanup(); reject(new Error('The offline peer closed before the expected message.')); };
+      const receive = (event: FixtureEvent, index: number) => {
+        if (index < firstSent) return;
+        try { if (matches(event)) { cleanup(); resolve(event); } }
+        catch (error) { cleanup(); reject(error); }
+      };
+      const timer = setTimeout(() => { cleanup(); reject(new Error('The offline peer did not receive the expected message within 5000ms.')); }, 5000);
+      // Registration and the history check have no asynchronous gap.
+      sentObservers.add(receive); page.once('close', closed);
+      if (page.isClosed()) closed();
+    });
+  };
   let decision: { proposal: { id: string; label: string; status: string }; result: { ok: boolean }; perception?: { emblem: string; gates: { direction: string }[] } } | undefined;
   let acknowledgements = 0;
   await page.route('**/api/access', route => route.fulfill({ json: { liveEnabled: true, authorized: true, available: true, message: 'Offline fixture access. No provider is contacted.' } }));
@@ -91,6 +109,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false, ackno
       const event = JSON.parse(String(data)) as FixtureEvent;
       // Never retain provider configuration echoes, URLs, or microphone bytes.
       sent.push(event.type === 'session.update' || event.type === 'input.audio' ? { type: event.type } : event);
+      for (const receive of sentObservers) receive(sent.at(-1)!, sent.length - 1);
       if (acknowledgeDecisions && event.type === 'conversation.message' && event.role === 'system' && String(event.content).startsWith('Verified game decision receipt.')) {
         decision = JSON.parse(String(event.content).split('\n').slice(1).join('\n'));
       }
@@ -115,6 +134,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false, ackno
   });
   return {
     sent,
+    waitForSent,
     get tokenRequests() { return tokenRequests; },
     get connections() { return sockets.length; },
     get activeSockets() { return activeSockets; },
@@ -127,7 +147,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false, ackno
       emit({ type: 'reply.started', reply_id: `ordinary-${callId}` });
       emit({ type: 'tool.call', call_id: callId, name, arguments: args });
       emit({ type: 'reply.done', reply_id: `ordinary-${callId}`, status: 'completed' });
-      await expect.poll(() => sent.slice(firstSent).find(event => event.type === 'tool.result' && event.call_id === callId)).toBeTruthy();
+      await waitForSent(event => event.type === 'tool.result' && event.call_id === callId, firstSent);
       return JSON.parse(String(sent.slice(firstSent).find(event => event.call_id === callId)?.result)) as ToolResult;
     },
     async confirmTool(name: string, args: Record<string, unknown>, expectedLabel: string, callId?: string): Promise<ToolResponse> {
