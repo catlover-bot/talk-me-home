@@ -12,7 +12,7 @@ type AudioFixture = {
 declare global { interface Window { __testAudio: AudioFixture } }
 
 /** Browser-only fixtures. No provider connection, hardware audio, or production hooks. */
-export async function fakeProvider(page: Page, { permissionDenied = false, acknowledgeDecisions = false, arrivalReports = false } = {}) {
+export async function fakeProvider(page: Page, { permissionDenied = false, acknowledgeDecisions = false, arrivalReports = false, readyOnUpdate = true } = {}) {
   await page.addInitScript(({ deny }) => {
     let captures = 0;
     let activeTracks = 0;
@@ -106,7 +106,7 @@ export async function fakeProvider(page: Page, { permissionDenied = false, ackno
         socket.send(JSON.stringify({ type: 'transcript.agent', reply_id, text }));
         socket.send(JSON.stringify({ type: 'reply.done', reply_id, status: 'completed' }));
       }
-      if (event.type === 'session.update') socket.send(JSON.stringify({ type: 'session.ready' }));
+      if (event.type === 'session.update' && readyOnUpdate) socket.send(JSON.stringify({ type: 'session.ready' }));
       if (event.type === 'session.end') {
         ended++; socket.send(JSON.stringify({ type: 'session.ended', session_duration_seconds: 0 }));
         markClosed(); void socket.close({ code: 1000 });

@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 import { fakeProvider } from './fake-provider';
 import { sessionConfig } from '../../game/agent/config';
 
-for (const reportAccepted of [true, false]) test(`compiled protected release stops a refused socket and ${reportAccepted ? 'records a safe report' : 'explains an unrecorded stop'}`, async ({ page }, info) => {
-  const provider = await fakeProvider(page);
+for (const beforeReady of [false, true]) for (const reportAccepted of [true, false]) test(`compiled protected release stops a refusal ${beforeReady ? 'before readiness' : 'after readiness'} and ${reportAccepted ? 'records a safe report' : 'explains an unrecorded stop'}`, async ({ page }, info) => {
+  const provider = await fakeProvider(page, { readyOnUpdate: !beforeReady });
   let tokens = 0;
   const reports: unknown[] = [];
   await page.route('**/api/sessions/*/voice-token', async route => {
@@ -23,9 +23,14 @@ for (const reportAccepted of [true, false]) test(`compiled protected release sto
   await page.getByRole('button', { name: 'Connect Live Voice', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Pause / End call', exact: true })).toBeVisible();
   await expect.poll(() => provider.connections).toBe(1);
+  await expect.poll(() => provider.sent.some(event => event.type === 'session.update')).toBe(true);
+  if (beforeReady) expect(provider.sent.some(event => event.type === 'input.audio')).toBe(false);
+  else await expect(page.getByLabel('Type a message')).toBeEnabled();
   provider.emit({ type: 'session.error', code: 'account_mismatch', message: 'private-provider-test-detail' });
   await expect.poll(() => reports.length).toBe(1);
   expect(reports[0]).toEqual({ roundId: expect.any(String), reason: 'provider_credential_or_account_refused' });
+  // Enabled resume means the rejected startup promise and its finally handler settled.
+  await expect(page.getByRole('button', { name: 'Resume Live Voice', exact: true })).toBeEnabled();
   await expect(page.getByRole('alert')).toContainText('Contact the owner');
   if (!reportAccepted) await expect(page.getByText('The Live stop could not be recorded. Do not reconnect; contact the owner.')).toBeVisible();
   await expect.poll(() => provider.activeSockets).toBe(0);
