@@ -84,6 +84,7 @@ export function useMission() {
   const [warning, setWarning] = useState('');
   const [recapNotice, setRecapNotice] = useState('');
   const [hint, setHint] = useState('');
+  const hintRequest = useRef(0);
   const [voiceVolume, setVoiceVolume] = useState(1);
   const [effectsVolume, setEffectsVolume] = useState(0);
   const [ambienceVolume, setAmbienceVolume] = useState(0);
@@ -664,10 +665,14 @@ export function useMission() {
   };
   const askHint = async (level: HintLevel) => {
     const current = viewRef.current; if (!current) return;
+    const sequence = ++hintRequest.current;
+    const acceptsHint = () => sequence === hintRequest.current && currentRound(current.roundId)
+      && viewRef.current?.chapterEpoch === current.chapterEpoch;
     try {
       const next = await api.requestHint(current, level);
-      if (currentRound(next.roundId) && viewRef.current?.chapterEpoch === current.chapterEpoch) { setHint(next.text); await refreshRecord(current); }
-    } catch (cause) { if (currentRound(current.roundId)) showError(cause); }
+      // A slower earlier tier must not replace the player's more recent selection.
+      if (acceptsHint() && next.roundId === current.roundId) { setHint(next.text); await refreshRecord(current); }
+    } catch (cause) { if (acceptsHint()) showError(cause); }
   };
   const annotate = async (change: api.AnnotationChange) => {
     const current = viewRef.current; if (!current) return;

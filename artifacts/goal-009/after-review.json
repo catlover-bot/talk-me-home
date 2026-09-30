@@ -1,0 +1,20 @@
+{
+  "status": "AFTER_VISUAL_REVIEW_PASS",
+  "source": "5c13b0d27c579c78504decb9825aa1ec86031326",
+  "candidateWithIdenticalRuntime": "aaad60655d4edc107bee436bc02d540e238b108a",
+  "directory": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z",
+  "reviewed": ["1280x720-initial-objective.png", "1440x900-compare-manual.png", "1280x720-contextual-help.png", "1280x720-declined-proposal.png", "1440x900-guidance-replayed.png", "1440x900-acknowledged-apply.png"],
+  "observations": [
+    "Optional role/request cues remain readable; the label adds a 24px capture spacer.",
+    "Quote and both manual rows remain available beside radio.",
+    "Decline narrates the exact unexecuted action without its opaque ID.",
+    "Replaying guidance retains the earlier attributed plate and routing-age warning.",
+    "Apply shows revision 1 and powered Amber; guidance claims only having tried Apply."
+  ],
+  "limits": [
+    "Some lower controls and long reports require ordinary scrolling.",
+    "The contextual-help native frame alone does not show all report text.",
+    "Scripted screenshots do not measure first-time human understanding or enjoyment."
+  ],
+  "externalTokenSocketViolations": 0
+}

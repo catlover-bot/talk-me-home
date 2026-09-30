@@ -1,3 +1,5 @@
+import { SwitchyardGuideProvider, isSwitchyardGuideReport } from './components/SwitchyardGuide';
+import { SwitchyardHelp } from './components/SwitchyardHelp';
 import { SwitchyardPanel } from './components/SwitchyardPanel';
 import { SwitchyardDocument } from './components/SwitchyardDocument';
 import { SwitchyardEnding } from './components/SwitchyardEnding';
@@ -22,7 +24,7 @@ export default function App() {
   const [presentation, setPresentation] = useState(false);
   const closingCaption = <div className="closing-caption"><span className="source-label">{m.activeCaption?.role === 'game' ? 'Game event' : <>{m.activeCaption ? originLabel[m.activeCaption.origin] : 'Mission'} · {m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</>}</span><p data-testid="caption" aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? 'Arrival confirmed.'}</p>{m.activeCaption?.interrupted && <span>Interrupted / incomplete speech</span>}</div>;
   const activeLive = m.segment?.origin !== 'practice' && (m.connected || m.busy) && m.stage !== 'briefing';
-  return <div data-reduced-motion={m.reducedMotion} className={'app-shell' + (presentation && m.stage === 'mission' ? ' presentation-mode' : '')}>
+  return <SwitchyardGuideProvider key={m.view?.roundId ?? 'briefing'} active={m.stage === 'mission' && m.view?.missionKind === 'switchyard'} roundId={m.view?.roundId ?? ''} captions={m.captions} practice={m.segment?.origin === 'practice'}><div data-reduced-motion={m.reducedMotion} className={'app-shell' + (presentation && m.stage === 'mission' ? ' presentation-mode' : '')}>
     <a className="skip-link" href="#main">Skip to mission controls</a>
     <header className="topbar">
       <span className="wordmark"><span className="brand-symbol" aria-hidden="true"><img src="/icon.svg" alt=""/></span>Talk Me Home</span>
@@ -52,7 +54,7 @@ export default function App() {
               {m.view && <HumanControls view={m.view} connected={m.connected} busy={m.busy} pending={m.controlPending} changePower={m.changePower} changeRelay={m.changeRelay} dockControl={m.dockControl}/>}
               </>}
               <details className="desk-extras"><summary>Field notebook <span>Private notes &amp; pinned reports</span></summary><Notebook key={m.view?.roundId} record={m.record} onNote={m.note}/></details>
-              <details className="hint-panel"><summary>Need a nudge?</summary><p>Hints are optional. They use this chapter's guide, with no AI calls.</p><div className="hint-actions">{([1, 2, 3] as const).map(level => <button key={level} onClick={() => { void m.askHint(level); }}>Hint {level}</button>)}</div>{m.hint && <div><span className="source-label">Mission guide · {chapterNames[m.view?.chapter ?? 'cargo']} · Private</span><p role="status" className="hint-copy">{m.hint}</p></div>}</details>
+              <>{m.view?.missionKind === 'switchyard' ? <SwitchyardHelp hint={m.hint} onHint={level => { void m.askHint(level); }} context={m.view.status !== 'active' ? 'The mission is paused. Reading help does not resume it.' : m.view.proposal?.status === 'awaiting_confirmation' ? 'Your exact proposal is still unexecuted. Help leaves that decision with you.' : m.captions.some(item => isSwitchyardGuideReport(item, m.captions, m.view!.roundId)) ? 'Keep Pip\'s report beside the manual. A connected circuit does not prove machinery ready.' : 'You have the documents. A local report can supply the missing equipment information.'}/> : <details className="hint-panel"><summary>Need a nudge?</summary><p>Hints are optional. They use this chapter's guide, with no AI calls.</p><div className="hint-actions">{([1, 2, 3] as const).map(level => <button key={level} onClick={() => { void m.askHint(level); }}>Hint {level}</button>)}</div>{m.hint && <div><span className="source-label">Mission guide · {chapterNames[m.view?.chapter ?? 'cargo']} · Private</span><p role="status" className="hint-copy">{m.hint}</p></div>}</details>}</>
             </div>
             <aside className="companion-console" id="radio-console" tabIndex={-1} aria-label="Pip radio console">
               <div className="console-heading"><span className="console-kicker">Your partner</span><span className="unit-label">UNIT 04</span></div>
@@ -70,5 +72,5 @@ export default function App() {
       <h2 id="restart-title">Restart this mission?</h2><p>This ends the call and clears this round's progress, captions, notes, and context. You will return to the briefing.</p>
       <div className="dialog-actions"><button onClick={() => restartDialog.current?.close()} autoFocus>Keep playing</button><button className="danger-button" onClick={() => { restartDialog.current?.close(); void m.newBriefing(m.view?.scenario ?? m.scenario); }}>Restart mission</button></div>
     </dialog>
-  </div>;
+  </div></SwitchyardGuideProvider>;
 }

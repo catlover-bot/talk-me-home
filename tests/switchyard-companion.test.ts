@@ -133,6 +133,28 @@ test('Practice hides finite transport identifiers while preserving every communi
   assert.equal(switchyardReaction(undefined, historical), undefined);
 });
 
+test('Practice decline wording replaces only its exact receipt prefix and preserves historical, raw and other-chapter text', () => {
+  const declined = { ...proposal({ kind: 'move', target: 'switchyard.to_transfer' }, 'declined'),
+    id: '460d92b0-21cf-47c4-b1bb-b315037c4cfc', label: 'Go to Transfer Table' };
+  const message = `Proposal ${declined.id} declined by Mission Control; ${declined.label} was not executed.`;
+  const result: ToolResult = { ok: false, code: 'not_executed', message, proposal: declined };
+  const original = structuredClone(result);
+  assert.equal(simulationToolSpeech(result, fresh()), 'You chose Not yet; Go to Transfer Table was not executed.');
+  assert.deepEqual(result, original, 'The structured server receipt is never changed.');
+  assert.equal(simulationToolSpeech(result), message);
+  assert.equal(simulationToolSpeech(result, { chapter: 'cargo', gates: [] }), message);
+  for (const prefix of ['Historical action receipt. ', 'Earlier local report, not a current reading: ']) {
+    assert.equal(simulationToolSpeech({ ...result, message: prefix + message }, fresh()), prefix + message);
+  }
+  for (const other of [
+    { ...result, code: undefined },
+    { ...result, proposal: undefined },
+    { ...result, proposal: { ...declined, status: 'failed' as const } },
+    { ...result, proposal: { ...declined, id: 'different-proposal' } },
+    { ...result, message: `The reference ${declined.id} remains in this unrelated report.` },
+  ]) assert.equal(simulationToolSpeech(other, fresh()), other.message);
+});
+
 test('authored reaction beats require eligible events, occur once, and preserve actual reported route', () => {
   assert.equal(Object.keys(SWITCHYARD_REACTIONS).length, 8);
   const initial = report(); const spoken = simulationToolSpeech(initial, fresh());

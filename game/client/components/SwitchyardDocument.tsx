@@ -1,3 +1,4 @@
+import { SwitchyardGuideControls, SwitchyardGuideCue } from './SwitchyardGuide';
 import { useId, useRef, useState } from 'react';
 import '../switchyard.css';
 import type { Caption } from '../useMission';
@@ -44,6 +45,7 @@ export function SwitchyardDocument({ captions, roundId, currentVisit, panelRevis
   const changePlan = (next: typeof plan) => { if (next !== plan) { setRevised(plan !== 'undecided'); setPlan(next); } };
   return <section className="mission-documents switchyard-document" aria-labelledby={`${id}-heading`}>
     <header className="document-heading"><div><p className="section-kicker">Mission Control / private reference</p><h2 id={`${id}-heading`}>Choose a way home.</h2></div><span className="document-stamp">SY / 08</span></header>
+    <SwitchyardGuideControls/>
     <fieldset className="switchyard-private-plan"><legend>My intended approach</legend>
       {([{ value: 'undecided', label: 'Undecided' }, { value: 'lift', label: 'Direct lift' }, { value: 'bypass', label: 'Maintenance bypass' }] as const).map(option => <label key={option.value}><input type="radio" name={`${id}-intention`} checked={plan === option.value} onChange={() => changePlan(option.value)}/>{option.label}</label>)}
       <p>Private plan / not sent to Pip. Neither route is selected for the game.</p>
@@ -58,6 +60,7 @@ export function SwitchyardDocument({ captions, roundId, currentVisit, panelRevis
           if (next) { event.preventDefault(); setActive(next.id); buttons.current[next.id]?.focus(); }
         }}>{tab.label}</button>)}
     </div>
+    <SwitchyardGuideCue where="document"/>
     <div className="document-body" id={`${id}-content`} role="tabpanel" aria-labelledby={`${id}-${active}`} tabIndex={0}>
       {active === 'plan' ? <>
         <div className="switchyard-route-choices"><article><h3>Direct lift</h3><p>Less travel; identify and calibrate the fitted equipment. Separate its test circuit from its running supply.</p><span>Ask Pip for the lift plate. Compare both manual rows.</span></article><article><h3>Maintenance bypass</h3><p>More travel; brace and deploy a bridge, then return to align the transfer table. Mechanical locks retain this work.</p><span>Ask Pip for the service module. No lift calibration needed.</span></article></div>

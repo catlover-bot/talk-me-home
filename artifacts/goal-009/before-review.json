@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "source": "4f1b8af8e85b1a42fbcdf6020ca6cbc8f0eb515b",
+  "version": "0.8.1",
+  "mode": "Local/scripted Practice",
+  "receipt": "artifacts/goal-009/before/before-2026-09-30T13-59-21-566Z/capture.json",
+  "status": "PRODUCTION_BASELINE_CAPTURE_PASS",
+  "viewports": ["1280x720", "1440x900"],
+  "nativeScreenshots": 18,
+  "observed": [
+    "The initial screen states the routing objective, shows both approach tradeoffs and private intended-route controls, and labels Practice as a local/scripted companion. Pip already invites Look around; that is initially the sole suggested request.",
+    "One normal Look around produces the local Control Bay/directory/routes report and explains that Mission Control's drawing supplies circuit rules Pip cannot see. An explicit directory inspection adds the route rationale.",
+    "Draft Connected/Isolated and Applied Powered/Off remain separate. A deliberate Amber draft leaves applied power unchanged until one Apply; the matched receipt then states Amber switched on. All nine known local choices remain available.",
+    "One Lift plates tab selection places the actual attributed plate quote beside both manual rows. The radio report and exact decision controls are retained without a modal.",
+    "Declining Go to Transfer Table leaves it unexecuted and keeps the local directory request available. The script issues a fresh exact movement proposal before confirming. No decline recovery defect was observed.",
+    "A deliberately overloaded public-geometry draft shows the exact three-load/two-load explanation, disables Apply, sends zero POSTs and preserves applied Amber power. Reset restores the applied layout. This is local draft rejection, not an exercised server-rejected Apply.",
+    "Existing Find our place in the conversation help offers explicit fresh-look and last-report requests and explains exact confirmation. Opening it sends zero POSTs and preserves the displayed report. General panel rules are already available in the human document; the radio help has no staged contextual circuit-rule assistance."
+  ],
+  "classification": {
+    "runtimeDefectsObserved": [],
+    "editorialDefectObserved": "The actual declined-proposal Practice caption exposes an opaque proposal UUID before its useful action/status sentence. The separate action strip already names the exact action and unexecuted status; the identifier adds no first-play guidance.",
+    "productHypothesis": "A brief skippable opening could connect the existing useful report, draft prediction, deliberate Apply and separate exact confirmation. Contextual assistance could reuse the existing help entry and public rules rather than duplicate the available controls.",
+    "notADefect": "Normal scrolling is still needed for the panel and lower radio controls; this does not imply missing controls or justify tiny text. The existing route rationale, initial Look invitation, quote comparison and overload explanation should be retained."
+  },
+  "recordedOperationsPerViewport": {
+    "startPractice": 1,
+    "selectedRequests": 6,
+    "declines": 1,
+    "exactConfirmations": 2,
+    "manualTab": 1,
+    "draftTurns": 3,
+    "apply": 1,
+    "deliberateOverloadTurns": 7,
+    "resetDraft": 1,
+    "openOrientationHelp": 1,
+    "pause": 1,
+    "totalRecorded": 25
+  },
+  "network": { "guardViolations": 0, "providerCalls": 0, "tokenRequests": 0, "externalRequests": 0, "webSockets": 0, "allowanceCreated": false },
+  "cleanup": "Owned browser contexts and browser closed. Root-owned loopback production server remained available.",
+  "limitations": "Scripted local inspection, not an inexperienced human playtest or full mission. Counts include deliberate decline and overload probes and exclude screenshot/scroller operations. No measured comprehension, enjoyment, three-minute learning target, provider speech, audible playback or deployment claim."
+}

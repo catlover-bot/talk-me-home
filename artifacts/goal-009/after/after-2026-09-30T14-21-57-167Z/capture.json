@@ -1,0 +1,2176 @@
+{
+  "source": "5c13b0d27c579c78504decb9825aa1ec86031326",
+  "version": "0.9.0",
+  "mode": "Local/scripted Practice",
+  "live": "All browser external, token and WebSocket requests blocked; supplied loopback server",
+  "raw": ".validation/goal-009/after-2026-09-30T14-21-57-167Z",
+  "images": [
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-initial-objective.png",
+      "sha256": "2d70190886e3d1e1501967ff535fdc8809e3d3dbc3b35c73f371023d49980f13"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-first-useful-report.png",
+      "sha256": "3f3d213eb4be90579715a6f1abce9dbb99ab3c14147b7c98532b1176b1644f83"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-route-rationale.png",
+      "sha256": "999b3e6fa5ca9bcb0c9699d8c389b0f157b214eb7a62e343a3cf0de9f282cd22"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-declined-proposal.png",
+      "sha256": "6498a937d40506bdaad1142bfb2508252f000da30dbf7eee72b8cc06595a3932"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-compare-manual.png",
+      "sha256": "437f476e2371b165b7ce151ed8bcb9f3fab5dd078989a89efeb241f6f752f78a"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-draft-before-apply.png",
+      "sha256": "22d1d162291a0a6a45844bc909617b3a3c18952cf9740870e0889d3942c0291b"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-acknowledged-apply.png",
+      "sha256": "f1a7bc8ce1976ad8cbcb0f51a1e2fc45a1f89dbe57074a0ac3e31347166e4011"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-guidance-skipped.png",
+      "sha256": "2059d543f9cf74aee8cbb2f2022f43486c506cf56ba8285062d0e7f77dc39679"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-guidance-replayed.png",
+      "sha256": "f3b1ae21f6a1a520d3c2af5067f860f0aee6351d515bf5a4a27054f3edf391ad"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-invalid-layout.png",
+      "sha256": "3270c4761b98ba2e6a31aa6390d5c27779ccbb0e6a08a48dcde281cc253f44d7"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-orientation-help.png",
+      "sha256": "56e2e99ab1ba0e2be64025c24b9bb18c39865aec5f12af79ddf60fff71ebd610"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1280x720-contextual-help.png",
+      "sha256": "27177748005b692cc5ff22a433c34c8febea5e454165ae408516e7a73207a2f4"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-initial-objective.png",
+      "sha256": "6f85b77be0407eb009fc606821dca72b124a96926245a3377c978f7209100f18"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-first-useful-report.png",
+      "sha256": "1d5d134b3d25e32f6875a07ec2efdf6cb707e2f20e94836b7fcc347efbbf84ed"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-route-rationale.png",
+      "sha256": "182371926aa272de82c6af4a7cd884d4305916ac27f6a7a9367b72b7c6045ca9"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-declined-proposal.png",
+      "sha256": "e0eae4def362e6ed3ae32473c23a5cc64031f7e58e83cb9dc7e355ccf9bff4eb"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-compare-manual.png",
+      "sha256": "fb074b5e2c64e7cbd5b62229fa6c7e7f931eeba96e5bea58aca8d59f348996ce"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-draft-before-apply.png",
+      "sha256": "cf24dab5a8d9ba8bb1c889f5fce8525d2d404cbb374b675dfa7cd9b03e071e08"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-acknowledged-apply.png",
+      "sha256": "f4abfb8a8e84147ff609f007eeb94d74bea5b1072fe2ac53112b3aeb92727dc2"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-guidance-skipped.png",
+      "sha256": "427df39037f3946cbf8f160bbda2eb34bcd7000d33aee17d3108de4438d3228f"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-guidance-replayed.png",
+      "sha256": "1b17cf153b15f0536be9c64c1d59799bbb0e6228222e4b4696f6c8d0abc150fd"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-invalid-layout.png",
+      "sha256": "5d045e2bd68bb506b0b1336c7f2f92b297a06c1873a9c4966ea7306b4abe4400"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-orientation-help.png",
+      "sha256": "e62d457f6c480cfa334dd842c287f26d0fc450c72fc526f0284fff8f0f0573be"
+    },
+    {
+      "path": "artifacts/goal-009/after/after-2026-09-30T14-21-57-167Z/1440x900-contextual-help.png",
+      "sha256": "e211f40e3f966b152401634349b2ab012314cd6a3ec6f81687191d241cfc493f"
+    }
+  ],
+  "runs": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "operations": [
+        {
+          "kind": "start_practice"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Look around"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Inspect Route directory"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "decline",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "exact_confirmation",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Lift Station"
+        },
+        {
+          "kind": "exact_confirmation",
+          "label": "Go to Lift Station"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Inspect Lift console"
+        },
+        {
+          "kind": "manual_tab",
+          "label": "Lift plates"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "apply"
+        },
+        {
+          "kind": "skip_guidance"
+        },
+        {
+          "kind": "replay_guidance"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p2"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p2"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p4"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p6"
+        },
+        {
+          "kind": "reset_draft"
+        },
+        {
+          "kind": "open_orientation_help"
+        },
+        {
+          "kind": "open_contextual_help"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "Nudge"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "Explain the rule"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "How to investigate"
+        },
+        {
+          "kind": "pause"
+        }
+      ],
+      "measurements": [
+        {
+          "scene": "initial-objective",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 721.4375,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 170.234375,
+              "width": 737.90625,
+              "height": 539.203125,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 386.828125,
+              "width": 401.09375,
+              "height": 48,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 25,
+              "y": 336.359375,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 883.359375,
+              "y": 504.828125,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "I'm ready, Mission Control. Ask me to look around while you study the routing panel.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "first-useful-report",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 775.125,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 170.234375,
+              "width": 737.90625,
+              "height": 592.890625,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 386.828125,
+              "width": 401.09375,
+              "height": 120,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 25,
+              "y": 336.359375,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 883.359375,
+              "y": 576.828125,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "route-rationale",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 775.125,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 170.234375,
+              "width": 737.90625,
+              "height": 592.890625,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 386.828125,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 25,
+              "y": 336.359375,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 883.359375,
+              "y": 591.828125,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply: fewer walks, more electrical deduction. The maintenance bypass needs a bridge brace and winch on the service side, then an alignment at Transfer Table: more walking, no lift calibration. Both have safe ways back before departure. Mission Control has the installation table; I can read the fitted plates locally. I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show?",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "declined-proposal",
+          "scrollY": 33,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 742.125,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 137.234375,
+              "width": 737.90625,
+              "height": 592.890625,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 353.828125,
+              "width": 401.09375,
+              "height": 48,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 25,
+              "y": 303.359375,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 469.828125,
+              "width": 427.09375,
+              "height": 58.046875,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 536.875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "You chose Not yet; Go to Transfer Table was not executed.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "compare-manual",
+          "scrollY": 422,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 417.859375,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": -251.765625,
+              "width": 737.90625,
+              "height": 657.625,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 228.59375,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": {
+              "x": 56,
+              "y": 141.484375,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 56,
+              "y": 189.984375,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": 108.984375,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -85.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 431.59375,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 475.59375,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Reported on this visit. A plate identifies equipment; it does not prove power or readiness."
+        },
+        {
+          "scene": "draft-before-apply",
+          "scrollY": 422,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 417.859375,
+              "width": 737.90625,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": -251.765625,
+              "width": 737.90625,
+              "height": 657.625,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 228.59375,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": {
+              "x": 56,
+              "y": 141.484375,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 56,
+              "y": 189.984375,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": 108.984375,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -85.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 431.59375,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 475.59375,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Reported on this visit. A plate identifies equipment; it does not prove power or readiness."
+        },
+        {
+          "scene": "acknowledged-apply",
+          "scrollY": 787,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": -0.828125,
+              "width": 737.90625,
+              "height": 584.234375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": -616.765625,
+              "width": 737.90625,
+              "height": 603.9375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 226,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 361,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 56,
+              "y": -277.203125,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 56,
+              "y": -228.703125,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": -309.703125,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -450.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 467.59375,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 511.59375,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "guidance-skipped",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 747.328125,
+              "width": 737.90625,
+              "height": 534.546875,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 170.234375,
+              "width": 737.90625,
+              "height": 565.09375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 386.828125,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 521.828125,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 56,
+              "y": 470.953125,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 56,
+              "y": 519.453125,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": 438.453125,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": 297.515625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 628.421875,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 672.421875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "guidance-replayed",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 786.171875,
+              "width": 737.90625,
+              "height": 584.234375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": 170.234375,
+              "width": 737.90625,
+              "height": 603.9375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 386.828125,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 521.828125,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 56,
+              "y": 509.796875,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 56,
+              "y": 558.296875,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": 477.296875,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": 336.359375,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 628.421875,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 672.421875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "invalid-layout",
+          "scrollY": 684,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 102.171875,
+              "width": 737.90625,
+              "height": 600.171875,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 24,
+              "y": -513.765625,
+              "width": 737.90625,
+              "height": 603.9375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": 228.59375,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 363.59375,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 56,
+              "y": -174.203125,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 56,
+              "y": -125.703125,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": -206.703125,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -347.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 470.1875,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 514.1875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "orientation-help",
+          "scrollY": 684,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": 102.171875,
+              "width": 737.90625,
+              "height": 584.234375,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 24,
+              "y": -513.765625,
+              "width": 737.90625,
+              "height": 603.9375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": -112.40625,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": false
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 22.59375,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": false
+            },
+            "quote": {
+              "x": 56,
+              "y": -174.203125,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 56,
+              "y": -125.703125,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": -206.703125,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -347.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 129.1875,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 173.1875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "contextual-help",
+          "scrollY": 995,
+          "boxes": {
+            "panel": {
+              "x": 24,
+              "y": -208.828125,
+              "width": 737.90625,
+              "height": 584.234375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 24,
+              "y": -824.765625,
+              "width": 737.90625,
+              "height": 603.9375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 809.90625,
+              "y": -112.40625,
+              "width": 401.09375,
+              "height": 135,
+              "fullyVisible": false
+            },
+            "captionAge": {
+              "x": 809.90625,
+              "y": 22.59375,
+              "width": 401.09375,
+              "height": 38.59375,
+              "fullyVisible": false
+            },
+            "quote": {
+              "x": 56,
+              "y": -485.203125,
+              "width": 222.890625,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 56,
+              "y": -436.703125,
+              "width": 222.890625,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 303.890625,
+              "y": -517.703125,
+              "width": 441.015625,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 25,
+              "y": -658.640625,
+              "width": 735.90625,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 796.90625,
+              "y": 129.1875,
+              "width": 427.09375,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 883.359375,
+              "y": 173.1875,
+              "width": 117.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Kite. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Kite row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Kite.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        }
+      ],
+      "choices": {
+        "beforeApply": [
+          "Look around",
+          "Inspect Lift console",
+          "Set index one",
+          "Set index two",
+          "Test the lift",
+          "Return to Transfer Table",
+          "Ride the direct lift",
+          "Discuss the direct lift",
+          "Discuss the maintenance bypass"
+        ],
+        "afterApply": [
+          "Look around",
+          "Inspect Lift console",
+          "Set index one",
+          "Set index two",
+          "Test the lift",
+          "Return to Transfer Table",
+          "Ride the direct lift",
+          "Discuss the direct lift",
+          "Discuss the maintenance bypass"
+        ],
+        "extraLookRequestsAfterApply": 0
+      },
+      "privatePlanChecks": [],
+      "initialChoices": [
+        "Look around"
+      ],
+      "decline": {
+        "status": "declined",
+        "localDirectoryChoiceRetained": true
+      },
+      "applyStatus": "Applied routing acknowledged · revision 1.",
+      "applyDelta": "Last Apply · revision 1\nAmber switched on.",
+      "readingChecks": [
+        {
+          "label": "skip-guidance",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "replay-guidance",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "open-contextual-help",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "Nudge",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "Explain the rule",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "How to investigate",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        }
+      ],
+      "invalidDraft": {
+        "explanation": "Draft load 3 / 2\nOver capacity: Amber + Blue + White use 3 loads; the supply supports 2. Disconnect at least one terminal. Applied routing is unchanged.",
+        "applyDisabled": true,
+        "posts": 0,
+        "kind": "locally blocked over-capacity draft, not a server-rejected request"
+      },
+      "orientationHelp": {
+        "postsOnOpen": 0,
+        "text": "Find our place in the conversation\n\nAsk for a fresh local look, or hear the last report again. These buttons send labelled text requests; they do not move Pip.\n\nRequest a fresh look\nRequest the last report\n\nShare one clue from your document. Choose a plan together, then read and confirm one exact action. Not yet leaves it unexecuted.",
+        "originalCaptionRetained": true
+      },
+      "status": "AFTER_CAPTURE_PASS"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "operations": [
+        {
+          "kind": "start_practice"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Look around"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Inspect Route directory"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "decline",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "exact_confirmation",
+          "label": "Go to Transfer Table"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Go to Lift Station"
+        },
+        {
+          "kind": "exact_confirmation",
+          "label": "Go to Lift Station"
+        },
+        {
+          "kind": "selected_request",
+          "label": "Inspect Lift console"
+        },
+        {
+          "kind": "manual_tab",
+          "label": "Lift plates"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "apply"
+        },
+        {
+          "kind": "skip_guidance"
+        },
+        {
+          "kind": "replay_guidance"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p2"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p2"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p3"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p4"
+        },
+        {
+          "kind": "overload_turn",
+          "piece": "p6"
+        },
+        {
+          "kind": "reset_draft"
+        },
+        {
+          "kind": "open_orientation_help"
+        },
+        {
+          "kind": "open_contextual_help"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "Nudge"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "Explain the rule"
+        },
+        {
+          "kind": "read_help_tier",
+          "label": "How to investigate"
+        },
+        {
+          "kind": "pause"
+        }
+      ],
+      "measurements": [
+        {
+          "scene": "initial-objective",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 749.5,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 541.203125,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 51,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 989.328125,
+              "y": 549.890625,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "I'm ready, Mission Control. Ask me to look around while you study the routing panel.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "first-useful-report",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 784.34375,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 576.046875,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 127.5,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 989.328125,
+              "y": 626.390625,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show? I can report the equipment within reach. Your drawing supplies the circuit rules I cannot see.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "route-rationale",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 784.34375,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 576.046875,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": null,
+            "pause": {
+              "x": 989.328125,
+              "y": 633.890625,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply: fewer walks, more electrical deduction. The maintenance bypass needs a bridge brace and winch on the service side, then an alignment at Transfer Table: more walking, no lift calibration. Both have safe ways back before departure. Mission Control has the installation table; I can read the fitted plates locally. I am at Control Bay. Within reach: Route directory. Local routes: Go to Transfer Table. I can read the route directory; what does your installation drawing show?",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "declined-proposal",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 784.34375,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 576.046875,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 48,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": null,
+            "reportAge": null,
+            "manualTable": null,
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 544.890625,
+              "width": 479.125,
+              "height": 58.046875,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 614.9375,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "You chose Not yet; Go to Transfer Table was not executed.",
+          "quote": null,
+          "reportAge": null
+        },
+        {
+          "scene": "compare-manual",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 829.890625,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 621.59375,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": {
+              "x": 60,
+              "y": 572.703125,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 60,
+              "y": 621.203125,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": 540.203125,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 631.890625,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 678.890625,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Reported on this visit. A plate identifies equipment; it does not prove power or readiness."
+        },
+        {
+          "scene": "draft-before-apply",
+          "scrollY": 637,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 192.890625,
+              "width": 827.875,
+              "height": 542.4375,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 28,
+              "y": -440.703125,
+              "width": 827.875,
+              "height": 621.59375,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 912.875,
+              "y": 203.921875,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": null,
+            "quote": {
+              "x": 60,
+              "y": -64.296875,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 60,
+              "y": -15.796875,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": -96.796875,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": -272.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 416.921875,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 463.921875,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Reported on this visit. A plate identifies equipment; it does not prove power or readiness."
+        },
+        {
+          "scene": "acknowledged-apply",
+          "scrollY": 602,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 193.046875,
+              "width": 827.875,
+              "height": 584.234375,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 28,
+              "y": -405.703125,
+              "width": 827.875,
+              "height": 586.75,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 912.875,
+              "y": 234.59375,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 369.59375,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": -64.140625,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 60,
+              "y": -15.640625,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": -96.640625,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": -237.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 486.1875,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 533.1875,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "guidance-skipped",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 756.203125,
+              "width": 827.875,
+              "height": 534.546875,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 547.90625,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 553.890625,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": 499.015625,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 60,
+              "y": 547.515625,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": 466.515625,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": 325.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 670.484375,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 717.484375,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "guidance-replayed",
+          "scrollY": 0,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 795.046875,
+              "width": 827.875,
+              "height": 584.234375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": 196.296875,
+              "width": 827.875,
+              "height": 586.75,
+              "fullyVisible": true
+            },
+            "report": {
+              "x": 912.875,
+              "y": 418.890625,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 553.890625,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": 537.859375,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": true
+            },
+            "reportAge": {
+              "x": 60,
+              "y": 586.359375,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": true
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": 505.359375,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": true
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": 364.421875,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": true
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 670.484375,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 717.484375,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "invalid-layout",
+          "scrollY": 603,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 192.046875,
+              "width": 827.875,
+              "height": 600.171875,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 28,
+              "y": -406.703125,
+              "width": 827.875,
+              "height": 586.75,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 912.875,
+              "y": 234.59375,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 369.59375,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": -65.140625,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 60,
+              "y": -16.640625,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": -97.640625,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": -238.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 486.1875,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 533.1875,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "orientation-help",
+          "scrollY": 603,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": 192.046875,
+              "width": 827.875,
+              "height": 584.234375,
+              "fullyVisible": true
+            },
+            "manual": {
+              "x": 28,
+              "y": -406.703125,
+              "width": 827.875,
+              "height": 586.75,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 912.875,
+              "y": 77.59375,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 212.59375,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": -65.140625,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 60,
+              "y": -16.640625,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": -97.640625,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": -238.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 329.1875,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 376.1875,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        },
+        {
+          "scene": "contextual-help",
+          "scrollY": 824,
+          "boxes": {
+            "panel": {
+              "x": 28,
+              "y": -28.953125,
+              "width": 827.875,
+              "height": 584.234375,
+              "fullyVisible": false
+            },
+            "manual": {
+              "x": 28,
+              "y": -627.703125,
+              "width": 827.875,
+              "height": 586.75,
+              "fullyVisible": false
+            },
+            "report": {
+              "x": 912.875,
+              "y": 77.59375,
+              "width": 449.125,
+              "height": 135,
+              "fullyVisible": true
+            },
+            "captionAge": {
+              "x": 912.875,
+              "y": 212.59375,
+              "width": 449.125,
+              "height": 38.59375,
+              "fullyVisible": true
+            },
+            "quote": {
+              "x": 60,
+              "y": -286.140625,
+              "width": 255.4375,
+              "height": 21,
+              "fullyVisible": false
+            },
+            "reportAge": {
+              "x": 60,
+              "y": -237.640625,
+              "width": 255.4375,
+              "height": 54,
+              "fullyVisible": false
+            },
+            "manualTable": {
+              "x": 340.4375,
+              "y": -318.640625,
+              "width": 498.4375,
+              "height": 127.390625,
+              "fullyVisible": false
+            },
+            "privatePlan": {
+              "x": 29,
+              "y": -459.578125,
+              "width": 825.875,
+              "height": 85.9375,
+              "fullyVisible": false
+            },
+            "confirmation": {
+              "x": 897.875,
+              "y": 329.1875,
+              "width": 479.125,
+              "height": 35,
+              "fullyVisible": true
+            },
+            "pause": {
+              "x": 989.328125,
+              "y": 376.1875,
+              "width": 121.046875,
+              "height": 44,
+              "fullyVisible": true
+            }
+          },
+          "caption": "The Lift console plate reads Crescent. Index is unset; its last self-test is not passed. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your Crescent row specify? I am at Lift Station. Within reach: Lift console. Local routes: Return to Transfer Table; Ride the direct lift. Inspected controls: Set index one; Set index two; Test the lift. An electrical connection alone does not prove equipment ready or a passage clear. Inspect the local equipment before choosing an action.",
+          "quote": "The Lift console plate reads Crescent.",
+          "reportAge": "Routing changed since this report. The plate label is retained; see Pip's latest report for readiness."
+        }
+      ],
+      "choices": {
+        "beforeApply": [
+          "Look around",
+          "Inspect Lift console",
+          "Set index one",
+          "Set index two",
+          "Test the lift",
+          "Return to Transfer Table",
+          "Ride the direct lift",
+          "Discuss the direct lift",
+          "Discuss the maintenance bypass"
+        ],
+        "afterApply": [
+          "Look around",
+          "Inspect Lift console",
+          "Set index one",
+          "Set index two",
+          "Test the lift",
+          "Return to Transfer Table",
+          "Ride the direct lift",
+          "Discuss the direct lift",
+          "Discuss the maintenance bypass"
+        ],
+        "extraLookRequestsAfterApply": 0
+      },
+      "privatePlanChecks": [],
+      "initialChoices": [
+        "Look around"
+      ],
+      "decline": {
+        "status": "declined",
+        "localDirectoryChoiceRetained": true
+      },
+      "applyStatus": "Applied routing acknowledged · revision 1.",
+      "applyDelta": "Last Apply · revision 1\nAmber switched on.",
+      "readingChecks": [
+        {
+          "label": "skip-guidance",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "replay-guidance",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "open-contextual-help",
+          "observedPosts": [],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "Nudge",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "Explain the rule",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        },
+        {
+          "label": "How to investigate",
+          "observedPosts": [
+            "hint"
+          ],
+          "visibleStationAndReportUnchanged": true
+        }
+      ],
+      "invalidDraft": {
+        "explanation": "Draft load 3 / 2\nOver capacity: Amber + Blue + White use 3 loads; the supply supports 2. Disconnect at least one terminal. Applied routing is unchanged.",
+        "applyDisabled": true,
+        "posts": 0,
+        "kind": "locally blocked over-capacity draft, not a server-rejected request"
+      },
+      "orientationHelp": {
+        "postsOnOpen": 0,
+        "text": "Find our place in the conversation\n\nAsk for a fresh local look, or hear the last report again. These buttons send labelled text requests; they do not move Pip.\n\nRequest a fresh look\nRequest the last report\n\nShare one clue from your document. Choose a plan together, then read and confirm one exact action. Not yet leaves it unexecuted.",
+        "originalCaptionRetained": true
+      },
+      "status": "AFTER_CAPTURE_PASS"
+    }
+  ],
+  "violations": [],
+  "status": "AFTER_CAPTURE_PASS",
+  "cleanup": "Owned browser contexts and browser closed; supplied server belongs to caller and was left available."
+}

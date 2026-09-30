@@ -75,3 +75,19 @@
 }
 @media (prefers-reduced-motion: reduce) { .departure-lift-car, .departure-crossing-marker { animation: none; } }
 [data-reduced-motion=true] .departure-lift-car, [data-reduced-motion=true] .departure-crossing-marker { animation: none; }
+
+/* Optional opening notes belong beside the real controls, never over them. */
+.switchyard-opening { margin: 0; padding: 7px 16px 9px; border-block: 1px solid #b6bfa7; color: #3d5138; }
+.switchyard-opening > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.switchyard-opening strong, .switchyard-guide-stage { font-size: 12px; }
+.switchyard-opening p { font-size: 13px; line-height: 1.45; margin: 2px 0 4px; }
+.switchyard-opening .text-button { min-height: 36px; color: #3b583e; white-space: nowrap; }
+.switchyard-guide-stage { display: block; font-weight: 600; }
+.switchyard-guide-cue { font-size: 13px; line-height: 1.45; padding-left: 10px; border-left: 3px solid #987444; color: #43563c; }
+.switchyard-guide-document { margin: 8px 16px; }
+.switchyard-panel .switchyard-guide-panel { margin: 0 0 12px; }
+.companion-console .switchyard-guide-cue { color: #e9dfc7; border-color: #c2ad78; margin-block: 8px; }
+.switchyard-help .hint-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.switchyard-help .hint-actions button { min-height: 40px; }
+.switchyard-replay-invitation { font-size: 14px; line-height: 1.5; }
+@media (max-width: 600px) { .switchyard-opening .text-button, .switchyard-help .hint-actions button { min-height: 44px; } }

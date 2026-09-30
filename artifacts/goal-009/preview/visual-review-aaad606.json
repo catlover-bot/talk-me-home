@@ -1,0 +1,23 @@
+{
+  "status": "BOUNDED_ENCODED_FRAME_REVIEW_PASS",
+  "source": "aaad60655d4edc107bee436bc02d540e238b108a",
+  "manifest": "artifacts/goal-009/preview/capture-aaad60655d4e-2026-09-30T14-25-21-202Z.json",
+  "frameDirectory": ".validation/goal-009/preview-aaad60655d4e-2026-09-30T14-25-21-202Z/encoded-frames",
+  "review": "Ten actual encoded-video stills; five independently reviewed, plus overlapping review of three. Not continuous human playback.",
+  "frames": ["06-opening.png", "09-first-report.png", "17-investigation-help.png", "21-replayed-guidance.png", "38-human-manual.png", "47-draft-prediction.png", "53-applied-delta.png", "59-local-outcome.png", "73-departure-pending.png", "82-confirmed-home.png"],
+  "observations": [
+    "Opening, selected-request source and optional guidance are clear.",
+    "Help remains human-only and report/Pause remain accessible.",
+    "A real turn leaves applied power off; later Apply receipt powers Blue.",
+    "Confirmed lift-test report and final lift rescue agree with ordinary exact decisions.",
+    "Departure frame still states not executed and exposes Confirm/Not yet/Pause.",
+    "Ending names the actual lift route, invites the bypass, and explicitly says real Voice is unverified."
+  ],
+  "limitations": [
+    "Long reports are scrollable; not every word appears in each selected frame.",
+    "The final shot scrolls to replay; upper decorative departure art is partly above the viewport.",
+    "No audio stream, microphone speech, human enjoyment or latency measurement."
+  ],
+  "decode": "Full ffmpeg decode passed",
+  "cleanup": "Capture browser closed; root terminated the owned 5526 loopback server after capture."
+}
