@@ -1,5 +1,8 @@
 import { useId, useRef, useState } from 'react';
 import '../switchyard.css';
+import type { Caption } from '../useMission';
+import { originLabel } from '../useMission';
+import { latestSwitchyardPlate, switchyardReportAge } from '../switchyard-report';
 
 const tabs = [{ id: 'plan', label: 'Site plan' }, { id: 'lift', label: 'Lift plates' }, { id: 'service', label: 'Service modules' }] as const;
 type Tab = typeof tabs[number]['id'];
@@ -28,12 +31,24 @@ function SitePlan() {
   </div>;
 }
 
-/** All candidate plate mappings belong to the operator; fitted identity comes from Pip. */
-export function SwitchyardDocument() {
+/** All candidate plate mappings stay visible; only actually communicated words are quoted. */
+export function SwitchyardDocument({ captions, roundId, currentVisit, panelRevision, stateRevision }: {
+  captions: readonly Caption[]; roundId: string;
+  currentVisit: { visitId: string; locationLabel: string } | null; panelRevision: number; stateRevision: number;
+}) {
   const id = useId(); const [active, setActive] = useState<Tab>('plan');
+  const [plan, setPlan] = useState<'undecided' | 'lift' | 'bypass'>('undecided');
+  const [revised, setRevised] = useState(false);
   const buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+  const report = active !== 'plan' ? latestSwitchyardPlate(captions, roundId, active) : undefined;
+  const changePlan = (next: typeof plan) => { if (next !== plan) { setRevised(plan !== 'undecided'); setPlan(next); } };
   return <section className="mission-documents switchyard-document" aria-labelledby={`${id}-heading`}>
-    <header className="document-heading"><div><p className="section-kicker">Mission Control documents · private reference</p><h2 id={`${id}-heading`}>Two ways to the same home.</h2></div><span className="document-stamp">SY / 08</span></header>
+    <header className="document-heading"><div><p className="section-kicker">Mission Control / private reference</p><h2 id={`${id}-heading`}>Choose a way home.</h2></div><span className="document-stamp">SY / 08</span></header>
+    <fieldset className="switchyard-private-plan"><legend>My intended approach</legend>
+      {([{ value: 'undecided', label: 'Undecided' }, { value: 'lift', label: 'Direct lift' }, { value: 'bypass', label: 'Maintenance bypass' }] as const).map(option => <label key={option.value}><input type="radio" name={`${id}-intention`} checked={plan === option.value} onChange={() => changePlan(option.value)}/>{option.label}</label>)}
+      <p>Private plan / not sent to Pip. Neither route is selected for the game.</p>
+    </fieldset>
+    {revised && <p className="switchyard-plan-revision" role="status">Plan revised. Applied routing and confirmed actions are unchanged. Your draft is kept for review; each pending proposal still needs its own decision.</p>}
     <div className="document-tabs" role="tablist" aria-label="Switchyard documents">
       {tabs.map((tab, index) => <button type="button" key={tab.id} id={`${id}-${tab.id}`} role="tab" aria-selected={active === tab.id}
         aria-controls={`${id}-content`} tabIndex={active === tab.id ? 0 : -1} ref={element => { buttons.current[tab.id] = element; }}
@@ -45,26 +60,35 @@ export function SwitchyardDocument() {
     </div>
     <div className="document-body" id={`${id}-content`} role="tabpanel" aria-labelledby={`${id}-${active}`} tabIndex={0}>
       {active === 'plan' ? <>
-        <p>You have the installation plan. Pip can read the fitted plates and check the machinery nearby. Compare both before choosing an approach.</p>
-        <SitePlan/>
-        <div className="switchyard-route-choices"><article><h3>Restore the direct lift</h3><p>Fewer traversals. Identify the fitted plate, set its index, test on its single supply, then provide its running pair.</p></article><article><h3>Open the maintenance bypass</h3><p>More travelling; a different mechanism. Prepare the service bridge, return to align the transfer table, then revisit the bridge with its crossing supply.</p></article></div>
-        <p className="switchyard-manual-note">You can change plans before departure. Ordinary corridors remain accessible with power off. A return walkway leads back to the approach you arrived from; an experiment does not strand Pip.</p>
-      </> : active === 'lift' ? <>
-        <p>Ask Pip to inspect the lift plate. This reference shows both installations; it does not identify the one fitted. Tell Pip the matching index and agree when to test.</p>
-        <div className="switchyard-map-scroll" tabIndex={0} aria-label="Lift plate reference table"><table className="switchyard-manual-table">
-          <thead><tr><th scope="col">Reported plate</th><th scope="col">Index</th><th scope="col">Self-test supply</th><th scope="col">Running supply</th></tr></thead>
-          <tbody><tr><th scope="row">Crescent</th><td>1</td><td>Blue only</td><td>Amber + Blue</td></tr><tr><th scope="row">Kite</th><td>2</td><td>White only</td><td>Amber + White</td></tr></tbody>
-        </table></div>
-        <p className="switchyard-manual-note">Index → single-supply self-test → running pair. A connected terminal is not a successful test or a clear route. Pip must inspect and act locally; confirm each physical proposal separately.</p>
+        <div className="switchyard-route-choices"><article><h3>Direct lift</h3><p>Less travel; identify and calibrate the fitted equipment. Separate its test circuit from its running supply.</p><span>Ask Pip for the lift plate. Compare both manual rows.</span></article><article><h3>Maintenance bypass</h3><p>More travel; brace and deploy a bridge, then return to align the transfer table. Mechanical locks retain this work.</p><span>Ask Pip for the service module. No lift calibration needed.</span></article></div>
+        <p className="switchyard-uncertainty">The fitted equipment and current conditions are unknown until Pip reports them. Both approaches lead home; you can change plans before departure.</p>
+        <details className="switchyard-reference-details"><summary>Installation drawing and safe return paths</summary><SitePlan/><p>Ordinary corridors remain accessible with power off. A return walkway leads back to the approach Pip arrived from.</p></details>
       </> : <>
-        <p>Ask Pip to inspect the service module. The winch and transfer table share an installation code. Both codes are listed below; the document does not select one.</p>
-        <div className="switchyard-map-scroll" tabIndex={0} aria-label="Service module reference table"><table className="switchyard-manual-table">
-          <thead><tr><th scope="col">Reported module</th><th scope="col">Bridge winch</th><th scope="col">Table alignment</th><th scope="col">Crossing supply</th></tr></thead>
-          <tbody><tr><th scope="row">Rivet</th><td>White only</td><td>Amber only</td><td>Amber + White</td></tr><tr><th scope="row">Slot</th><td>Blue only</td><td>White only</td><td>Blue + White</td></tr></tbody>
-        </table></div>
-        <p className="switchyard-manual-note">Prepare the bridge at Service Gallery, align the table back at Transfer Table, then return to cross. This approach does not require the lift calibration. Ask Pip which local step is ready.</p>
+        <div className="switchyard-reference-comparison">
+          <aside className="switchyard-quoted-plate" aria-label="Reported plate for comparison" data-testid="switchyard-report-reference"
+            data-visit-status={!report?.caption.switchyardContext ? 'unknown' : report.caption.switchyardContext.visitId === currentVisit?.visitId ? 'current' : 'earlier'}
+            data-reading-status={report && report.caption.switchyardContext?.visitId === currentVisit?.visitId && currentVisit && report.caption.switchyardContext?.panelRevision === panelRevision && report.caption.switchyardContext?.stateRevision === stateRevision ? 'current' : 'historical'}>
+            {report ? <>
+              <div className="switchyard-quote-source"><strong>Pip</strong><span>{originLabel[report.caption.origin]} / quoted report</span><time dateTime={new Date(report.caption.timestamp).toISOString()}>{new Date(report.caption.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}</time></div>
+              <blockquote data-testid="switchyard-reference-quote" data-message-id={report.caption.id}>{report.quote}</blockquote>
+              <p className="switchyard-quote-visit">{report.caption.switchyardContext?.locationLabel ?? 'Location not recorded'} / {report.caption.switchyardContext?.visitId === currentVisit?.visitId && currentVisit ? 'this visit' : 'earlier or unrecorded visit'}</p>
+              <p data-testid="switchyard-report-age">{switchyardReportAge(report.caption, currentVisit, panelRevision, stateRevision)}</p>
+              <details><summary>Full source report</summary><p>{report.caption.text}</p></details>
+            </> : <><strong>No plate report yet</strong><p>Ask Pip to inspect the {active === 'lift' ? 'Lift console' : 'Bridge winch or Transfer turntable'} within reach. The manual does not identify the fitted installation.</p></>}
+          </aside>
+          {active === 'lift' ? <div className="switchyard-map-scroll" tabIndex={0} aria-label="Lift plate reference table"><table className="switchyard-manual-table">
+            <caption>Both lift installations / compare Pip's quoted plate</caption>
+            <thead><tr><th scope="col">Reported plate</th><th scope="col">Index</th><th scope="col">Self-test supply</th><th scope="col">Running supply</th></tr></thead>
+            <tbody><tr><th scope="row">Crescent</th><td>1</td><td>Blue only</td><td>Amber + Blue</td></tr><tr><th scope="row">Kite</th><td>2</td><td>White only</td><td>Amber + White</td></tr></tbody>
+          </table></div> : <div className="switchyard-map-scroll" tabIndex={0} aria-label="Service module reference table"><table className="switchyard-manual-table">
+            <caption>Both service modules / compare Pip's quoted plate</caption>
+            <thead><tr><th scope="col">Reported module</th><th scope="col">Bridge winch</th><th scope="col">Table alignment</th><th scope="col">Crossing supply</th></tr></thead>
+            <tbody><tr><th scope="row">Rivet</th><td>White only</td><td>Amber only</td><td>Amber + White</td></tr><tr><th scope="row">Slot</th><td>Blue only</td><td>White only</td><td>Blue + White</td></tr></tbody>
+          </table></div>}
+        </div>
+        <p className="switchyard-manual-note">{active === 'lift' ? 'Index with power off, then single-supply self-test, then running pair. Ask Pip about the local result before choosing the next operation.' : 'Brace and deploy at Service Gallery, align back at Transfer Table, then return to cross. Power changes retain secured mechanical work.'}</p>
       </>}
-      <ul className="switchyard-constraints"><li>Supply capacity: two terminals, one load each. Use exactly the terminals listed for a test or operation.</li><li>Contacts conduct only when neighbouring ports face each other. Unused sockets are insulated.</li><li>Apply changes the whole panel together and cancels a physical proposal made for the old routing. Draft edits change nothing on the station.</li></ul>
+      <details className="switchyard-reference-details"><summary>Panel limits and action boundaries</summary><ul className="switchyard-constraints"><li>Supply capacity: two terminals, one load each. Use exactly the terminals listed for a test or operation.</li><li>Only facing contacts conduct. Unused sockets are insulated.</li><li>Apply changes all six pieces together and cancels proposals for the old routing. Draft edits and private plans do not change the station.</li><li>A connected terminal is not proof of ready machinery or a clear passage. Confirm each physical proposal separately.</li></ul></details>
     </div>
   </section>;
 }

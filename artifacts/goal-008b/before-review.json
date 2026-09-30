@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "source": "3772bcb77331a6b4684d9e8fb651df8da269229a",
+  "version": "0.8.0",
+  "mode": "Local/scripted Practice",
+  "receipt": "artifacts/goal-008b/before/baseline-2026-09-30T13-04-46-647Z/capture.json",
+  "status": "BASELINE_CAPTURE_AND_VISUAL_REVIEW_COMPLETE",
+  "scope": "Two fresh normal-random-configuration sessions; first approach, draft/Apply, and lift investigation followed by bypass discussion. This is a bounded UI audit, not a completed mission or human usability study.",
+  "viewports": ["1280x720", "1440x900"],
+  "images": 28,
+  "countsPerViewport": {
+    "selectedRequests": 6,
+    "planDiscussions": 2,
+    "exactConfirmations": 2,
+    "manualTabSelections": 1,
+    "pieceTurns": 5,
+    "undo": 1,
+    "resetDraft": 1,
+    "applyRouting": 1,
+    "startPractice": 1,
+    "pause": 1,
+    "totalRecordedControlActivations": 21
+  },
+  "countInterpretation": "Actual scripted control activations, not a minimum solution or a human speed measure. Two turns deliberately exercised Undo and Reset; three turns created the Amber-only public circuit. Scroll positions are in the capture receipt, not counted as human gestures.",
+  "observations": [
+    {
+      "subject": "Approach comparison",
+      "finding": "At first-approach scrollY=0, the routing panel and report are visible at both sizes. The manual starts at y=703 (720-high viewport) or y=762 (900-high viewport), so route comparison content is below the fold. Discussion controls are visible at 1440 but below the initial fold at 1280. The directory already communicates both approach tradeoffs; its caption has a visible overflow cue."
+    },
+    {
+      "subject": "Compare a reported plate with the human manual",
+      "finding": "One Lift plates tab activation switches the manual. At 1280, prior normal button scrolling exposes both manual rows next to the plate report but clips the upper panel. At 1440, tab activation leaves the table below the fold; more scrolling is needed to read it. No automatic active-row selection was observed."
+    },
+    {
+      "subject": "Locate exact confirmation",
+      "finding": "The prepared Go to Transfer Table proposal, Confirm this action, Not yet, and Pause are visible together in both pending-confirmation images. At 1280 this follows normal control auto-scroll to scrollY=394; at 1440 scrollY remains zero. Two movements were separately confirmed; no blanket or hidden execution was used."
+    },
+    {
+      "subject": "Draft, Apply and restoration",
+      "finding": "Undo and Reset each restore one deliberately edited draft with one activation. Draft Connected/Isolated and Applied Powered/Off are already distinct. Amber is Draft Connected and Applied Off before Apply, then Applied Powered after Apply. The acknowledgment only identifies revision 1; it does not explain the terminal delta in words."
+    },
+    {
+      "subject": "Retained report and lost choices after Apply",
+      "finding": "Both sessions retain the previous plate caption without a visible routing-age warning, while the nine choices shrink to Look around and the two discussion controls. Six already communicated local choices disappear. One extra Look around restores all nine, including the inspected index/test actions and local exits."
+    },
+    {
+      "subject": "Change the plan",
+      "finding": "One maintenance-bypass discussion activation produces the grounded plan-change reaction after the deliberate lift investigation. The caption says completed work remains completed, but does not name the newly discussed route, and no persistent private intended-route selection is shown in the captured baseline. This audit did not traverse the bypass."
+    }
+  ],
+  "network": {
+    "externalRequests": 0,
+    "tokenRequests": 0,
+    "webSockets": 0,
+    "guardViolations": 0,
+    "providerCalls": 0,
+    "allowanceCreated": false
+  },
+  "cleanup": "Both fresh browser contexts and the browser closed; owned production server terminated. A separate post-run loopback request confirmed port 5521 refused connections.",
+  "limitations": "Automated local UI and still-frame review only. No provider Voice, human speech, physical playback, human completion time, or enjoyment claim. The 24-pixel source/mode capture banner is evidence labeling rather than product UI."
+}

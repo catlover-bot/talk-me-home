@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "AFTER_CAPTURE_AND_NATIVE_STILL_REVIEW_PASS",
+  "mode": "Local/scripted Practice",
+  "beforeSource": "3772bcb77331a6b4684d9e8fb651df8da269229a",
+  "afterSource": "3961d190bded41c68259ce5106c1904266926893",
+  "afterVersion": "0.8.1",
+  "beforeReceipt": "artifacts/goal-008b/before/baseline-2026-09-30T13-04-46-647Z/capture.json",
+  "afterReceipt": "artifacts/goal-008b/after/after-2026-09-30T13-25-03-589Z/capture.json",
+  "viewports": ["1280x720", "1440x900"],
+  "nativeAndFullPageImages": 28,
+  "comparison": [
+    {
+      "operation": "Compare approach tradeoffs",
+      "before": "Manual route content starts below the initial fold at both sizes.",
+      "after": "Both tradeoffs, private intended-approach controls and radio report are visible at scrollY=0 at both sizes. The lower routing panel still requires normal scrolling."
+    },
+    {
+      "operation": "Compare plate and manual",
+      "before": "One manual-tab activation; no dedicated quote beside the rows. Prior control scrolling exposes rows at 1280, while rows remain below the fold at 1440.",
+      "after": "One manual-tab activation; the exact attributed plate quote, both manual rows, private plan and Pause are fully visible together at scrollY=0 in both native captures. No row is selected automatically."
+    },
+    {
+      "operation": "Confirm an exact proposal",
+      "before": "One confirmation activation per physical action; exact proposal, Confirm/Not yet and Pause are visible together.",
+      "after": "Unchanged one activation per action. The same exact pending proposal and all decision/Pause controls remain readable together at both sizes. Two movement confirmations were exercised in each bounded comparison session."
+    },
+    {
+      "operation": "Restore an edited draft",
+      "before": "One Undo or one Reset after each deliberate turn restores the prior draft.",
+      "after": "Unchanged: one Undo or one Reset restores the prior draft, verified against visible piece orientations."
+    },
+    {
+      "operation": "Apply routing and retain local choices",
+      "before": "One Apply shrinks nine choices to three. One extra Look around restores the six lost local choices.",
+      "after": "One Apply keeps all nine choices. Zero extra Look around requests. The actual delta says Amber switched on; the unchanged radio message and retained plate quote carry explicit routing-age labels. The native Apply images show the full panel, delta and radio-age warning together."
+    },
+    {
+      "operation": "Change the intended approach",
+      "before": "One discussion request; no persistent private intended-approach control.",
+      "after": "One optional radio activation changes the private plan; zero POSTs were observed during activation and two rendered frames. A separate ordinary discussion request still communicates the plan to Pip. The 1280 changed-plan image shows the private annotation; in the 1440 changed-plan native image it is above the viewport after normal control scrolling."
+    }
+  ],
+  "recordedActivationsPerViewport": {
+    "before": 21,
+    "after": 22,
+    "explanation": "The after sequence adds two optional private-plan selections and removes one redundant Look around. Comparison-tab, exact-confirmation, Undo, Reset and Apply activation counts remain unchanged. This is a bounded scripted sequence, not a minimum solution, human gesture count or full-mission request comparison.",
+    "afterSelectedRequests": 5,
+    "afterPlanDiscussions": 2,
+    "afterPrivatePlanSelections": 2,
+    "afterExactConfirmations": 2,
+    "afterPieceTurns": 5,
+    "afterManualTabSelections": 1,
+    "afterUndo": 1,
+    "afterResetDraft": 1,
+    "afterApply": 1,
+    "afterStartPractice": 1,
+    "afterPause": 1
+  },
+  "network": { "guardViolations": 0, "providerCalls": 0, "tokenRequests": 0, "externalRequests": 0, "webSockets": 0, "allowanceCreated": false },
+  "cleanup": "Owned browser contexts and browser closed; the root-owned loopback production server remains available.",
+  "limitations": "Native screenshots and instrumented local UI only. No real provider Voice, human speech, physical playback, human completion time or enjoyment verification. Normal scrolling remains necessary; not all documents, panel and request controls fit simultaneously at 720 pixels high. Full-page sticky-element placement is not used as native viewport evidence.",
+  "separatePreviewManifest": "artifacts/goal-008b/preview/capture-3961d190bded-2026-09-30T13-25-28-876Z.json"
+}

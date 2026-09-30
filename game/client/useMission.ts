@@ -18,6 +18,28 @@ export interface Caption extends TranscriptEntry {
   saved: boolean;
   chapter: Chapter;
   chapterEpoch: number;
+  /** Original communicated local report context, never refreshed by a panel edit. */
+  switchyardContext?: SwitchyardCaptionContext;
+  /** Public panel revision when this Practice robot message was displayed; not a local machinery observation. */
+  switchyardPanelRevisionAtDisplay?: number;
+}
+export interface SwitchyardCaptionContext {
+  visitId: string;
+  stateRevision: number;
+  panelRevision: number;
+  locationLabel: string;
+}
+export interface SwitchyardCurrentVisit { roundId: string; visitId: string; locationLabel: string }
+
+/** Attribute only an actual displayed Practice report, not inferred or raw provider speech. */
+export function switchyardCaptionContext(result: ToolResult | undefined, view: HumanView | null, origin: TransportOrigin, message: string): SwitchyardCaptionContext | undefined {
+  const observation = result?.switchyardObservation;
+  if (origin !== 'practice' || !observation || !result.ok || view?.chapter !== 'switchyard' || view.status !== 'active'
+    || observation.stateRevision !== view.revision || !view.switchyardPanel
+    || /^(?:historical|earlier)\b/i.test(message)
+    || !message.toLowerCase().includes(observation.location.label.toLowerCase())) return;
+  return { visitId: observation.visitId, stateRevision: observation.stateRevision,
+    panelRevision: view.switchyardPanel.panelRevision, locationLabel: observation.location.label };
 }
 export const originLabel: Record<TransportOrigin, string> = {
   practice: 'Practice', live_voice: 'Live Voice', live_text: 'Live Text', game: 'Game event',
@@ -37,6 +59,7 @@ export function useMission() {
   const viewRef = useRef<HumanView | null>(null);
   const [record, setRecord] = useState<MissionRecord | null>(null);
   const [captions, setCaptions] = useState<Caption[]>([]);
+  const [switchyardCurrentVisit, setSwitchyardCurrentVisit] = useState<SwitchyardCurrentVisit | null>(null);
   const captionsRef = useRef<Caption[]>([]);
   const [segment, setSegment] = useState<Segment | null>(null);
   const segmentRef = useRef<Segment | null>(null);
@@ -98,6 +121,12 @@ export function useMission() {
   const clearSwitchyardObservation = () => {
     if (practiceMemory.current.chapter === 'switchyard') practiceMemory.current = { ...practiceMemory.current, switchyard: forgetSwitchyardVisit(practiceMemory.current.switchyard) };
     if (viewRef.current?.chapter === 'switchyard') inspectionVisit.current = null;
+    setSwitchyardCurrentVisit(null);
+  };
+  const clearRejectedSwitchyardVisit = (captured: api.RobotToolContext) => {
+    // A delayed failure from a departed visit must not erase a newer communicated arrival.
+    if (viewRef.current?.chapter === 'switchyard' && currentRound(captured.roundId)
+      && inspectionVisit.current?.visitId === captured.inspectionScope?.visitId) clearSwitchyardObservation();
   };
   // The server validates the visit; transport revision guards keep a delayed report
   // from seeding current choices after a different response has advanced the view.
@@ -124,8 +153,10 @@ export function useMission() {
     const previous = viewRef.current;
     if (!acceptsHumanViewSnapshot(previous, next)) return;
     viewRef.current = next; setView(next);
-    if (next.chapter === 'switchyard' && (previous?.roundId !== next.roundId || next.status !== 'active'
-      || previous?.status !== 'active' || previous.switchyardPanel?.panelRevision !== next.switchyardPanel?.panelRevision)) clearSwitchyardObservation();
+    // Routing changes do not erase already communicated local targets or this visit's inspections.
+    // Their original report revisions remain historical; the server invalidates physical proposals separately.
+    if (next.chapter === 'switchyard' && (previous?.roundId !== next.roundId || previous?.chapter !== 'switchyard'
+      || next.status !== 'active' || previous?.status !== 'active')) clearSwitchyardObservation();
     if (previous && previous.roundId === next.roundId && previous.chapterEpoch !== next.chapterEpoch) {
       setHint('');
       effects.current.play('checkpoint');
@@ -152,16 +183,22 @@ export function useMission() {
     const next = await api.missionRecord(current);
     if (sequence === recordRequest.current && currentRound(next.roundId)) setRecord(next);
   };
-  const addCaption = (entry: TranscriptEntry, source: Segment, roundId: string, captured?: HumanView) => {
+  const addCaption = (entry: TranscriptEntry, source: Segment, roundId: string, captured?: HumanView, switchyardContext?: SwitchyardCaptionContext) => {
     if (!currentRound(roundId)) return;
     const id = source.id + ':' + entry.id;
     const previous = captionsRef.current.find(item => item.id === id);
+    const panelRevisionAtDisplay = previous?.switchyardPanelRevisionAtDisplay
+      ?? (source.origin === 'practice' && entry.role === 'robot' && (captured?.chapter ?? viewRef.current?.chapter) === 'switchyard'
+        ? viewRef.current?.switchyardPanel?.panelRevision : undefined);
     const item: Caption = {
       ...entry, id, origin: source.origin, segmentId: source.id, roundId,
       inputMethod: entry.role === 'robot' ? 'robot' : entry.id.startsWith('quick:') ? 'quick_request' : entry.id.startsWith('typed:') || source.origin === 'practice' ? 'typed' : 'speech',
       timestamp: previous?.timestamp ?? Date.now(), saved: previous?.saved ?? false,
       chapter: previous?.chapter ?? captured?.chapter ?? viewRef.current!.chapter,
       chapterEpoch: previous?.chapterEpoch ?? captured?.chapterEpoch ?? viewRef.current!.chapterEpoch,
+      ...(previous?.switchyardContext ? { switchyardContext: previous.switchyardContext }
+        : source.origin === 'practice' && entry.role === 'robot' && switchyardContext ? { switchyardContext: { ...switchyardContext } } : {}),
+      ...(panelRevisionAtDisplay === undefined ? {} : { switchyardPanelRevisionAtDisplay: panelRevisionAtDisplay }),
     };
     const update = (next: Caption) => {
       const items = captionsRef.current.filter(value => value.id !== id);
@@ -187,9 +224,13 @@ export function useMission() {
     }).catch(cause => { if (currentRound(roundId)) showError(cause); });
     writes.current.add(promise); void promise.finally(() => writes.current.delete(promise));
   };
-  const robotSays = (message: string, source = segmentRef.current) => {
+  const robotSays = (message: string, source = segmentRef.current, localResult?: ToolResult) => {
     const current = viewRef.current;
-    if (source && current) addCaption({ id: api.requestId(), role: 'robot', text: message, final: true }, source, current.roundId);
+    if (source && current) {
+      const context = switchyardCaptionContext(localResult, current, source.origin, message);
+      addCaption({ id: api.requestId(), role: 'robot', text: message, final: true }, source, current.roundId, current, context);
+      if (context) setSwitchyardCurrentVisit({ roundId: current.roundId, visitId: context.visitId, locationLabel: context.locationLabel });
+    }
   };
   const addGameEvent = (event: RecordedMessage) => {
     if (!currentRound(event.roundId) || event.role !== 'game' || event.origin !== 'game' || event.inputMethod !== 'game_event'
@@ -264,7 +305,11 @@ export function useMission() {
     try { result = await api.executeTool(current, call, signal); }
     catch (cause) {
       // A classified validation rejection is different from a lost transport.
-      if (cause instanceof api.MissionServiceError && cause.code) return { ok: false, code: cause.code, recovery: cause.recovery, message: cause.message };
+      if (cause instanceof api.MissionServiceError && cause.code) {
+        if (expected === generation.current && currentRound(current.roundId) && current.chapter === 'switchyard'
+          && ['stale_scope', 'target_unobserved'].includes(cause.code)) clearRejectedSwitchyardVisit(current);
+        return { ok: false, code: cause.code, recovery: cause.recovery, message: cause.message };
+      }
       throw cause;
     }
     if (expected !== generation.current || !currentRound(result.view.roundId)) throw new DOMException('Canceled', 'AbortError');
@@ -272,6 +317,7 @@ export function useMission() {
     // The cancellation response owns the newer human view; do not overwrite it.
     if (signal.aborted) return { ok: result.ok, message: result.message, code: result.code, proposal: result.proposal };
     applyView(result.view);
+    if (!result.ok && ['stale_scope', 'target_unobserved'].includes(result.code ?? '')) clearRejectedSwitchyardVisit(current);
     if (call.name === 'get_action_status' && result.proposal) setProposalFailure(previous => previous === result.proposal!.id ? null : previous);
     const perception = currentRobotPerception(result.perception, viewRef.current ?? undefined);
     if (perception) inspectionVisit.current = { roundId: perception.roundId, chapterEpoch: perception.chapterEpoch, visitId: perception.visitId };
@@ -443,7 +489,7 @@ export function useMission() {
       const result = reply.call ? currentSwitchyardResult(await runTool(reply.call, abort.signal, expected)) : undefined;
       const message = result ? simulationToolSpeech(result, practiceMemory.current) : reply.message;
       if (expected === generation.current && turn === mockTurn.current) {
-        robotSays(message, source);
+        robotSays(message, source, result);
         if (result && viewRef.current?.chapter === 'switchyard') practiceMemory.current = rememberPracticeReport(practiceMemory.current, result, 'switchyard', message);
         else if (reply.nextMemory) practiceMemory.current = reply.nextMemory;
       }
@@ -554,7 +600,7 @@ export function useMission() {
       }
       if (result.view.chapter === 'switchyard' && segmentRef.current?.origin === 'practice') {
         const message = simulationToolSpeech(localResult, practiceMemory.current);
-        robotSays(message);
+        robotSays(message, segmentRef.current, localResult);
         practiceMemory.current = rememberPracticeReport(practiceMemory.current, localResult, 'switchyard', message);
       }
       recordView = result.view;
@@ -697,7 +743,7 @@ export function useMission() {
     stage, scenario, setScenario, missionKind, setMissionKind: chooseMissionKind, optionalObjective, setOptionalObjective, mode, chooseMode, view, record, captions, segment, activeCaption,
     connected, busy, powerPending, toolPending, status, microphone, inputState, playing, interrupted,
     proposalConfirming, proposalFailure, decideProposal,
-    switchyardIntents, chooseSwitchyardIntent, applyRouting,
+    switchyardIntents, chooseSwitchyardIntent, applyRouting, switchyardCurrentVisit,
     error, warning, recapNotice, hint, seconds, connectionLimitSeconds, voiceVolume, effectsVolume, ambienceVolume, reducedMotion, pipState,
     requestStart, confirmReady, cancelReadiness, readinessMode, readinessText, readinessPractice, changeReducedMotion: setReducedMotion,
     start: () => requestStart(), stop, interrupt, send, quickRequest, changePower, changeRelay, dockControl, controlPending, annotate, newBriefing, pin, note, askHint, changeVoiceVolume, changeEffectsVolume, changeAmbienceVolume,

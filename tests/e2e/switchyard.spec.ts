@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
         stamp.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:2147483647;padding:5px 10px;background:#172a20;color:#fff2d3;font:11px/1.3 monospace;text-align:center;pointer-events:none';
         document.body.append(stamp);
       });
-    }, `0.8.0 / LOCAL SCRIPTED PRACTICE / ${source ? `source ${source}` : 'working candidate based on 06dd6b7 (uncommitted changes)'}`);
+    }, `0.8.1 / LOCAL SCRIPTED PRACTICE / ${source ? `source ${source}` : 'Goal008B working candidate based on 3772bcb (uncommitted changes)'}`);
   }
 });
 
@@ -79,8 +79,8 @@ async function supply(page: Page, terminals: readonly SwitchyardTerminal[]) {
     await expect(page.getByTestId('switchyard-panel-status')).toContainText('Applied routing acknowledged');
   }
   for (const terminal of ['amber', 'blue', 'white'] as const) await expect(page.getByTestId(`applied-${terminal}`)).toHaveText(terminals.includes(terminal) ? 'Powered' : 'Off');
-  // Routing cancels target memory; a new report is required before local action choices.
-  await ask(page, 'Look around');
+  // Public routing changes do not erase already communicated stable handles on this visit.
+  // The next exact proposal is still checked against the new applied routing by the server.
 }
 const terminalsFromCell = (cell: string) => (['amber', 'blue', 'white'] as const).filter(terminal => cell.toLowerCase().includes(terminal));
 async function readManual(page: Page, tab: 'Lift plates' | 'Service modules', plate: string) {
@@ -91,7 +91,7 @@ async function readManual(page: Page, tab: 'Lift plates' | 'Service modules', pl
 }
 async function shot(page: Page, info: TestInfo, name: string) {
   if (!capture) return;
-  const directory = 'artifacts/goal-008/ui/after'; mkdirSync(directory, { recursive: true });
+  const directory = 'artifacts/goal-008b/ui/after'; mkdirSync(directory, { recursive: true });
   await page.screenshot({ path: `${directory}/${name}-${info.project.name}.png`, fullPage: true, animations: 'disabled' });
 }
 async function discuss(page: Page, approach: 'direct lift' | 'maintenance bypass') {
@@ -105,6 +105,7 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     test.setTimeout(60_000);
     await start(page);
     await ask(page, 'Inspect Route directory');
+    await page.getByRole('group', { name: 'My intended approach' }).getByRole('radio', { name: 'Direct lift', exact: true }).check();
     await discuss(page, 'direct lift');
     await shot(page, info, `panel-${configuration}-${approach}`);
     const before = switchyardServer.commits.length;
@@ -131,6 +132,8 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
       await ask(page, 'Go to Lift Station', true);
       await ask(page, 'Inspect Lift console');
       // A deliberate plan revision after local investigation retains physical progress.
+      await page.getByRole('group', { name: 'My intended approach' }).getByRole('radio', { name: 'Maintenance bypass', exact: true }).check();
+      await expect(page.locator('.switchyard-plan-revision')).toContainText('Applied routing and confirmed actions are unchanged');
       await discuss(page, 'maintenance bypass');
       await expect(page.getByTestId('caption')).toContainText('Completed work stays completed');
       await shot(page, info, `plan-change-${configuration}`);
@@ -165,6 +168,7 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     }
     await expect(page.getByTestId('caption')).toContainText('departure is still a separate confirmed decision');
     await expect(page.getByRole('heading', { name: 'Pip is home.', exact: true })).toHaveCount(0);
+    await expect(page.getByTestId('switchyard-departure')).toHaveCount(0);
     await ask(page, 'Inspect Departure console');
     await ask(page, 'Depart for home', true, false);
     await shot(page, info, `departure-${configuration}-${approach}`);
@@ -172,6 +176,9 @@ for (const configuration of ['a', 'b'] as const) test.describe(`Switchyard insta
     await page.getByRole('button', { name: 'Confirm this action', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Pip is home.', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: approach === 'lift' ? 'The direct lift restored' : 'The maintenance bypass restored' })).toBeVisible();
+    await expect(page.getByTestId('switchyard-departure')).toHaveAttribute('data-approach', approach);
+    await expect(page.getByRole('img', { name: approach === 'lift' ? 'Direct lift departure confirmed' : 'Maintenance crossing departure confirmed', exact: true })).toBeVisible();
+    await expect(page.locator('.switchyard-reflection')).toContainText('Mission reflection / authored');
     expect(switchyardServer.commits.length).toBe(count + 1);
     expect(new Set(switchyardServer.commits.map(event => event.proposalId)).size).toBe(switchyardServer.commits.length);
     await shot(page, info, `home-${configuration}-${approach}`);

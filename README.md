@@ -30,11 +30,13 @@ GAME_DISABLE_LIVE=1 npm start
 
 Open `http://127.0.0.1:3001`. `npm start` and `npm run start:game` serve the compiled game and API from one origin. The production server reads its hosting environment only and never loads an owner `.env`. Practice requires no API key.
 
-### The Switchyard (source version 0.8.0)
+### The Switchyard (source version 0.8.1)
 
 Select **The Switchyard -> Practice -> Start Practice** in the local build. Rotate six pieces in a draft, compare the terminal preview with your human-only manual, then Apply the complete layout. Pip reports the fitted equipment and offers labelled local requests. Confirm each exact physical proposal.
 
 Restore a calibrated direct lift with separate test and running supplies, or brace and winch the maintenance bridge, backtrack to align its turntable, and route its crossing supply. Both approaches work in each of two authored installations; you can revise the plan before final departure. Rescue remains the default, and both Training exercises remain available.
+
+The current polish traces draft connections, describes acknowledged terminal changes, keeps sourced plate quotes beside the manual, and retains valid local requests after Apply. An optional private intended-route annotation changes no game state. Each completed approach has its own confirmed departure illustration. See the [polish evidence and limitations](docs/goal-008b-switchyard-polish.md).
 
 This post-submission mission is local/scripted and has no real Voice verification. It is separate from the preserved public 0.7.0 judging build. See [Switchyard implementation and checks](docs/goal-008-switchyard.md) and the [optional first-play sheet](docs/goal-008-playtest.md).
 
