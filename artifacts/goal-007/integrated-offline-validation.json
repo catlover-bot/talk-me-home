@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "status": "OFFLINE_INTEGRATION_PASS",
+  "checkedAt": "2026-09-30T01:31:04.051Z",
+  "builtIdentity": {
+    "commit": "19d4036e43f1e7efa226b144f5f1cd529a8ca2d9",
+    "version": "0.7.0"
+  },
+  "runtimeSha256": "9e99902afe98cef18e2e75ee3b55504dcda2e3642848f9da1be03ca36c689e36",
+  "sessionUpdateSha256": "8230fdb349ac8cb46cdce86430f28e138a12536e7f6467fa142788c5aac12073",
+  "nodeVersion": "v24.20.0",
+  "environment": "WSL Ubuntu 24.04, sandboxed Playwright Chromium, compiled production server",
+  "typecheck": "PASS",
+  "unit": {
+    "passed": 507,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "2e61af9dbc81ee1e5a00956b5930e4b1b388627753e56ce40257c47dadd03f51"
+  },
+  "browser": {
+    "passed": 192,
+    "failed": 0,
+    "skipped": 0,
+    "retries": 0,
+    "globalTimeoutMs": 210000,
+    "shards": [
+      {
+        "viewport": "chromium-1280",
+        "shard": "1/2",
+        "passed": 48,
+        "elapsed": "2.3m",
+        "logSha256": "1753f223fc9291bcdc9eb3ed3ff66bba0fccf215122f0ad393aa436c6adca698"
+      },
+      {
+        "viewport": "chromium-1280",
+        "shard": "2/2",
+        "passed": 48,
+        "elapsed": "58.2s",
+        "logSha256": "ac5279bb61d0e9969d51170e213335700ca6b9aec7c38757b81e8acde90ba19b"
+      },
+      {
+        "viewport": "chromium-1440",
+        "shard": "1/2",
+        "passed": 48,
+        "elapsed": "2.3m",
+        "logSha256": "cdfa50c97ab9d0a61878d3d61aa75a3000210e6c0d16cccb7fbb8d1fc2cb6fbc"
+      },
+      {
+        "viewport": "chromium-1440",
+        "shard": "2/2",
+        "passed": 48,
+        "elapsed": "57.7s",
+        "logSha256": "4a811ec1a4c16b5c4e3692eeba1c505a629330bb83dad957b2e1deb78b520b79"
+      }
+    ]
+  },
+  "productionBuild": "PASS",
+  "practice": "artifacts/goal-007/integrated-practice-smoke.json",
+  "assets": [
+    {
+      "path": "dist/client/art/mission-control.svg",
+      "bytes": 4595,
+      "gzipBytes": 1835,
+      "sha256": "54da597091f4ad38d191b71e1b8e142a891fd4d11de6cac6c65cb609dddd88af"
+    },
+    {
+      "path": "dist/client/assets/Debrief-u_Zih0YH.js",
+      "bytes": 12774,
+      "gzipBytes": 4227,
+      "sha256": "beb27259a8d30dcd21182956642e91104b2fd63e283691934726185521d7cc13"
+    },
+    {
+      "path": "dist/client/assets/index-C5uSAqXv.css",
+      "bytes": 95563,
+      "gzipBytes": 19697,
+      "sha256": "07dc401107e28f74eb97a1a782a2a8c071eeb075b6c35ec5e9e97a00a1773b68"
+    },
+    {
+      "path": "dist/client/assets/index-DWCHg6Mq.js",
+      "bytes": 363936,
+      "gzipBytes": 107781,
+      "sha256": "fb6855fc03a1b3ec72ea375851838d92b52019c17b9f45eff393b3db3379ee65"
+    },
+    {
+      "path": "dist/client/icon.svg",
+      "bytes": 732,
+      "gzipBytes": 358,
+      "sha256": "6f098e496bb47fb81f972fb1d471a9bfe4c27b33d7cc55989aa3a766afbcc872"
+    },
+    {
+      "path": "dist/client/index.html",
+      "bytes": 698,
+      "gzipBytes": 425,
+      "sha256": "e61a4b04c3a66ec8ce79a7171fbbc01582cde5d7d704bae4e579197e6d3cd8cb"
+    },
+    {
+      "path": "dist/client/third-party-notices.txt",
+      "bytes": 4520,
+      "gzipBytes": 1099,
+      "sha256": "4c2bdd7fec3773be8403658e55ff296d2b2db97ff4ee7117ba42696f2d87b403"
+    }
+  ],
+  "initialFailure": {
+    "status": "PRESERVED_AND_REPAIRED",
+    "case": "Provider account refusal before session.ready was overwritten by the generic startup rejection",
+    "repair": "4c2937d8371c4b1a217a4ba3b10ddd5a173d47fc",
+    "focusedEvidence": "artifacts/goal-007/startup-refusal-offline.json"
+  },
+  "paidProviderAttempts": 0,
+  "fundedGoal007GrantCreated": false,
+  "hostedReleaseStatus": "NOT_DEPLOYED",
+  "liveReleaseStatus": "RELEASE_NOT_LIVE_VERIFIED",
+  "limits": "Offline injected peers and digital audio are not real AssemblyAI, human speech, physical playback, enjoyment or statistical reliability."
+}

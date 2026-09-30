@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "LOCAL_COMPILED_PRODUCTION",
+  "builtIdentity": {
+    "commit": "19d4036e43f1e7efa226b144f5f1cd529a8ca2d9",
+    "version": "0.7.0"
+  },
+  "checks": [
+    "health",
+    "exact safe build identity",
+    "private paths rejected",
+    "unknown API remains JSON",
+    "license notices",
+    "fresh visitor unauthorized",
+    "SPA reload and hashed asset MIME/cache",
+    "injected denied microphone keeps explicit Practice alternative"
+  ],
+  "providerRequestsObserved": 0,
+  "browserTokenRequestsObserved": 0,
+  "explicitUnauthenticatedTokenRouteProbes": 4,
+  "rescues": [
+    {
+      "objective": "collected",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 10,
+      "declined": 1,
+      "firstQuestionVisibleAfterStartMs": 99,
+      "nonownerTokenStatus": 404,
+      "noCodeTokenStatus": 503,
+      "backtracked": false,
+      "completed": true
+    },
+    {
+      "objective": "selected-skipped",
+      "chapters": [
+        "Cargo Bay",
+        "Relay Gallery",
+        "Return Dock",
+        "Confirmed home"
+      ],
+      "confirmations": 11,
+      "declined": 0,
+      "firstQuestionVisibleAfterStartMs": 92,
+      "nonownerTokenStatus": 404,
+      "noCodeTokenStatus": 503,
+      "backtracked": true,
+      "completed": true
+    }
+  ],
+  "browserClosed": true,
+  "serverExitCode": 0,
+  "privateReceiptSha256": "33b28aa0bbe41eafcc23c40569c55ae7c9dce1f134972f40088fe03bde10948f",
+  "limitation": "Loopback compiled production with deterministic Practice. Four negative token-route probes were refused before admission. First-question timings measure rendered UI, not human comprehension. Hosted HTTPS, real Voice and physical devices remain unverified."
+}

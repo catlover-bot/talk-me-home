@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "19d4036e43f1e7efa226b144f5f1cd529a8ca2d9",
+  "scope": "Actual compiled production title; deterministic Practice selected, no provider request",
+  "captures": [
+    {
+      "path": "artifacts/goal-007/ui/integrated/entrance-1280.png",
+      "sha256": "1e447633b1615316fe75b695d73ef45884e9419e18546d7f4b718d3c12f675b6"
+    },
+    {
+      "path": "artifacts/goal-007/ui/integrated/entrance-1440.png",
+      "sha256": "6e62e2ddfca05a8fd4c43f3c127a2922e03986912f258614a25c277119749554"
+    }
+  ]
+}
