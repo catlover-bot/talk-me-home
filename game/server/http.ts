@@ -1,5 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { sessionConfig } from '../agent/config.js'
+import { isRemixSetup, remixAvailability } from './remix.js'
 import { exactObject } from './state.js'
 import { GameError, SessionStore } from './sessions.js'
 import { BrowserAccess } from './browser-access.js'
@@ -122,6 +123,10 @@ export function createGameServer(options: ServerOptions = {}) {
       } else { checkLocalRequest(request, allowedOrigins) }
       if (!apiRequest && options.staticDirectory) return await serveGame(request, response, options.staticDirectory)
       if (request.method === 'GET' && path === '/api/health') return reply(response, 200, { ok: true })
+      if (request.method === 'GET' && path === '/api/remix') {
+        if (requestUrl.searchParams.size) throw new GameError(400, 'Daily dispatch uses the server UTC date; no date or puzzle fields are accepted.')
+        return reply(response, 200, remixAvailability())
+      }
       if (request.method === 'GET' && path === '/api/version') return reply(response, 200, options.releaseIdentity ? { commit: options.releaseIdentity.commit, version: options.releaseIdentity.version } : { commit: 'unbuilt', version: 'development' })
       if (path === '/api/access' && request.method === 'GET') return reply(response, 200, accessStatus(request))
       if (path === '/api/access' && request.method === 'POST') {
@@ -133,6 +138,7 @@ export function createGameServer(options: ServerOptions = {}) {
       if (request.method === 'POST' && path === '/api/sessions') {
         const setup = await jsonBody(request)
         const owner = browserAccess.owner(request, response)
+        if (exactObject(setup, ['missionKind', 'scenario', 'remix']) && setup.missionKind === 'switchyard' && setup.scenario === 'classic' && isRemixSetup(setup.remix)) return reply(response, 201, store.create('classic', 'switchyard', owner, undefined, setup.remix))
         if (exactObject(setup, [])) return reply(response, 201, store.create('classic', 'training', owner))
         if (exactObject(setup, ['missionKind', 'scenario', 'optionalObjective']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue' || setup.missionKind === 'switchyard') && (setup.scenario === 'classic' || setup.scenario === 'maintenance') && (setup.optionalObjective === null || setup.optionalObjective === 'flight_recorder')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner, setup.optionalObjective))
         if (exactObject(setup, ['missionKind', 'scenario']) && (setup.missionKind === 'training' || setup.missionKind === 'rescue' || setup.missionKind === 'switchyard') && (setup.scenario === 'classic' || setup.scenario === 'maintenance')) return reply(response, 201, store.create(setup.scenario, setup.missionKind, owner))

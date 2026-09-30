@@ -1,12 +1,14 @@
 import { randomInt, randomUUID } from 'node:crypto'
 import type { ProposedAction, ToolResult } from '../shared/contracts.js'
-import { isSwitchyardLayout, previewSwitchyardRouting, type SwitchyardApproach, type SwitchyardLocalObservation, type SwitchyardPanelView, type SwitchyardRotations, type SwitchyardTerminal } from '../shared/switchyard.js'
+import { isSwitchyardLayout, previewSwitchyardRouting, type SwitchyardApproach, type SwitchyardJourney, type SwitchyardLocalObservation, type SwitchyardPanelView, type SwitchyardRotations, type SwitchyardTerminal } from '../shared/switchyard.js'
+import type { SwitchyardRunSpec } from './remix-catalog.js'
 
 export type SwitchyardConfiguration = 'a' | 'b'
 export type SwitchyardLocation = 'control_bay' | 'transfer' | 'lift_station' | 'service_gallery' | 'return_platform'
 /** Hidden installation, current position and mechanical state never enter the panel projection. */
 export interface SwitchyardState {
   configuration: SwitchyardConfiguration
+  runSpec?: SwitchyardRunSpec
   location: SwitchyardLocation
   visitId: string
   observedVisitId: string | null
@@ -16,9 +18,11 @@ export interface SwitchyardState {
   revision: number
   liftIndex: 0 | 1 | 2
   liftTested: boolean
+  liftSurveyed: boolean
   braceSeated: boolean
   bridgeDeployed: boolean
   turntableAligned: boolean
+  serviceRestored: boolean
   approach: SwitchyardApproach | null
   completed: boolean
 }
@@ -43,7 +47,17 @@ const normalExits: Record<Exclude<SwitchyardLocation, 'return_platform'>, { targ
   service_gallery: [{ target: 'switchyard.to_transfer', label: 'Return to Transfer Table', destination: 'transfer' }, { target: 'switchyard.cross_bridge', label: 'Cross the maintenance bridge', destination: 'return_platform' }],
 }
 function localExits(s: SwitchyardState): { target: string; label: string; destination: SwitchyardLocation }[] {
-  if (s.location !== 'return_platform') return normalExits[s.location]
+  if (s.location !== 'return_platform') {
+    if (!s.runSpec) return normalExits[s.location]
+    const targets: Record<string, string> = { control_bay: 'switchyard.to_control', transfer: 'switchyard.to_transfer', lift_station: 'switchyard.to_lift', service_gallery: 'switchyard.to_service' }
+    const corridors = s.runSpec.schematic.edges.filter(edge => edge.kind === 'corridor' && (edge.from === s.location || edge.to === s.location)).map(edge => {
+      const destination = (edge.from === s.location ? edge.to : edge.from) as SwitchyardLocation
+      return { target: targets[destination]!, label: `${destination === 'control_bay' ? 'Return' : 'Go'} to ${labels[destination]}`, destination }
+    })
+    if (s.location === 'lift_station') corridors.push({ target: 'switchyard.ride_lift', label: 'Ride the direct lift', destination: 'return_platform' })
+    if (s.location === 'service_gallery') corridors.push({ target: 'switchyard.cross_bridge', label: 'Cross the maintenance bridge', destination: 'return_platform' })
+    return corridors
+  }
   return s.approach === 'lift'
     ? [{ target: 'switchyard.back_lift', label: 'Return to Lift Station', destination: 'lift_station' }]
     : [{ target: 'switchyard.back_service', label: 'Return to Service Gallery', destination: 'service_gallery' }]
@@ -51,26 +65,42 @@ function localExits(s: SwitchyardState): { target: string; label: string; destin
 const exact = (value: unknown, keys: readonly string[]): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
   && Object.keys(value).length === keys.length && keys.every(key => Object.prototype.hasOwnProperty.call(value, key))
 const reject = (message: string, code?: ToolResult['code']): SwitchyardToolResult => ({ ok: false, message, ...(code ? { code } : {}) })
-const powered = (s: SwitchyardState) => previewSwitchyardRouting(s.appliedRotations).poweredTerminals
+const powered = (s: SwitchyardState) => previewSwitchyardRouting(s.appliedRotations, s.runSpec?.panel).poweredTerminals
+function installation(s: SwitchyardState) {
+  if (!s.runSpec) return installations[s.configuration]
+  const { lift, service } = s.runSpec.installation
+  return { liftPlate: lift.plate, index: lift.index, test: lift.test, run: lift.run, servicePlate: service.plate, winch: service.winch, align: service.align, bridge: service.bridge }
+}
+const alignFirst = (s: SwitchyardState) => s.runSpec?.procedure === 'align_then_deploy'
 const exactlyPowered = (s: SwitchyardState, expected: readonly SwitchyardTerminal[]) => {
   const actual = powered(s)
   return actual.length === expected.length && expected.every(terminal => actual.includes(terminal))
 }
 
-export function initialSwitchyardState(configuration?: SwitchyardConfiguration): SwitchyardState {
-  return { configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b'), location: 'control_bay', visitId: randomUUID(), observedVisitId: null, inspectedDevices: [],
-    appliedRotations: [0, 0, 1, 0, 0, 0], panelRevision: 0, revision: 0, liftIndex: 0, liftTested: false,
-    braceSeated: false, bridgeDeployed: false, turntableAligned: false, approach: null, completed: false }
+export function initialSwitchyardState(configuration?: SwitchyardConfiguration, runSpec?: SwitchyardRunSpec): SwitchyardState {
+  return { configuration: configuration ?? (runSpec ? 'a' : randomInt(2) === 0 ? 'a' : 'b'), ...(runSpec ? { runSpec } : {}),
+    location: 'control_bay', visitId: randomUUID(), observedVisitId: null, inspectedDevices: [],
+    appliedRotations: runSpec ? [...runSpec.initialRotations] : [0, 0, 1, 0, 0, 0], panelRevision: 0, revision: 0, liftIndex: 0, liftTested: false, liftSurveyed: false,
+    braceSeated: false, bridgeDeployed: false, turntableAligned: false, serviceRestored: false, approach: null, completed: false }
+}
+
+function journey(s: SwitchyardState): SwitchyardJourney {
+  const assignment = s.runSpec!.assignment
+  return { assignment, status: assignment === 'rescue' || (assignment === 'lift_survey' ? s.liftSurveyed : s.serviceRestored) ? 'completed' : 'skipped',
+    milestones: [...(s.liftSurveyed ? ['Lift diagnostic passed'] : []), ...(s.serviceRestored ? ['Service bridge and turntable prepared'] : []),
+      ...(s.approach === 'lift' ? ['Returned by direct lift'] : s.approach === 'bypass' ? ['Returned by maintenance bypass'] : [])] }
 }
 
 export function switchyardHumanView(s: SwitchyardState): SwitchyardPanelView {
-  return { appliedRotations: [...s.appliedRotations], panelRevision: s.panelRevision, poweredTerminals: powered(s) }
+  return { appliedRotations: [...s.appliedRotations], panelRevision: s.panelRevision, poweredTerminals: powered(s),
+    ...(s.runSpec ? { specification: structuredClone(s.runSpec.panel), schematic: structuredClone(s.runSpec.schematic), manual: structuredClone(s.runSpec.manual), dispatch: structuredClone(s.runSpec.dispatch),
+      ...(s.completed ? { journey: journey(s) } : {}) } : {}) }
 }
 
 /** Callers enforce owner, mission status, round and expected global revision before this atomic operation. */
 export function applySwitchyardPanel(s: SwitchyardState, layout: unknown): SwitchyardToolResult {
   if (s.completed) return reject('The rescue is complete. Start another mission before changing its panel.', 'mission_stopped')
-  const preview = previewSwitchyardRouting(layout)
+  const preview = previewSwitchyardRouting(layout, s.runSpec?.panel)
   if (!preview.valid || !isSwitchyardLayout(layout)) return reject(preview.message, 'invalid_arguments')
   if (layout.some((rotation, index) => rotation !== s.appliedRotations[index])) {
     s.appliedRotations = [...layout]; s.panelRevision += 1; s.revision += 1
@@ -117,13 +147,19 @@ function inspectedReport(s: SwitchyardState, text: string): SwitchyardToolResult
   return { ...observation, message: `${text} ${observation.message}` }
 }
 function inspection(s: SwitchyardState): SwitchyardToolResult {
-  const installed = installations[s.configuration]
+  const installed = installation(s)
   const device = devices[s.location]
   if (!s.inspectedDevices.includes(device.id)) s.inspectedDevices.push(device.id)
-  if (s.location === 'control_bay') return inspectedReport(s, 'The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply: fewer walks, more electrical deduction. The maintenance bypass needs a bridge brace and winch on the service side, then an alignment at Transfer Table: more walking, no lift calibration. Both have safe ways back before departure. Mission Control has the installation table; I can read the fitted plates locally.')
+  if (s.location === 'control_bay') return inspectedReport(s, s.runSpec
+    ? 'The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply. The maintenance bypass needs a seated bridge brace, a deployed bridge and a locked turntable, but the fitted service module determines the preparation order. Read its local plate and procedure before choosing that order. Ordinary corridors follow the station drawing; both approaches have safe ways back before departure. Mission Control has the full installation tables; I can inspect the fitted equipment locally.'
+    : 'The directory describes two ways to the same Return Platform. The direct lift needs a local index and test before its running supply: fewer walks, more electrical deduction. The maintenance bypass needs a bridge brace and winch on the service side, then an alignment at Transfer Table: more walking, no lift calibration. Both have safe ways back before departure. Mission Control has the installation table; I can read the fitted plates locally.')
   if (s.location === 'lift_station') return inspectedReport(s, `The Lift console plate reads ${installed.liftPlate}. Index is ${s.liftIndex === 0 ? 'unset' : s.liftIndex}; its last self-test is ${s.liftTested ? 'passed' : 'not passed'}. The index can be set only with all output power isolated. The test uses its dedicated supply alone; running uses the paired supply in your manual. The lift landing is clear. What does your ${installed.liftPlate} row specify?`)
-  if (s.location === 'service_gallery') return inspectedReport(s, `The Bridge winch plate reads ${installed.servicePlate}. Its brace is ${s.braceSeated ? 'seated' : 'unseated'} and bridge is ${s.bridgeDeployed ? 'deployed into its retaining detent' : 'retracted'}. Seat the brace with all output power isolated. Deployment uses the winch supply alone; the far turntable must be aligned afterwards at Transfer Table. Crossing uses the paired service supply. The walkway itself is clear. The mechanical detent retains progress if power changes. What does your ${installed.servicePlate} row specify?`)
-  if (s.location === 'transfer') return inspectedReport(s, `The Transfer turntable service plate reads ${installed.servicePlate}. Its alignment is ${s.turntableAligned ? 'locked' : 'not locked'}. The service bridge must first be deployed from Service Gallery. Alignment uses its own supply alone, different from the winch supply. The lock retains alignment when power changes. Consult the ${installed.servicePlate} service row; the lift route does not need this operation.`)
+  if (s.location === 'service_gallery') return inspectedReport(s, `The Bridge winch plate reads ${installed.servicePlate}. Its brace is ${s.braceSeated ? 'seated' : 'unseated'} and bridge is ${s.bridgeDeployed ? 'deployed into its retaining detent' : 'retracted'}. Seat the brace with all output power isolated. ${alignFirst(s)
+    ? 'This is an Alignment-first service module: align the turntable at Transfer Table before deploying the bridge. The brace may be seated before or after alignment. Deployment uses the winch supply alone and requires both the seated brace and the alignment lock.'
+    : `${s.runSpec ? 'This is a Detent-first service module. ' : ''}Deployment uses the winch supply alone; the far turntable must be aligned afterwards at Transfer Table.`} Crossing uses the paired service supply. The walkway itself is clear. The mechanical detent retains progress if power changes. What does your ${installed.servicePlate} row specify?`)
+  if (s.location === 'transfer') return inspectedReport(s, `The Transfer turntable service plate reads ${installed.servicePlate}. Its alignment is ${s.turntableAligned ? 'locked' : 'not locked'}. ${alignFirst(s)
+    ? 'This is an Alignment-first service module: align this turntable before deploying the service bridge. No deployed bridge is required for alignment; the bridge winch checks this lock before deployment.'
+    : `${s.runSpec ? 'This is a Detent-first service module. ' : ''}The service bridge must first be deployed from Service Gallery.`} Alignment uses its own supply alone, different from the winch supply. The lock retains alignment when power changes. Consult the ${installed.servicePlate} service row; the lift route does not need this operation.`)
   return inspectedReport(s, `The Departure console confirms arrival by the ${s.approach === 'lift' ? 'direct lift' : 'maintenance bypass'}. Depart for home is the final local action. Until you confirm departure, the marked return walkway allows a safe retreat even without power. You may still change plans; both approaches reach the same home.`)
 }
 
@@ -139,7 +175,7 @@ export function applySwitchyardTool(s: SwitchyardState, name: string, args: unkn
   if (name === 'move_to') {
     const exit = localExits(s).find(candidate => candidate.target === args.target)
     if (!exit) return reject('That destination is not a reachable local route. Ask for a fresh look; no alternative was selected.', 'nonlocal_target')
-    const installed = installations[s.configuration]
+    const installed = installation(s)
     if (args.target === 'switchyard.ride_lift') {
       if (!s.inspectedDevices.includes('switchyard.lift')) return reject('Inspect the Lift console on this visit before requesting the lift.', 'target_unobserved')
       if (!s.liftTested) return reject('The lift has no passing calibration test. You remain safely at Lift Station.')
@@ -160,7 +196,7 @@ export function applySwitchyardTool(s: SwitchyardState, name: string, args: unkn
   if (name === 'inspect_object') return inspection(s)
   if (!s.inspectedDevices.includes(device.id)) return reject('Inspect that device during this visit before requesting a physical action.', 'target_unobserved')
   if (!device.actions.some(action => action.action === args.action)) return reject('That action is not one of this inspected device’s controls. No substitute action was selected.', 'invalid_arguments')
-  const installed = installations[s.configuration]
+  const installed = installation(s)
   if (args.action === 'set_index_one' || args.action === 'set_index_two') {
     if (!exactlyPowered(s, [])) return reject('Isolate all output power before setting the lift index. The current index is unchanged.')
     const index = args.action === 'set_index_one' ? 1 : 2
@@ -170,25 +206,34 @@ export function applySwitchyardTool(s: SwitchyardState, name: string, args: unkn
   if (args.action === 'test_lift') {
     if (!exactlyPowered(s, [installed.test])) return reject('The isolated test-supply indicator is not ready. The test did not run; the lift remains safely parked.')
     if (s.liftIndex !== installed.index) return reject('The test gauge did not align with its reference. No damage occurred. Isolate power, compare the fitted plate with the index table, and revise the setting.')
-    if (!s.liftTested) { s.liftTested = true; s.revision += 1 }
+    if (!s.liftTested || !s.liftSurveyed) { s.liftTested = true; s.liftSurveyed = true; s.revision += 1 }
     return inspectedReport(s, 'The lift self-test passed. That shared reading made the setting meaningful. The calibrated index is retained; running still requires its paired supply and a separate confirmed ride.')
   }
   if (args.action === 'seat_brace') {
     if (!exactlyPowered(s, [])) return reject('Isolate all output power before seating the bridge brace. No mechanical progress was lost.')
     if (!s.braceSeated) { s.braceSeated = true; s.revision += 1 }
-    return inspectedReport(s, 'You seated the bridge brace. The winch can now deploy the walkway when its own supply is ready. The brace remains secured during later routing changes.')
+    return inspectedReport(s, alignFirst(s)
+      ? 'You seated the bridge brace. The winch also needs the turntable alignment lock and its own supply before deployment. The brace remains secured during later routing changes.'
+      : 'You seated the bridge brace. The winch can now deploy the walkway when its own supply is ready. The brace remains secured during later routing changes.')
   }
   if (args.action === 'deploy_bridge') {
     if (!s.braceSeated) return reject('Seat the bridge brace before using the winch. The platform remains safe.')
+    if (alignFirst(s) && !s.turntableAligned) return reject('This service module requires the turntable alignment lock before bridge deployment. Align it at Transfer Table; the brace and safe return corridor remain available.')
     if (!exactlyPowered(s, [installed.winch])) return reject('The winch’s dedicated supply is not ready on its own. Compare its module plate with the service table; no movement occurred.')
     if (!s.bridgeDeployed) { s.bridgeDeployed = true; s.revision += 1 }
-    return inspectedReport(s, 'You deployed the bridge into its retaining detent. The route is not yet aligned at the far end. Return to Transfer Table for its separate local alignment; you can leave this mechanism without holding it.')
+    if (s.turntableAligned) s.serviceRestored = true
+    return inspectedReport(s, s.runSpec && s.turntableAligned
+      ? 'You deployed the bridge into its retaining detent against the aligned turntable. Both mechanical preparations are complete and retained. Crossing still requires its paired supply and a separate confirmed movement.'
+      : 'You deployed the bridge into its retaining detent. The route is not yet aligned at the far end. Return to Transfer Table for its separate local alignment; you can leave this mechanism without holding it.')
   }
   if (args.action === 'align_turntable') {
-    if (!s.bridgeDeployed) return reject('There is no deployed bridge for the turntable to meet. Prepare the service-side mechanism first; both approaches remain possible.')
+    if (!alignFirst(s) && !s.bridgeDeployed) return reject('There is no deployed bridge for the turntable to meet. Prepare the service-side mechanism first; both approaches remain possible.')
     if (!exactlyPowered(s, [installed.align])) return reject('The turntable’s dedicated alignment supply is not ready on its own. Its lock and any bridge preparation are unchanged.')
     if (!s.turntableAligned) { s.turntableAligned = true; s.revision += 1 }
-    return inspectedReport(s, 'You aligned the turntable and its mechanical lock engaged. The service approach now has a continuous clear walkway. Rejoin it at Service Gallery and check the paired crossing supply.')
+    if (s.bridgeDeployed) s.serviceRestored = true
+    return inspectedReport(s, alignFirst(s) && !s.bridgeDeployed
+      ? 'You aligned the turntable and its mechanical lock engaged. Its lock will remain through power changes. The service bridge still needs its seated brace and deployment at Service Gallery before any crossing.'
+      : 'You aligned the turntable and its mechanical lock engaged. The service approach now has a continuous clear walkway. Rejoin it at Service Gallery and check the paired crossing supply.')
   }
   s.completed = true; s.revision += 1
   return { ok: true, message: `You departed from the Return Platform and arrived safely home by the ${s.approach === 'lift' ? 'direct lift' : 'maintenance bypass'}. The rescue is confirmed. Both routes were valid choices.` }

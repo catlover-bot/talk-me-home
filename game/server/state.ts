@@ -1,5 +1,6 @@
 import { initialSwitchyardState, switchyardHumanView, switchyardObservation, applySwitchyardTool, type SwitchyardState, type SwitchyardConfiguration } from './switchyard.js'
 import { randomInt, randomUUID } from 'node:crypto'
+import type { SwitchyardRunSpec } from './remix-catalog.js'
 import type { Chapter, HumanView, MissionKind, OptionalObjective, Scenario, SessionStatus, ToolRequest, ToolResult } from '../shared/contracts.js'
 import { applyGalleryTool, galleryView, type GalleryConfiguration, type GalleryState } from './gallery.js'
 import { applyDockTool, dockReady, dockView, type DockState } from './return-dock.js'
@@ -31,14 +32,14 @@ export interface GameState {
 }
 
 /** Tests may supply a profile here; the ordinary browser API never accepts one. */
-export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration, optionalObjective?: OptionalObjective | null, switchyardConfiguration?: SwitchyardConfiguration): GameState {
+export function initialState(sessionId: string = randomUUID(), scenario: Scenario = 'classic', profile?: MaintenanceProfile, missionKind: MissionKind = 'training', configuration?: GalleryConfiguration, optionalObjective?: OptionalObjective | null, switchyardConfiguration?: SwitchyardConfiguration, remix?: SwitchyardRunSpec): GameState {
   return {
     sessionId, roundId: randomUUID(), revision: 0, actionEpoch: 0,
     powerOn: true, doorLatched: false, robotLocation: 'near_side', status: 'active',
     scenario, maintenanceProfile: scenario === 'maintenance' ? profile ?? (randomInt(2) === 0 ? 'crescent' : 'kite') : null,
     selector: 'neutral',
     missionKind, chapter: missionKind === 'switchyard' ? 'switchyard' : 'cargo', chapterEpoch: 0,
-    switchyard: initialSwitchyardState(switchyardConfiguration),
+    switchyard: initialSwitchyardState(switchyardConfiguration, remix),
     gallery: { room: 'ring', relay: 'off', configuration: configuration ?? (randomInt(2) === 0 ? 'a' : 'b'), visitId: randomUUID(), observationRevision: 0 },
     dock: { location: 'platform', contactHeld: false, energy: 'empty', readinessVersion: 0, grant: null },
     flightRecorder: { selected: missionKind === 'rescue' && optionalObjective === 'flight_recorder', secured: false },

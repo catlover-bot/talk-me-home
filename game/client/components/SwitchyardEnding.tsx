@@ -1,12 +1,18 @@
 import type { ReactNode } from 'react';
 import type { HumanView, MissionRecord } from '../../shared/contracts';
 import { PipPortrait } from './PipPortrait';
+import { DispatchCode, assignmentLabels, journeyProvenanceLabel } from './SwitchyardDispatch';
+import type { JourneyEntry } from '../switchyard-history';
 
-export function SwitchyardEnding({ view, record, closingCaption, onReplay, onBriefing, busy, practice }: {
+export function SwitchyardEnding({ view, record, closingCaption, onReplay, onBriefing, busy, practice, onDispatch, provenance }: {
   view: HumanView; record: MissionRecord | null; closingCaption: ReactNode; onReplay(): void; onBriefing(): void; busy: boolean; practice: boolean;
+  onDispatch?(choice: 'same' | 'other' | 'new'): void;
+  provenance?: JourneyEntry['provenance'];
 }) {
   const lift = view.switchyardApproach === 'lift';
   const bypass = view.switchyardApproach === 'bypass';
+  const dispatch = view.switchyardPanel?.dispatch;
+  const journey = view.completed ? view.switchyardPanel?.journey : undefined;
   return <section className="debrief switchyard-ending" aria-labelledby="switchyard-home-title">
     {(lift || bypass) && <figure className="switchyard-departure" data-testid="switchyard-departure" data-approach={view.switchyardApproach}>
       <svg viewBox="0 0 420 126" role="img" aria-label={lift ? 'Direct lift departure confirmed' : 'Maintenance crossing departure confirmed'}>
@@ -33,12 +39,17 @@ export function SwitchyardEnding({ view, record, closingCaption, onReplay, onBri
     <p className="section-kicker">The Switchyard / Confirmed rescue</p>
     <h1 id="switchyard-home-title">Pip is home.</h1>
     <h2>{lift ? 'The direct lift restored' : bypass ? 'The maintenance bypass restored' : 'The Switchyard rescue complete'}</h2>
-    <p>{lift ? 'You matched the fitted lift plate, calibrated its index, and separated its test supply from its running circuit.' : bypass ? 'You braced and deployed the service bridge, returned to align the transfer turntable, then routed the crossing supply.' : 'Pip returned safely. This record does not specify the restored approach.'}</p>
+    <p>{lift ? 'You matched the fitted lift plate, calibrated its index, and separated its test supply from its running circuit.' : bypass ? dispatch ? 'You secured the brace, deployed the service bridge and aligned the turntable in the fitted sequence, then routed the crossing supply.' : 'You braced and deployed the service bridge, returned to align the transfer turntable, then routed the crossing supply.' : 'Pip returned safely. This record does not specify the restored approach.'}</p>
     <p className="switchyard-reflection"><span>Mission reflection / authored</span>{lift ? 'A plate, a test, then a running circuit. Your electrical work made the short ride possible.' : bypass ? 'You prepared a route in stages. The bridge and alignment held while you moved the supply to the crossing.' : 'Departure and return are confirmed.'}</p>
     {closingCaption}
     {(lift || bypass) && <p className="switchyard-replay-invitation" data-testid="switchyard-replay-invitation">{lift ? 'You brought Pip home by lift. Try preparing the maintenance bypass next.' : 'You brought Pip home by the maintenance bypass. Try identifying and calibrating the direct lift next.'} Both are complete rescues. Choose a new mission when you want to try again.</p>}
-    <div className="dialog-actions"><button className="primary-button" disabled={busy} onClick={onReplay}>Try the other approach</button><button disabled={busy} onClick={onBriefing}>Back to missions</button></div>
-    <p className="source-label">{practice ? 'Local/scripted play. ' : ''}Real Voice has not been verified for this mission. A replay starts a new authored installation.</p>
+    {dispatch && journey && <article className="switchyard-journey" data-testid="switchyard-journey"><h3>Your journey</h3>
+      <p><strong>Home by {lift ? 'direct lift' : 'maintenance bypass'}.</strong> {assignmentLabels[journey.assignment]} · {journey.status === 'completed' ? 'completed' : 'skipped; rescue complete'}.</p>
+      <ul>{journey.milestones.map((milestone, index) => <li key={index}>{milestone}</li>)}</ul><DispatchCode code={dispatch.code}/>
+      {dispatch.dailyDate && <p>Daily dispatch · {dispatch.dailyDate} UTC</p>}<p className="source-label">{provenance ? journeyProvenanceLabel[provenance] : 'See conversation sources'} · Server-confirmed outcome. Local history stores the code and outcome, not this conversation.</p>
+    </article>}
+    <div className="dialog-actions">{dispatch && onDispatch ? <><button className="primary-button" disabled={busy} onClick={() => onDispatch('same')}>Same conditions</button><button disabled={busy} onClick={() => onDispatch('other')}>Other approach</button><button disabled={busy} onClick={() => onDispatch('new')}>New dispatch</button></> : <button className="primary-button" disabled={busy} onClick={onReplay}>Try the other approach</button>}<button disabled={busy} onClick={onBriefing}>Back to missions</button></div>
+    <p className="source-label">{practice && provenance !== 'mixed' ? 'Local/scripted play. ' : ''}Real Voice has not been verified for this mission. {dispatch ? 'Same conditions keeps this initial puzzle; New dispatch selects different conditions. Each choice opens setup. Start is always explicit.' : 'A replay starts a new authored installation.'}</p>
     <details><summary>This mission's event log</summary><ol>{record?.debrief?.timeline.map(event => <li key={event.id}>{event.text}</li>)}</ol></details>
   </section>;
 }

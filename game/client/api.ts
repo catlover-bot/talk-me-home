@@ -1,5 +1,6 @@
 import type { HumanView, ToolResponse, Scenario, MissionKind, Relay, DockControl, CancelReason, AnnotationRequest, MessageRequest, RecordedMessage, NotebookRequest, NotebookEntry, MissionRecord, RobotRecap, HintResult, HintLevel } from "../shared/contracts";
 import { toolOutcomeCodes, toolRecoverySteps, type ToolOutcomeCode, type ToolResult } from '../shared/contracts';
+import type { RemixAvailability, RemixSetup } from '../shared/remix';
 
 /** A public, user-facing response from the game service. */
 export class MissionServiceError extends Error {
@@ -49,7 +50,8 @@ export const requestId = () => crypto.randomUUID();
 export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string; maxSessionSeconds?: number; allowedMode?: 'voice' | 'text' }
 export const demoAccess = (signal?: AbortSignal) => request<DemoAccess>('/access', undefined, signal);
 export const unlockDemo = (code: string) => request<DemoAccess>('/access', { code });
-export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training', optionalObjective?: HumanView['optionalObjective']) => request<HumanView>("/sessions", { scenario, missionKind, ...(optionalObjective ? { optionalObjective } : {}) });
+export const remixAvailability = (signal?: AbortSignal) => request<RemixAvailability>('/remix', undefined, signal);
+export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training', optionalObjective?: HumanView['optionalObjective'], remix?: RemixSetup) => request<HumanView>("/sessions", { scenario, missionKind, ...(optionalObjective ? { optionalObjective } : {}), ...(remix && missionKind === 'switchyard' ? { remix } : {}) });
 export const getSession = (sessionId: string) =>
   request<HumanView>(`/sessions/${encodeURIComponent(sessionId)}`);
 
@@ -69,7 +71,7 @@ export function setPower(view: HumanView, powerOn: boolean) {
 export function lifecycle(
   view: HumanView,
   action: "stop" | "resume" | "reset" | "end" | "cancel",
-  options: { scenario?: Scenario; missionKind?: MissionKind; optionalObjective?: HumanView['optionalObjective']; reason?: CancelReason } = {},
+  options: { scenario?: Scenario; missionKind?: MissionKind; optionalObjective?: HumanView['optionalObjective']; reason?: CancelReason; remix?: RemixSetup } = {},
 ) {
   return request<HumanView>(
     `/sessions/${encodeURIComponent(view.sessionId)}/${action}`,

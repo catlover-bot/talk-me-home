@@ -1,5 +1,6 @@
 import type { HumanView, MissionKind, Scenario, TransportOrigin } from '../../shared/contracts';
 import { PipPortrait } from './PipPortrait';
+import type { ReactNode } from 'react';
 
 export interface BriefingProps {
   scenario: Scenario; missionKind: MissionKind; mode: TransportOrigin;
@@ -7,9 +8,10 @@ export interface BriefingProps {
   onMode(mode: TransportOrigin): void; onStart(): void; onVoice(): void;
   optionalObjective?: HumanView['optionalObjective']; onOptionalObjective(value: HumanView['optionalObjective']): void;
   busy?: boolean; error?: string;
+  switchyardSetup?: ReactNode; startDisabled?: boolean;
 }
 
-export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKind, onMode, onStart, onVoice, optionalObjective, onOptionalObjective, busy = false, error }: BriefingProps) {
+export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKind, onMode, onStart, onVoice, optionalObjective, onOptionalObjective, busy = false, error, switchyardSetup, startDisabled = false }: BriefingProps) {
   return <section className="briefing release-briefing" aria-labelledby="briefing-title">
     <div className="title-scene">
       <img className="title-landscape" src="/art/mission-control.svg" alt="Illustration of Mission Control overlooking a warmly lit, isolated station in a rocky landscape." width="1600" height="780" fetchPriority="high" />
@@ -41,7 +43,7 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
             </label>
           </div>
           {missionKind === 'training' ? <div className="training-choice"><label htmlFor="training-scenario">Training exercise</label><select id="training-scenario" value={scenario} onChange={event => onScenario(event.target.value as Scenario)} disabled={busy}><option value="classic">Classic — the first Door</option><option value="maintenance">Maintenance — a module clue</option></select></div>
-            : missionKind === 'switchyard' ? <p className="switchyard-premise">You rewire six routing pieces. Pip investigates the fitted equipment. Restore a calibrated direct lift, or prepare the maintenance bridge and backtrack to align its turntable. Read local reports alongside your manual; you may change plans before departure.</p> : <><ol className="briefing-journey" aria-label="Rescue Mission chapters"><li><span>01</span>Cargo Bay</li><li><span>02</span>Relay Gallery</li><li><span>03</span>Return Dock</li></ol>
+            : missionKind === 'switchyard' ? <><p className="switchyard-premise">You rewire six routing pieces. Pip investigates the fitted equipment. Restore a calibrated direct lift, or prepare the maintenance bridge and its turntable. Read local reports alongside your manual; you may change plans before departure.</p>{switchyardSetup}</> : <><ol className="briefing-journey" aria-label="Rescue Mission chapters"><li><span>01</span>Cargo Bay</li><li><span>02</span>Relay Gallery</li><li><span>03</span>Return Dock</li></ol>
               <label className="recorder-choice"><input type="checkbox" aria-label="Bring back the flight recorder" checked={optionalObjective === 'flight_recorder'} onChange={event => onOptionalObjective(event.target.checked ? 'flight_recorder' : undefined)} disabled={busy} aria-describedby="recorder-choice-detail"/><span><strong>Bring back the flight recorder</strong><small id="recorder-choice-detail">Optional · a case of Pip’s old flight notes, filed at Leaf. You can also head straight home.</small></span></label></>}
         </fieldset>
         <fieldset className="setup-fieldset">
@@ -56,8 +58,8 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
       {error && <p className="briefing-error" role="alert">{error}</p>}
       <div className="launch-row">
         <div className="briefing-action" data-mode={mode}>
-          {mode === 'practice' && <button className="secondary-button voice-launch" onClick={onVoice} disabled={busy}>Play with voice <span aria-hidden="true">↗</span></button>}
-          <button className="primary-button" onClick={onStart} disabled={busy} aria-describedby="connection-explanation">{busy ? 'Preparing mission…' : mode === 'practice' ? 'Start Practice' : mode === 'live_voice' ? 'Start with Voice' : 'Start with Text'}</button>
+          {mode === 'practice' && <button className="secondary-button voice-launch" onClick={onVoice} disabled={busy || startDisabled}>Play with voice <span aria-hidden="true">↗</span></button>}
+          <button className="primary-button" onClick={onStart} disabled={busy || startDisabled} aria-describedby="connection-explanation">{busy ? 'Preparing mission…' : mode === 'practice' ? 'Start Practice' : mode === 'live_voice' ? 'Start with Voice' : 'Start with Text'}</button>
         </div>
         <p className="launch-note">Ask what Pip sees. Share the clue in your plans.<br/>Read each proposal; confirm only the action you intend.<br/>Spoken “yes” is not a confirmation.</p>
         <details className="quick-guide">

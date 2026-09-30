@@ -1,4 +1,6 @@
 import { applySwitchyardPanel, type SwitchyardConfiguration } from './switchyard.js'
+import { isRemixSetup, selectRemixRun } from './remix.js'
+import type { RemixSetup } from '../shared/remix.js'
 import { isSwitchyardLayout, type SwitchyardRotations } from '../shared/switchyard.js'
 import { createHash, randomUUID } from 'node:crypto'
 import type { ActionProposal, AnnotationRequest, Chapter, DockControl, HintLevel, HintResult, HumanView, LifecycleRequest, MessageRequest, MissionKind, MissionRecord, NotebookEntry, NotebookRequest, OptionalObjective, PowerRequest, ProposalDecisionRequest, RecordedMessage, Relay, RobotRecap, Scenario, ToolRequest, ToolResponse, ToolResult } from '../shared/contracts.js'
@@ -100,14 +102,15 @@ export class SessionStore {
   /** Server bootstrap only; no browser/model route can enable this sink. */
   enableLocalToolDiagnostics(sink: (event: ToolDiagnostic) => void): void { this.toolDiagnosticSink = sink }
 
-  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string, objective?: OptionalObjective | null): HumanView {
+  create(selectedScenario: Scenario = 'classic', kind: MissionKind = 'training', owner?: string, objective?: OptionalObjective | null, remix?: RemixSetup): HumanView {
     if (!scenario(selectedScenario) || !missionKind(kind) || (kind !== 'training' && selectedScenario !== 'classic')) throw new GameError(400, 'Choose Rescue Mission, The Switchyard, or Classic/Maintenance Training.')
     if (!optionalObjective(objective) || objective && kind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
+    if (remix !== undefined && kind !== 'switchyard') throw new GameError(400, 'Remix belongs only to The Switchyard.')
     for (const [id, session] of this.sessions) {
       if (this.now() - session.touchedAt > (this.options.idleMilliseconds ?? 7_200_000)) this.sessions.delete(id)
     }
     if (this.sessions.size >= (this.options.maxSessions ?? 100)) throw new GameError(429, 'The local server has reached its session limit. Try again later or restart it.')
-    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration, objective, this.options.switchyardConfiguration)
+    const state = initialState(undefined, selectedScenario, undefined, kind, this.options.galleryConfiguration, objective, this.options.switchyardConfiguration, remix === undefined ? undefined : selectRemixRun(remix, this.now()))
     this.sessions.set(state.sessionId, { owner, state, touchedAt: this.now(), requests: new Map(), safetyRequests: new Map(), lastTokenAt: -Infinity, records: new RoundRecords(state.roundId, selectedScenario, this.now), proposals: new Map(), latestProposal: null, proposalRevision: 0 })
     return this.get(state.sessionId)
   }
@@ -136,6 +139,8 @@ export class SessionStore {
         liftIndex: state.switchyard.liftIndex, liftTested: state.switchyard.liftTested,
         braceSeated: state.switchyard.braceSeated, bridgeDeployed: state.switchyard.bridgeDeployed,
         turntableAligned: state.switchyard.turntableAligned, approach: state.switchyard.approach, completed: state.switchyard.completed,
+        liftSurveyed: state.switchyard.liftSurveyed, serviceRestored: state.switchyard.serviceRestored,
+        ...(state.switchyard.runSpec ? { dispatchCode: state.switchyard.runSpec.dispatch.code } : {}),
       } } : {}),
       ...(state.flightRecorder.selected ? { flightRecorderSecured: state.flightRecorder.secured } : {}) })).digest('hex')
   }
@@ -393,10 +398,11 @@ export class SessionStore {
   }
 
   lifecycle(id: string, action: 'stop' | 'resume' | 'reset' | 'end' | 'cancel', input: unknown): Promise<HumanView> {
-    const optional = ['chapterEpoch', ...(action === 'reset' ? ['scenario', 'missionKind', 'optionalObjective'] : []), ...(action === 'cancel' ? ['reason'] : [])]
+    const optional = ['chapterEpoch', ...(action === 'reset' ? ['scenario', 'missionKind', 'optionalObjective', 'remix'] : []), ...(action === 'cancel' ? ['reason'] : [])]
     if (!fields(input, ['roundId', 'requestId'], optional) || !identifier(input.roundId) || !identifier(input.requestId)
       || ('scenario' in input && !scenario(input.scenario)) || ('missionKind' in input && !missionKind(input.missionKind))
       || ('optionalObjective' in input && !optionalObjective(input.optionalObjective))
+      || ('remix' in input && !isRemixSetup(input.remix))
       || ('reason' in input && (typeof input.reason !== 'string' || !['interrupt', 'supersede', 'stop'].includes(input.reason)))) throw new GameError(400, 'This command requires the current round and a request identifier. Only Restart may choose Classic or Maintenance.')
     const request = input as unknown as LifecycleRequest
     const session = this.session(id, request.roundId)
@@ -408,7 +414,8 @@ export class SessionStore {
         const nextScenario = request.scenario ?? current.scenario
         if (nextKind !== 'training' && nextScenario !== 'classic') throw new GameError(400, 'Rescue Mission starts with Classic Cargo Bay rules.')
         if (request.optionalObjective && nextKind !== 'rescue') throw new GameError(400, 'The optional flight recorder belongs only to an explicitly selected Rescue Mission.')
-        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration, request.optionalObjective, this.options.switchyardConfiguration)
+        if (request.remix !== undefined && nextKind !== 'switchyard') throw new GameError(400, 'Remix belongs only to The Switchyard.')
+        session.state = initialState(id, nextScenario, undefined, nextKind, this.options.galleryConfiguration, request.optionalObjective, this.options.switchyardConfiguration, request.remix === undefined ? undefined : selectRemixRun(request.remix, this.now()))
         session.records = new RoundRecords(session.state.roundId, session.state.scenario, this.now)
         session.requests.clear()
         session.safetyRequests.clear()

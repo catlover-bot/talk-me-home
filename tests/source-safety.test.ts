@@ -21,11 +21,20 @@ test('application-authored code, UI, comments, and documentation use English', (
 test('client source does not access server credentials or persist provider tokens', () => {
   for (const path of files('game/client')) {
     const source = readFileSync(path, 'utf8');
-    // Only this exact constant stop bit is permitted. Dynamic values, keys and
-    // every other storage use still fail, including any token persistence.
-    const checked = path === join('game/client', 'release-stop.ts') ? source
+    // Goal 010 authorizes a bounded code/outcome diary through one adapter.
+    // All other storage access and all client credential access remain forbidden.
+    let checked = path === join('game/client', 'release-stop.ts') ? source
       .replace("sessionStorage.getItem('tmh-goal-007-provider-stopped')", '')
       .replace("sessionStorage.setItem('tmh-goal-007-provider-stopped', '1')", '') : source;
+    if (path === join('game/client', 'switchyard-history.ts')) {
+      assert.match(source, /SWITCHYARD_HISTORY_KEY = 'talk-me-home\.remix-history\.v1'/);
+      assert.deepEqual(source.match(/\.(?:getItem|setItem|removeItem)\([^;\n]+/g), [
+        '.getItem(SWITCHYARD_HISTORY_KEY)',
+        '.setItem(SWITCHYARD_HISTORY_KEY, JSON.stringify(merged))',
+        '.removeItem(SWITCHYARD_HISTORY_KEY)',
+      ]);
+      checked = source.replaceAll('window.localStorage', '');
+    }
     assert.equal(/VITE_.*(?:KEY|TOKEN)|process\.env|localStorage|sessionStorage/.test(checked), false, `Forbidden client credential or storage access in ${path}`);
     assert.equal(/from\s+['"][^'"]*server\//.test(source), false, `Server import in ${path}`);
   }
