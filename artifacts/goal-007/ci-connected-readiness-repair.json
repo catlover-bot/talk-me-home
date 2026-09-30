@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "kind": "goal-007-offline-connected-readiness-helper-repair",
+  "baseCommit": "89f6c5524733fd371bdd05c480a3b58a7a6aa188",
+  "preservedCi": {
+    "mainBrowserPassed": 200,
+    "mainBrowserFailed": 0,
+    "featureRun": "36659329630",
+    "featureBrowserPassed": 199,
+    "featureBrowserFailed": 1,
+    "featureFailure": "Uninformative Gallery acquisition entered the shared player while the normal message input was disabled and failed its initial strict scope guard."
+  },
+  "repair": "After normal Connect, the offline helper waits for the normal enabled message input before returning. Runtime and player scope guards are unchanged.",
+  "callerReview": {
+    "existingCallerFiles": 10,
+    "existingCallSites": 21,
+    "intentionalBeforeReadyTests": "release-refusal.spec.ts uses its own Connect clicks; unchanged",
+    "permissionDenialTests": "readiness.spec.ts and voice-ui.spec.ts use their own denial controls; unchanged"
+  },
+  "controlledReproduction": {
+    "modes": [
+      "Text",
+      "Voice"
+    ],
+    "heldEvent": "session.ready",
+    "precondition": "Observed outgoing session.update; normal message input disabled; End control enabled",
+    "beforeHelperFix": {
+      "cases": 2,
+      "failed": 2,
+      "reason": "Helper returned while readiness was still withheld"
+    },
+    "fixedSleepUsed": false,
+    "realProvider": false
+  },
+  "validation": {
+    "selectedBrowserCases": 46,
+    "passed": 46,
+    "failed": 0,
+    "waiterUnitPassed": 3,
+    "typecheck": "pass",
+    "productionBuild": "pass",
+    "diffCheck": "pass",
+    "newHeldReadyCasesAcrossViewports": 4
+  },
+  "partition": {
+    "totalCases": 204,
+    "exactlyOnce": true,
+    "lanesPerViewport": [
+      {
+        "lane": "1/2",
+        "cases": 49,
+        "workers": 2
+      },
+      {
+        "lane": "2/2",
+        "cases": 48,
+        "workers": 2
+      },
+      {
+        "lane": "hosted-voice",
+        "cases": 2,
+        "workers": 2
+      },
+      {
+        "lane": "full-player",
+        "cases": 3,
+        "workers": 1
+      }
+    ],
+    "globalTimeoutMs": 210000,
+    "defaultCaseTimeoutMs": 20000,
+    "fullPlayerCaseTimeoutMs": 45000,
+    "hostedVoiceCaseTimeoutMs": 90000,
+    "retries": 0
+  },
+  "privateCaseIndexSha256": "6f661845403024006fd1522e73a42b3944b13482c1ccb3834df9340397b3d380",
+  "privatePartitionSha256": "4cbf62032efb1fe19fc6e9f1c9055c6d592195a3106d846c4a84e45838c3f34c",
+  "runtimeSha256": "b563fd660d57268b6c8f58eea65362af6de841e8e855c45e08d8458f3a11cf2e",
+  "runtimePlayerHarnessChanged": false,
+  "realProviderCalls": 0,
+  "newReservations": 0,
+  "finalPushedHeadCi": "pending after integration"
+}

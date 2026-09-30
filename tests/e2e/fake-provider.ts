@@ -168,7 +168,7 @@ export async function confirmFixtureProposal(page: Page, expectedLabel: string):
   return (await decision).json() as Promise<ToolResponse>;
 }
 
-/** Explicitly complete the same local readiness step as a player, using fake devices. */
+/** Complete local checks and await an established fake call through the normal UI. */
 export async function confirmLocalReadiness(page: Page, kind: 'Voice' | 'Text' = 'Text') {
   await expect(page.getByRole('dialog', { name: 'Check your connection' })).toBeVisible();
   if (kind === 'Voice') {
@@ -177,6 +177,7 @@ export async function confirmLocalReadiness(page: Page, kind: 'Voice' | 'Text' =
   }
   await page.getByRole('button', { name: 'Play test tone', exact: true }).click();
   await page.getByRole('button', { name: `Connect Live ${kind}`, exact: true }).click();
+  await expect(page.getByLabel('Type a message', { exact: true })).toBeEnabled();
 }
 
 export async function fixtureScreenshot(page: Page, path: string) {
