@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-09-30T01:10:32.795Z",
+  "sourceBase": "c69101909e25e57be880a722bd0952d83a01b7c4",
+  "scope": "Isolated hosted-admission implementation; injected providers only, no real grant activation",
+  "providerRequests": 0,
+  "realFundedGrantCreated": false,
+  "historicalLedgerMutations": 0,
+  "validation": {
+    "typecheck": "PASS",
+    "fullUnitTests": 494,
+    "focusedBrowserTests": 16,
+    "viewports": [
+      "1280x720",
+      "1440x900"
+    ],
+    "productionBuild": "PASS",
+    "compiledProductionProfiles": [
+      "default600 Live-disabled",
+      "protected900 Live-disabled and grant missing"
+    ],
+    "diffCheck": "PASS",
+    "inspectedScreenshots": [
+      "refusal recorded at1280x720",
+      "refusal report failed at1440x900"
+    ],
+    "cleanup": "Owned test servers and browsers closed"
+  },
+  "runtimeSha256": "e319aadf79d39cc8dda1f4347e1cd89b023b69acd9cb4398396efc4988819f8f",
+  "candidateFilesSha256": {
+    "docs/goal-007-admission.md": "6256ff0e48a0691cb9a9f85a66609b2ced00ad7e4a70e38b56affe5376a197a0",
+    "game/client/api.ts": "9529cc80628a861dc1cda28abb0ec7c01ba93abfc7373607497af47e6317d2cb",
+    "game/client/release-stop.ts": "a6a82ba9a083707cdd290492221f8accc447840e52df6a3229f30eabccc90d12",
+    "game/client/useMission.ts": "b02fd70a518e657282c192568549311f3621e7bd7cd7a17ceeda85899aa56356",
+    "game/client/voice.ts": "1a38e1fea90f0b7d15cb6327c8c786e1a83c6ade93c7cd8b4a33c7b65e692404",
+    "game/server/browser-access.ts": "c1c3d13fb119e809d9c86f4ac720419e27dad7087764511a04fe99b8a059e21c",
+    "game/server/http.ts": "79f644131da7ef9e728b8a18b9610ec03830bd29e8ac5028bccf1170dfd2069f",
+    "game/server/production.ts": "a99f670679c2005f4455db18e561e7e5251d7d4b79d53ba0cb3290ce1073c673",
+    "game/server/release-admission.ts": "deb0e41eaacbec6021a59471a0d9535649341c92469025ee5f6747fb97692505",
+    "scripts/manage-release-allocation.mjs": "b5cb1fbf58c7a322cf18fe8996f0e971a1037746e68d1b546d3b4ad36dd4335d",
+    "tests/e2e/release-refusal.spec.ts": "78a77c3adc6d28021a98c09165b1c791db3caca590a8980b3cb996de0c83e5e8",
+    "tests/release-admission.test.ts": "af62ac26a98c5338d927aac835989218e158f69c70f2bcae24404e67685434fb",
+    "tests/source-safety.test.ts": "fb09389b233ffc5dc53ef698f965990ee000871325cceec8cf25a57e59d5d69e",
+    "tests/voice.test.ts": "3a87d5954deb97d56a0879e7d35cfeb243962679071317290e53670605f8099e"
+  },
+  "receipts": [
+    ".validation/goal-007-admission/unit-reviewed.log",
+    ".validation/goal-007-admission/build-reviewed.log",
+    ".validation/goal-007-admission/browser-final.log",
+    ".validation/goal-007-admission/compiled-profile-check.json"
+  ],
+  "limitation": "No deployment, new provider use, account lookup, actual hosted grant or Live acceptance was performed. Acceptance records require operator review of actual hosted reports; booleans alone are not proof."
+}

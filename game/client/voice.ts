@@ -1,5 +1,5 @@
 import { BrowserAudio, microphoneError, type VoiceAudio } from './audio.ts';
-import { MissionServiceError } from './api.ts';
+import { MissionServiceError, type ProviderAccountRefusal } from './api.ts';
 import type { ActionOutcome, ActionProposal, Chapter, HumanView, RecordedMessage, RobotLocalPerception } from '../shared/contracts';
 import { currentRobotPerception } from './robot-perception';
 import { VoiceProtocol, type ProviderEvent, type ToolCall, type TranscriptEntry, type VoiceStatus, type VoiceInputState, type ReplyCompletion, type CancellationReason } from './voice-protocol.ts';
@@ -17,6 +17,8 @@ export interface VoiceCallbacks {
   onReplyDone?(reply: ReplyCompletion): void;
   /** Called at the client connection cap; the owner preserves the mission checkpoint. */
   onSessionLimit?(): void;
+  /** Safe classification only; never forwards raw provider account diagnostics. */
+  onProviderAccountRefusal?(reason: ProviderAccountRefusal): void;
 }
 
 export interface VoiceStartOptions {
@@ -412,6 +414,16 @@ export class LiveVoice {
     if (this.ended) return;
     if (event.type === 'input.speech.started') { this.playerTurn++; this.cancelAcknowledgement(); }
     if (event.type === 'session.error') {
+      const values = [event.code, event.message].filter((value): value is string => typeof value === 'string');
+      const refused: ProviderAccountRefusal | undefined = values.some(value => /\b(?:workspace|account)[\s_-]+(?:mismatch(?:ed)?|does[\s_-]+not[\s_-]+match)\b/i.test(value)) || event.code === 'session_forbidden'
+        ? 'provider_credential_or_account_refused'
+        : values.some(value => /\binsufficient[\s_-]+(?:credits?|balance)\b/i.test(value)) || ['payment_required', 'account_balance_exhausted'].includes(String(event.code).toLowerCase())
+          ? 'provider_credit_refused' : undefined;
+      if (refused) {
+        try { this.callbacks.onProviderAccountRefusal?.(refused); } catch { /* Reporting cannot delay stopping local input and playback. */ }
+        this.fail('Live stopped after a reported account or credit refusal. Contact the owner before trying another Live connection.');
+        return;
+      }
       // Provider messages/config echoes can contain credentials or private details.
       const message = event.code === 'session_expired'
         ? 'The call time limit expired. Start a fresh connection to continue.'

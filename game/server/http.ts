@@ -6,6 +6,7 @@ import { BrowserAccess } from './browser-access.js'
 import { LiveAdmission } from './admission.js'
 import { serveGame } from './static.js'
 import type { ReleaseIdentity } from './release.js'
+import { RELEASE_GRANT_ID, ReleaseAdmission, type ReleaseCapability, type ReleaseReservation } from './release-admission.js'
 
 interface ServerOptions {
   releaseIdentity?: ReleaseIdentity
@@ -23,6 +24,11 @@ interface ServerOptions {
   publicLiveEnabled?: boolean
   demoAccessCode?: string
   admission?: LiveAdmission
+  /** Goal 007's single hosted allocation; never combined with a legacy allowance. */
+  releaseAdmission?: ReleaseAdmission
+  hostedQaEnabled?: boolean
+  qaAccessCode?: string
+  qaTextAccessCode?: string
   /** HTTP-only localhost production smoke tests; deployed cookies stay Secure. */
   secureCookies?: boolean
 }
@@ -71,20 +77,38 @@ export function createGameServer(options: ServerOptions = {}) {
     try { const parsed = new URL(origin); return parsed.origin !== origin || !['http:', 'https:'].includes(parsed.protocol) }
     catch { return true }
   }))) throw new Error('Production requires explicit game origins.')
-  const browserAccess = new BrowserAccess(options.demoAccessCode, options.secureCookies ?? production)
-  const liveEnabled = () => Boolean(apiKey && (process.env.GAME_DISABLE_LIVE !== '1' || options.allowTestProvider) && (!production || options.publicLiveEnabled && options.demoAccessCode && options.demoAccessCode.length >= 16 && options.admission))
-  const accessStatus = (request: IncomingMessage, justAuthorized = false) => {
+  if (options.releaseAdmission && (!production || options.admission || maxVoiceSessionSeconds !== 900)) throw new Error('The protected release requires its exclusive hosted 900-second allocation')
+  const releaseStatus = (capability: ReleaseCapability, owner?: string) => {
+    const enabled = capability.purpose === 'qa' ? options.hostedQaEnabled : options.publicLiveEnabled
+    return enabled ? options.releaseAdmission!.status(capability, owner) : { available: false, status: 503, message: 'This Live access is not open. Practice is available.' }
+  }
+  const browserAccess = new BrowserAccess(options.demoAccessCode, options.secureCookies ?? production, Date.now, options.releaseAdmission ? {
+    qa: options.qaAccessCode, qaText: options.qaTextAccessCode,
+    allowed: (capability, owner) => { const status = releaseStatus(capability, owner); if (!status.available) throw new GameError(status.status, status.message) },
+  } : undefined)
+  // At most sixteen entries for this grant; never exposed as a diagnostics or administration API.
+  const issuedReleaseConnections = new Map<string, { roundId: string; owner: string; reservation: ReleaseReservation }>()
+  const liveEnabled = () => Boolean(apiKey && (process.env.GAME_DISABLE_LIVE !== '1' || options.allowTestProvider)
+    && (!production || (options.releaseAdmission
+      ? options.hostedQaEnabled && (options.qaAccessCode || options.qaTextAccessCode) || options.publicLiveEnabled && options.demoAccessCode
+      : options.publicLiveEnabled && options.demoAccessCode && options.demoAccessCode.length >= 16 && options.admission)))
+  const accessStatus = (request: IncomingMessage, justAuthorized = false, exchangedCapability?: ReleaseCapability) => {
     const enabled = liveEnabled()
-    const status = production && enabled ? options.admission!.status() : undefined
+    const capability = exchangedCapability ?? browserAccess.capability(request)
+    const status = production && enabled ? options.releaseAdmission
+      ? releaseStatus(capability ?? { purpose: 'reviewer', mode: 'voice' }, browserAccess.owner(request))
+      : options.admission!.status() : undefined
     return {
       liveEnabled: enabled,
+      maxSessionSeconds: maxVoiceSessionSeconds,
       authorized: !production || justAuthorized || browserAccess.authorized(request),
       available: enabled && (status?.available ?? true),
       message: !enabled ? 'Live is unavailable for this demo. Practice is available without a connection.' : status?.message ?? 'Live is available. Connect only when you are ready.',
+      ...(capability && options.releaseAdmission ? { allocation: options.releaseAdmission.accessSummary(capability, browserAccess.owner(request)) } : {}),
     }
   }
   if (!Number.isInteger(maxVoiceSessionSeconds) || maxVoiceSessionSeconds < 60 || maxVoiceSessionSeconds > 600 && maxVoiceSessionSeconds !== 900) throw new Error('Voice session duration must be 60 to 600 seconds or the approved 900-second QA cap.')
-  if (maxVoiceSessionSeconds === 900 && (!production || options.admission?.validateSessionLimit() !== 900)) throw new Error('The extended QA cap requires its matching durable allowance.')
+  if (maxVoiceSessionSeconds === 900 && (!production || !options.releaseAdmission && options.admission?.validateSessionLimit() !== 900)) throw new Error('The extended QA cap requires its matching durable allowance.')
   return createServer(async (request, response) => {
     try {
       const requestUrl = new URL(request.url ?? '/', 'http://localhost')
@@ -102,8 +126,8 @@ export function createGameServer(options: ServerOptions = {}) {
       if (path === '/api/access' && request.method === 'POST') {
         if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
         const input = await jsonBody(request)
-        if (production) browserAccess.exchange(request, response, input)
-        return reply(response, 200, accessStatus(request, true))
+        const capability = production ? browserAccess.exchange(request, response, input) : undefined
+        return reply(response, 200, accessStatus(request, true, capability))
       }
       if (request.method === 'POST' && path === '/api/sessions') {
         const setup = await jsonBody(request)
@@ -114,7 +138,7 @@ export function createGameServer(options: ServerOptions = {}) {
         if (!exactObject(setup, ['scenario']) || (setup.scenario !== 'classic' && setup.scenario !== 'maintenance')) throw new GameError(400, 'Choose Classic or Maintenance when starting a mission.')
         return reply(response, 201, store.create(setup.scenario, 'training', owner))
       }
-      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|proposal-decision|stop|resume|reset|end|cancel|voice-token|messages|record|notebook|recap|hint))?$/)
+      const route = path.match(/^\/api\/sessions\/([A-Za-z0-9_-]+)(?:\/(power|relay|dock-control|annotations|tools|proposal-decision|stop|resume|reset|end|cancel|voice-token|live-refusal|messages|record|notebook|recap|hint))?$/)
       if (!route) throw new GameError(404, 'This game endpoint does not exist.')
       const id = route[1]!
       const action = route[2]
@@ -127,6 +151,17 @@ export function createGameServer(options: ServerOptions = {}) {
       }
       if (request.method !== 'POST' || !action) throw new GameError(405, 'This method is not available for the game endpoint.')
       const body = await jsonBody(request)
+      if (action === 'live-refusal') {
+        if (requestUrl.searchParams.size || !exactObject(body, ['roundId', 'reason']) || typeof body.roundId !== 'string'
+          || body.reason !== 'provider_credit_refused' && body.reason !== 'provider_credential_or_account_refused') throw new GameError(400, 'Send only the current connection and a supported Live stop reason.')
+        const issued = issuedReleaseConnections.get(id)
+        const owner = browserAccess.owner(request)
+        if (!options.releaseAdmission || !issued || !owner || issued.owner !== owner || issued.roundId !== body.roundId) throw new GameError(403, 'An issued protected connection is required for this report.')
+        // An access-code cookie can expire during an issued call. The owned session and
+        // issued reservation remain sufficient for this stop-only report, never a new token.
+        options.releaseAdmission.reportClientRefusal(issued.reservation.attempt, issued.reservation, owner, body.reason)
+        return reply(response, 200, { stopped: true, source: 'client_report' })
+      }
       if (action === 'power') return reply(response, 200, await store.power(id, body))
       if (action === 'relay' || action === 'dock-control') return reply(response, 200, await store.control(id, action === 'relay' ? 'relay' : 'dock', body))
       if (action === 'annotations') return reply(response, 200, await store.annotate(id, body))
@@ -137,6 +172,7 @@ export function createGameServer(options: ServerOptions = {}) {
       if (action === 'hint') return reply(response, 200, await store.hint(id, body))
       if (action === 'record' || action === 'recap') throw new GameError(405, 'Read this mission record with a GET request.')
       if (action === 'voice-token') {
+        let releaseReservation: ReleaseReservation | undefined
         if (requestUrl.searchParams.size) throw new GameError(400, 'Voice connection limits are selected by the game server.')
         if (production) {
           if (!liveEnabled()) throw new GameError(503, 'Live is unavailable for this demo. Choose Practice.')
@@ -145,7 +181,17 @@ export function createGameServer(options: ServerOptions = {}) {
         const view = store.reserveToken(id, body)
         if (process.env.GAME_DISABLE_LIVE === '1' && !options.allowTestProvider) throw new GameError(503, 'Live AssemblyAI is disabled for this server. Mock / Simulation remains available.')
         if (!apiKey) throw new GameError(503, 'Live AssemblyAI is unavailable: set ASSEMBLYAI_API_KEY in the root .env file, then restart the game server. Mock / Simulation remains available.')
-        if (production) options.admission!.reserve()
+        if (production) {
+          if (options.releaseAdmission) {
+            const capability = browserAccess.capability(request)!
+            const owner = browserAccess.owner(request)!
+            const status = releaseStatus(capability, owner)
+            if (!status.available) throw new GameError(status.status, status.message)
+            releaseReservation = options.releaseAdmission.reserve(capability, owner)
+            // Also survives a failed provider request, without disclosing browser credentials.
+            response.setHeader('x-tmh-allocation-attempt', String(releaseReservation.attempt))
+          } else options.admission!.reserve()
+        }
         // Official browser integration: token redemption and session duration are separate limits.
         // https://www.assemblyai.com/docs/voice-agents/voice-agent-api/browser-integration
         const url = new URL('https://agents.assemblyai.com/v1/token')
@@ -166,7 +212,10 @@ export function createGameServer(options: ServerOptions = {}) {
             const insufficientCredit = messages.some(value => /\binsufficient[\s_-]+(?:credits?|balance)\b/i.test(value))
             const reason = upstream.status === 401 || upstream.status === 403 || accountMismatch ? 'provider_credential_or_account_refused'
               : upstream.status === 402 || insufficientCredit || typeof code === 'string' && ['payment_required', 'account_balance_exhausted'].includes(code.toLowerCase()) ? 'provider_credit_refused' : null
-            if (reason) await options.onProviderAccountRefusal?.(reason)
+            if (reason) {
+              options.releaseAdmission?.halt(reason, 'token_response')
+              await options.onProviderAccountRefusal?.(reason)
+            }
             throw new Error('Token request failed')
           }
           const data: unknown = await upstream.json()
@@ -178,7 +227,10 @@ export function createGameServer(options: ServerOptions = {}) {
         }
         const current = store.get(id)
         if (current.roundId !== view.roundId || current.actionEpoch !== view.actionEpoch || current.status !== 'active') throw new GameError(409, 'The mission changed while connecting. Connect again from the current round.')
-        return reply(response, 200, { token, sessionConfig, maxSessionSeconds: maxVoiceSessionSeconds })
+        if (releaseReservation) issuedReleaseConnections.set(id, { roundId: view.roundId, owner: browserAccess.owner(request)!, reservation: releaseReservation })
+        return reply(response, 200, { token, sessionConfig, maxSessionSeconds: maxVoiceSessionSeconds,
+          ...(releaseReservation ? { allocation: { grantId: RELEASE_GRANT_ID, purpose: releaseReservation.purpose, mode: releaseReservation.mode, attempt: releaseReservation.attempt, poolAttempt: releaseReservation.poolAttempt, reservedSeconds: 970, leaseUntil: releaseReservation.leaseUntil, runtimeSha256: releaseReservation.runtimeSha256 } } : {}),
+        })
       }
       return reply(response, 200, await store.lifecycle(id, action as 'stop' | 'resume' | 'reset' | 'end' | 'cancel', body))
     } catch (error) {

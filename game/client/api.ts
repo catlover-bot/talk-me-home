@@ -46,7 +46,7 @@ async function request<T>(
 }
 
 export const requestId = () => crypto.randomUUID();
-export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string }
+export interface DemoAccess { liveEnabled: boolean; authorized: boolean; available: boolean; message: string; maxSessionSeconds?: number }
 export const demoAccess = (signal?: AbortSignal) => request<DemoAccess>('/access', undefined, signal);
 export const unlockDemo = (code: string) => request<DemoAccess>('/access', { code });
 export const createSession = (scenario: Scenario = 'classic', missionKind: MissionKind = 'training', optionalObjective?: HumanView['optionalObjective']) => request<HumanView>("/sessions", { scenario, missionKind, ...(optionalObjective ? { optionalObjective } : {}) });
@@ -120,11 +120,18 @@ export async function voiceToken(view: HumanView) {
     token: string;
     sessionConfig: Record<string, unknown>;
     maxSessionSeconds: number;
+    allocation?: { grantId: string };
   }>(`/sessions/${encodeURIComponent(view.sessionId)}/voice-token`, {
     roundId: view.roundId,
   });
-  return { token: data.token, config: data.sessionConfig, maxSessionSeconds: data.maxSessionSeconds };
+  return { token: data.token, config: data.sessionConfig, maxSessionSeconds: data.maxSessionSeconds, protectedRelease: data.allocation?.grantId === 'goal-007-release-2026-09-30' };
 }
+
+export type ProviderAccountRefusal = 'provider_credit_refused' | 'provider_credential_or_account_refused';
+/** A conservative stop report contains no provider text, token, or account details. */
+export const reportLiveRefusal = (view: HumanView, reason: ProviderAccountRefusal) => request<{ stopped: true; source: 'client_report' }>(
+  `/sessions/${encodeURIComponent(view.sessionId)}/live-refusal`, { roundId: view.roundId, reason },
+);
 
 const path = (view: HumanView, resource: string) => `/sessions/${encodeURIComponent(view.sessionId)}/${resource}`;
 export const missionRecord = (view: HumanView) => request<MissionRecord>(`${path(view, 'record')}?roundId=${encodeURIComponent(view.roundId)}`);

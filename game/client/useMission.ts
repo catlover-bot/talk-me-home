@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { protectedLiveStopped, rememberProtectedLiveStop } from './release-stop';
 import type { HumanView, MissionRecord, MissionKind, Scenario, TransportOrigin, InputMethod, Chapter, Relay, DockControl, HintLevel, CancelReason, RecordedMessage } from '../shared/contracts';
 import * as api from './api';
 import { LiveVoice, type TranscriptEntry, type VoiceInputState, type VoiceStatus } from './voice';
@@ -64,6 +65,7 @@ export function useMission() {
   const [effectsVolume, setEffectsVolume] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [readinessMode, setReadinessMode] = useState<'live_voice' | 'live_text' | null>(null);
+  const [providerAccountStopped, setProviderAccountStopped] = useState(protectedLiveStopped);
   const effects = useRef(new LocalEffects());
   const voice = useRef<LiveVoice | null>(null);
   const stopping = useRef<Promise<void> | null>(null);
@@ -255,6 +257,7 @@ export function useMission() {
 
   const start = (connectionMode: TransportOrigin = mode) => {
     if (connectionMode === 'game') return;
+    if (connectionMode !== 'practice' && providerAccountStopped) { setError('Live remains stopped after an account or credit refusal. Contact the owner; Practice is available.'); return; }
     if (busyRef.current || connectedRef.current || voice.current) return;
     setBusyNow(true); setError(''); setWarning(''); setInterrupted(false); setSeconds(0); setConnectionLimitSeconds(600);
     // Both audio paths begin in this user gesture; no capture happens on page load.
@@ -293,6 +296,7 @@ export function useMission() {
     }
     // Provider call identifiers belong to one connection, not the entire retained mission.
     const localCallIds = new Map<string, string>();
+    let issuedReleaseView: HumanView | undefined;
     const connection = new LiveVoice({
       onTranscript: (entry, context) => {
         const captured = context as HumanView | undefined;
@@ -314,6 +318,14 @@ export function useMission() {
       onError: message => { if (expected === generation.current) setError(message); },
       onWarning: message => { if (expected === generation.current) setWarning(message); },
       onSessionLimit: () => { if (expected === generation.current) void stop(); },
+      onProviderAccountRefusal: reason => {
+        if (!issuedReleaseView) return;
+        setProviderAccountStopped(true);
+        rememberProtectedLiveStop();
+        void api.reportLiveRefusal(issuedReleaseView, reason).catch(() => {
+          if (expected === generation.current) setWarning('The Live stop could not be recorded. Do not reconnect; contact the owner.');
+        });
+      },
       onMicrophone: value => { if (expected === generation.current) { setMicrophone(value); effects.current.setVoiceActive(value || playingRef.current); } },
       onInputState: value => { if (expected === generation.current) { setInputState(value); if (value === 'receiving') setInterrupted(false); } },
       onToolState: value => { if (expected === generation.current) setToolPending(value); },
@@ -337,6 +349,7 @@ export function useMission() {
       token: async () => {
         const { current, recap } = await prepareMission();
         const token = await api.voiceToken(current);
+        if (token.protectedRelease) issuedReleaseView = current;
         if (expected !== generation.current) throw new DOMException('Canceled', 'AbortError');
         // Mirror the supported server limit for display; LiveVoice still validates and enforces it.
         setConnectionLimitSeconds(token.maxSessionSeconds === 900 ? 900 : 600);
@@ -557,6 +570,7 @@ export function useMission() {
 
   const requestStart = (next: TransportOrigin = mode) => {
     if (next === 'game') return;
+    if (next !== 'practice' && providerAccountStopped) { setError('Live remains stopped after an account or credit refusal. Contact the owner; Practice is available.'); return; }
     if (busyRef.current || connectedRef.current || voice.current) return;
     chooseMode(next);
     if (next === 'practice') start(next);
