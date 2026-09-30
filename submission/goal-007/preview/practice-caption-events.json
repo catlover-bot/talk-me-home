@@ -1,0 +1,259 @@
+{
+  "sourceCommit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+  "mode": "Practice - deterministic simulation",
+  "events": [
+    {
+      "atSeconds": 20.631,
+      "speaker": "Player - Practice text",
+      "text": "Look around"
+    },
+    {
+      "atSeconds": 20.904,
+      "speaker": "Pip - Practice text",
+      "input": "Look around",
+      "text": "I am on the near-side safe platform. The Door is open. The Conveyor is running. A Latch lever stands within reach on my safe platform, connected to the Door by a mechanical rod."
+    },
+    {
+      "atSeconds": 37.593,
+      "speaker": "Player - Practice text",
+      "text": "Keep the door open"
+    },
+    {
+      "atSeconds": 37.868,
+      "speaker": "Pip - Practice text",
+      "input": "Keep the door open",
+      "text": "I propose: Engage the Latch."
+    },
+    {
+      "atSeconds": 45.895,
+      "speaker": "Game event",
+      "input": "Keep the door open",
+      "text": "Engage the Latch: completed after your confirmation."
+    },
+    {
+      "atSeconds": 55.795,
+      "speaker": "Player - Practice text",
+      "text": "Cross to the far side"
+    },
+    {
+      "atSeconds": 56.053,
+      "speaker": "Pip - Practice text",
+      "input": "Cross to the far side",
+      "text": "I propose: Move to the far-side platform."
+    },
+    {
+      "atSeconds": 62.623,
+      "speaker": "Game event",
+      "input": "Cross to the far side",
+      "text": "Move to the far-side platform: completed after your confirmation."
+    },
+    {
+      "atSeconds": 70.209,
+      "speaker": "Player - Practice text",
+      "text": "Go through the east gate"
+    },
+    {
+      "atSeconds": 70.459,
+      "speaker": "Pip - Practice text",
+      "input": "Go through the east gate",
+      "text": "I propose: Move through the east gate."
+    },
+    {
+      "atSeconds": 73.389,
+      "speaker": "Game event",
+      "input": "Go through the east gate",
+      "text": "Move through the east gate: completed after your confirmation."
+    },
+    {
+      "atSeconds": 86.293,
+      "speaker": "Player - Practice text",
+      "text": "Go through the southeast gate"
+    },
+    {
+      "atSeconds": 86.544,
+      "speaker": "Pip - Practice text",
+      "input": "Go through the southeast gate",
+      "text": "I propose: Move through the southeast gate."
+    },
+    {
+      "atSeconds": 86.689,
+      "speaker": "Game event",
+      "input": "Go through the southeast gate",
+      "text": "Move through the southeast gate: completed after your confirmation."
+    },
+    {
+      "atSeconds": 89.86,
+      "speaker": "Player - Practice text",
+      "text": "Inspect the flight recorder"
+    },
+    {
+      "atSeconds": 90.1,
+      "speaker": "Pip - Practice text",
+      "input": "Inspect the flight recorder",
+      "text": "The flight recorder is a palm-sized case, worn smooth at the edges, with a faded hand-drawn star beside its handle. Its label reads: \"Pip / flight notes.\" It is loose in the archive cradle; its recordings have not been played. I can propose securing it, if you choose. Bringing it home is optional."
+    },
+    {
+      "atSeconds": 94.677,
+      "speaker": "Player - Practice text",
+      "text": "Pick up the flight recorder"
+    },
+    {
+      "atSeconds": 94.928,
+      "speaker": "Pip - Practice text",
+      "input": "Pick up the flight recorder",
+      "text": "I propose: Secure the flight recorder."
+    },
+    {
+      "atSeconds": 99.639,
+      "speaker": "Game event",
+      "input": "Pick up the flight recorder",
+      "text": "Secure the flight recorder: completed after your confirmation."
+    },
+    {
+      "atSeconds": 104.086,
+      "speaker": "Player - Practice text",
+      "text": "Inspect the northeast gate"
+    },
+    {
+      "atSeconds": 104.331,
+      "speaker": "Pip - Practice text",
+      "input": "Inspect the northeast gate",
+      "text": "Northeast gate is closed. Cargo blocks this gate opening. I remain in the safe room. The other reachable gates can still be checked."
+    },
+    {
+      "atSeconds": 108.586,
+      "speaker": "Player - Practice text",
+      "text": "Go through the northwest gate"
+    },
+    {
+      "atSeconds": 108.828,
+      "speaker": "Pip - Practice text",
+      "input": "Go through the northwest gate",
+      "text": "I propose: Move through the northwest gate."
+    },
+    {
+      "atSeconds": 108.97,
+      "speaker": "Game event",
+      "input": "Go through the northwest gate",
+      "text": "Move through the northwest gate: completed after your confirmation."
+    },
+    {
+      "atSeconds": 109.022,
+      "speaker": "Player - Practice text",
+      "text": "Go through the northeast gate"
+    },
+    {
+      "atSeconds": 109.274,
+      "speaker": "Pip - Practice text",
+      "input": "Go through the northeast gate",
+      "text": "I propose: Move through the northeast gate."
+    },
+    {
+      "atSeconds": 109.422,
+      "speaker": "Game event",
+      "input": "Go through the northeast gate",
+      "text": "Move through the northeast gate: completed after your confirmation."
+    },
+    {
+      "atSeconds": 109.423,
+      "speaker": "Player - Practice text",
+      "text": "Inspect the southeast gate"
+    },
+    {
+      "atSeconds": 109.662,
+      "speaker": "Pip - Practice text",
+      "input": "Inspect the southeast gate",
+      "text": "Southeast gate is closed. The opening is clear of cargo. A remote circuit controls it; there is no local circuit switch."
+    },
+    {
+      "atSeconds": 109.722,
+      "speaker": "Player - Practice text",
+      "text": "Go through the southeast gate"
+    },
+    {
+      "atSeconds": 109.974,
+      "speaker": "Pip - Practice text",
+      "input": "Go through the southeast gate",
+      "text": "I propose: Move through the southeast gate."
+    },
+    {
+      "atSeconds": 110.121,
+      "speaker": "Game event",
+      "input": "Go through the southeast gate",
+      "text": "Move through the southeast gate: completed after your confirmation."
+    },
+    {
+      "atSeconds": 121.135,
+      "speaker": "Player - Practice text",
+      "text": "Look around"
+    },
+    {
+      "atSeconds": 121.373,
+      "speaker": "Pip - Practice text",
+      "input": "Look around",
+      "text": "I am on the Return Dock's safe platform. A spring-loaded contact and recovery capsule are within reach. I am not holding the contact. The capsule entrance is within reach."
+    },
+    {
+      "atSeconds": 123.898,
+      "speaker": "Player - Practice text",
+      "text": "Hold the contact"
+    },
+    {
+      "atSeconds": 124.143,
+      "speaker": "Pip - Practice text",
+      "input": "Hold the contact",
+      "text": "I propose: Hold the charging contact."
+    },
+    {
+      "atSeconds": 127.9,
+      "speaker": "Game event",
+      "input": "Hold the contact",
+      "text": "Hold the charging contact: completed after your confirmation."
+    },
+    {
+      "atSeconds": 139.102,
+      "speaker": "Player - Practice text",
+      "text": "Release the contact"
+    },
+    {
+      "atSeconds": 139.348,
+      "speaker": "Pip - Practice text",
+      "input": "Release the contact",
+      "text": "I propose: Release the charging contact."
+    },
+    {
+      "atSeconds": 139.484,
+      "speaker": "Game event",
+      "input": "Release the contact",
+      "text": "Release the charging contact: completed after your confirmation."
+    },
+    {
+      "atSeconds": 141.98,
+      "speaker": "Player - Practice text",
+      "text": "Board the capsule"
+    },
+    {
+      "atSeconds": 142.223,
+      "speaker": "Pip - Practice text",
+      "input": "Board the capsule",
+      "text": "I propose: Board the recovery capsule."
+    },
+    {
+      "atSeconds": 142.367,
+      "speaker": "Game event",
+      "input": "Board the capsule",
+      "text": "Board the recovery capsule: completed after your confirmation."
+    },
+    {
+      "atSeconds": 148.054,
+      "speaker": "Player - Practice text",
+      "text": "Confirm return"
+    },
+    {
+      "atSeconds": 148.301,
+      "speaker": "Pip - Practice text",
+      "input": "Confirm return",
+      "text": "I propose: Confirm the authorized return."
+    }
+  ]
+}

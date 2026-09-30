@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "status": "CURRENT_PRACTICE_PREVIEW_NOT_LIVE_ACCEPTANCE",
+  "sourceCommit": "d22d39a427a3250f184dd5b98cfbfb91fa78eba6",
+  "generatedAtUtc": "2026-09-30T01:40:29.902027+00:00",
+  "output": {
+    "path": "Talk_Me_Home_Goal007_Preview.mp4",
+    "bytes": 10301285,
+    "sha256": "984c1cf0a238ad174e8d2aed889cf9371a3e23db9f0f66ac4cf0e1f81c7cb689"
+  },
+  "subtitles": {
+    "path": "Talk_Me_Home_Goal007_Preview.srt",
+    "sha256": "2b09baedf2558a80201a5cde8406b22483b00f35874e9b0abe22cdc30dee8152",
+    "cues": 50,
+    "timing": "Actual local synthesis word events",
+    "speaker": "Presentation narration; never Pip or provider speech"
+  },
+  "durationSeconds": 209.73333333333338,
+  "dimensions": [
+    1920,
+    1080
+  ],
+  "providerTokenRequests": 0,
+  "practice": {
+    "rawSourceSha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+    "rawOriginalRetainedPrivately": true,
+    "confirmedHome": true,
+    "recorderSecuredAtHome": true,
+    "observedBlockedPassage": true,
+    "physicalConfirmations": 12
+  },
+  "narration": {
+    "kind": "Local presentation narration",
+    "engine": "Windows System.Speech",
+    "voice": "Microsoft Zira Desktop",
+    "rate": 1,
+    "pcmSampleRate": 16000,
+    "pcmBits": 16,
+    "pcmChannels": 1,
+    "notPip": true,
+    "assembledPcmSha256": "a346f2809725b31b973f3e8a49de65d6571238f19058307772fdb159e67217fc",
+    "audioSource": "Local Windows synthesis only; no historical or provider audio"
+  },
+  "timeline": [
+    {
+      "id": "briefing",
+      "kind": "practice",
+      "startSeconds": 0.0,
+      "durationSeconds": 17.666666666666668,
+      "endSeconds": 17.666666666666668,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 0.186,
+        "endSeconds": 17.847
+      },
+      "narrationSha256": "fb7f5f52e6e02877c65a692e70619dbd4f7af86e9718bc29f348493935f9babc",
+      "wordTimingSha256": "0b29d6d939596d7edb28ac76b71aa80d197d8a92d7f0ab6a40e06498b158a3b9",
+      "narration": "Talk Me Home is a cooperative puzzle about two incomplete views of one station. This preview uses current Practice gameplay, typed requests and exact console confirmations. The voice you hear is separate presentation narration. Public hosting and current real Voice acceptance are still pending."
+    },
+    {
+      "id": "roles",
+      "kind": "practice",
+      "startSeconds": 17.666666666666668,
+      "durationSeconds": 14.666666666666666,
+      "endSeconds": 32.333333333333336,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 17.847,
+        "endSeconds": 32.5
+      },
+      "narrationSha256": "d6626ba99627655351988d736c9e4bafafa4d4d715043b37ae88b07720fccca8",
+      "wordTimingSha256": "a9b01a89bd48badde1387dcfd2030ace24e0aa157034992a4148b4646b06ab12",
+      "narration": "You sit at Mission Control with the plans and remote switches. Pip can observe the space nearby and report what it finds. The paper diagram is a reference. It does not reveal a live position or silently send your private notes to your partner."
+    },
+    {
+      "id": "latch",
+      "kind": "practice",
+      "startSeconds": 32.333333333333336,
+      "durationSeconds": 17.0,
+      "endSeconds": 49.333333333333336,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 32.501,
+        "endSeconds": 49.47
+      },
+      "narrationSha256": "3f82e0cca63f70271f46efb8f0ffcfb8ea90d0e645e7f64f8fdc2a25171d22d3",
+      "wordTimingSha256": "1782e517c62b099f4e3c0fe280c8a2a886dbf2668cbcb8e7d1cc2f880513375f",
+      "narration": "In Cargo Bay, the Door and Conveyor share one supply. A useful conversation turns that clue into a plan. Pip proposes engaging the Latch. Read the exact action on the console. Your confirmation gives the server permission to validate and perform that specific action."
+    },
+    {
+      "id": "crossing",
+      "kind": "practice",
+      "startSeconds": 49.333333333333336,
+      "durationSeconds": 18.066666666666666,
+      "endSeconds": 67.4,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 49.47,
+        "endSeconds": 67.528
+      },
+      "narrationSha256": "1bcafbc25ed8942eb99ce0bc6b5a7c6e40f71ee0809529a2feb2049c7c2c9e70",
+      "wordTimingSha256": "99b1f7311ce389f1d1a8853ac587ea46cbf8f707793a0a47e75e5c2be904ad99",
+      "narration": "With the Latch secured, Mission Control can turn Power off. The Conveyor stops, and the planned crossing becomes possible. Pip proposes the crossing; you confirm it. The chapter changes only after the server commits the result. A spoken agreement alone does not move the robot."
+    },
+    {
+      "id": "gallery",
+      "kind": "practice",
+      "startSeconds": 67.4,
+      "durationSeconds": 17.9,
+      "endSeconds": 85.30000000000001,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 67.528,
+        "endSeconds": 85.399
+      },
+      "narrationSha256": "cfc19592d74b36c3a14550b9a6d494ffcb12e49af786cdb389313aad483ab94d",
+      "wordTimingSha256": "f67e258cc383e5b478df95a810500ad2f0b96eae0180e65437bf0c8d09db7d76",
+      "narration": "The Relay Gallery makes the information gap visible. Your atlas names the landmarks and circuits. Pencil marks are your own plan, not automatic robot tracking. Match the map with Pip's local report. Choose a circuit, ask about a passage, and agree on the next move."
+    },
+    {
+      "id": "recorder",
+      "kind": "practice",
+      "startSeconds": 85.30000000000001,
+      "durationSeconds": 17.866666666666667,
+      "endSeconds": 103.16666666666669,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 85.399,
+        "endSeconds": 103.236
+      },
+      "narrationSha256": "c12ef00eff0a6c4c2831b5760175aba39b4c6335e42c99cd8f502abd1657b0c4",
+      "wordTimingSha256": "0568ed4e2f90757eedf9db6a6e427171fbb7caebc2cd377b97291372c3f0b840",
+      "narration": "Choose the optional flight recorder objective before starting. The archive clue points toward Leaf. Here, Pip inspects a worn case with a faded star and a label. Bringing it back still requires the exact Secure the flight recorder confirmation. A direct rescue remains a complete ending too."
+    },
+    {
+      "id": "route",
+      "kind": "practice",
+      "startSeconds": 103.16666666666669,
+      "durationSeconds": 17.0,
+      "endSeconds": 120.16666666666669,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 103.236,
+        "endSeconds": 120.21
+      },
+      "narrationSha256": "05a1c4d9827bac8cfea104db8e8fd04522f7fb21019d0dfc9d53ffe00596ce06",
+      "wordTimingSha256": "5c4854e158a029ace9de52e0ada4d346be7bbb2bf42d4a2476ccc5f6c52d3ab6",
+      "narration": "A powered gate is not a promise of a clear passage. Pip checks the way ahead. If a report contradicts your route, stop and revise the plan together. The console also offers a short observation request when you lose your place, while earlier reports keep their original chapter."
+    },
+    {
+      "id": "dock",
+      "kind": "practice",
+      "startSeconds": 120.16666666666669,
+      "durationSeconds": 18.433333333333334,
+      "endSeconds": 138.60000000000002,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 120.211,
+        "endSeconds": 138.621
+      },
+      "narrationSha256": "663197ad9e9c2f1d2fb8c527dcc5567b82455286682352366e36061e267cac49",
+      "wordTimingSha256": "6ab08275cb69cf3b070c84a23f6402c6837b485e83ba65feddaa25d1942301e2",
+      "narration": "At Return Dock, the roles meet again. Pip holds the contact after your exact confirmation. Mission Control charges the supply and moves that energy into storage. Storage retains energy for the return. The procedure still needs a safe release, boarding and a separate return authorization."
+    },
+    {
+      "id": "return",
+      "kind": "practice",
+      "startSeconds": 138.60000000000002,
+      "durationSeconds": 16.0,
+      "endSeconds": 154.60000000000002,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 138.622,
+        "endSeconds": 154.602
+      },
+      "narrationSha256": "82fdba1c00d1e220d68f41870e3aedb3cc674072d4d7642cd4bbb26ec31f5ae4",
+      "wordTimingSha256": "75570a603add3377d80265d194dc50bee95ca82e8db23910b1fc058fd61e7995",
+      "narration": "Pip releases the contact and boards the capsule, one confirmed action at a time. Only then can Mission Control grant the return. The final proposal is checked against the current state. Confirmed home is a game result, rather than a promise made in conversation."
+    },
+    {
+      "id": "home",
+      "kind": "practice",
+      "startSeconds": 154.60000000000002,
+      "durationSeconds": 16.3,
+      "endSeconds": 170.90000000000003,
+      "source": {
+        "id": "current-practice-original",
+        "sha256": "204510193a3d7eb40f68e7df9081e30381eae3a431f428325cb8b74c8a2947cb",
+        "startSeconds": 154.602,
+        "endSeconds": 170.899
+      },
+      "narrationSha256": "a0c8762a260b7bf1328e356f55e99fb6dc9307545695757d5714f7314e0ee375",
+      "wordTimingSha256": "281b78b8417236d3538ce9cbdca76409185672e45c20cdca7b682e5da7c3c0f9",
+      "narration": "The station is behind you. Pip is home, and the case you chose to recover has a place on the shelf. The arrival artwork celebrates a verified ending. This scene is an actual current Practice completion, with no provider connection and no claim of a human playtest."
+    },
+    {
+      "id": "architecture",
+      "kind": "card",
+      "startSeconds": 170.90000000000003,
+      "durationSeconds": 18.433333333333334,
+      "endSeconds": 189.33333333333337,
+      "source": {
+        "id": "editable-deck-page-5",
+        "sha256": "640b6ab3a69a2ef7bc745ca6709ad8a1adc7dbe9ad9eda62f4e575b9df9213bb",
+        "sourceDeckSha256": "79cb38a67dd0e3417f76893f8b5fe745c308fc419e0a63ba0a11dde90b7592f9"
+      },
+      "narrationSha256": "eb7afce1708f66830e0e6e3f989e8a74d4b6d66e4823c188274cf67343608044",
+      "wordTimingSha256": "46bf0c64440ea3c05718c9259a32f2026703cbe40c058358a86120fe0d7081bf",
+      "narration": "Voice mode uses browser audio and the AssemblyAI Voice Agent API. Local function requests pass through the browser to an authoritative game server. Raw captions preserve what was said. Private map marks remain with the human. Physical actions still require exact confirmation and a current state check."
+    },
+    {
+      "id": "availability",
+      "kind": "card",
+      "startSeconds": 189.33333333333337,
+      "durationSeconds": 20.4,
+      "endSeconds": 209.73333333333338,
+      "source": {
+        "id": "editable-deck-page-6",
+        "sha256": "f25ec060024a3e633fd71e9e0a25d1a5bb55718ad346ac5dc2472fdf8f456a7b",
+        "sourceDeckSha256": "79cb38a67dd0e3417f76893f8b5fe745c308fc419e0a63ba0a11dde90b7592f9"
+      },
+      "narrationSha256": "c15b2b1f9045e48874f0d49ae44e5ecc8128877041579e6d089e2cc5e2846f3d",
+      "wordTimingSha256": "06285f3ace65407a2eff21dcad0053af38f64fcfdd91ddfee44fba7d8f157357",
+      "narration": "This is a working preview, not current Live acceptance. Public HTTPS access, the Voice acceptance pair and final media are pending. Source remains private pending historical disclosure. Earlier Voice success and failure records stay separate. The finished release will report its actual hosted result and ending acknowledgement."
+    }
+  ],
+  "historicalMediaUsed": false,
+  "speedChanges": false,
+  "gameplayLoops": false,
+  "gameplayDurationSeconds": 170.9,
+  "endingAck": "Not applicable: offline Practice has no provider session",
+  "publicHttps": "pending",
+  "currentLiveAcceptance": "pending",
+  "sourceAvailability": "Private pending historical disclosure",
+  "uploaded": false
+}

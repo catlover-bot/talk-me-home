@@ -1,0 +1,214 @@
+1
+00:00:00,285 --> 00:00:04,790
+Presentation narration: Talk Me Home is a cooperative puzzle about two incomplete views of one station.
+
+2
+00:00:04,790 --> 00:00:10,545
+Presentation narration: This preview uses current Practice gameplay, typed requests and exact console
+confirmations.
+
+3
+00:00:10,545 --> 00:00:13,675
+Presentation narration: The voice you hear is separate presentation narration.
+
+4
+00:00:13,675 --> 00:00:17,175
+Presentation narration: Public hosting and current real Voice acceptance are still pending.
+
+5
+00:00:17,952 --> 00:00:21,437
+Presentation narration: You sit at Mission Control with the plans and remote switches.
+
+6
+00:00:21,437 --> 00:00:24,922
+Presentation narration: Pip can observe the space nearby and report what it finds.
+
+7
+00:00:24,922 --> 00:00:29,727
+Presentation narration: The paper diagram is a reference. It does not reveal a live position or silently
+send
+
+8
+00:00:29,727 --> 00:00:31,832
+Presentation narration: your private notes to your partner.
+
+9
+00:00:32,618 --> 00:00:36,143
+Presentation narration: In Cargo Bay, the Door and Conveyor share one supply.
+
+10
+00:00:36,143 --> 00:00:39,453
+Presentation narration: A useful conversation turns that clue into a plan.
+
+11
+00:00:39,453 --> 00:00:44,248
+Presentation narration: Pip proposes engaging the Latch. Read the exact action on the console.
+
+12
+00:00:44,248 --> 00:00:48,813
+Presentation narration: Your confirmation gives the server permission to validate and perform that
+specific action.
+
+13
+00:00:49,618 --> 00:00:53,493
+Presentation narration: With the Latch secured, Mission Control can turn Power off.
+
+14
+00:00:53,493 --> 00:00:57,363
+Presentation narration: The Conveyor stops, and the planned crossing becomes possible.
+
+15
+00:00:57,363 --> 00:01:02,633
+Presentation narration: Pip proposes the crossing; you confirm it. The chapter changes only after the
+server commits
+
+16
+00:01:02,633 --> 00:01:06,903
+Presentation narration: the result. A spoken agreement alone does not move the robot.
+
+17
+00:01:07,685 --> 00:01:10,900
+Presentation narration: The Relay Gallery makes the information gap visible.
+
+18
+00:01:10,900 --> 00:01:13,780
+Presentation narration: Your atlas names the landmarks and circuits.
+
+19
+00:01:13,780 --> 00:01:17,910
+Presentation narration: Pencil marks are your own plan, not automatic robot tracking.
+
+20
+00:01:17,910 --> 00:01:23,315
+Presentation narration: Match the map with Pip's local report. Choose a circuit, ask about a passage,
+and agree
+
+21
+00:01:23,315 --> 00:01:24,780
+Presentation narration: on the next move.
+
+22
+00:01:25,585 --> 00:01:28,985
+Presentation narration: Choose the optional flight recorder objective before starting.
+
+23
+00:01:28,985 --> 00:01:34,125
+Presentation narration: The archive clue points toward Leaf. Here, Pip inspects a worn case with a faded
+star
+
+24
+00:01:34,125 --> 00:01:39,865
+Presentation narration: and a label. Bringing it back still requires the exact Secure the flight
+recorder confirmation.
+
+25
+00:01:39,865 --> 00:01:42,650
+Presentation narration: A direct rescue remains a complete ending too.
+
+26
+00:01:43,452 --> 00:01:46,657
+Presentation narration: A powered gate is not a promise of a clear passage.
+
+27
+00:01:46,657 --> 00:01:51,587
+Presentation narration: Pip checks the way ahead. If a report contradicts your route, stop and revise
+the plan
+
+28
+00:01:51,587 --> 00:01:56,732
+Presentation narration: together. The console also offers a short observation request when you lose your
+place,
+
+29
+00:01:56,732 --> 00:01:59,642
+Presentation narration: while earlier reports keep their original chapter.
+
+30
+00:02:00,452 --> 00:02:06,622
+Presentation narration: At Return Dock, the roles meet again. Pip holds the contact after your exact
+confirmation.
+
+31
+00:02:06,622 --> 00:02:10,697
+Presentation narration: Mission Control charges the supply and moves that energy into storage.
+
+32
+00:02:10,697 --> 00:02:15,837
+Presentation narration: Storage retains energy for the return. The procedure still needs a safe release,
+boarding
+
+33
+00:02:15,837 --> 00:02:18,052
+Presentation narration: and a separate return authorization.
+
+34
+00:02:18,885 --> 00:02:23,665
+Presentation narration: Pip releases the contact and boards the capsule, one confirmed action at a time.
+
+35
+00:02:23,665 --> 00:02:26,580
+Presentation narration: Only then can Mission Control grant the return.
+
+36
+00:02:26,580 --> 00:02:29,755
+Presentation narration: The final proposal is checked against the current state.
+
+37
+00:02:29,755 --> 00:02:34,090
+Presentation narration: Confirmed home is a game result, rather than a promise made in conversation.
+
+38
+00:02:34,885 --> 00:02:39,850
+Presentation narration: The station is behind you. Pip is home, and the case you chose to recover has a
+place
+
+39
+00:02:39,850 --> 00:02:44,275
+Presentation narration: on the shelf. The arrival artwork celebrates a verified ending.
+
+40
+00:02:44,275 --> 00:02:48,390
+Presentation narration: This scene is an actual current Practice completion, with no provider connection
+and no
+
+41
+00:02:48,390 --> 00:02:50,410
+Presentation narration: claim of a human playtest.
+
+42
+00:02:51,185 --> 00:02:55,510
+Presentation narration: Voice mode uses browser audio and the AssemblyAI Voice Agent API.
+
+43
+00:02:55,510 --> 00:02:59,810
+Presentation narration: Local function requests pass through the browser to an authoritative game
+server.
+
+44
+00:02:59,810 --> 00:03:04,685
+Presentation narration: Raw captions preserve what was said. Private map marks remain with the human.
+
+45
+00:03:04,685 --> 00:03:08,840
+Presentation narration: Physical actions still require exact confirmation and a current state check.
+
+46
+00:03:09,618 --> 00:03:13,178
+Presentation narration: This is a working preview, not current Live acceptance.
+
+47
+00:03:13,178 --> 00:03:18,428
+Presentation narration: Public HTTPS access, the Voice acceptance pair and final media are pending.
+
+48
+00:03:18,428 --> 00:03:21,743
+Presentation narration: Source remains private pending historical disclosure.
+
+49
+00:03:21,743 --> 00:03:25,043
+Presentation narration: Earlier Voice success and failure records stay separate.
+
+50
+00:03:25,043 --> 00:03:29,228
+Presentation narration: The finished release will report its actual hosted result and ending
+acknowledgement.

@@ -1,0 +1,13 @@
+# Goal 007 local Practice preview
+
+A separately named preview movie and SRT are prepared under `submission/goal-007/`. The movie remains local and ignored; scripts, authored narration, faithful Practice caption events, hashes and verification receipts are versioned in `submission/goal-007/preview/`.
+
+The exact captured game is integrated commit `d22d39a427a3250f184dd5b98cfbfb91fa78eba6`. Normal Practice input and twelve exact UI confirmations reached Cargo Bay, Relay Gallery, Return Dock and confirmed home with the optional recorder. An observed blocked Gallery passage caused an actual alternate route. New provider/token requests and billing changes were zero. Parent integration later repaired refusal-path behavior without changing this recorded happy-path presentation; the preview keeps its original identity rather than relabelling the footage.
+
+All audio is local Windows presentation narration, explicitly labelled on-screen and in subtitles. No Goal 005 or other historical provider speech is used. The current Practice UI and original typed/robot captions remain visible, with raw caption events retained separately. Synthesis word-event timestamps anchor the SRT. The closing architecture and availability cards retain public HTTPS, current Voice acceptance pair, source historical disclosure and final release-media pending status.
+
+The first long offline capture failed a media-helper selector after Cargo because an em dash was used for a UI label that uses an en dash. Its raw video is preserved. Correcting the selector produced the successful capture without changing game source. Unique capture receipts preserve reruns. Every prior Goal 005/Goal 006 binary and the earlier Goal 007 deck, cover, screenshots and raw component captures remain unchanged.
+
+This preview does not establish current Live acceptance, human speech, physical speaker playback, human enjoyment or a provider ending ACK. See the manifest and verification receipt for actual duration, codecs, file hashes, full decode, subtitle checks and reviewed frames. No provider call, media upload or event submission was performed by this task.
+
+Final local preview: 209.733 seconds, 1920x1080 H.264 at 30 fps, stereo AAC at 48 kHz, 10,301,285 bytes. Full decode passes, audio/video durations match exactly, decoded audio has no clipped samples, and 50 SRT cues match the narration verbatim. Representative chapter frames, the obstruction/Stored/home evidence and selected transitions were inspected; an independent agent also reviewed six samples. This is frame inspection and digital audio validation, not continuous human playback/listening evidence.
