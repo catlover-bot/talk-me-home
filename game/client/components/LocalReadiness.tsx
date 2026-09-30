@@ -64,6 +64,7 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
     catch (cause) { if (alive.current) setAccessError(cause instanceof Error ? cause.message : 'Access could not be confirmed. Retry or choose Practice.'); }
     finally { if (alive.current) setUnlocking(false); }
   };
+  const connectionLimitSeconds = access && 'maxSessionSeconds' in access && access.maxSessionSeconds === 900 ? 900 : 600;
   const ready = (mode === 'live_text' || microphone === 'ready') && (output || captionsOnly)
     && access?.liveEnabled && access.authorized && access.available;
   return <dialog ref={dialog} className="readiness-dialog" aria-labelledby="readiness-title" onCancel={event => { event.preventDefault(); finish(onCancel); }}>
@@ -87,7 +88,7 @@ export function LocalReadiness({ mode, voiceVolume, onReady, onCancel, onPractic
     </div>
     {error && <p className="readiness-error" role="alert">{error}</p>}
     <section className="demo-access" aria-label="Demo access">
-      <h3>Live demo access</h3><p role="status">{access?.message ?? (accessError ? 'Live availability could not be checked.' : 'Checking service availability…')}</p>
+      <h3>Live demo access</h3>{access && <p className="readiness-limit" data-testid="readiness-limit"><strong>Up to {connectionLimitSeconds / 60} minutes per Live connection.</strong> Pause ends it; Resume uses a new launch.</p>}<p role="status">{access?.message ?? (accessError ? 'Live availability could not be checked.' : 'Checking service availability…')}</p>
       {access?.liveEnabled && !access.authorized && <form onSubmit={event => { void unlock(event); }}><label htmlFor="demo-code">Demo access code</label><div className="input-row"><input id="demo-code" type="password" value={code} autoComplete="off" maxLength={200} onChange={event => setCode(event.target.value)} /><button disabled={unlocking || !code.trim()}>{unlocking ? 'Checking…' : 'Unlock Live'}</button></div><p>The host supplies this code. It stays out of links and recordings.</p></form>}
       {accessError && <p className="readiness-error" role="alert">{accessError}</p>}
       {(accessError || (access && !access.available)) && <button className="text-button" onClick={refreshAccess}>Check availability again</button>}

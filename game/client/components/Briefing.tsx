@@ -46,7 +46,7 @@ export function Briefing({ scenario, missionKind, mode, onScenario, onMissionKin
             {([['practice', 'Practice', 'Simulation · type to play'], ['live_voice', 'Live Voice', 'Speak with AssemblyAI'], ['live_text', 'Live Text', 'Type with AssemblyAI']] as const).map(([value, name, copy]) =>
               <label key={value} className="mode-choice" data-selected={mode === value}><input type="radio" name="connection-mode" checked={mode === value} onChange={() => onMode(value)} disabled={busy}/><span><strong>{name}</strong><small>{copy}</small></span></label>)}
           </div>
-          <p className="connection-explanation" id="connection-explanation">{mode === 'practice' ? <><strong>Practice is free of API calls.</strong> Deterministic, offline conversation. No microphone.</> : <><strong>{mode === 'live_voice' ? 'Microphone and text go to AssemblyAI.' : 'Text goes to AssemblyAI. No microphone.'}</strong> Live uses provider time. The host’s call limit is shown during the call; Pause ends the call.</>}</p>
+          <p className="connection-explanation" id="connection-explanation">{mode === 'practice' ? <><strong>Practice is free of API calls.</strong> Deterministic, offline conversation. No microphone.</> : <><strong>{mode === 'live_voice' ? 'Microphone and text go to AssemblyAI.' : 'Text goes to AssemblyAI. No microphone.'}</strong> Live uses provider time. The host’s call limit is shown in the connection check; Pause ends the call.</>}</p>
         </fieldset>
       </div>
       {error && <p className="briefing-error" role="alert">{error}</p>}
