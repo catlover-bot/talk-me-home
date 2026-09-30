@@ -9,6 +9,11 @@ jobs:
       matrix:
         project: [chromium-1280, chromium-1440]
         shard: ['1/2', '2/2']
+        include:
+          - project: chromium-1280
+            shard: hosted-voice
+          - project: chromium-1440
+            shard: hosted-voice
     env:
       GAME_DISABLE_LIVE: '1'
       # Ubuntu's AppArmor profile permits the runner's installed Chrome sandbox.
@@ -30,5 +35,11 @@ jobs:
         run: |
           test -x /opt/google/chrome/chrome
           /opt/google/chrome/chrome --version
-      - run: npm run test:e2e -- --project=${{ matrix.project }} --shard=${{ matrix.shard }}
+      - name: Run ordinary offline browser shard
+        if: matrix.shard != 'hosted-voice'
+        run: npm run test:e2e -- --project=${{ matrix.project }} --shard=${{ matrix.shard }} --grep-invert "Hosted player offline Voice"
+        timeout-minutes: 4
+      - name: Run complete offline hosted Voice cases
+        if: matrix.shard == 'hosted-voice'
+        run: npm run test:e2e -- --project=${{ matrix.project }} --grep "Hosted player offline Voice"
         timeout-minutes: 4

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "kind": "goal-007-ci-scheduling-repair",
+  "date": "2026-09-30",
+  "baseCommit": "562bbf57be3746269e247c65056688ef551d2a24",
+  "failedCiHead": "076079742ff4728dbbf3d78fe1847a4a3259e024",
+  "preservedFailedRuns": [
+    "36655568130",
+    "36655568115"
+  ],
+  "change": "Separate complete hosted Voice cases from ordinary shards; await actual connected UI before sound-test End and retain exact two-end requirement.",
+  "partition": {
+    "schemaVersion": 1,
+    "totalCases": 192,
+    "coverage": "exact disjoint union of all listed cases",
+    "lanes": [
+      {
+        "project": "chromium-1280",
+        "shard": "1/2",
+        "cases": 47,
+        "listingSha256": "1fc727c9c7b6956d5092337dc516e423f34f756b6f086eb7b9278c1d624c40dd"
+      },
+      {
+        "project": "chromium-1280",
+        "shard": "2/2",
+        "cases": 47,
+        "listingSha256": "de36bd9d4667247dbacfd70e88fad55d57b62f52bdfcdcee4a678fd4e6376bd1"
+      },
+      {
+        "project": "chromium-1280",
+        "shard": "hosted-voice",
+        "cases": 2,
+        "listingSha256": "92b3191abb52170ca224dab4b752b18caed08dad96de9939107b9b59f9130b5c"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "1/2",
+        "cases": 47,
+        "listingSha256": "bc3c84736260f8e7715ffaf9a352c1793b788b86bb4117d3c2d90a2ac606e05b"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "2/2",
+        "cases": 47,
+        "listingSha256": "2fcfdb3bd1d0fb5e39a4240e7db27a1d40a435d7e2632cbced227f1b9d0cc50d"
+      },
+      {
+        "project": "chromium-1440",
+        "shard": "hosted-voice",
+        "cases": 2,
+        "listingSha256": "019ac419d009bbabf682c488219f013698245a518532be84feccc364292a1dda"
+      }
+    ],
+    "allListingSha256": "88edd1c4f46a25721a044650057804a64f6765563c912d9c205ede7790da58ca",
+    "globalTimeoutMs": 210000,
+    "workersPerLane": 2,
+    "retries": 0,
+    "defaultIndividualTimeoutMs": 20000,
+    "hostedVoiceIndividualTimeoutMs": 90000
+  },
+  "partitionReceiptSha256": "96336f3406eea3045ba5def323f7392f9078dd947254b5f950b3bdb2f36ef36d",
+  "validation": {
+    "soundBrowserCases": 4,
+    "soundBrowserPassed": 4,
+    "soundBrowserWorkers": 2,
+    "soundBrowserWallSeconds": 3.5,
+    "liveDisabled": true,
+    "typecheck": "pass (production build prerequisite)",
+    "productionBuild": "pass",
+    "partition": "pass: all 192 cases exactly once, none skipped",
+    "finalPushedHeadCi": "pending after root integration"
+  },
+  "runtimeSource": "19d4036",
+  "runtimeSha256": "9e99902afe98cef18e2e75ee3b55504dcda2e3642848f9da1be03ca36c689e36",
+  "runtimeAndHarnessChanged": false,
+  "realProviderCalls": 0,
+  "newReservations": 0,
+  "limitations": [
+    "Archived failure logs do not establish the exact sound startup event ordering.",
+    "Listing coverage is not execution of the six new CI lanes.",
+    "No real ASR, provider behavior, human speech or physical speaker validation."
+  ]
+}
