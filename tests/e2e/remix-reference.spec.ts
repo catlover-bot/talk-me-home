@@ -51,7 +51,7 @@ for (const [profile, expected] of [[0, 'Detent-first service module'], [8, 'Alig
     expect(reported).toBe(expected);
     const plate = page.getByTestId('switchyard-reference-quote');
     const sourceId = await plate.getAttribute('data-message-id');
-    const attribution = await reference(page).locator('.switchyard-quote-source').innerText();
+    const attribution = (await reference(page).locator('.switchyard-quote-source').textContent())!;
     await expect(procedure(page)).toHaveAttribute('data-message-id', sourceId!);
     await expect(reference(page)).toHaveAttribute('data-reading-status', 'current');
     await expectCompleteManual(page);
@@ -71,6 +71,9 @@ for (const [profile, expected] of [[0, 'Detent-first service module'], [8, 'Alig
     await expect(procedure(page)).toHaveText(reported);
     await expect(procedure(page)).toHaveAttribute('data-message-id', sourceId!);
     await expect(plate).toHaveAttribute('data-message-id', sourceId!);
+    const committed = page.getByTestId('action-proposal');
+    await expect(committed).toHaveAttribute('data-status', 'committed');
+    const committedId = await committed.getAttribute('data-proposal-id');
     await page.getByRole('button', { name: 'Pause mission', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Resume Practice', exact: true })).toBeEnabled();
     await expect(reference(page)).toHaveAttribute('data-visit-status', 'earlier');
@@ -81,9 +84,11 @@ for (const [profile, expected] of [[0, 'Detent-first service module'], [8, 'Alig
     await expectCompleteManual(page);
     await reference(page).scrollIntoViewIfNeeded(); await capture(page, info, `procedure-${profile}-historical`);
     await page.getByRole('button', { name: 'Resume Practice', exact: true }).click();
-    await expect(page.getByRole('region', { name: 'Local companion requests' }).getByRole('button')).toHaveText(['Look around']);
+    await expect(page.getByRole('region', { name: 'Local companion requests' }).getByRole('button')).toHaveText(['Look around', 'Discuss the direct lift', 'Discuss the maintenance bypass']);
     await expect(procedure(page)).toHaveText(reported);
-    await expect(page.getByTestId('action-proposal')).toHaveCount(0);
+    await expect(committed).toHaveAttribute('data-status', 'committed');
+    await expect(committed).toHaveAttribute('data-proposal-id', committedId!);
+    await expect(page.getByRole('button', { name: 'Confirm this action', exact: true })).toHaveCount(0);
   });
 }
 
