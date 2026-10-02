@@ -23,9 +23,10 @@ export default function App() {
   const m = useMission();
   const restartDialog = useRef<HTMLDialogElement>(null);
   const [presentation, setPresentation] = useState(false);
+  const [switchyardGuidanceEnabled, setSwitchyardGuidanceEnabled] = useState(true);
   const closingCaption = <div className="closing-caption"><span className="source-label">{m.activeCaption?.role === 'game' ? 'Game event' : <>{m.activeCaption ? originLabel[m.activeCaption.origin] : 'Mission'} · {m.activeCaption?.role === 'human' ? 'Mission Control' : 'Pip'}</>}</span><p data-testid="caption" aria-live={m.activeCaption?.final ? 'polite' : 'off'}>{m.activeCaption?.text ?? 'Arrival confirmed.'}</p>{m.activeCaption?.interrupted && <span>Interrupted / incomplete speech</span>}</div>;
   const activeLive = m.segment?.origin !== 'practice' && (m.connected || m.busy) && m.stage !== 'briefing';
-  return <SwitchyardGuideProvider key={m.view?.roundId ?? 'briefing'} active={m.stage === 'mission' && m.view?.missionKind === 'switchyard'} roundId={m.view?.roundId ?? ''} captions={m.captions} practice={m.segment?.origin === 'practice'}><div data-reduced-motion={m.reducedMotion} className={'app-shell' + (presentation && m.stage === 'mission' ? ' presentation-mode' : '')}>
+  return <SwitchyardGuideProvider key={m.view?.roundId ?? 'briefing'} enabled={switchyardGuidanceEnabled} onEnabledChange={setSwitchyardGuidanceEnabled} active={m.stage === 'mission' && m.view?.missionKind === 'switchyard'} roundId={m.view?.roundId ?? ''} captions={m.captions} practice={m.segment?.origin === 'practice'}><div data-reduced-motion={m.reducedMotion} className={'app-shell' + (presentation && m.stage === 'mission' ? ' presentation-mode' : '')}>
     <a className="skip-link" href="#main">Skip to mission controls</a>
     <header className="topbar">
       <span className="wordmark"><span className="brand-symbol" aria-hidden="true"><img src="/icon.svg" alt=""/></span>Talk Me Home</span>

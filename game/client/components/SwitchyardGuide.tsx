@@ -14,10 +14,11 @@ export function isSwitchyardGuideReport(caption: Caption, captions: readonly Cap
 }
 
 /** This state is private presentation only. It owns no mission, provider or persistence API. */
-export function SwitchyardGuideProvider({ active, roundId, captions, practice, children }: {
+export function SwitchyardGuideProvider({ active, roundId, captions, practice, enabled, onEnabledChange, children }: {
   active: boolean; roundId: string; captions: readonly Caption[]; practice: boolean; children: ReactNode;
+  enabled: boolean; onEnabledChange(enabled: boolean): void;
 }) {
-  const [enabled, setEnabled] = useState(true);
+  // The app retains the reading preference; this keyed provider still resets each round's actual steps.
   const [reportSeen, setReportSeen] = useState(false);
   const [turned, setTurned] = useState(false);
   const [applied, setApplied] = useState(false);
@@ -28,10 +29,10 @@ export function SwitchyardGuideProvider({ active, roundId, captions, practice, c
   const markTurn = useCallback(() => { if (enabled) setTurned(true); }, [enabled]);
   const markApplied = useCallback(() => { if (enabled) setApplied(true); }, [enabled]);
   const toggle = () => {
-    if (enabled) setEnabled(false);
+    if (enabled) onEnabledChange(false);
     else {
       setEarlierReports(new Set(captions.map(item => item.id)));
-      setReportSeen(false); setTurned(false); setApplied(false); setEnabled(true);
+      setReportSeen(false); setTurned(false); setApplied(false); onEnabledChange(true);
     }
   };
   const stage: GuideStage = !enabled ? 'skipped' : !reportSeen ? 'observe' : !turned ? 'draft' : !applied ? 'apply' : 'ready';

@@ -91,6 +91,7 @@ export function SwitchyardDocument({ captions, roundId, currentVisit, panelRevis
             {report ? <>
               <div className="switchyard-quote-source"><strong>Pip</strong><span>{originLabel[report.caption.origin]} / quoted report</span><time dateTime={new Date(report.caption.timestamp).toISOString()}>{new Date(report.caption.timestamp).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}</time></div>
               <blockquote data-testid="switchyard-reference-quote" data-message-id={report.caption.id}>{report.quote}</blockquote>
+              {report.procedureQuote && <blockquote data-testid="switchyard-procedure-quote" data-message-id={report.caption.id}>{report.procedureQuote}</blockquote>}
               <p className="switchyard-quote-visit">{report.caption.switchyardContext?.locationLabel ?? 'Location not recorded'} / {report.caption.switchyardContext?.visitId === currentVisit?.visitId && currentVisit ? 'this visit' : 'earlier or unrecorded visit'}</p>
               <p data-testid="switchyard-report-age">{switchyardReportAge(report.caption, currentVisit, panelRevision, stateRevision)}</p>
               <details><summary>Full source report</summary><p>{report.caption.text}</p></details>
