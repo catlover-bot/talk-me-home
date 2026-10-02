@@ -1,6 +1,6 @@
 {
   "name": "talk-me-home",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "private": true,
   "type": "module",
   "description": "A voice-led cooperative rescue: you hold the map, Pip sees the station.",

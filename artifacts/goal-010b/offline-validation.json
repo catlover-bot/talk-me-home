@@ -1,0 +1,45 @@
+{
+  "source": "87e1951f6050125a3828257ae72543fb474d184a",
+  "cleanAtStart": true,
+  "commands": [
+    {
+      "label": "unit",
+      "exitCode": 0,
+      "seconds": 15.88,
+      "log": ".validation/goal-010b/full-unit.log"
+    },
+    {
+      "label": "build",
+      "exitCode": 0,
+      "seconds": 1.36,
+      "log": ".validation/goal-010b/full-build.log"
+    },
+    {
+      "label": "browser",
+      "exitCode": 0,
+      "seconds": 231.48,
+      "log": ".validation/goal-010b/full-browser.log"
+    }
+  ],
+  "status": "PASS",
+  "trackedUnchangedAtEnd": true,
+  "version": "0.10.1",
+  "counts": {
+    "unit": {
+      "passed": 629,
+      "failed": 0
+    },
+    "browser": {
+      "passed": 294,
+      "failed": 0,
+      "perViewport": 147
+    }
+  },
+  "scope": "Offline Practice and explicitly injected fake-provider regressions. Zero real-provider use.",
+  "logHashes": {
+    "full-unit.log": "9bfd1744f19350c33cc62788b9cbab72e4478ddaf672f8b4faaa6b7adfad2399",
+    "full-build.log": "7f7922c3e5685846c4bf92ff8e77d5320c46e42db7333f3bb62b7b608982bfaa",
+    "full-browser.log": "d5a389bcf99137ecc587073da8453de15ac3b4caf63452e1bc25069beab6302d"
+  },
+  "whitespace": "PASS"
+}

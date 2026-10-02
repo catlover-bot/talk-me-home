@@ -78,6 +78,9 @@ for (let panel = 0; panel < 3; panel++) for (let procedure = 0; procedure < 2; p
     await startRemix(page, { code });
     expect(await dispatchCode(page)).toBe(code);
     const initial = await publicInitial(page);
+    // Exercise all three ending choices with the same reading preference retained across fresh rounds.
+    const retainSkippedGuide = procedure === 0 && approach === 'lift';
+    if (retainSkippedGuide) await page.getByRole('button', { name: 'Skip guidance', exact: true }).click();
     const player = new RemixUiPlayer(page); await player.begin();
     // The first physical request is deliberately declined; a fresh exact proposal is required.
     const next = page.getByRole('region', { name: 'Local companion requests' }).getByRole('button', { name: /^Go to / }).first();
@@ -113,6 +116,20 @@ for (let panel = 0; panel < 3; panel++) for (let procedure = 0; procedure < 2; p
       else expect(await dispatchCode(page)).not.toBe(code);
       if (panel === 1) await expect(page.getByRole('group', { name: 'My intended approach' }).getByRole('radio', { name: 'Maintenance bypass', exact: true })).toBeChecked();
       await expect(page.getByRole('region', { name: 'Local companion requests' }).getByRole('button', { name: 'Inspect Lift console', exact: true })).toHaveCount(0);
+      await expect(page.getByTestId('switchyard-guidance')).toHaveAttribute('data-stage', 'skipped');
+      await expect(page.getByTestId('switchyard-guide-radio')).toHaveCount(0);
+      const caption = await page.getByTestId('caption').innerText();
+      const writes: string[] = [];
+      const readingRequest = (request: import('@playwright/test').Request) => { if (request.method() === 'POST') writes.push(new URL(request.url()).pathname); };
+      page.on('request', readingRequest);
+      await page.getByRole('button', { name: 'Replay guidance', exact: true }).click();
+      await expect(page.getByTestId('switchyard-guidance')).toHaveAttribute('data-stage', 'observe');
+      await expect(page.getByTestId('caption')).toHaveText(caption);
+      await expect(page.getByTestId('switchyard-panel-status')).toContainText('revision 0');
+      await page.getByRole('button', { name: 'Skip guidance', exact: true }).click();
+      await expect(page.getByTestId('switchyard-guidance')).toHaveAttribute('data-stage', 'skipped');
+      page.off('request', readingRequest);
+      expect(writes).toEqual([]);
     }
   });
 }

@@ -30,7 +30,7 @@ GAME_DISABLE_LIVE=1 npm start
 
 Open `http://127.0.0.1:3001`. `npm start` and `npm run start:game` serve the compiled game and API from one origin. The production server reads its hosting environment only and never loads an owner `.env`. Practice requires no API key.
 
-### The Switchyard (source version 0.10.0)
+### The Switchyard (source version 0.10.1)
 
 Select **The Switchyard -> Practice -> Start Practice** in the local build. Rotate six pieces in a draft, compare the terminal preview with your human-only manual, then Apply the complete layout. Pip reports the fitted equipment and offers labelled local requests. Confirm each exact physical proposal.
 
@@ -41,6 +41,8 @@ The current polish traces draft connections, describes acknowledged terminal cha
 This post-submission mission is local/scripted and has no real Voice verification. It is separate from the preserved public 0.7.0 judging build. See [Switchyard implementation and checks](docs/goal-008-switchyard.md) and the [optional first-play sheet](docs/goal-008-playtest.md).
 
 Inside Switchyard, **Original** keeps the authored puzzle. **Remix** offers New dispatch, Replay a code and a UTC Daily dispatch. Its bounded catalog has 48 mechanically distinct equipped profiles across three panel structures, two preparation sequences and two station arrangements. Optional Lift survey and Service restoration assignments can give a reason to investigate the other route before coming home. A small local journey record retains codes and labelled outcomes; each replay still needs an explicit Start. See [Remix controls, validation and limits](docs/goal-010-remix.md). This source update has not been deployed to the public demo.
+
+Successive plays retain your Skip guidance choice for the current app session; Replay guidance remains available. The service manual also keeps the exact reported preparation label beside its sourced plate quote. [Replay-experience evidence](docs/goal-010b-replay-experience.md) records these two presentation changes and the unchanged R1 puzzle contract.
 
 For development: `npm run dev`. Verification: `npm run typecheck`, `npm test`, and `npm run test:e2e`. Default QA and CI stay offline; synthetic devices are not human microphone or physical speaker evidence.
 
