@@ -1,0 +1,44 @@
+{
+  "reviewedAt": "2026-10-02T05:13:13.700849+00:00",
+  "sourceAttribution": "Parent-provided compiled baseline 543918158e8ffd9e5d6ebac6794aba417e3ae908; source is not inferred from screenshot text.",
+  "files": [
+    {
+      "path": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run2-setup-after-new.png",
+      "width": 1280,
+      "height": 720,
+      "sha256": "88dc9ed7c119131a5c157c8e48fde53ca2ff36c474e8737ae882e373d32c5d7c"
+    },
+    {
+      "path": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1440x900-run3-home-full.png",
+      "width": 1440,
+      "height": 1502,
+      "sha256": "ffbae23e637e00534acbd70da20082ffcfdb684919e96c90a475781f0a9a817d"
+    },
+    {
+      "path": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1440x900-run3-home-actions.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "08c1603cb5185676fa834e8a30dbc7bb212aa5a239809cd250bd61d6d46758a2"
+    },
+    {
+      "path": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run4-setup-code2-prepared.png",
+      "width": 1280,
+      "height": 720,
+      "sha256": "14aaf0605570b088919d8e71a3bdac1d7b057059d0054a889d904741bb0662ab"
+    }
+  ],
+  "findings": [
+    "New dispatch is visibly selected within Remix/Practice; Rescue only is labelled optional, assignments never block rescue, and text says Start is explicit.",
+    "Full home and native home-actions frames consistently identify the maintenance bypass. Lift survey is skipped while rescue remains complete, with two factual displayed milestones and local/scripted Practice provenance.",
+    "Same conditions, Other approach, New dispatch and Back to missions are readable together beside the journey summary. Copy distinguishes same/different conditions and preparation from Start.",
+    "Prepared Replay input matches the second saved journey code. The screen describes fresh progress, notes and proposals, and shows three saved local outcomes with their assignment statuses."
+  ],
+  "concreteVisualBlockers": [],
+  "recommendation": "No additional ending/setup change is justified by these four stills; ordinary scrolling alone is not a defect.",
+  "limits": [
+    "Still-image visual review only, not a human playtest or timing/usability measurement.",
+    "Images establish displayed labels and internal consistency, not independent verification of server commits, absence of POSTs or actual click behavior.",
+    "The full-page home image supplements the native action view; not all ending content is claimed visible in one viewport."
+  ],
+  "actions": "No browser, build, network, provider request or source edit."
+}

@@ -1,0 +1,517 @@
+{
+  "schema": "goal-010b-matched-sequence-v1",
+  "status": "PASS",
+  "scope": "LOCAL_COMPILED_DETERMINISTIC_PRACTICE",
+  "before": {
+    "source": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+    "apiIdentity": {
+      "commit": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+      "version": "0.10.0"
+    },
+    "status": "PASS",
+    "path": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/receipt.json",
+    "sha256": "ee380272307f5f269cc0b1f4e0709033f39d5a802fb3c5a38ac6b701d3e27340",
+    "network": {
+      "external": 0,
+      "token": 0,
+      "websocket": 0,
+      "provider": 0,
+      "failedHttp": 0,
+      "pageErrors": 0
+    },
+    "cleanup": {
+      "contextClosed": true,
+      "browserClosed": true
+    }
+  },
+  "after": {
+    "source": "87e1951f6050125a3828257ae72543fb474d184a",
+    "apiIdentity": {
+      "commit": "87e1951f6050125a3828257ae72543fb474d184a",
+      "version": "0.10.1"
+    },
+    "status": "PASS",
+    "path": ".validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/receipt.json",
+    "sha256": "37b1810b738c8d12e1867ddc5335d264bb90086d6a210570c49146256e9cd769",
+    "network": {
+      "external": 0,
+      "token": 0,
+      "websocket": 0,
+      "provider": 0,
+      "failedHttp": 0,
+      "pageErrors": 0
+    },
+    "cleanup": {
+      "contextClosed": true,
+      "browserClosed": true
+    }
+  },
+  "codes": [
+    "R1-01-06-0-90B46B6F-987C02E0",
+    "R1-0P-08-2-8389AA70-7BEE0FCA",
+    "R1-11-03-1-BD05EA01-AB3E60E8"
+  ],
+  "selectionBoundary": "The 1280 baseline uses three genuine New dispatches with initially empty local history. Its fourth run prepares completed code 2 from Local journeys after choosing Other approach from code 3's ending. The 1440 baseline replays the same three observed codes. Both after viewports use matched replay of those saved codes. No replay is presented as natural New sampling.",
+  "observed": {
+    "confirmedHomesBefore": 8,
+    "confirmedHomesAfter": 8,
+    "publicDefinitionsAndDrawingsMatched": 8,
+    "mechanicalCountMatches": 8,
+    "guide": {
+      "explicitSkipInFirstRunPerFreshProfile": true,
+      "beforeLaterRunsRestartedGuidance": 6,
+      "afterLaterRunsRetainedSkip": 6,
+      "scope": "Same open application across successive rounds; no cross-browser persistence claim."
+    },
+    "procedureReference": {
+      "serviceRunComparisons": 6,
+      "beforeCollapsedReferenceContainedReportedProcedure": 0,
+      "afterCollapsedReferenceContainedReportedProcedure": 6,
+      "fullSourceExpansionsBefore": 6,
+      "fullSourceExpansionsAfter": 0,
+      "fullSourceCollapsesBefore": 6,
+      "fullSourceCollapsesAfter": 0,
+      "interpretation": "One diagnostic source expansion was needed after the brace reply in each baseline service run; the separate exact procedure quote made that expansion unnecessary after. These reading controls are excluded from whole-mission selected-request, Apply, confirmation and travel counts. DOM availability does not prove the quote was inside the current viewport."
+    },
+    "wholeMissionCountsPerCandidate": {
+      "selectedRequests": 114,
+      "applies": 30,
+      "confirmations": 68,
+      "travel": 34,
+      "repeatedUnchangedReports": 2,
+      "repeatedUnchangedWithoutTravelOrApply": 0
+    },
+    "deliberateOptionalSkip": "Run 3 at each size skips the Lift survey and still completes the bypass rescue. Run 2 completes Service restoration before lift home; code 2 replay completes that assignment naturally by bypass.",
+    "noProviderOrTokenOrExternalOrSocketAttempts": true,
+    "allOwnedBrowsersClosed": true
+  },
+  "runs": [
+    {
+      "id": "1280x720-run1",
+      "code": "R1-01-06-0-90B46B6F-987C02E0",
+      "approach": "lift",
+      "assignment": "rescue",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "GENUINE_NEW_DISPATCH",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "d6a0d32e97149ce3ea34473e120c8cd5de62c58068b7cd3cacd85d1efc2cf5cb",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 10,
+        "inspections": 3,
+        "applies": 2,
+        "confirmations": 6,
+        "travel": 3,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 0,
+        "reportedProcedureLabels": []
+      },
+      "beforeSetupActivations": 7,
+      "afterSetupActivations": 9,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "beforeSourceExpansions": 0,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 0,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": null,
+      "beforeCollapsedProcedure": [],
+      "afterCollapsedProcedure": []
+    },
+    {
+      "id": "1280x720-run2",
+      "code": "R1-0P-08-2-8389AA70-7BEE0FCA",
+      "approach": "lift",
+      "assignment": "service_restoration",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "GENUINE_NEW_DISPATCH",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "eeb3a74abddc52d063976f090d2ed5c8276043a7087aaa21c5b7650f6695824d",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 17,
+        "inspections": 5,
+        "applies": 6,
+        "confirmations": 11,
+        "travel": 5,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 0,
+        "reportedProcedureLabels": [
+          "Alignment-first service module"
+        ]
+      },
+      "beforeSetupActivations": 4,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Alignment-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    },
+    {
+      "id": "1280x720-run3",
+      "code": "R1-11-03-1-BD05EA01-AB3E60E8",
+      "approach": "bypass",
+      "assignment": "lift_survey",
+      "assignmentCompleted": false,
+      "deliberateOptionalSkip": true,
+      "beforeSelection": "GENUINE_NEW_DISPATCH",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "f1e9c018e0bea1d3def36b154b3d3e60fde1a07bc03b806754b67262eddcee86",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 17,
+        "inspections": 6,
+        "applies": 3,
+        "confirmations": 10,
+        "travel": 6,
+        "repeatedUnchangedReports": 1,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 1,
+        "repeatedLabelWithChangedReport": 1,
+        "reportedProcedureLabels": [
+          "Detent-first service module"
+        ]
+      },
+      "beforeSetupActivations": 4,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Detent-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    },
+    {
+      "id": "1280x720-run4",
+      "code": "R1-0P-08-2-8389AA70-7BEE0FCA",
+      "approach": "bypass",
+      "assignment": "service_restoration",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "COMPLETED_CODE_2_REPLAY_OTHER_APPROACH",
+      "afterSelection": "COMPLETED_CODE_2_REPLAY_OTHER_APPROACH",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "eeb3a74abddc52d063976f090d2ed5c8276043a7087aaa21c5b7650f6695824d",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 13,
+        "inspections": 5,
+        "applies": 4,
+        "confirmations": 7,
+        "travel": 3,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 1,
+        "reportedProcedureLabels": [
+          "Alignment-first service module"
+        ]
+      },
+      "beforeSetupActivations": 5,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Alignment-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    },
+    {
+      "id": "1440x900-run1",
+      "code": "R1-01-06-0-90B46B6F-987C02E0",
+      "approach": "lift",
+      "assignment": "rescue",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "MATCHED_REPLAY",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "d6a0d32e97149ce3ea34473e120c8cd5de62c58068b7cd3cacd85d1efc2cf5cb",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 10,
+        "inspections": 3,
+        "applies": 2,
+        "confirmations": 6,
+        "travel": 3,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 0,
+        "reportedProcedureLabels": []
+      },
+      "beforeSetupActivations": 9,
+      "afterSetupActivations": 9,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "beforeSourceExpansions": 0,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 0,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": null,
+      "beforeCollapsedProcedure": [],
+      "afterCollapsedProcedure": []
+    },
+    {
+      "id": "1440x900-run2",
+      "code": "R1-0P-08-2-8389AA70-7BEE0FCA",
+      "approach": "lift",
+      "assignment": "service_restoration",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "MATCHED_REPLAY",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "eeb3a74abddc52d063976f090d2ed5c8276043a7087aaa21c5b7650f6695824d",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 17,
+        "inspections": 5,
+        "applies": 6,
+        "confirmations": 11,
+        "travel": 5,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 0,
+        "reportedProcedureLabels": [
+          "Alignment-first service module"
+        ]
+      },
+      "beforeSetupActivations": 5,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Alignment-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    },
+    {
+      "id": "1440x900-run3",
+      "code": "R1-11-03-1-BD05EA01-AB3E60E8",
+      "approach": "bypass",
+      "assignment": "lift_survey",
+      "assignmentCompleted": false,
+      "deliberateOptionalSkip": true,
+      "beforeSelection": "MATCHED_REPLAY",
+      "afterSelection": "MATCHED_REPLAY",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "f1e9c018e0bea1d3def36b154b3d3e60fde1a07bc03b806754b67262eddcee86",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 17,
+        "inspections": 6,
+        "applies": 3,
+        "confirmations": 10,
+        "travel": 6,
+        "repeatedUnchangedReports": 1,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 1,
+        "repeatedLabelWithChangedReport": 1,
+        "reportedProcedureLabels": [
+          "Detent-first service module"
+        ]
+      },
+      "beforeSetupActivations": 5,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Detent-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    },
+    {
+      "id": "1440x900-run4",
+      "code": "R1-0P-08-2-8389AA70-7BEE0FCA",
+      "approach": "bypass",
+      "assignment": "service_restoration",
+      "assignmentCompleted": true,
+      "deliberateOptionalSkip": false,
+      "beforeSelection": "COMPLETED_CODE_2_REPLAY_OTHER_APPROACH",
+      "afterSelection": "COMPLETED_CODE_2_REPLAY_OTHER_APPROACH",
+      "outcome": "CONFIRMED_HOME",
+      "publicDefinitionMatches": true,
+      "publicDrawingMatches": true,
+      "publicPanelSha256": "eeb3a74abddc52d063976f090d2ed5c8276043a7087aaa21c5b7650f6695824d",
+      "mechanicalCountsMatch": true,
+      "counts": {
+        "selectedRequests": 13,
+        "inspections": 5,
+        "applies": 4,
+        "confirmations": 7,
+        "travel": 3,
+        "repeatedUnchangedReports": 0,
+        "repeatedUnchangedWithoutTravelOrApply": 0,
+        "sameReportAfterTravelOrApply": 0,
+        "repeatedLabelWithChangedReport": 1,
+        "reportedProcedureLabels": [
+          "Alignment-first service module"
+        ]
+      },
+      "beforeSetupActivations": 5,
+      "afterSetupActivations": 5,
+      "beforeGuide": {
+        "stage": "observe",
+        "skipVisible": true,
+        "replayVisible": false
+      },
+      "afterGuide": {
+        "stage": "skipped",
+        "skipVisible": false,
+        "replayVisible": true
+      },
+      "beforeSourceExpansions": 1,
+      "afterSourceExpansions": 0,
+      "beforeSourceCollapses": 1,
+      "afterSourceCollapses": 0,
+      "reportedProcedure": "Alignment-first service module",
+      "beforeCollapsedProcedure": [
+        false
+      ],
+      "afterCollapsedProcedure": [
+        true
+      ]
+    }
+  ],
+  "guideScreenshots": [
+    {
+      "path": "artifacts/goal-010b/before/1280-guide-next-run.png",
+      "originalPrivatePath": ".validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run2-guide-at-start.png",
+      "sha256": "1e1c79af7abc19e8cd2931f0ea0642956b66b3c73c1aeb831781f26649dd9922",
+      "bytes": 196921
+    },
+    {
+      "path": "artifacts/goal-010b/after/1280-guide-next-run.png",
+      "originalPrivatePath": ".validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1280x720-run2-guide-at-start.png",
+      "sha256": "ed02e183c715b668e4854506c4840bc8172563badcf8c7e80c839b167cfbfdf9",
+      "bytes": 142713
+    }
+  ],
+  "evidenceBoundaries": [
+    "This receipt contains counts and public replay/geometry identities, not raw reports, transcripts, conversations, identity or telemetry.",
+    "Full receipts and complete native captures remain ignored at the exact private paths above. Previous evidence is unchanged.",
+    "The sequence's after-brace reference was outside the viewport in panel-scrolled frames; those frames are deliberately not packaged as visible reference proof. Root-owned matched partial-fixture captures supply correctly framed before/after reference images separately.",
+    "Screenshot visual review is separate from this DOM/geometry comparison. No human enjoyment, learning, difficulty, retention, microphone, real Voice, hosted availability or deployment claim is made.",
+    "1280 baseline setup uses genuine New, while 1280 after uses matched replay; those setup activation totals are recorded but cannot establish a like-for-like setup improvement. Both 1440 runs use matched replay.",
+    "Repeated identical report text after travel or Apply is distinguished from unchanged repeated requests in the same scope; it is not automatically redundant.",
+    "Profile codes select replay conditions only. The operator uses visible public geometry/manuals and communicated local reports, never code decoding, hidden state or solver witnesses."
+  ]
+}

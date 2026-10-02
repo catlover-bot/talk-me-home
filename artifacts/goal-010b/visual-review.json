@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "Bounded native screenshot visual review",
+  "result": "PASS_WITH_CAPTURE_LIMITS",
+  "reviewer": "goal007_immersion",
+  "baselineSource": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+  "afterSource": "87e1951f6050125a3828257ae72543fb474d184a",
+  "afterVersion": "0.10.1",
+  "reviewedImages": [
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run2-comparison-after-brace-reply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "a2b82e666c5f24fa2e200c7eede383a373356ae3956887e6db58a2ec3f25f88d",
+      "bytes": 283222
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1440x900-run2-comparison-after-brace-reply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "81813149e9f3ad2b861fbbbb73f252196d026b8d99cb2046495ab8665ff4d0a0",
+      "bytes": 325035
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1280x720-run2-comparison-after-brace-reply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "42bf12f9d9e83840a475ee25622ed4ddfc32de35c0c779266459ecc572779976",
+      "bytes": 266100
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1440x900-run2-comparison-after-brace-reply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "b3253ddc04e21fd30017497bb1e00d0157643b08754eb56d873eba1207ad59c6",
+      "bytes": 303947
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run2-guide-at-start.png",
+      "purpose": "Compare visible guide preference and normal controls",
+      "sha256": "1e1c79af7abc19e8cd2931f0ea0642956b66b3c73c1aeb831781f26649dd9922",
+      "bytes": 196921
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1440x900-run2-guide-at-start.png",
+      "purpose": "Compare visible guide preference and normal controls",
+      "sha256": "c8558624828088c9e6a9a3f24448a67df9f69438e9d5a6e0d23e83ca7b31c769",
+      "bytes": 239092
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1280x720-run2-guide-at-start.png",
+      "purpose": "Compare visible guide preference and normal controls",
+      "sha256": "ed02e183c715b668e4854506c4840bc8172563badcf8c7e80c839b167cfbfdf9",
+      "bytes": 142713
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1440x900-run2-guide-at-start.png",
+      "purpose": "Compare visible guide preference and normal controls",
+      "sha256": "d63e83830ef57831d0bcf169fe3464c1b063a590228fa8b3fae1bae478532481",
+      "bytes": 229925
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1280x720-run2-comparison-before-apply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "975320b348589897fd5f00ed845b6030f7d7e58bb6d256720a5994b2b63718d0",
+      "bytes": 283253
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/baseline-543918158e8f-2026-10-02T05-09-50-848Z/1440x900-run2-comparison-before-apply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "6ede021fe3f63bb416995be67754fc0370bf616625edc1e54b69c5ecd2deff23",
+      "bytes": 327111
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1280x720-run2-comparison-before-apply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "cc72415708fe9bd8f41d83c734010c8e6024bb0d24c28b68d8ba401a4bfd96d1",
+      "bytes": 267461
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/after-87e1951f6050-2026-10-02T05-18-56-797Z/1440x900-run2-comparison-before-apply.png",
+      "purpose": "Framing check; reference above viewport",
+      "sha256": "de9f9578ea66953f335b0ea5ced4fc6679eb5f53e9028d47a4ba0f177f4d5527",
+      "bytes": 305283
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-before/1280-after-brace.png",
+      "purpose": "Fixed-code baseline reference",
+      "sha256": "ea9715ff2bb86377966e0850ee72a7a92fab2af5d567064b3dc331ddd92fdf05",
+      "bytes": 167982
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-before/1440-after-brace.png",
+      "purpose": "Fixed-code baseline reference",
+      "sha256": "f155c1b3d07adec27dfe19d1cdc3e61102e567240140a2c9ab22fe63914be204",
+      "bytes": 209266
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-before/1440-full-source.png",
+      "purpose": "Fixed-code baseline reference",
+      "sha256": "e8d9686ec984a5267947041e732853014c3a1a43ef2df50b138cab907084ec29",
+      "bytes": 222445
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-after/1280-after-brace.png",
+      "purpose": "Fixed-code after reference",
+      "sha256": "8b17ccf2f9f3b7e99d5669ec0a8098644125f217a555dc20758cbb10e00a1bce",
+      "bytes": 167328
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-after/1440-after-brace.png",
+      "purpose": "Fixed-code after reference",
+      "sha256": "76b2602690e248c2e38dd51a8ab25371a6b654ba4026910a32d820507cbe4203",
+      "bytes": 212349
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-after/1280-service-reference.png",
+      "purpose": "Fixed-code after reference",
+      "sha256": "90add680588d667a4f1a1fa6ed6ecfd8891e08bfb73a859b72e953f4f5df42f9",
+      "bytes": 168279
+    },
+    {
+      "path": "/home/mhirotaka/workspace/talk-me-home-goal-008/.validation/goal-010b/reference-after/1440-service-reference.png",
+      "purpose": "Fixed-code after reference",
+      "sha256": "178c20181626e62b8196dac4b98a5f2415176334ad277b74f8a572810b1566e8",
+      "bytes": 209373
+    }
+  ],
+  "observations": [
+    {
+      "area": "Matched reference after brace",
+      "result": "At 1280x720 and 1440x900 the exact Alignment-first service module label is compactly visible below the Rivet quote with Pip, Practice/quoted-report source, time, Service Gallery/this visit, and Earlier conditions text. Full source report remains collapsed. The actual newer brace reply and confirmed brace receipt remain visible in the radio."
+    },
+    {
+      "area": "Manual comparison",
+      "result": "Both Rivet and Slot supply rows remain fully visible beside the quote at both sizes without a selected answer row. At 1440x900 both Detent-first and Alignment-first procedure descriptions are visible below. At 1280x720 the procedure descriptions lie below the viewport and require ordinary page scrolling; the new reported label and entire supply table fit."
+    },
+    {
+      "area": "Fresh reference",
+      "result": "The after service-reference frames show the exact procedure label with the Transfer turntable plate quote and the existing statement that reported equipment does not prove power or readiness. No readiness assertion or solution highlight is visible."
+    },
+    {
+      "area": "Guide preference",
+      "result": "Run2 after guide-at-start frames show Replay guidance and omit active radio/panel guide cues while retaining the actual greeting, Look around and Pause. Baseline shows active opening guidance/Skip guidance where framed. This visual state is consistent with retained skipped preference; still images alone do not prove the lifecycle event."
+    },
+    {
+      "area": "Sequence capture framing",
+      "result": "Run2 comparison-before-apply and comparison-after-brace-reply at both sizes frame the routing panel; the document reference is above the viewport. Those images do not establish quote/manual visibility. Separate matched fixed-code reference-before/reference-after images supply that evidence."
+    }
+  ],
+  "concreteDefects": [],
+  "limits": [
+    "Native saved PNG inspection only; no browser, build, new gameplay run, provider call, or tracked-file edit by this reviewer.",
+    "Not continuous playback, audio listening, a human playtest, enjoyment evidence, or a timing measurement.",
+    "Did not independently inspect run3 Detent-first, narrow/200% screenshots, every route, or hidden implementation state in this review.",
+    "No claim that all document content fits one 1280x720 viewport.",
+    "Source identities come from supplied capture context and the after receipt, not from screenshot pixels.",
+    "Sequence frames and fixed-code reference frames are distinct captures; the fixed-code fixture is not a New-dispatch sample."
+  ],
+  "reviewedUtc": "2026-10-02T05:22:13.7091822Z"
+}

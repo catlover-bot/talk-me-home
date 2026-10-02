@@ -1,0 +1,52 @@
+{
+  "schema": "goal-010b-reference-inspection-v1",
+  "scope": "Separate fixed-code ordinary-UI partial inspection, not a New selection or full rescue. Same code, locations and confirmed brace action; native still images with no banner/audio.",
+  "code": "R1-18-03-2-000003F2-AB24D48D",
+  "matchedInteraction": "Inspect Transfer turntable, inspect Bridge winch, confirm isolated brace, view Service modules; same four exact travel/brace confirmations in both builds.",
+  "beforeProcedureInCompactReference": false,
+  "afterProcedureInCompactReference": true,
+  "sourceReportPreserved": true,
+  "rawReceipts": [
+    ".validation/goal-010b/reference-before/receipt.json",
+    ".validation/goal-010b/reference-after/receipt.json"
+  ],
+  "shots": [
+    {
+      "phase": "before",
+      "source": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+      "version": "0.10.0",
+      "path": "artifacts/goal-010b/before/reference-1280.png",
+      "sha256": "ea9715ff2bb86377966e0850ee72a7a92fab2af5d567064b3dc331ddd92fdf05",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "phase": "before",
+      "source": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+      "version": "0.10.0",
+      "path": "artifacts/goal-010b/before/reference-1440.png",
+      "sha256": "f155c1b3d07adec27dfe19d1cdc3e61102e567240140a2c9ab22fe63914be204",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "phase": "after",
+      "source": "87e1951f6050125a3828257ae72543fb474d184a",
+      "version": "0.10.1",
+      "path": "artifacts/goal-010b/after/reference-1280.png",
+      "sha256": "8b17ccf2f9f3b7e99d5669ec0a8098644125f217a555dc20758cbb10e00a1bce",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "phase": "after",
+      "source": "87e1951f6050125a3828257ae72543fb474d184a",
+      "version": "0.10.1",
+      "path": "artifacts/goal-010b/after/reference-1440.png",
+      "sha256": "76b2602690e248c2e38dd51a8ab25371a6b654ba4026910a32d820507cbe4203",
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "limits": "Ordinary document scrolling remains. Both procedure descriptions fit the 1440 still, not the 720px-high still. Full-source expansion was additionally exercised for inspection; the separate matched sequence measures actual expansion avoidance. No human playtest or continuous playback."
+}

@@ -1,0 +1,213 @@
+{
+  "schema": "goal-010b-scope-audit-v1",
+  "observedAt": "2026-10-02T05:16:20.360963+00:00",
+  "baseline": "543918158e8ffd9e5d6ebac6794aba417e3ae908",
+  "candidate": "be188db15bc6625b5a0ebd4752a4f36c90de7a90",
+  "version": "0.10.1",
+  "changedFiles": [
+    "AGENTS.md",
+    "docs/goal-010b-replay-experience.md",
+    "game/client/App.tsx",
+    "game/client/components/SwitchyardDocument.tsx",
+    "game/client/components/SwitchyardGuide.tsx",
+    "game/client/switchyard-report.ts",
+    "package-lock.json",
+    "package.json",
+    "tests/e2e/remix-reference.spec.ts",
+    "tests/e2e/remix.spec.ts",
+    "tests/switchyard-report.test.ts"
+  ],
+  "productChanges": [
+    {
+      "name": "Retain Skip/Replay guidance preference within the running app across fresh rounds",
+      "files": [
+        "game/client/App.tsx",
+        "game/client/components/SwitchyardGuide.tsx"
+      ],
+      "boundary": "Per-round observed/turned/applied steps still reset; no storage, API or machinery change."
+    },
+    {
+      "name": "Keep explicitly reported service procedure beside the attributed plate quote",
+      "files": [
+        "game/client/switchyard-report.ts",
+        "game/client/components/SwitchyardDocument.tsx"
+      ],
+      "boundary": "Exact reported substring only; source message, original wording, visit and age remain attached; no catalog inference."
+    }
+  ],
+  "productChangeCount": 2,
+  "r1": {
+    "conclusion": "UNCHANGED_AND_VERIFIED",
+    "protectedSourceCount": 11,
+    "sourceHashes": [
+      {
+        "path": "game/shared/switchyard.ts",
+        "certificateSha256": "964fe2175005bc646c83345fdf9cd0c59bc4e546e889d1d5499dbb576a2dd6c8",
+        "baselineSha256": "964fe2175005bc646c83345fdf9cd0c59bc4e546e889d1d5499dbb576a2dd6c8",
+        "candidateSha256": "964fe2175005bc646c83345fdf9cd0c59bc4e546e889d1d5499dbb576a2dd6c8",
+        "worktreeSha256": "964fe2175005bc646c83345fdf9cd0c59bc4e546e889d1d5499dbb576a2dd6c8",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/shared/remix.ts",
+        "certificateSha256": "04744c7ea035ccb8e3d4ba0d56a48586a193c5969e1b4cf45bda9d27d380c226",
+        "baselineSha256": "04744c7ea035ccb8e3d4ba0d56a48586a193c5969e1b4cf45bda9d27d380c226",
+        "candidateSha256": "04744c7ea035ccb8e3d4ba0d56a48586a193c5969e1b4cf45bda9d27d380c226",
+        "worktreeSha256": "04744c7ea035ccb8e3d4ba0d56a48586a193c5969e1b4cf45bda9d27d380c226",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/shared/contracts.ts",
+        "certificateSha256": "5e7aa482b14728b8c95642f21ed449bb0c8c4b739d4d28927d3c43e8d666feea",
+        "baselineSha256": "5e7aa482b14728b8c95642f21ed449bb0c8c4b739d4d28927d3c43e8d666feea",
+        "candidateSha256": "5e7aa482b14728b8c95642f21ed449bb0c8c4b739d4d28927d3c43e8d666feea",
+        "worktreeSha256": "5e7aa482b14728b8c95642f21ed449bb0c8c4b739d4d28927d3c43e8d666feea",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/server/switchyard.ts",
+        "certificateSha256": "deb9a59004f798e3c7d6311b308f31755dcd79635a375b88518be47032c35767",
+        "baselineSha256": "deb9a59004f798e3c7d6311b308f31755dcd79635a375b88518be47032c35767",
+        "candidateSha256": "deb9a59004f798e3c7d6311b308f31755dcd79635a375b88518be47032c35767",
+        "worktreeSha256": "deb9a59004f798e3c7d6311b308f31755dcd79635a375b88518be47032c35767",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/server/remix-catalog.ts",
+        "certificateSha256": "e73638e03ecab0f86a59f9e36046a3c5a0ef1b747802e042a5788f64f98e0782",
+        "baselineSha256": "e73638e03ecab0f86a59f9e36046a3c5a0ef1b747802e042a5788f64f98e0782",
+        "candidateSha256": "e73638e03ecab0f86a59f9e36046a3c5a0ef1b747802e042a5788f64f98e0782",
+        "worktreeSha256": "e73638e03ecab0f86a59f9e36046a3c5a0ef1b747802e042a5788f64f98e0782",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/server/remix.ts",
+        "certificateSha256": "ba177cccb2ccdb123c293fc715dd5eab016674b8fcabf89bf70bdcb0347a70c9",
+        "baselineSha256": "ba177cccb2ccdb123c293fc715dd5eab016674b8fcabf89bf70bdcb0347a70c9",
+        "candidateSha256": "ba177cccb2ccdb123c293fc715dd5eab016674b8fcabf89bf70bdcb0347a70c9",
+        "worktreeSha256": "ba177cccb2ccdb123c293fc715dd5eab016674b8fcabf89bf70bdcb0347a70c9",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/server/state.ts",
+        "certificateSha256": "b6ad92216f0f0c4b44879cfa5c6666fdb082850811fd576a1f7edc05e9496c3b",
+        "baselineSha256": "b6ad92216f0f0c4b44879cfa5c6666fdb082850811fd576a1f7edc05e9496c3b",
+        "candidateSha256": "b6ad92216f0f0c4b44879cfa5c6666fdb082850811fd576a1f7edc05e9496c3b",
+        "worktreeSha256": "b6ad92216f0f0c4b44879cfa5c6666fdb082850811fd576a1f7edc05e9496c3b",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "game/server/remix-certificates.ts",
+        "certificateSha256": "a6853a57befdf46342923e32ccb26bdf69225b6efca8766def90555249fdb1bd",
+        "baselineSha256": "a6853a57befdf46342923e32ccb26bdf69225b6efca8766def90555249fdb1bd",
+        "candidateSha256": "a6853a57befdf46342923e32ccb26bdf69225b6efca8766def90555249fdb1bd",
+        "worktreeSha256": "a6853a57befdf46342923e32ccb26bdf69225b6efca8766def90555249fdb1bd",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "scripts/switchyard-canonical.ts",
+        "certificateSha256": "53442fbeaa48b1b15cb305e76e5abc7557328431514c00f79987bba765f698c9",
+        "baselineSha256": "53442fbeaa48b1b15cb305e76e5abc7557328431514c00f79987bba765f698c9",
+        "candidateSha256": "53442fbeaa48b1b15cb305e76e5abc7557328431514c00f79987bba765f698c9",
+        "worktreeSha256": "53442fbeaa48b1b15cb305e76e5abc7557328431514c00f79987bba765f698c9",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "scripts/validate-switchyard-remix.ts",
+        "certificateSha256": "0d64be439d684771b5f60f4a1fb250b7590c04ec9c1f45db4d9e15ec13d2d89a",
+        "baselineSha256": "0d64be439d684771b5f60f4a1fb250b7590c04ec9c1f45db4d9e15ec13d2d89a",
+        "candidateSha256": "0d64be439d684771b5f60f4a1fb250b7590c04ec9c1f45db4d9e15ec13d2d89a",
+        "worktreeSha256": "0d64be439d684771b5f60f4a1fb250b7590c04ec9c1f45db4d9e15ec13d2d89a",
+        "unchangedAndVerified": true
+      },
+      {
+        "path": "scripts/verify-remix-certificate.ts",
+        "certificateSha256": "f6d78b0703e12fe324b183a6f2167481ce0d4c64fa475b6c2e509d9eca5034ed",
+        "baselineSha256": "f6d78b0703e12fe324b183a6f2167481ce0d4c64fa475b6c2e509d9eca5034ed",
+        "candidateSha256": "f6d78b0703e12fe324b183a6f2167481ce0d4c64fa475b6c2e509d9eca5034ed",
+        "worktreeSha256": "f6d78b0703e12fe324b183a6f2167481ce0d4c64fa475b6c2e509d9eca5034ed",
+        "unchangedAndVerified": true
+      }
+    ],
+    "catalogAndCertificateUnchanged": true,
+    "certificateFileSha256": "f637efbad7f19a96741ee634b91584238787ad6945e3568dfc7fdbbb6a0a9239",
+    "profileCount": 48,
+    "canonicalFamilies": 48,
+    "startCounts": {
+      "branch": 16,
+      "mesh": 16,
+      "crown": 16
+    }
+  },
+  "productionBuild": {
+    "release": {
+      "commit": "be188db15bc6625b5a0ebd4752a4f36c90de7a90",
+      "version": "0.10.1"
+    },
+    "certificateManifestSha256": "4ed60ba60a2e1dfe23dd70ef9c19f8ba8720e3e697f7d09ff724283406db6604",
+    "certificateDigestMatches": true,
+    "compiledRules": [
+      {
+        "path": "shared/switchyard.js",
+        "sha256": "fb8c6267983f03b7f9121aa386b1953777e98a26c8930f5a86837d8f76eafff8",
+        "expectedSha256": "fb8c6267983f03b7f9121aa386b1953777e98a26c8930f5a86837d8f76eafff8",
+        "matches": true
+      },
+      {
+        "path": "shared/remix.js",
+        "sha256": "48477c50466efb47339bde76e8e7c0530910be22732198acf31afedd4fa1aa9e",
+        "expectedSha256": "48477c50466efb47339bde76e8e7c0530910be22732198acf31afedd4fa1aa9e",
+        "matches": true
+      },
+      {
+        "path": "shared/contracts.js",
+        "sha256": "8ede88c63c95988e28e5600062a37ea69c9ddfa5f57b0c479b6707918a5a5e46",
+        "expectedSha256": "8ede88c63c95988e28e5600062a37ea69c9ddfa5f57b0c479b6707918a5a5e46",
+        "matches": true
+      },
+      {
+        "path": "server/switchyard.js",
+        "sha256": "379d606eac81ef4d5599bf3ef76666ef0a09d3786ac4753575c4fc20436e02fd",
+        "expectedSha256": "379d606eac81ef4d5599bf3ef76666ef0a09d3786ac4753575c4fc20436e02fd",
+        "matches": true
+      },
+      {
+        "path": "server/remix-catalog.js",
+        "sha256": "c84fd8a75019a7f6fd2f2508996788b84de1723165bcc16c87e8134588df4ca1",
+        "expectedSha256": "c84fd8a75019a7f6fd2f2508996788b84de1723165bcc16c87e8134588df4ca1",
+        "matches": true
+      },
+      {
+        "path": "server/remix.js",
+        "sha256": "df937fef428b8f8b79be616d573ccd9b096754586d6c0051bbbe5203089d226f",
+        "expectedSha256": "df937fef428b8f8b79be616d573ccd9b096754586d6c0051bbbe5203089d226f",
+        "matches": true
+      },
+      {
+        "path": "server/state.js",
+        "sha256": "72ce8bf54ae8a8bb2028aa8e1829b3f243556a1930fd5c704eafe67f4d0fc6f9",
+        "expectedSha256": "72ce8bf54ae8a8bb2028aa8e1829b3f243556a1930fd5c704eafe67f4d0fc6f9",
+        "matches": true
+      },
+      {
+        "path": "server/remix-certificates.js",
+        "sha256": "e8ce797d723fd693ae3d6423990756b688ad3cc6552437f2659f908ff99ced84",
+        "expectedSha256": "e8ce797d723fd693ae3d6423990756b688ad3cc6552437f2659f908ff99ced84",
+        "matches": true
+      },
+      {
+        "path": "server/remix-certificate-data.js",
+        "sha256": "450a97cf1ac347b5d73f6aeacf1facfccc4f6b381e083e316c074a75fcfe6c06",
+        "expectedSha256": "450a97cf1ac347b5d73f6aeacf1facfccc4f6b381e083e316c074a75fcfe6c06",
+        "matches": true
+      }
+    ],
+    "conclusion": "CURRENT_COMPILED_CERTIFICATE_MATCHES"
+  },
+  "protectedTrackedScopeChanges": [],
+  "commitSubjects": [
+    "Retain guidance choices and reported procedures across Remix play [skip render]"
+  ],
+  "scope": "Read-only committed diff and existing build/certificate audit; no source edits, builds, tests, browser or network. Existing ignored allowance-ledger bytes and external deployment state were not re-audited.",
+  "reviewNote": "Parent reports the new row-header test locator was scoped during pre-commit review; no runtime failure is asserted by this audit."
+}
